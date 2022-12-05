@@ -20,6 +20,7 @@ fun FluentTheme(
 }
 
 object FluentTheme {
+    @Deprecated("Not fully implemented")
     val colors: Colors
         @Composable
         @ReadOnlyComposable
@@ -46,5 +47,3 @@ fun darkColors(
     background: Color = Color(0xFF202020),
     onBackground: Color = Color.White,
 ): Colors = Colors(accent, onAccent, background, onBackground)
-
-

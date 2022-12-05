@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.Layer
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable

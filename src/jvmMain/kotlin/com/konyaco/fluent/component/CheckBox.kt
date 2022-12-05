@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.background.Layer
 
 @Composable
 fun CheckBox(
