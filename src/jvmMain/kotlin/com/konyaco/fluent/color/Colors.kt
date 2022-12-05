@@ -103,6 +103,4 @@ object Colors {
             val Alt = Color(0x0DFFFFFF)
         }
     }
-
-
 }

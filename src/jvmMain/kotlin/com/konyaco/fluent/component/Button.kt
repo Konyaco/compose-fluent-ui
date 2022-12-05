@@ -116,22 +116,22 @@ private val DarkButtonColors = ButtonColors(
     default = ButtonColor(
         Control.Default,
         Colors.Text.Text.Primary,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     ),
     hovered = ButtonColor(
         Control.Secondary,
         Colors.Text.Text.Secondary,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     ),
     pressed = ButtonColor(
         Control.Tertiary,
         Colors.Text.Text.Tertiary,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     ),
     disabled = ButtonColor(
         Control.Disabled,
         Colors.Text.Text.Disabled,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     )
 )
 
@@ -139,22 +139,22 @@ private val DarkAccentButtonColors = ButtonColors(
     default = ButtonColor(
         Colors.Fill.Accent.Default,
         Colors.Text.OnAccent.Primary,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     ),
     hovered = ButtonColor(
         Colors.Fill.Accent.Secondary,
         Colors.Text.OnAccent.Primary,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     ),
     pressed = ButtonColor(
         Colors.Fill.Accent.Tertiary,
         Colors.Text.OnAccent.Secondary,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     ),
     disabled = ButtonColor(
         Colors.Fill.Accent.Disabled,
         Colors.Text.OnAccent.Disabled,
-        Brush.verticalGradient(listOf(Control.Secondary, Control.Default))
+        Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default))
     )
 )
 
