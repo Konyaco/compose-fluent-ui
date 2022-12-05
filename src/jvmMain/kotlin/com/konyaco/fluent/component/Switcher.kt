@@ -9,99 +9,122 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.color.Colors
+
+data class SwitcherBackground(
+    val default: Color,
+    val hovered: Color,
+    val pressed: Color,
+    val disabled: Color,
+    val strokeDefault: Color,
+    val strokeHovered: Color,
+    val strokePressed: Color,
+    val strokeDisabled: Color
+)
 
 @Composable
 fun Switcher(
     checked: Boolean,
-    onCheckStateChange: (checked: Boolean) -> Unit
+    text: String,
+    onCheckStateChange: (checked: Boolean) -> Unit,
+    textBefore: Boolean = false,
+    disabled: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
     val pressed by interactionSource.collectIsPressedAsState()
 
-    // TODO: 2021/6/30 Swipeable, Hoverable
-
-    Box(
-        modifier = Modifier.size(40.dp, 20.dp)
-            .border(Dp.Hairline, FluentTheme.colors.onBackground.copy(0.75f), CircleShape)
-            .hoverable(interactionSource)
-            .clickable(indication = null, interactionSource = interactionSource) {
-                onCheckStateChange(!checked)
-            }
-            .padding(horizontal = 3.dp),
-        contentAlignment = Alignment.CenterStart
+    Row(
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        val scaleX by animateFloatAsState(
-            when {
-                pressed -> 1.8f
-                hovered -> 1.2f
-                else -> 1f
-            }
-        )
-
-        val scaleY by animateFloatAsState(
-            when {
-                pressed -> 1.4f
-                hovered -> 1.2f
-                else -> 1f
-            }
-        )
-
-        val density = LocalDensity.current
-        val offset = animateDpAsState(if (checked) 22.dp else 0.dp)
-        val offsetX by rememberUpdatedState(with(density) { offset.value.toPx() })
+        if (textBefore) {
+            Text(
+                text = text,
+                style = FluentTheme.typography.body,
+                color = Colors.Text.Text.Primary
+            )
+            Spacer(Modifier.width(16.dp))
+        }
 
         Box(
-            Modifier.size(10.dp)
-                .graphicsLayer {
-                    this.scaleX = scaleX
-                    this.scaleY = scaleY
-                    translationX = offsetX
-                    transformOrigin = TransformOrigin.Center
+            modifier = Modifier.size(40.dp, 20.dp)
+                .border(1.dp, if (checked) Color.Transparent else Colors.Stroke.ControlStrong.Default, CircleShape)
+                .clickable(indication = null, interactionSource = interactionSource) {
+                    onCheckStateChange(!checked)
                 }
                 .clip(CircleShape)
-                .background(FluentTheme.colors.onBackground)
+                .background(
+                    if (checked) when {
+                        disabled -> Colors.Fill.Accent.Disabled
+                        pressed -> Colors.Fill.Accent.Tertiary
+                        hovered -> Colors.Fill.Accent.Secondary
+                        else -> Colors.Fill.Accent.Default
+                    } else when {
+                        disabled -> Colors.Fill.ControlAlt.Disabled
+                        pressed || hovered -> Colors.Fill.ControlAlt.Tertiary
+                        else -> Colors.Fill.ControlAlt.Secondary
+                    }
+                )
+                .padding(horizontal = 4.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            val height by animateDpAsState(
+                when {
+                    pressed || hovered -> 14.dp
+                    else -> 12.dp
+                }
+            )
 
-        )
-        /*
-        width = animateDpAsState(
-                    if (checked) {
-                        if (pressed) 18.dp else 14.dp
-                    } else {
-                        if (pressed) {
-                            18.dp
-                        } else if (hovered) {
-                            14.dp
-                        } else {
-                            10.dp
-                        }
+            val width by animateDpAsState(
+                when {
+                    pressed -> 17.dp
+                    hovered -> 14.dp
+                    else -> 12.dp
+                }
+            )
+
+            val density = LocalDensity.current
+            val offset = animateDpAsState(if (checked) 26.dp - (width / 2) else 0.dp)
+
+            val offsetX by rememberUpdatedState(with(density) {
+                offset.value.toPx()
+            })
+
+            Box(
+                Modifier.size(width, height)
+                    .graphicsLayer {
+                        translationX = offsetX
+                        transformOrigin = TransformOrigin.Center
                     }
-                ).value,
-                height = animateDpAsState(
-                    if (checked) {
-                        if (pressed) 18.dp else 14.dp
-                    } else {
-                        if (hovered) {
-                            14.dp
-                        } else {
-                            10.dp
-                        }
-                    }
-                ).value
-        */
+                    .clip(CircleShape)
+                    .background(
+                        if (checked) Colors.Text.OnAccent.Primary
+                        else Colors.Text.Text.Secondary
+                    )
+            )
+        }
+
+        if (!textBefore) {
+            Spacer(Modifier.width(16.dp))
+            Text(
+                text = text,
+                style = FluentTheme.typography.body,
+                color = Colors.Text.Text.Primary
+            )
+        }
     }
 }

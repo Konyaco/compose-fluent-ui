@@ -30,8 +30,8 @@ object Colors {
 
         object OnAccent {
             val Primary = Color(0xFF0000000)
-            val Secondary = Color(0x800000000)
-            val Tertiary = Color(0x870000000)
+            val Secondary = Color(0x80000000)
+            val Disabled = Color(0x87FFFFFF)
             val Selected = Color(0xFFFFFFFF)
         }
     }
@@ -48,7 +48,11 @@ object Colors {
         }
 
         object ControlAlt {
-            // TODO:
+            val Transparent = Color(0x00FFFFFF)
+            val Secondary = Color(0x19000000)
+            val Tertiary = Color(0x0BFFFFFF)
+            val Quarternary = Color(0x12FFFFFF)
+            val Disabled = Color(0x00FFFFFF)
         }
 
         object Card {
@@ -56,9 +60,16 @@ object Colors {
         }
 
         object ControlStrong {
-            // TODO: Unknown alpha in Figma
-            val Default = Color(0x9AFFFFFF)
+            val Default = Color(0x8BFFFFFF)
+            val Disabled = Color(0x3FFFFFFF)
+        }
+
+        object Accent {
+            val Default = AccentColor.Light2
+            val Secondary = AccentColor.Light2.copy(0.9f)
+            val Tertiary = AccentColor.Light2.copy(0.8f)
             val Disabled = Color(0x28FFFFFF)
+            val SelectedTextBackground = AccentColor.Base
         }
     }
 
@@ -73,6 +84,11 @@ object Colors {
             val ForStrongFillWhenOnImage = Color(0x6B000000)
         }
 
+        object ControlStrong {
+            // TODO: Unknown alpha in Figma
+            val Default = Color(0x9AFFFFFF)
+            val Disabled = Color(0x28FFFFFF)
+        }
 
     }
 
@@ -81,6 +97,7 @@ object Colors {
             val Base = Color(0xFF202020)
             val BaseAlt = Color(0xFF0A0A0A)
         }
+
         object Layer {
             val Default = Color(0x4C3A3A3A)
             val Alt = Color(0x0DFFFFFF)

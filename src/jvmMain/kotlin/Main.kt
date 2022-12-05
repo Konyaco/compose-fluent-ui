@@ -1,8 +1,5 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -41,14 +38,23 @@ fun App() {
             ) {
                 var displayDialog by remember { mutableStateOf(false) }
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    var text by remember { mutableStateOf("Hello, World!") }
+                    var text by remember { mutableStateOf("Hello, world!") }
+                    Row {
+                        Button(onClick = {}) {
+                            Text("Hello, world!")
+                        }
+                        Spacer(Modifier.width(2.dp))
+                        AccentButton(onClick = {}) {
+                            Text("Hello, world!")
+                        }
+                    }
                     Button(onClick = { text = "Hello, Desktop!" }) {
                         Text(text)
                     }
                     AccentButton(onClick = {
                         displayDialog = true
-                    }) { Text("Show dialog") }
-                    Switcher(checked) { checked = it }
+                    }) { Text("Hello, world!") }
+                    Switcher(checked, text = "Dark Mode", onCheckStateChange = { checked = it })
                     CheckBox(checked) { checked = it }
                 }
 
