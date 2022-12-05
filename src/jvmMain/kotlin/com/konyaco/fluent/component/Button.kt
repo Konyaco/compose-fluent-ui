@@ -68,7 +68,7 @@ private fun Button(
 
     val fillColor by animateColorAsState(
         buttonColor.fillColor,
-        animationSpec = tween(FluentDuration.MediumDuration, easing = FluentEasing.FastInvokeEasing)
+        animationSpec = tween(FluentDuration.MediumDuration, easing = FluentEasing.FastInvokeEasing) // TODO: Tween
     )
 
     val contentColor by animateColorAsState(
@@ -122,12 +122,12 @@ private val DarkButtonColors = ButtonColors(
     ),
     hovered = ButtonColor(
         Control.Secondary,
-        Colors.Text.Text.Secondary,
+        Colors.Text.Text.Primary,
         DefaultStroke
     ),
     pressed = ButtonColor(
         Control.Tertiary,
-        Colors.Text.Text.Tertiary,
+        Colors.Text.Text.Secondary,
         DefaultStroke
     ),
     disabled = ButtonColor(

@@ -38,12 +38,39 @@ object Colors {
 
     object Fill {
         object Control {
+            /**
+             * Rest
+             */
             val Default = Color(0x0FFFFFFF)
-            val Secondary = Color(0x1FFFFFFF)
+
+            /**
+             * Hover
+             */
+            val Secondary = Color(0x15FFFFFF)
+
+            /**
+             * Pressed
+             */
             val Tertiary = Color(0x0BFFFFFF)
+
+            /**
+             * Rest (Pill Button control)
+             */
             val Quarternary = Color(0x0FFFFFFF)
+
+            /**
+             * Disabled
+             */
             val Disabled = Color(0x4DFFFFFF)
+
+            /**
+             * Rest
+             */
             val Transparent = Color(0x00FFFFFF)
+
+            /**
+             * Active/Focused text input fields
+             */
             val InputActive = Color(0xB31E1E1E)
         }
 
