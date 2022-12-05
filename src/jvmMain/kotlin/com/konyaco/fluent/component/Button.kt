@@ -112,7 +112,7 @@ private fun Button(
     }
 }
 
-private val DefaultStroke = Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default), 0f, 0.0957f)
+private val DefaultStroke = Brush.verticalGradient(listOf(Colors.Stroke.Control.Secondary, Colors.Stroke.Control.Default), 0f*64f, 0.0957f*64f)
 
 private val DarkButtonColors = ButtonColors(
     default = ButtonColor(
@@ -137,7 +137,7 @@ private val DarkButtonColors = ButtonColors(
     )
 )
 
-private val AccentStroke = Brush.verticalGradient(listOf(Colors.Stroke.Control.OnAccentSecondary, Colors.Stroke.Control.OnAccentDefault), 0.9067f, 1f)
+private val AccentStroke = Brush.verticalGradient(listOf(Colors.Stroke.Control.OnAccentDefault, Colors.Stroke.Control.OnAccentSecondary), 0.9067f*64f, 1f*64f)
 private val DarkAccentButtonColors = ButtonColors(
     default = ButtonColor(
         Colors.Fill.Accent.Default,
