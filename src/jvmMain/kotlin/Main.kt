@@ -60,8 +60,11 @@ fun App() {
                         displayDialog = true
                     }) { Text("Hello, world!") }
                     Switcher(checked, text = "Dark Mode", onCheckStateChange = { checked = it })
+                    Switcher(checked, text = "Before Label", textBefore = true, onCheckStateChange = { checked = it })
                     CheckBox(checked) { checked = it }
                     CheckBox(checked, label = "With Label") { checked = it }
+                    RadioButton(checked, onClick = { checked = true })
+                    RadioButton(checked, onClick = { checked = true }, label = "With Label")
                 }
 
                 if (displayDialog) Dialog(
