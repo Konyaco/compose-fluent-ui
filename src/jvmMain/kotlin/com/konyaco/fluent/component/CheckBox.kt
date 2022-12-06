@@ -29,7 +29,7 @@ fun CheckBox(
     checked: Boolean,
     label: String? = null,
     modifier: Modifier = Modifier,
-    disabled: Boolean = false,
+    enabled: Boolean = true,
     onCheckStateChange: (checked: Boolean) -> Unit
 ) {
     // TODO: Animation, TripleStateCheckbox
@@ -50,12 +50,12 @@ fun CheckBox(
     ) {
         val fillColor by animateColorAsState(
             if (checked) when {
-                disabled -> Colors.Fill.Accent.Disabled
+                !enabled -> Colors.Fill.Accent.Disabled
                 pressed -> Colors.Fill.Accent.Tertiary
                 hovered -> Colors.Fill.Accent.Secondary
                 else -> Colors.Fill.Accent.Default
             } else when {
-                disabled -> Colors.Fill.ControlAlt.Disabled
+                !enabled -> Colors.Fill.ControlAlt.Disabled
                 pressed -> Colors.Fill.ControlAlt.Quarternary
                 hovered -> Colors.Fill.ControlAlt.Tertiary
                 else -> Colors.Fill.ControlAlt.Secondary
@@ -66,15 +66,15 @@ fun CheckBox(
             modifier = Modifier.size(20.dp),
             shape = RoundedCornerShape(4.dp),
             border = BorderStroke(
-                Dp.Hairline, if (checked) Colors.Fill.Accent.Default else Colors.Stroke.ControlStrong.Default
+                1.dp, if (checked) Colors.Fill.Accent.Default else Colors.Stroke.ControlStrong.Default // TODO: Gradient border
             ),
             color = fillColor,
             contentColor = when {
-                disabled -> Colors.Text.OnAccent.Disabled
+                !enabled -> Colors.Text.OnAccent.Disabled
                 pressed -> Colors.Text.OnAccent.Secondary
                 else -> Colors.Text.OnAccent.Primary
             },
-            borderInside = checked
+            outsideBorder = !checked
         ) {
             // TODO: Animation
             Box(contentAlignment = Alignment.Center) {

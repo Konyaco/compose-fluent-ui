@@ -84,7 +84,7 @@ private fun Button(
         border = BorderStroke(1.dp, buttonColor.borderBrush),
         color = fillColor,
         contentColor = contentColor,
-        borderInside = accentButton
+        outsideBorder = !accentButton
     ) {
         Row(
             Modifier

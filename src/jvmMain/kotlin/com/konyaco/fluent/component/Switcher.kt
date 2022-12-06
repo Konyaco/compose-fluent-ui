@@ -36,10 +36,11 @@ fun Switcher(
     text: String,
     onCheckStateChange: (checked: Boolean) -> Unit,
     textBefore: Boolean = false,
-    disabled: Boolean = false
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     // TODO: Draggable
-    val interactionSource = remember { MutableInteractionSource() }
+    // TODO: Extract same logic
     val hovered by interactionSource.collectIsHoveredAsState()
     val pressed by interactionSource.collectIsPressedAsState()
     val transition = updateTransition(checked)
@@ -61,12 +62,12 @@ fun Switcher(
 
         val fillColor by animateColorAsState(
             if (checked) when {
-                disabled -> Colors.Fill.Accent.Disabled
+                !enabled -> Colors.Fill.Accent.Disabled
                 pressed -> Colors.Fill.Accent.Tertiary
                 hovered -> Colors.Fill.Accent.Secondary
                 else -> Colors.Fill.Accent.Default
             } else when {
-                disabled -> Colors.Fill.ControlAlt.Disabled
+                !enabled -> Colors.Fill.ControlAlt.Disabled
                 pressed -> Colors.Fill.ControlAlt.Quarternary
                 hovered -> Colors.Fill.ControlAlt.Tertiary
                 else -> Colors.Fill.ControlAlt.Secondary
