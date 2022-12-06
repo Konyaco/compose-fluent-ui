@@ -40,8 +40,8 @@ fun Layer(
                 modifier.shadow(elevation, shape, clip = false)
                     .composed { if (border != null) Modifier.border(border, shape) else Modifier }
                     .clip(shape)
-                    .composed { if (!borderInside) Modifier.padding(1.dp) else Modifier }
-                    .background(color = color, shape = RoundedCornerShape(3.dp)), // TODO: A better way to set content corner
+                    .composed { if (!borderInside) Modifier.padding((1.2).dp) else Modifier } // TODO: A better way to implement outside border
+                    .background(color = color, shape = RoundedCornerShape(2.5.dp)), // TODO: A better way to set content corner
                 propagateMinConstraints = true
             ) {
                 content()
