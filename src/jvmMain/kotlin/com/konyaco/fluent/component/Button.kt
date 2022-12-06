@@ -67,12 +67,12 @@ private fun Button(
 
     val fillColor by animateColorAsState(
         buttonColor.fillColor,
-        animationSpec = tween(FluentDuration.MediumDuration, easing = FluentEasing.FastInvokeEasing) // TODO: Tween
+        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
     )
 
     val contentColor by animateColorAsState(
         buttonColor.contentColor,
-        animationSpec = tween(FluentDuration.MediumDuration, easing = FluentEasing.FastInvokeEasing)
+        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
     )
 
     Layer(
