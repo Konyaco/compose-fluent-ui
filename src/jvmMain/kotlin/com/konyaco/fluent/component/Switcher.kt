@@ -13,7 +13,9 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
@@ -41,10 +44,14 @@ fun Switcher(
     val pressed by interactionSource.collectIsPressedAsState()
     val transition = updateTransition(checked)
     Row(
+        modifier = Modifier.clickable(indication = null, interactionSource = interactionSource, role = Role.Button) {
+            onCheckStateChange(!checked)
+        },
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (textBefore) {
             Text(
+                modifier = Modifier.offset(y = (-1).dp),
                 text = text,
                 style = FluentTheme.typography.body,
                 color = Colors.Text.Text.Primary
@@ -60,7 +67,8 @@ fun Switcher(
                 else -> Colors.Fill.Accent.Default
             } else when {
                 disabled -> Colors.Fill.ControlAlt.Disabled
-                pressed || hovered -> Colors.Fill.ControlAlt.Tertiary
+                pressed -> Colors.Fill.ControlAlt.Quarternary
+                hovered -> Colors.Fill.ControlAlt.Tertiary
                 else -> Colors.Fill.ControlAlt.Secondary
             },
             tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
@@ -69,9 +77,6 @@ fun Switcher(
         Box(
             modifier = Modifier.size(40.dp, 20.dp)
                 .border(1.dp, if (checked) Color.Transparent else Colors.Stroke.ControlStrong.Default, CircleShape)
-                .clickable(indication = null, interactionSource = interactionSource) {
-                    onCheckStateChange(!checked)
-                }
                 .clip(CircleShape)
                 .background(fillColor)
                 .padding(horizontal = 4.dp),
@@ -124,6 +129,7 @@ fun Switcher(
         if (!textBefore) {
             Spacer(Modifier.width(12.dp))
             Text(
+                modifier = Modifier.offset(y = (-1).dp),
                 text = text,
                 style = FluentTheme.typography.body,
                 color = Colors.Text.Text.Primary
