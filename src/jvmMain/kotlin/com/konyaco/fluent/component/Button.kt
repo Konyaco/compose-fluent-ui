@@ -77,7 +77,7 @@ private fun Button(
 
     Layer(
         modifier = modifier.defaultMinSize(
-            minWidth = 80.dp,
+            minWidth = 120.dp,
             minHeight = 32.dp
         ),
         shape = RoundedCornerShape(4.dp),
@@ -93,7 +93,7 @@ private fun Button(
                     interactionSource = interaction,
                     indication = null
                 )
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
             content = content
