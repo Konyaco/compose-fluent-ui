@@ -1,6 +1,8 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Switch
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +14,7 @@ import androidx.compose.ui.window.rememberWindowState
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
+import com.konyaco.fluent.color.Colors
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.darkColors
 
@@ -34,8 +37,10 @@ fun App() {
             Layer(
                 modifier = Modifier.padding(start = 32.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
                     .fillMaxSize().padding(16.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, Colors.Stroke.Control.Default)
             ) {
+
                 var displayDialog by remember { mutableStateOf(false) }
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     var text by remember { mutableStateOf("Hello, world!") }
@@ -56,6 +61,7 @@ fun App() {
                     }) { Text("Hello, world!") }
                     Switcher(checked, text = "Dark Mode", onCheckStateChange = { checked = it })
                     CheckBox(checked) { checked = it }
+                    CheckBox(checked, label = "With Label") { checked = it }
                 }
 
                 if (displayDialog) Dialog(
