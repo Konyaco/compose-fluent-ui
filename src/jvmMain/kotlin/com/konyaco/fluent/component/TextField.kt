@@ -58,7 +58,7 @@ fun TextField(
             .composed {
                 if (enabled) {
                     val height by rememberUpdatedState(with(LocalDensity.current) {
-                        1.dp.toPx()
+                        (if (focused) 2.dp else 1.dp).toPx()
                     })
                     Modifier
                         .clip(RoundedCornerShape(4.dp)).drawWithContent {
