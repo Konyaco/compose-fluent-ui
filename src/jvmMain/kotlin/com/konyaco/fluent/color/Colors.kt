@@ -61,7 +61,7 @@ object Colors {
             /**
              * Disabled
              */
-            val Disabled = Color(0x4DFFFFFF)
+            val Disabled = Color(0x0BFFFFFF)
 
             /**
              * Rest
