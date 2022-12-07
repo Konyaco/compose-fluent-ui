@@ -118,8 +118,10 @@ fun App() {
                     }
                 }
 
-                if (displayDialog) Dialog(
+
+                Dialog(
                     title = "This is a example dialog",
+                    visible = displayDialog,
                     cancelButtonText = "Cancel",
                     confirmButtonText = "Confirm",
                     onCancel = {

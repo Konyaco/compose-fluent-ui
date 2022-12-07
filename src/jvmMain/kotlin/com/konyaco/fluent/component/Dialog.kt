@@ -1,12 +1,11 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,33 +22,37 @@ import com.konyaco.fluent.background.Mica
 @Composable
 fun Dialog(
     title: String,
+    visible: Boolean,
     cancelButtonText: String,
     onCancel: () -> Unit,
     confirmButtonText: String,
     onConfirm: () -> Unit
 ) {
-    Popup(Alignment.Center) {
+    val visibleState = remember { MutableTransitionState(false) }
+
+    LaunchedEffect(visible) {
+        visibleState.targetState = visible
+    }
+
+    if (!(!visibleState.currentState && !visibleState.targetState)) Popup {
         Box(
             Modifier.fillMaxSize()
                 .background(Color.Black.copy(0.12f))
                 .pointerInput(Unit) {},
             Alignment.Center
         ) {
-            Mica(Modifier) {
-                var visibility by remember { mutableStateOf(false) }
-                LaunchedEffect(Unit) {
-                    visibility = true
-                }
-                val tween = tween<Float>(
-                    easing = FluentEasing.FastInvokeEasing,
-                    durationMillis = FluentDuration.QuickDuration
-                )
 
-                AnimatedVisibility(
-                    visible = visibility,
-                    enter = fadeIn(tween) + scaleIn(tween),
-                    exit = fadeOut(tween) + scaleOut(tween)
-                ) {
+            val tween = tween<Float>(
+                easing = FluentEasing.FastInvokeEasing,
+                durationMillis = FluentDuration.QuickDuration
+            )
+
+            AnimatedVisibility(
+                visibleState = visibleState,
+                enter = fadeIn(tween) + scaleIn(tween, initialScale = 1.1f),
+                exit = fadeOut(tween) + scaleOut(tween, targetScale = 1.1f)
+            ) {
+                Mica(Modifier.wrapContentSize()) {
                     Layer(
                         Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
                         shape = RoundedCornerShape(8.dp),
