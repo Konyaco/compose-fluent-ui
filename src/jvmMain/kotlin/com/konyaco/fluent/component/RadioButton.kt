@@ -61,7 +61,7 @@ fun RadioButton(
             modifier = Modifier.size(20.dp),
             shape = CircleShape,
             color = fillColor,
-            outsideBorder = true,
+            outsideBorder = !selected,
             border = BorderStroke(
                 1.dp,
                 color = if (selected) when {
