@@ -9,21 +9,22 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
 import com.konyaco.fluent.color.Colors
-import com.konyaco.fluent.contentColorFor
 
 @Composable
 fun Layer(
@@ -44,16 +45,37 @@ fun Layer(
                     RoundedCornerShape((cornerRadius - 1.dp).coerceIn(0.dp, Dp.Infinity))
                 else shape
             }
-
             Box(
                 modifier.shadow(elevation, shape, clip = false)
                     .composed { if (border != null) Modifier.border(border, shape) else Modifier }
-                    .composed { if (outsideBorder) Modifier.padding(1.dp) else Modifier } // TODO: A better way to implement outside border
+                    .composed {
+                        // TODO: A better way to implement outside border
+                        val density = LocalDensity.current
+                        if (outsideBorder) Modifier.padding(calcPadding(density))
+                        else Modifier
+                    }
                     .background(color = color, shape = innerShape), // TODO: A better way to set content corner
                 propagateMinConstraints = true
             ) {
                 content()
             }
         }
+    }
+}
+
+/**
+ * This is a workaround solution to eliminate 1 pixel gap
+ * when density is not integer or `(density % 1) < 0.5`
+ */
+@Stable
+private fun calcPadding(density: Density): Dp {
+    val remainder = density.density % 1f
+
+    return when {
+        remainder == 0f -> 1.dp
+        remainder < 0.5f -> with(density) {
+            (1.dp.toPx() + 1).toDp()
+        }
+        else -> 1.dp
     }
 }
