@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -111,6 +112,9 @@ fun App() {
                                 outsideBorder = true
                             )
                         }
+                        var value by remember { mutableStateOf(TextFieldValue("")) }
+                        TextField(value, onValueChange = { value = it })
+                        TextField(value, onValueChange = { value = it }, enabled = false)
                     }
                 }
 
