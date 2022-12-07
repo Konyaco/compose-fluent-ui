@@ -88,7 +88,7 @@ fun RadioButton(
                     tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
                 )
                 Layer(
-                    modifier = Modifier.size(if (size == 0.dp) 0.dp else size + (2.4).dp), // TODO: Remove this 2.4dp if outside border is provided
+                    modifier = Modifier.size(if (size == 0.dp) 0.dp else size + 2.dp), // TODO: Remove this 2dp if outside border is provided
                     color = Colors.Text.OnAccent.Primary,
                     border = BorderStroke(
                         1.dp, Brush.verticalGradient(
@@ -97,7 +97,7 @@ fun RadioButton(
                         )
                     ),
                     shape = CircleShape,
-                    outsideBorder = false,
+                    outsideBorder = true,
                     content = {}
                 )
             }

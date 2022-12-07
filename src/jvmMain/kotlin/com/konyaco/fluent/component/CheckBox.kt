@@ -74,7 +74,8 @@ fun CheckBox(
                 pressed -> Colors.Text.OnAccent.Secondary
                 else -> Colors.Text.OnAccent.Primary
             },
-            outsideBorder = !checked
+            outsideBorder = !checked,
+            cornerRadius = 4.dp
         ) {
             // TODO: Animation
             Box(contentAlignment = Alignment.Center) {

@@ -4,7 +4,9 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +53,7 @@ fun Dialog(
                     Layer(
                         Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
                         shape = RoundedCornerShape(8.dp),
-                        elevation = 32.dp
+                        cornerRadius = 8.dp
                     ) {
                         Column(Modifier.padding(16.dp)) {
                             Text(title)

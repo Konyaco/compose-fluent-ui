@@ -84,7 +84,8 @@ private fun Button(
         border = BorderStroke(1.dp, buttonColor.borderBrush),
         color = fillColor,
         contentColor = contentColor,
-        outsideBorder = !accentButton
+        outsideBorder = !accentButton,
+        cornerRadius = 4.dp
     ) {
         Row(
             Modifier
