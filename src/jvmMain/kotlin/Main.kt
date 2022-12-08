@@ -24,17 +24,14 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         state = rememberWindowState(position = WindowPosition(Alignment.Center)),
-        title = "Fluent Compose"
+        title = "Compose Fluent"
     ) {
         App()
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App() {
-    var checked by remember { mutableStateOf(true) }
-
+private fun App() {
     FluentTheme(colors = darkColors()) {
         Mica(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).horizontalScroll(rememberScrollState())) {
             val density = LocalDensity.current
@@ -68,23 +65,34 @@ fun App() {
                         )
                         var text by remember { mutableStateOf("Hello World") }
                         Row {
-                            val onClick = { text = "Hello, Fluent Design!"}
+                            val onClick = { text = "Hello, Fluent Design!" }
                             Button(onClick) { Text(text) }
                             Spacer(Modifier.width(8.dp))
                             AccentButton(onClick) { Text(text) }
                         }
+                        var checked by remember { mutableStateOf(false) }
                         Switcher(checked, text = null, onCheckStateChange = { checked = it })
-                        Switcher(checked, text = "With Label", onCheckStateChange = { checked = it })
+
+                        var checked2 by remember { mutableStateOf(true) }
+                        Switcher(checked2, text = "With Label", onCheckStateChange = { checked2 = it })
+
+                        var checked3 by remember { mutableStateOf(true) }
                         Switcher(
-                            checked,
+                            checked3,
                             text = "Before Label",
                             textBefore = true,
-                            onCheckStateChange = { checked = it }
+                            onCheckStateChange = { checked3 = it }
                         )
-                        CheckBox(checked) { checked = it }
-                        CheckBox(checked, label = "With Label") { checked = it }
-                        RadioButton(checked, onClick = { checked = true })
-                        RadioButton(checked, onClick = { checked = true }, label = "With Label")
+
+                        var checked4 by remember { mutableStateOf(false) }
+                        CheckBox(checked4) { checked4 = it }
+
+                        var checked5 by remember { mutableStateOf(true) }
+                        CheckBox(checked5, label = "With Label") { checked5 = it }
+
+                        var selectedRadio by remember { mutableStateOf(0) }
+                        RadioButton(selectedRadio == 0, onClick = { selectedRadio = 0 })
+                        RadioButton(selectedRadio == 1, onClick = { selectedRadio = 1 }, label = "With Label")
 
                         Row {
                             Layer(
