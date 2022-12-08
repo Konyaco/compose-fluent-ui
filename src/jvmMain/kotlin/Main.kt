@@ -1,10 +1,6 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,39 +29,35 @@ fun main() = application {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-@Preview
 fun App() {
     var checked by remember { mutableStateOf(true) }
 
     FluentTheme(colors = darkColors()) {
         Mica(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).horizontalScroll(rememberScrollState())) {
+            val density = LocalDensity.current
+            var scale by remember { mutableStateOf(density.density) }
+
             Layer(
-                modifier = Modifier.padding(start = 32.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxSize().padding(16.dp),
+                modifier = Modifier.padding(start = 32.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .defaultMinSize(minWidth = 600.dp),
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(1.dp, Colors.Stroke.Control.Default),
                 cornerRadius = 8.dp
             ) {
-                var displayDialog by remember { mutableStateOf(false) }
-                val density = LocalDensity.current
-                var scale by remember { mutableStateOf(density.density) }
-
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Column(Modifier.fillMaxSize()) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Scale: %.2f".format(scale))
-                            Spacer(Modifier.width(8.dp))
-                            Button(onClick = { scale = density.density }) { Text("Reset") }
-                        }
-                        Slider(
-                            modifier = Modifier.width(200.dp),
-                            value = scale,
-                            onValueChange = { scale = it },
-                            valueRange = 1f..10f
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Scale: %.2f".format(scale))
                         Spacer(Modifier.width(8.dp))
+                        Button(onClick = { scale = density.density }) { Text("Reset") }
                     }
+                    Slider(
+                        modifier = Modifier.width(200.dp),
+                        value = scale,
+                        onValueChange = { scale = it },
+                        valueRange = 1f..10f
+                    )
                     CompositionLocalProvider(LocalDensity provides Density(scale)) {
                         var sliderValue by remember { mutableStateOf(0.5f) }
                         Slider(
@@ -86,9 +78,6 @@ fun App() {
                         Button(onClick = { text = "Hello, Desktop!" }) {
                             Text(text)
                         }
-                        AccentButton(onClick = {
-                            displayDialog = true
-                        }) { Text("Hello, world!") }
                         Switcher(checked, text = "Dark Mode", onCheckStateChange = { checked = it })
                         Switcher(
                             checked,
@@ -120,25 +109,30 @@ fun App() {
                                 outsideBorder = true
                             )
                         }
+
                         var value by remember { mutableStateOf(TextFieldValue("")) }
                         TextField(value, onValueChange = { value = it })
                         TextField(value, onValueChange = { value = it }, enabled = false)
                     }
+
+                    var displayDialog by remember { mutableStateOf(false) }
+                    AccentButton(onClick = {
+                        displayDialog = true
+                    }) { Text("Display Dialog") }
+
+                    Dialog(
+                        title = "This is a example dialog",
+                        visible = displayDialog,
+                        cancelButtonText = "Cancel",
+                        confirmButtonText = "Confirm",
+                        onCancel = {
+                            displayDialog = false
+                        },
+                        onConfirm = {
+                            displayDialog = false
+                        }
+                    )
                 }
-
-
-                Dialog(
-                    title = "This is a example dialog",
-                    visible = displayDialog,
-                    cancelButtonText = "Cancel",
-                    confirmButtonText = "Confirm",
-                    onCancel = {
-                        displayDialog = false
-                    },
-                    onConfirm = {
-                        displayDialog = false
-                    }
-                )
             }
         }
     }
