@@ -12,8 +12,8 @@ Current version: `v0.0.1-dev1`
 
 Now supported:
 
-- Coarse implementation of some basic components: Button, Toggle, Text Field, Slider
-- A fake *Mica* and *Layer*
+- Coarse implementation of some basic components: `Button`, `Switcher`, `TextField`, `Slider`...
+- A fake `Mica` and `Layer`
 - Only dark theme
 
 There are lots of hard-code and workaround in our source code, we are going to eliminate them in the future
@@ -66,3 +66,4 @@ The copyright to the icon assets (in `/resources/icon/`) belongs to Microsoft.
     - [ ] Layer (Might be delayed)
         - [ ] Real Mica
         - [ ] Acrylic
+    - [ ] Accessibility Semantics
