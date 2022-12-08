@@ -47,12 +47,12 @@ fun Layer(
             }
             Box(
                 modifier.shadow(elevation, shape, clip = false)
-                    .composed { if (border != null) Modifier.border(border, shape) else Modifier }
+                    .composed { if (border != null) border(border, shape) else this }
                     .composed {
                         // TODO: A better way to implement outside border
                         val density = LocalDensity.current
-                        if (outsideBorder) Modifier.padding(calcPadding(density))
-                        else Modifier
+                        if (outsideBorder) padding(calcPadding(density))
+                        else this
                     }
                     .background(color = color, shape = innerShape), // TODO: A better way to set content corner
                 propagateMinConstraints = true

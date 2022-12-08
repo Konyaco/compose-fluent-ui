@@ -60,16 +60,15 @@ fun TextField(
                     val height by rememberUpdatedState(with(LocalDensity.current) {
                         (if (focused) 2.dp else 1.dp).toPx()
                     })
-                    Modifier
-                        .clip(RoundedCornerShape(4.dp)).drawWithContent {
-                            drawContent()
-                            drawRect(
-                                color = if (focused) Colors.Fill.Accent.Default else Colors.Stroke.ControlStrong.Default,
-                                topLeft = Offset(0f, size.height - height),
-                                size = Size(size.width, height)
-                            )
-                        }
-                } else Modifier
+                    clip(RoundedCornerShape(4.dp)).drawWithContent {
+                        drawContent()
+                        drawRect(
+                            color = if (focused) Colors.Fill.Accent.Default else Colors.Stroke.ControlStrong.Default,
+                            topLeft = Offset(0f, size.height - height),
+                            size = Size(size.width, height)
+                        )
+                    }
+                } else this
             },
         value = value,
         onValueChange = onValueChange,

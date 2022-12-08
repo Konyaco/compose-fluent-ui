@@ -38,8 +38,8 @@ fun RadioButton(
     val pressed by interactionSource.collectIsPressedAsState()
 
     Row(modifier.composed {
-        if (label != null) Modifier.defaultMinSize(minWidth = 120.dp)
-        else Modifier
+        if (label != null) defaultMinSize(minWidth = 120.dp)
+        else this
     }.clickable(interactionSource, null) {
         onClick?.invoke()
     }) {
@@ -68,7 +68,7 @@ fun RadioButton(
                     !enabled -> Colors.Fill.Accent.Disabled
                     else -> Colors.Fill.Accent.Default
                 } else when {
-                    !enabled || pressed-> Colors.Stroke.ControlStrong.Disabled
+                    !enabled || pressed -> Colors.Stroke.ControlStrong.Disabled
                     else -> Colors.Stroke.ControlStrong.Default
                 }
             )
