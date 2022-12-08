@@ -38,6 +38,8 @@ About the API usage, just see `Main.kt`
 
 This library is under Apache-2.0 license.
 
+The copyright to the icon assets (in `/resources/icon/`) belongs to Microsoft.
+
 ## TODO
 
 - M1
