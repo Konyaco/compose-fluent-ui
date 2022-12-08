@@ -82,6 +82,10 @@ object Colors {
             val Disabled = Color(0x00FFFFFF)
         }
 
+        object ControlSolid {
+            val Default = Color(0xFF454545)
+        }
+
         object Card {
             // TODO:
         }
