@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.konyaco.fluent"
-version = "1.0-SNAPSHOT"
+version = "0.0.1-dev1"
 
 repositories {
     google()
