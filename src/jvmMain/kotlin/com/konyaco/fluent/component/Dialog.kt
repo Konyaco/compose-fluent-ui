@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ fun Dialog(
                 enter = fadeIn(tween) + scaleIn(tween, initialScale = 1.1f),
                 exit = fadeOut(tween) + scaleOut(tween, targetScale = 1.1f)
             ) {
-                Mica(Modifier.wrapContentSize()) {
+                Mica(Modifier.wrapContentSize().clip(RoundedCornerShape(8.dp))) {
                     Layer(
                         Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
                         shape = RoundedCornerShape(8.dp),
