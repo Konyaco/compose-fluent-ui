@@ -33,8 +33,8 @@ import com.konyaco.fluent.color.Colors
 @Composable
 fun Switcher(
     checked: Boolean,
-    text: String,
     onCheckStateChange: (checked: Boolean) -> Unit,
+    text: String? = null,
     textBefore: Boolean = false,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
@@ -51,13 +51,15 @@ fun Switcher(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (textBefore) {
-            Text(
-                modifier = Modifier.offset(y = (-1).dp),
-                text = text,
-                style = FluentTheme.typography.body,
-                color = Colors.Text.Text.Primary
-            )
-            Spacer(Modifier.width(12.dp))
+            text?.let {
+                Text(
+                    modifier = Modifier.offset(y = (-1).dp),
+                    text = it,
+                    style = FluentTheme.typography.body,
+                    color = Colors.Text.Text.Primary
+                )
+                Spacer(Modifier.width(12.dp))
+            }
         }
 
         val fillColor by animateColorAsState(
@@ -128,13 +130,15 @@ fun Switcher(
         }
 
         if (!textBefore) {
-            Spacer(Modifier.width(12.dp))
-            Text(
-                modifier = Modifier.offset(y = (-1).dp),
-                text = text,
-                style = FluentTheme.typography.body,
-                color = Colors.Text.Text.Primary
-            )
+            text?.let {
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    modifier = Modifier.offset(y = (-1).dp),
+                    text = it,
+                    style = FluentTheme.typography.body,
+                    color = Colors.Text.Text.Primary
+                )
+            }
         }
     }
 }
