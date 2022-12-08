@@ -23,7 +23,8 @@ import com.konyaco.fluent.darkColors
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        state = rememberWindowState(position = WindowPosition(Alignment.Center))
+        state = rememberWindowState(position = WindowPosition(Alignment.Center)),
+        title = "Fluent Compose"
     ) {
         App()
     }
@@ -65,25 +66,21 @@ fun App() {
                             value = sliderValue,
                             onValueChange = { sliderValue = it },
                         )
-                        var text by remember { mutableStateOf("Hello, world!") }
+                        var text by remember { mutableStateOf("Hello World") }
                         Row {
-                            Button(onClick = {}) {
-                                Text("Hello, world!")
-                            }
-                            Spacer(Modifier.width(2.dp))
-                            AccentButton(onClick = {}) {
-                                Text("Hello, world!")
-                            }
+                            val onClick = { text = "Hello, Fluent Design!"}
+                            Button(onClick) { Text(text) }
+                            Spacer(Modifier.width(8.dp))
+                            AccentButton(onClick) { Text(text) }
                         }
-                        Button(onClick = { text = "Hello, Desktop!" }) {
-                            Text(text)
-                        }
-                        Switcher(checked, text = "Dark Mode", onCheckStateChange = { checked = it })
+                        Switcher(checked, text = null, onCheckStateChange = { checked = it })
+                        Switcher(checked, text = "With Label", onCheckStateChange = { checked = it })
                         Switcher(
                             checked,
                             text = "Before Label",
                             textBefore = true,
-                            onCheckStateChange = { checked = it })
+                            onCheckStateChange = { checked = it }
+                        )
                         CheckBox(checked) { checked = it }
                         CheckBox(checked, label = "With Label") { checked = it }
                         RadioButton(checked, onClick = { checked = true })
@@ -94,8 +91,8 @@ fun App() {
                                 modifier = Modifier.size(32.dp),
                                 shape = RoundedCornerShape(4.dp),
                                 cornerRadius = 4.dp,
-                                color = Color.Red,
-                                border = BorderStroke(1.dp, Color.Green.copy(0.2f)),
+                                color = Colors.Fill.Accent.Default,
+                                border = BorderStroke(1.dp, Colors.Stroke.Control.Default),
                                 content = {},
                                 outsideBorder = false
                             )
@@ -103,8 +100,8 @@ fun App() {
                                 modifier = Modifier.size(32.dp),
                                 shape = RoundedCornerShape(4.dp),
                                 cornerRadius = 4.dp,
-                                color = Color.Red,
-                                border = BorderStroke(1.dp, Color.Green.copy(0.2f)),
+                                color = Colors.Fill.Accent.Default,
+                                border = BorderStroke(1.dp, Colors.Stroke.Control.Default),
                                 content = {},
                                 outsideBorder = true
                             )
