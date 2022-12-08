@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -87,7 +86,7 @@ fun TextField(
         interactionSource = interactionSource,
         decorationBox = { innerTextField ->
             Layer(
-                modifier = Modifier.fillMaxSize().hoverable(interactionSource),
+                modifier = Modifier.hoverable(interactionSource),
                 shape = RoundedCornerShape(4.dp),
                 border = BorderStroke(1.dp, if (focused) borderBrushFocus else borderBrush),
                 color = when {
@@ -97,10 +96,8 @@ fun TextField(
                     else -> Colors.Fill.Control.Default
                 },
             ) {
-                Box(Modifier.fillMaxSize()) {
-                    Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 3.dp)) {
-                        innerTextField()
-                    }
+                Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 3.dp)) {
+                    innerTextField()
                 }
             }
         }
