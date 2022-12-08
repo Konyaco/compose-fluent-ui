@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Slider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,18 +52,27 @@ fun App() {
                 var scale by remember { mutableStateOf(density.density) }
 
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Row(Modifier.fillMaxSize()) {
+                    Column(Modifier.fillMaxSize()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Scale: %.2f".format(scale))
+                            Spacer(Modifier.width(8.dp))
+                            Button(onClick = { scale = density.density }) { Text("Reset") }
+                        }
                         Slider(
                             modifier = Modifier.width(200.dp),
                             value = scale,
                             onValueChange = { scale = it },
-                            valueRange = 1f..10f,
-                            steps = 9
+                            valueRange = 1f..10f
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text("Scale: $scale")
                     }
                     CompositionLocalProvider(LocalDensity provides Density(scale)) {
+                        var sliderValue by remember { mutableStateOf(0.5f) }
+                        Slider(
+                            modifier = Modifier.width(200.dp),
+                            value = sliderValue,
+                            onValueChange = { sliderValue = it },
+                        )
                         var text by remember { mutableStateOf("Hello, world!") }
                         Row {
                             Button(onClick = {}) {
