@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,14 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.color.Colors
 
 @Composable
 fun CheckBox(
@@ -48,17 +48,18 @@ fun CheckBox(
         ) { onCheckStateChange(!checked) },
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val colors = FluentTheme.colors
         val fillColor by animateColorAsState(
             if (checked) when {
-                !enabled -> Colors.Fill.Accent.Disabled
-                pressed -> Colors.Fill.Accent.Tertiary
-                hovered -> Colors.Fill.Accent.Secondary
-                else -> Colors.Fill.Accent.Default
+                !enabled -> colors.fillAccent.disabled
+                pressed -> colors.fillAccent.tertiary
+                hovered -> colors.fillAccent.secondary
+                else -> colors.fillAccent.default
             } else when {
-                !enabled -> Colors.Fill.ControlAlt.Disabled
-                pressed -> Colors.Fill.ControlAlt.Quarternary
-                hovered -> Colors.Fill.ControlAlt.Tertiary
-                else -> Colors.Fill.ControlAlt.Secondary
+                !enabled -> colors.controlAlt.disabled
+                pressed -> colors.controlAlt.quaternary
+                hovered -> colors.controlAlt.tertiary
+                else -> colors.controlAlt.secondary
             },
             tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
         )
@@ -66,13 +67,19 @@ fun CheckBox(
             modifier = Modifier.size(20.dp),
             shape = RoundedCornerShape(4.dp),
             border = BorderStroke(
-                1.dp, if (checked) Colors.Fill.Accent.Default else Colors.Stroke.ControlStrong.Default // TODO: Gradient border
+                1.dp, if (checked) when {
+                    !enabled -> colors.fillAccent.disabled
+                    else -> Color.Transparent
+                } else when {
+                    !enabled -> colors.controlStrong.disabled
+                    else -> colors.controlStrong.default
+                }
             ),
             color = fillColor,
             contentColor = when {
-                !enabled -> Colors.Text.OnAccent.Disabled
-                pressed -> Colors.Text.OnAccent.Secondary
-                else -> Colors.Text.OnAccent.Primary
+                !enabled -> colors.text.onAccent.disabled
+                pressed -> colors.text.onAccent.secondary
+                else -> colors.text.onAccent.primary
             },
             outsideBorder = !checked,
             cornerRadius = 4.dp
@@ -92,7 +99,7 @@ fun CheckBox(
             Text(
                 modifier = Modifier.offset(y = (-1).dp),
                 text = it,
-                style = FluentTheme.typography.body.copy(color = Colors.Text.Text.Primary)
+                style = FluentTheme.typography.body.copy(color = colors.text.text.primary)
             )
         }
     }

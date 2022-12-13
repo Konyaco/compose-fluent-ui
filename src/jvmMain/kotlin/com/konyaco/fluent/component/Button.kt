@@ -9,40 +9,56 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.color.Colors
-import com.konyaco.fluent.color.Colors.Fill.Control
+
+@Immutable
+data class ButtonColors(
+    val default: ButtonColor,
+    val hovered: ButtonColor,
+    val pressed: ButtonColor,
+    val disabled: ButtonColor
+)
+
+@Immutable
+data class ButtonColor(
+    val fillColor: Color,
+    val contentColor: Color,
+    val borderBrush: Brush
+)
+
 
 @Composable
 fun Button(
     onClick: () -> Unit,
-    disabled: Boolean = false,
     modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = buttonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, DarkButtonColors, false, onClick, content)
+    Button(modifier, interaction, disabled, buttonColors, false, onClick, content)
 }
 
 @Composable
 fun AccentButton(
     onClick: () -> Unit,
-    disabled: Boolean = false,
     modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = accentButtonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, DarkAccentButtonColors, true, onClick, content)
+    Button(modifier, interaction, disabled, buttonColors, true, onClick, content)
 }
 
 @Composable
@@ -102,73 +118,61 @@ private fun Button(
     }
 }
 
-private val DefaultStroke = Brush.verticalGradient(
-    0f to Colors.Stroke.Control.Secondary,
-    0.0957f to Colors.Stroke.Control.Default,
-    1f to Colors.Stroke.Control.Default
-)
+@Composable
+private fun buttonColors(): ButtonColors {
+    val colors = FluentTheme.colors
 
-private val DarkButtonColors = ButtonColors(
-    default = ButtonColor(
-        Control.Default,
-        Colors.Text.Text.Primary,
-        DefaultStroke
-    ),
-    hovered = ButtonColor(
-        Control.Secondary,
-        Colors.Text.Text.Primary,
-        DefaultStroke
-    ),
-    pressed = ButtonColor(
-        Control.Tertiary,
-        Colors.Text.Text.Secondary,
-        DefaultStroke
-    ),
-    disabled = ButtonColor(
-        Control.Disabled,
-        Colors.Text.Text.Disabled,
-        DefaultStroke
-    )
-)
+    return derivedStateOf {
+        ButtonColors(
+            default = ButtonColor(
+                colors.control.default,
+                colors.text.text.primary,
+                colors.borders.control
+            ),
+            hovered = ButtonColor(
+                colors.control.secondary,
+                colors.text.text.primary,
+                colors.borders.control
+            ),
+            pressed = ButtonColor(
+                colors.control.tertiary,
+                colors.text.text.secondary,
+                SolidColor(colors.stroke.control.default)
+            ),
+            disabled = ButtonColor(
+                colors.control.disabled,
+                colors.text.text.disabled,
+                SolidColor(colors.stroke.control.default)
+            )
+        )
+    }.value
+}
 
-private val AccentStroke = Brush.verticalGradient(
-    0f to Colors.Stroke.Control.OnAccentDefault,
-    0.9067f to Colors.Stroke.Control.OnAccentDefault,
-    1f to Colors.Stroke.Control.OnAccentSecondary
-)
-
-private val DarkAccentButtonColors = ButtonColors(
-    default = ButtonColor(
-        Colors.Fill.Accent.Default,
-        Colors.Text.OnAccent.Primary,
-        AccentStroke
-    ),
-    hovered = ButtonColor(
-        Colors.Fill.Accent.Secondary,
-        Colors.Text.OnAccent.Primary,
-        AccentStroke
-    ),
-    pressed = ButtonColor(
-        Colors.Fill.Accent.Tertiary,
-        Colors.Text.OnAccent.Secondary,
-        AccentStroke
-    ),
-    disabled = ButtonColor(
-        Colors.Fill.Accent.Disabled,
-        Colors.Text.OnAccent.Disabled,
-        AccentStroke
-    )
-)
-
-data class ButtonColors(
-    val default: ButtonColor,
-    val hovered: ButtonColor,
-    val pressed: ButtonColor,
-    val disabled: ButtonColor
-)
-
-data class ButtonColor(
-    val fillColor: Color,
-    val contentColor: Color,
-    val borderBrush: Brush
-)
+@Composable
+private fun accentButtonColors(): ButtonColors {
+    val colors = FluentTheme.colors
+    return derivedStateOf {
+        ButtonColors(
+            default = ButtonColor(
+                colors.fillAccent.default,
+                colors.text.onAccent.primary,
+                colors.borders.accentControl
+            ),
+            hovered = ButtonColor(
+                colors.fillAccent.secondary,
+                colors.text.onAccent.primary,
+                colors.borders.accentControl
+            ),
+            pressed = ButtonColor(
+                colors.fillAccent.tertiary,
+                colors.text.onAccent.secondary,
+                SolidColor(colors.stroke.control.onAccentDefault)
+            ),
+            disabled = ButtonColor(
+                colors.fillAccent.disabled,
+                colors.text.onAccent.disabled,
+                SolidColor(Color.Transparent) // Disabled accent button does not have border
+            )
+        )
+    }.value
+}

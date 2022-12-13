@@ -14,11 +14,13 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -28,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.color.Colors
 
 @Composable
 fun Switcher(
@@ -55,31 +56,40 @@ fun Switcher(
                 Text(
                     modifier = Modifier.offset(y = (-1).dp),
                     text = it,
-                    style = FluentTheme.typography.body,
-                    color = Colors.Text.Text.Primary
+                    color = if (enabled) FluentTheme.colors.text.text.primary
+                    else FluentTheme.colors.text.text.disabled
                 )
                 Spacer(Modifier.width(12.dp))
             }
         }
 
+        val colors = FluentTheme.colors
         val fillColor by animateColorAsState(
             if (checked) when {
-                !enabled -> Colors.Fill.Accent.Disabled
-                pressed -> Colors.Fill.Accent.Tertiary
-                hovered -> Colors.Fill.Accent.Secondary
-                else -> Colors.Fill.Accent.Default
+                !enabled -> colors.fillAccent.disabled
+                pressed -> colors.fillAccent.tertiary
+                hovered -> colors.fillAccent.secondary
+                else -> colors.fillAccent.default
             } else when {
-                !enabled -> Colors.Fill.ControlAlt.Disabled
-                pressed -> Colors.Fill.ControlAlt.Quarternary
-                hovered -> Colors.Fill.ControlAlt.Tertiary
-                else -> Colors.Fill.ControlAlt.Secondary
+                !enabled -> colors.controlAlt.disabled
+                pressed -> colors.controlAlt.quaternary
+                hovered -> colors.controlAlt.tertiary
+                else -> colors.controlAlt.secondary
             },
             tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
         )
 
         Box(
             modifier = Modifier.size(40.dp, 20.dp)
-                .border(1.dp, if (checked) Color.Transparent else Colors.Stroke.ControlStrong.Default, CircleShape)
+                .border(
+                    1.dp, if (checked) when {
+                        !enabled -> FluentTheme.colors.fillAccent.disabled
+                        else -> Color.Transparent
+                    } else when {
+                        !enabled -> FluentTheme.colors.controlStrong.disabled
+                        else -> FluentTheme.colors.controlStrong.default
+                    }, CircleShape
+                )
                 .clip(CircleShape)
                 .background(fillColor)
                 .padding(horizontal = 4.dp),
@@ -112,7 +122,7 @@ fun Switcher(
                 }
             )
 
-            val offsetX = with(density) { offset.toPx() }
+            val offsetX by derivedStateOf { with(density) { offset.toPx() } }
 
             // Control
             Box(
@@ -123,8 +133,14 @@ fun Switcher(
                     }
                     .clip(CircleShape)
                     .background(
-                        if (checked) Colors.Text.OnAccent.Primary
-                        else Colors.Text.Text.Secondary
+                        if (checked) when {
+                            !enabled -> FluentTheme.colors.text.onAccent.disabled
+                            else -> FluentTheme.colors.text.onAccent.primary
+                        }
+                        else when {
+                            !enabled -> FluentTheme.colors.text.text.disabled
+                            else -> FluentTheme.colors.text.text.secondary
+                        }
                     )
             )
         }
@@ -136,9 +152,23 @@ fun Switcher(
                     modifier = Modifier.offset(y = (-1).dp),
                     text = it,
                     style = FluentTheme.typography.body,
-                    color = Colors.Text.Text.Primary
+                    color = if (enabled) FluentTheme.colors.text.text.primary
+                    else FluentTheme.colors.text.text.disabled
                 )
             }
         }
     }
 }
+
+data class SwitcherColors(
+    val default: SwitcherColor,
+    val hovered: SwitcherColor,
+    val pressed: SwitcherColor,
+    val disabled: SwitcherColor
+)
+
+data class SwitcherColor(
+    val fillColor: Color,
+    val textColor: Color,
+    val borderBrush: Brush
+)

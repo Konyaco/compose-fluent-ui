@@ -28,12 +28,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.color.Colors
-
-private val borderBrush = Colors.Stroke.Control.Default
-private val borderBrushFocus = Colors.Stroke.Control.Default
 
 @Composable
 fun TextField(
@@ -59,10 +56,14 @@ fun TextField(
                     val height by rememberUpdatedState(with(LocalDensity.current) {
                         (if (focused) 2.dp else 1.dp).toPx()
                     })
+                    val fillColor by rememberUpdatedState(
+                        if (focused) FluentTheme.colors.fillAccent.default
+                        else FluentTheme.colors.stroke.controlStrong.default
+                    )
                     clip(RoundedCornerShape(4.dp)).drawWithContent {
                         drawContent()
                         drawRect(
-                            color = if (focused) Colors.Fill.Accent.Default else Colors.Stroke.ControlStrong.Default,
+                            color = fillColor,
                             topLeft = Offset(0f, size.height - height),
                             size = Size(size.width, height)
                         )
@@ -72,8 +73,8 @@ fun TextField(
         value = value,
         onValueChange = onValueChange,
         textStyle = LocalTextStyle.current.copy(
-            color = if (enabled) Colors.Text.Text.Secondary
-            else Colors.Text.Text.Disabled
+            color = if (enabled) FluentTheme.colors.text.text.primary
+            else FluentTheme.colors.text.text.disabled
         ),
         enabled = enabled,
         readOnly = readOnly,
@@ -81,22 +82,22 @@ fun TextField(
         visualTransformation = visualTransformation,
         maxLines = maxLines,
         keyboardActions = keyboardActions,
-        cursorBrush = SolidColor(Colors.Text.Text.Secondary),
+        cursorBrush = SolidColor(FluentTheme.colors.text.text.primary),
         keyboardOptions = keyboardOptions,
         interactionSource = interactionSource,
         decorationBox = { innerTextField ->
             Layer(
                 modifier = Modifier.hoverable(interactionSource),
                 shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(1.dp, if (focused) borderBrushFocus else borderBrush),
+                border = BorderStroke(1.dp, if (focused || pressed) SolidColor(FluentTheme.colors.stroke.control.default) else FluentTheme.colors.borders.textControl),
                 color = when {
-                    !enabled -> Colors.Fill.Control.Disabled
-                    pressed || focused -> Colors.Fill.Control.InputActive
-                    hovered -> Colors.Fill.Control.Secondary
-                    else -> Colors.Fill.Control.Default
+                    !enabled -> FluentTheme.colors.control.disabled
+                    pressed || focused -> FluentTheme.colors.control.inputActive
+                    hovered -> FluentTheme.colors.control.secondary
+                    else -> FluentTheme.colors.control.default
                 },
             ) {
-                Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 3.dp)) {
+                Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 3.dp), propagateMinConstraints = true) {
                     innerTextField()
                 }
             }

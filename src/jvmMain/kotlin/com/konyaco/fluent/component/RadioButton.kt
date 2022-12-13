@@ -16,13 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.color.Colors
 
 @Composable
 fun RadioButton(
@@ -45,15 +43,15 @@ fun RadioButton(
     }) {
         val fillColor by animateColorAsState(
             if (selected) when {
-                !enabled -> Colors.Fill.Accent.Disabled
-                pressed -> Colors.Fill.Accent.Tertiary
-                hovered -> Colors.Fill.Accent.Secondary
-                else -> Colors.Fill.Accent.Default
+                !enabled -> FluentTheme.colors.fillAccent.disabled
+                pressed -> FluentTheme.colors.fillAccent.tertiary
+                hovered -> FluentTheme.colors.fillAccent.secondary
+                else -> FluentTheme.colors.fillAccent.default
             } else when {
-                !enabled -> Colors.Fill.ControlAlt.Disabled
-                pressed -> Colors.Fill.ControlAlt.Quarternary
-                hovered -> Colors.Fill.ControlAlt.Tertiary
-                else -> Colors.Fill.ControlAlt.Secondary
+                !enabled -> FluentTheme.colors.controlAlt.disabled
+                pressed -> FluentTheme.colors.controlAlt.quaternary
+                hovered -> FluentTheme.colors.controlAlt.tertiary
+                else -> FluentTheme.colors.controlAlt.secondary
             },
             tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
         )
@@ -61,17 +59,18 @@ fun RadioButton(
             modifier = Modifier.size(20.dp),
             shape = CircleShape,
             color = fillColor,
-            outsideBorder = !selected,
+            outsideBorder = true,
             border = BorderStroke(
                 1.dp,
                 color = if (selected) when {
-                    !enabled -> Colors.Fill.Accent.Disabled
-                    else -> Colors.Fill.Accent.Default
+                    !enabled -> FluentTheme.colors.fillAccent.disabled
+                    else -> FluentTheme.colors.fillAccent.default
                 } else when {
-                    !enabled || pressed -> Colors.Stroke.ControlStrong.Disabled
-                    else -> Colors.Stroke.ControlStrong.Default
+                    !enabled || pressed -> FluentTheme.colors.stroke.controlStrong.disabled
+                    else -> FluentTheme.colors.stroke.controlStrong.default
                 }
-            )
+            ),
+            circular = true
         ) {
             Box(contentAlignment = Alignment.Center) {
                 // Bullet, Only displays when selected, or is pressed
@@ -87,15 +86,11 @@ fun RadioButton(
                     },
                     tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
                 )
+                // Inner
                 Layer(
                     modifier = Modifier.size(if (size == 0.dp) 0.dp else size + 2.dp), // TODO: Remove this 2dp if outside border is provided
-                    color = Colors.Text.OnAccent.Primary,
-                    border = BorderStroke(
-                        1.dp, Brush.verticalGradient(
-                            0f to Colors.Stroke.Control.Secondary,
-                            0.5f to Colors.Stroke.Control.Default
-                        )
-                    ),
+                    color = FluentTheme.colors.text.onAccent.primary,
+                    border = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
                     shape = CircleShape,
                     outsideBorder = true,
                     content = {}
@@ -108,8 +103,8 @@ fun RadioButton(
                 modifier = Modifier.offset(y = (-1).dp),
                 text = it,
                 style = FluentTheme.typography.body.copy(
-                    color = if (enabled) Colors.Text.Text.Primary
-                    else Colors.Text.Text.Disabled
+                    color = if (enabled) FluentTheme.colors.text.text.primary
+                    else FluentTheme.colors.text.text.disabled
                 )
             )
         }
