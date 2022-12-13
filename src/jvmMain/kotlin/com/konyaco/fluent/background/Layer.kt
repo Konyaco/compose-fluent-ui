@@ -30,8 +30,8 @@ import com.konyaco.fluent.color.Colors
 fun Layer(
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
-    color: Color = Colors.Background.Layer.Default,
-    contentColor: Color = Colors.Text.Text.Primary,
+    color: Color = FluentTheme.colors.background.layer.default,
+    contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = null,
     outsideBorder: Boolean = false,
     cornerRadius: Dp = 0.dp,

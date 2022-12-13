@@ -1,10 +1,12 @@
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Density
@@ -16,9 +18,9 @@ import androidx.compose.ui.window.rememberWindowState
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
-import com.konyaco.fluent.color.Colors
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.darkColors
+import com.konyaco.fluent.lightColors
 
 fun main() = application {
     Window(
@@ -32,7 +34,9 @@ fun main() = application {
 
 @Composable
 private fun App() {
-    FluentTheme(colors = darkColors()) {
+    var isDark by remember { mutableStateOf(false) }
+
+    FluentTheme(colors = if(isDark) darkColors() else lightColors()) {
         Mica(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).horizontalScroll(rememberScrollState())) {
             val density = LocalDensity.current
             var scale by remember { mutableStateOf(density.density) }
@@ -41,7 +45,7 @@ private fun App() {
                 modifier = Modifier.padding(start = 32.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
                     .defaultMinSize(minWidth = 600.dp),
                 shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, Colors.Stroke.Control.Default),
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
                 cornerRadius = 8.dp
             ) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -49,6 +53,7 @@ private fun App() {
                         Text("Scale: %.2f".format(scale))
                         Spacer(Modifier.width(8.dp))
                         Button(onClick = { scale = density.density }) { Text("Reset") }
+                        Switcher(isDark, text = "Dark Mode", onCheckStateChange = { isDark = it })
                     }
                     Slider(
                         modifier = Modifier.width(200.dp),
@@ -99,8 +104,8 @@ private fun App() {
                                 modifier = Modifier.size(32.dp),
                                 shape = RoundedCornerShape(4.dp),
                                 cornerRadius = 4.dp,
-                                color = Colors.Fill.Accent.Default,
-                                border = BorderStroke(1.dp, Colors.Stroke.Control.Default),
+                                color = FluentTheme.colors.fillAccent.default,
+                                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
                                 content = {},
                                 outsideBorder = false
                             )
@@ -108,8 +113,8 @@ private fun App() {
                                 modifier = Modifier.size(32.dp),
                                 shape = RoundedCornerShape(4.dp),
                                 cornerRadius = 4.dp,
-                                color = Colors.Fill.Accent.Default,
-                                border = BorderStroke(1.dp, Colors.Stroke.Control.Default),
+                                color = FluentTheme.colors.fillAccent.default,
+                                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
                                 content = {},
                                 outsideBorder = true
                             )
