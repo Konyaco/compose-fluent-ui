@@ -1,5 +1,8 @@
 # Compose Fluent
 
+[![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](https://github.com/Konyaco/compose-fluent-ui/blob/master/LICENSE)
+![Version](https://img.shields.io/badge/version-v0.0.1--dev1-yellow)
+
 **Fluent Design** UI library for **Jetbrains Compose**
 
 ![Example](assets/screenshot.png)
