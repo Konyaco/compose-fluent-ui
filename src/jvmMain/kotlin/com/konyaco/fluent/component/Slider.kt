@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.color.Colors
 
 @Composable
 fun Slider(
@@ -55,7 +55,6 @@ private fun Slider(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     // TODO: Refactor this component
-    // TODO: Click track to change value
     val onValueChangeState by rememberUpdatedState(onProgressChange)
     BoxWithConstraints(
         modifier = modifier.defaultMinSize(minWidth = 120.dp, minHeight = 32.dp),
@@ -75,7 +74,7 @@ private fun Slider(
             draggable(
                 state = rememberDraggableState {
                     offset = Offset(x = offset.x + it, y = offset.y)
-                    onProgressChange(calcProgress(offset))
+                    onValueChangeState(calcProgress(offset))
                 },
                 interactionSource = interactionSource,
                 onDragStarted = {
@@ -121,8 +120,11 @@ private fun Rail() {
     // Rail
     Layer(modifier = Modifier.requiredHeight(4.dp).fillMaxWidth(),
         shape = CircleShape,
-        color = Colors.Fill.ControlStrong.Default,
-        border = BorderStroke(1.dp, Colors.Stroke.ControlStrong.Default),
+        color = FluentTheme.colors.controlStrong.default,
+        border = BorderStroke(
+            1.dp, if (FluentTheme.colors.darkMode) FluentTheme.colors.stroke.controlStrong.default
+            else FluentTheme.colors.controlStrong.default
+        ),
         outsideBorder = true,
         content = {}
     )
@@ -138,7 +140,7 @@ private fun Track(
     Box(
         Modifier.width(width)
             .requiredHeight(4.dp)
-            .background(Colors.Fill.Accent.Default, CircleShape)
+            .background(FluentTheme.colors.fillAccent.default, CircleShape)
     )
 }
 
@@ -158,11 +160,12 @@ private fun Thumb(
             .size(ThumbSizeWithBorder)
             .clickable(interactionSource, null, onClick = {}),
         shape = CircleShape,
-        border = BorderStroke(1.dp, ThumbBorderBrush),
-        color = Colors.Fill.ControlSolid.Default,
-        outsideBorder = false
+        border = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
+        color = FluentTheme.colors.controlSolid.default,
+        outsideBorder = true
     ) {
         Box(contentAlignment = Alignment.Center) {
+            // Inner Thumb
             Box(
                 Modifier.size(
                     animateDpAsState(
@@ -173,12 +176,11 @@ private fun Thumb(
                         },
                         tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
                     ).value
-                ).background(Colors.Fill.Accent.Default, CircleShape)
+                ).background(FluentTheme.colors.fillAccent.default, CircleShape)
             )
         }
     }
 }
-
 
 private val ThumbSize = 20.dp
 private val ThumbSizeWithBorder = ThumbSize + 2.dp
@@ -186,6 +188,3 @@ private val ThumbRadiusWithBorder = ThumbSizeWithBorder / 2
 private val InnerThumbSize = 12.dp
 private val InnerThumbHoverSize = 14.dp
 private val InnerThumbPressedSize = 10.dp
-private val ThumbBorderBrush = Brush.verticalGradient(
-    0f to Colors.Stroke.Control.Secondary, 0.5f to Colors.Stroke.Control.Default
-)

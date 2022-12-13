@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
-import com.konyaco.fluent.color.Colors
 
 @Composable
 fun Layer(
@@ -36,6 +35,7 @@ fun Layer(
     outsideBorder: Boolean = false,
     cornerRadius: Dp = 0.dp,
     elevation: Dp = 0.dp,
+    circular: Boolean = false, // If layer is circular, use this to remove 1px gap
     content: @Composable () -> Unit
 ) {
     ProvideTextStyle(FluentTheme.typography.body.copy(color = contentColor)) {
@@ -51,7 +51,8 @@ fun Layer(
                     .composed {
                         // TODO: A better way to implement outside border
                         val density = LocalDensity.current
-                        if (outsideBorder) padding(calcPadding(density))
+                        if (outsideBorder && circular) padding(1.dp)
+                        else if (outsideBorder) padding(calcPadding(density))
                         else this
                     }
                     .background(color = color, shape = innerShape), // TODO: A better way to set content corner
@@ -76,6 +77,7 @@ private fun calcPadding(density: Density): Dp {
         remainder < 0.5f -> with(density) {
             (1.dp.toPx() + 1).toDp()
         }
+
         else -> 1.dp
     }
 }

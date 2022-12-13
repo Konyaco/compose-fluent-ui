@@ -1,11 +1,9 @@
 package com.konyaco.fluent
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
-import androidx.compose.ui.unit.dp
 
 @Stable
 class Colors(
@@ -32,7 +30,7 @@ class Colors(
         internal set
     var stroke by mutableStateOf(generateStroke(shades, darkMode))
         internal set
-    var borders by mutableStateOf(generateBorders(stroke, darkMode))
+    var borders by mutableStateOf(generateBorders(fillAccent, stroke, darkMode))
         internal set
 }
 
@@ -315,12 +313,12 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
             forStrongFillWhenOnImage = Color(0x59FFFFFF)
         ),
         controlStrong = Stroke.ControlStrong(
-            default = Color(0x0F000000),
-            disabled = Color(0xFFEBEBEB)
+            default = Color(0x9C000000),
+            disabled = Color(0x37000000)
         )
     )
 
-private fun generateBorders(stroke: Stroke, darkMode: Boolean): Borders =
+private fun generateBorders(fillAccent: FillAccentColors, stroke: Stroke, darkMode: Boolean): Borders =
     if (darkMode) Borders(
         control = Brush.verticalGradient(
             0.0957f to stroke.control.default,
@@ -335,12 +333,12 @@ private fun generateBorders(stroke: Stroke, darkMode: Boolean): Borders =
             0.9545f to stroke.control.secondary
         ),
         textControl = Brush.verticalGradient(
-            // TODO:
-            0f to Color.Red
+            1f to stroke.control.default,
+            1f to stroke.controlStrong.default
         ),
         textControlFocused = Brush.verticalGradient(
-            // TODO:
-            0f to Color.Red
+            0.9395f to stroke.control.default,
+            0.9414f to fillAccent.default
         )
     ) else Borders(
         control = Brush.verticalGradient(
@@ -355,6 +353,12 @@ private fun generateBorders(stroke: Stroke, darkMode: Boolean): Borders =
             0f to stroke.control.default,
             0.5f to stroke.control.secondary
         ),
-        textControl = Brush.verticalGradient(0f to Color.Red),
-        textControlFocused = Brush.verticalGradient(0f to Color.Red),
+        textControl = Brush.verticalGradient(
+            1f to stroke.control.default,
+            1f to stroke.controlStrong.default
+        ),
+        textControlFocused = Brush.verticalGradient(
+            0.9395f to stroke.control.default,
+            0.9414f to fillAccent.default
+        )
     )

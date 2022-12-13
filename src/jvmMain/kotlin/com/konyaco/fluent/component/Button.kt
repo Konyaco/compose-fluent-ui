@@ -9,10 +9,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -125,54 +122,57 @@ private fun Button(
 private fun buttonColors(): ButtonColors {
     val colors = FluentTheme.colors
 
-    return ButtonColors(
-        default = ButtonColor(
-            colors.control.default,
-            colors.text.text.primary,
-            colors.borders.control
-        ),
-        hovered = ButtonColor(
-            colors.control.secondary,
-            colors.text.text.primary,
-            colors.borders.control
-        ),
-        pressed = ButtonColor(
-            colors.control.tertiary,
-            colors.text.text.secondary,
-            SolidColor(colors.stroke.control.default)
-        ),
-        disabled = ButtonColor(
-            colors.control.disabled,
-            colors.text.text.disabled,
-            SolidColor(colors.stroke.control.default)
+    return derivedStateOf {
+        ButtonColors(
+            default = ButtonColor(
+                colors.control.default,
+                colors.text.text.primary,
+                colors.borders.control
+            ),
+            hovered = ButtonColor(
+                colors.control.secondary,
+                colors.text.text.primary,
+                colors.borders.control
+            ),
+            pressed = ButtonColor(
+                colors.control.tertiary,
+                colors.text.text.secondary,
+                SolidColor(colors.stroke.control.default)
+            ),
+            disabled = ButtonColor(
+                colors.control.disabled,
+                colors.text.text.disabled,
+                SolidColor(colors.stroke.control.default)
+            )
         )
-    )
+    }.value
 }
 
 @Composable
 private fun accentButtonColors(): ButtonColors {
     val colors = FluentTheme.colors
-
-    return ButtonColors(
-        default = ButtonColor(
-            colors.fillAccent.default,
-            colors.text.onAccent.primary,
-            colors.borders.accentControl
-        ),
-        hovered = ButtonColor(
-            colors.fillAccent.secondary,
-            colors.text.onAccent.primary,
-            colors.borders.accentControl
-        ),
-        pressed = ButtonColor(
-            colors.fillAccent.tertiary,
-            colors.text.onAccent.secondary,
-            SolidColor(colors.stroke.control.onAccentDefault)
-        ),
-        disabled = ButtonColor(
-            colors.fillAccent.disabled,
-            colors.text.onAccent.disabled,
-            SolidColor(Color.Transparent) // Disabled accent button does not have border
+    return derivedStateOf {
+        ButtonColors(
+            default = ButtonColor(
+                colors.fillAccent.default,
+                colors.text.onAccent.primary,
+                colors.borders.accentControl
+            ),
+            hovered = ButtonColor(
+                colors.fillAccent.secondary,
+                colors.text.onAccent.primary,
+                colors.borders.accentControl
+            ),
+            pressed = ButtonColor(
+                colors.fillAccent.tertiary,
+                colors.text.onAccent.secondary,
+                SolidColor(colors.stroke.control.onAccentDefault)
+            ),
+            disabled = ButtonColor(
+                colors.fillAccent.disabled,
+                colors.text.onAccent.disabled,
+                SolidColor(Color.Transparent) // Disabled accent button does not have border
+            )
         )
-    )
+    }.value
 }

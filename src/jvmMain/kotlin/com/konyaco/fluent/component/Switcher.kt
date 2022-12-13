@@ -14,11 +14,13 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -120,7 +122,7 @@ fun Switcher(
                 }
             )
 
-            val offsetX = with(density) { offset.toPx() }
+            val offsetX by derivedStateOf { with(density) { offset.toPx() } }
 
             // Control
             Box(
@@ -157,3 +159,16 @@ fun Switcher(
         }
     }
 }
+
+data class SwitcherColors(
+    val default: SwitcherColor,
+    val hovered: SwitcherColor,
+    val pressed: SwitcherColor,
+    val disabled: SwitcherColor
+)
+
+data class SwitcherColor(
+    val fillColor: Color,
+    val textColor: Color,
+    val borderBrush: Brush
+)
