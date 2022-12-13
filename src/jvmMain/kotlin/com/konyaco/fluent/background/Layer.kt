@@ -91,7 +91,7 @@ private fun calcCircularPadding(density: Density): Dp {
     val remainder = density.density % 1f
 
     return with(density) {
-        if (remainder == 0f) (1.dp.toPx() - 1f).toDp()
+        if (remainder == 0f) (1.dp.toPx() - 1f).toDp() // floor(1.dp.toPx() - 0.5f).toDp()
         else floor(1.dp.toPx()).toDp()
     }
 }
