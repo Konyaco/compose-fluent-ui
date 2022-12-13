@@ -14,7 +14,7 @@ Now supported:
 
 - Coarse implementation of some basic components: `Button`, `Switcher`, `TextField`, `Slider`...
 - A fake `Mica` and `Layer`
-- Only dark theme
+- Dark theme and light theme
 
 There are lots of hard-code and workaround in our source code, we are going to eliminate them in the future
 
@@ -57,7 +57,9 @@ The copyright to the icon assets (in `/resources/icon/`) belongs to Microsoft.
     - [x] Text Field
     - [x] Part of Animation
 - M2
-   - [ ] Theme (Light and Dark, custom Accent color)
+   - [ ] Theme
+       - [x] Light and Dark theme
+       - [ ] Custom Accent color
    - [ ] Animation
    - [ ] Refactor architecture, cleanup code, eliminate hard-code
    - [ ] More
