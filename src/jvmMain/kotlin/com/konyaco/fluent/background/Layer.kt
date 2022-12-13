@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
+import kotlin.math.ceil
+import kotlin.math.floor
 
 @Composable
 fun Layer(
@@ -51,9 +53,10 @@ fun Layer(
                     .composed {
                         // TODO: A better way to implement outside border
                         val density = LocalDensity.current
-                        if (outsideBorder && circular) padding(1.dp)
-                        else if (outsideBorder) padding(calcPadding(density))
-                        else this
+                        if (outsideBorder) {
+                            if (circular) padding(calcCircularPadding(density))
+                            else padding(calcPadding(density))
+                        } else this
                     }
                     .background(color = color, shape = innerShape), // TODO: A better way to set content corner
                 propagateMinConstraints = true
@@ -75,9 +78,20 @@ private fun calcPadding(density: Density): Dp {
     return when {
         remainder == 0f -> 1.dp
         remainder < 0.5f -> with(density) {
-            (1.dp.toPx() + 1).toDp()
+//            (1.dp.toPx() + 1).toDp()
+            ceil(1.dp.toPx()).toDp()
         }
 
         else -> 1.dp
+    }
+}
+
+@Stable
+private fun calcCircularPadding(density: Density): Dp {
+    val remainder = density.density % 1f
+
+    return with(density) {
+        if (remainder == 0f) (1.dp.toPx() - 1f).toDp()
+        else floor(1.dp.toPx()).toDp()
     }
 }
