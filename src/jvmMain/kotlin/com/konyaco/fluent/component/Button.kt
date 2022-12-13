@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
@@ -124,40 +125,26 @@ private fun Button(
 private fun buttonColors(): ButtonColors {
     val colors = FluentTheme.colors
 
-    val stroke = if (colors.darkMode) {
-        Brush.verticalGradient(
-            0f to colors.stroke.control.secondary,
-            0.0957f to colors.stroke.control.default,
-            1f to colors.stroke.control.default
-        )
-    } else {
-        Brush.verticalGradient(
-            0f to colors.stroke.control.secondary,
-            0.0957f to colors.stroke.control.default,
-            1f to colors.stroke.control.default
-        )
-    }
-
     return ButtonColors(
         default = ButtonColor(
             colors.control.default,
             colors.text.text.primary,
-            stroke
+            colors.borders.control
         ),
         hovered = ButtonColor(
             colors.control.secondary,
             colors.text.text.primary,
-            stroke
+            colors.borders.control
         ),
         pressed = ButtonColor(
             colors.control.tertiary,
             colors.text.text.secondary,
-            stroke
+            SolidColor(colors.stroke.control.default)
         ),
         disabled = ButtonColor(
             colors.control.disabled,
             colors.text.text.disabled,
-            stroke
+            SolidColor(colors.stroke.control.default)
         )
     )
 }
@@ -166,40 +153,26 @@ private fun buttonColors(): ButtonColors {
 private fun accentButtonColors(): ButtonColors {
     val colors = FluentTheme.colors
 
-    val stroke = if (colors.darkMode) {
-        Brush.verticalGradient(
-            0f to colors.stroke.control.onAccentDefault,
-            0.9067f to colors.stroke.control.onAccentDefault,
-            1f to colors.stroke.control.onAccentSecondary,
-        )
-    } else {
-        Brush.verticalGradient(
-            0f to colors.stroke.control.onAccentDefault,
-            0.9067f to colors.stroke.control.onAccentDefault,
-            1f to colors.stroke.control.onAccentSecondary,
-        )
-    }
-
     return ButtonColors(
         default = ButtonColor(
             colors.fillAccent.default,
             colors.text.onAccent.primary,
-            stroke
+            colors.borders.accentControl
         ),
         hovered = ButtonColor(
             colors.fillAccent.secondary,
             colors.text.onAccent.primary,
-            stroke
+            colors.borders.accentControl
         ),
         pressed = ButtonColor(
             colors.fillAccent.tertiary,
             colors.text.onAccent.secondary,
-            stroke
+            SolidColor(colors.stroke.control.onAccentDefault)
         ),
         disabled = ButtonColor(
             colors.fillAccent.disabled,
             colors.text.onAccent.disabled,
-            stroke
+            SolidColor(Color.Transparent) // Disabled accent button does not have border
         )
     )
 }

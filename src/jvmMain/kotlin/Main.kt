@@ -1,9 +1,6 @@
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +31,10 @@ fun main() = application {
 
 @Composable
 private fun App() {
-    var isDark by remember { mutableStateOf(false) }
+    val systemDarkMode = isSystemInDarkTheme()
+    var darkMode by remember(systemDarkMode) { mutableStateOf(systemDarkMode) }
 
-    FluentTheme(colors = if(isDark) darkColors() else lightColors()) {
+    FluentTheme(colors = if (darkMode) darkColors() else lightColors()) {
         Mica(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).horizontalScroll(rememberScrollState())) {
             val density = LocalDensity.current
             var scale by remember { mutableStateOf(density.density) }
@@ -49,11 +47,13 @@ private fun App() {
                 cornerRadius = 8.dp
             ) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         Text("Scale: %.2f".format(scale))
-                        Spacer(Modifier.width(8.dp))
                         Button(onClick = { scale = density.density }) { Text("Reset") }
-                        Switcher(isDark, text = "Dark Mode", onCheckStateChange = { isDark = it })
+                        Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { darkMode = it })
                     }
                     Slider(
                         modifier = Modifier.width(200.dp),

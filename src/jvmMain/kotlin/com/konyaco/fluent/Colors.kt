@@ -37,11 +37,11 @@ class Colors(
 }
 
 data class Borders(
-    val control: BorderStroke,
-    val accentControl: BorderStroke,
-    val circle: BorderStroke,
-    val textControl: BorderStroke,
-    val textControlFocused: BorderStroke
+    val control: Brush,
+    val accentControl: Brush,
+    val circle: Brush,
+    val textControl: Brush,
+    val textControlFocused: Brush
 )
 
 data class Shades(
@@ -320,40 +320,41 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         )
     )
 
-private const val ControlStop = 0.9058f
-private const val AccentControlStop = 0.9067f
-
 private fun generateBorders(stroke: Stroke, darkMode: Boolean): Borders =
-    // TODO: 看看亮色和暗色的是否是一样的
-    Borders(
-        control = BorderStroke(
-            1.dp, Brush.verticalGradient(
-                0f to stroke.control.default,
-                ControlStop to stroke.control.default,
-                1f to stroke.control.secondary
-            )
+    if (darkMode) Borders(
+        control = Brush.verticalGradient(
+            0.0957f to stroke.control.default,
+            1f to stroke.control.secondary
         ),
-        accentControl = BorderStroke(
-            1.dp, Brush.verticalGradient(
-                0f to stroke.control.onAccentDefault,
-                AccentControlStop to stroke.control.onAccentDefault,
-                1f to stroke.control.onAccentSecondary,
-            )
+        accentControl = Brush.verticalGradient(
+            0.9067f to stroke.control.onAccentDefault,
+            1f to stroke.control.onAccentSecondary,
         ),
-        circle = BorderStroke(
-            1.dp, Brush.verticalGradient(
-                0f to stroke.control.default,
-                0.5f to stroke.control.secondary
-            )
+        circle = Brush.verticalGradient(
+            0.5002f to stroke.control.default,
+            0.9545f to stroke.control.secondary
         ),
-        textControl = BorderStroke(
-            1.dp, Brush.verticalGradient(
-                // TODO:
-            )
+        textControl = Brush.verticalGradient(
+            // TODO:
+            0f to Color.Red
         ),
-        textControlFocused = BorderStroke(
-            1.dp, Brush.verticalGradient(
-                // TODO:
-            )
+        textControlFocused = Brush.verticalGradient(
+            // TODO:
+            0f to Color.Red
         )
+    ) else Borders(
+        control = Brush.verticalGradient(
+            0.9058f to stroke.control.default,
+            1f to stroke.control.secondary
+        ),
+        accentControl = Brush.verticalGradient(
+            0.9067f to stroke.control.onAccentDefault,
+            1f to stroke.control.onAccentSecondary,
+        ),
+        circle = Brush.verticalGradient(
+            0f to stroke.control.default,
+            0.5f to stroke.control.secondary
+        ),
+        textControl = Brush.verticalGradient(0f to Color.Red),
+        textControlFocused = Brush.verticalGradient(0f to Color.Red),
     )

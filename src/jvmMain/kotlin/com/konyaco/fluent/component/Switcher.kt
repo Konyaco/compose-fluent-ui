@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.color.Colors
 
 @Composable
 fun Switcher(
@@ -55,31 +54,40 @@ fun Switcher(
                 Text(
                     modifier = Modifier.offset(y = (-1).dp),
                     text = it,
-                    style = FluentTheme.typography.body,
-                    color = Colors.Text.Text.Primary
+                    color = if (enabled) FluentTheme.colors.text.text.primary
+                    else FluentTheme.colors.text.text.disabled
                 )
                 Spacer(Modifier.width(12.dp))
             }
         }
 
+        val colors = FluentTheme.colors
         val fillColor by animateColorAsState(
             if (checked) when {
-                !enabled -> Colors.Fill.Accent.Disabled
-                pressed -> Colors.Fill.Accent.Tertiary
-                hovered -> Colors.Fill.Accent.Secondary
-                else -> Colors.Fill.Accent.Default
+                !enabled -> colors.fillAccent.disabled
+                pressed -> colors.fillAccent.tertiary
+                hovered -> colors.fillAccent.secondary
+                else -> colors.fillAccent.default
             } else when {
-                !enabled -> Colors.Fill.ControlAlt.Disabled
-                pressed -> Colors.Fill.ControlAlt.Quarternary
-                hovered -> Colors.Fill.ControlAlt.Tertiary
-                else -> Colors.Fill.ControlAlt.Secondary
+                !enabled -> colors.controlAlt.disabled
+                pressed -> colors.controlAlt.quaternary
+                hovered -> colors.controlAlt.tertiary
+                else -> colors.controlAlt.secondary
             },
             tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
         )
 
         Box(
             modifier = Modifier.size(40.dp, 20.dp)
-                .border(1.dp, if (checked) Color.Transparent else Colors.Stroke.ControlStrong.Default, CircleShape)
+                .border(
+                    1.dp, if (checked) when {
+                        !enabled -> FluentTheme.colors.fillAccent.disabled
+                        else -> Color.Transparent
+                    } else when {
+                        !enabled -> FluentTheme.colors.controlStrong.disabled
+                        else -> FluentTheme.colors.controlStrong.default
+                    }, CircleShape
+                )
                 .clip(CircleShape)
                 .background(fillColor)
                 .padding(horizontal = 4.dp),
@@ -123,8 +131,14 @@ fun Switcher(
                     }
                     .clip(CircleShape)
                     .background(
-                        if (checked) Colors.Text.OnAccent.Primary
-                        else Colors.Text.Text.Secondary
+                        if (checked) when {
+                            !enabled -> FluentTheme.colors.text.onAccent.disabled
+                            else -> FluentTheme.colors.text.onAccent.primary
+                        }
+                        else when {
+                            !enabled -> FluentTheme.colors.text.text.disabled
+                            else -> FluentTheme.colors.text.text.secondary
+                        }
                     )
             )
         }
@@ -136,7 +150,8 @@ fun Switcher(
                     modifier = Modifier.offset(y = (-1).dp),
                     text = it,
                     style = FluentTheme.typography.body,
-                    color = Colors.Text.Text.Primary
+                    color = if (enabled) FluentTheme.colors.text.text.primary
+                    else FluentTheme.colors.text.text.disabled
                 )
             }
         }
