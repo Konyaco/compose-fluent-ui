@@ -110,9 +110,9 @@ private fun valueToFraction(
 
 @Stable
 private fun calcThumbOffset(
-    maxWidth: Dp, thumbSize: Dp, fraction: Float
+    maxWidth: Dp, thumbSize: Dp, padding: Dp, fraction: Float
 ): Dp {
-    return (maxWidth - thumbSize) * fraction
+    return (maxWidth - thumbSize) * fraction - padding
 }
 
 @Composable
@@ -150,7 +150,7 @@ private fun Thumb(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     // Thumb
-    val thumbOffset by rememberUpdatedState(calcThumbOffset(maxWidth, ThumbSizeWithBorder, fraction))
+    val thumbOffset by rememberUpdatedState(calcThumbOffset(maxWidth, ThumbSize, 1.dp, fraction))
 
     val hovered by interactionSource.collectIsHoveredAsState()
     val pressed by interactionSource.collectIsPressedAsState()
