@@ -2,6 +2,7 @@ package com.konyaco.fluent.color
 
 import androidx.compose.ui.graphics.Color
 
+@Deprecated(message = "Use FluentTheme.colors instead", level = DeprecationLevel.WARNING)
 object Colors {
     object AccentColor {
         val Base = Color(0xFF0078D4)
@@ -120,7 +121,6 @@ object Colors {
             val Default = Color(0x9AFFFFFF)
             val Disabled = Color(0x28FFFFFF)
         }
-
     }
 
     object Background {

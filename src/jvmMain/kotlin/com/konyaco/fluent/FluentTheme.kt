@@ -20,7 +20,6 @@ fun FluentTheme(
 }
 
 object FluentTheme {
-    @Deprecated("Not fully implemented")
     val colors: Colors
         @Composable
         @ReadOnlyComposable
@@ -34,16 +33,5 @@ object FluentTheme {
 internal val LocalColors = staticCompositionLocalOf { lightColors() }
 
 
-fun lightColors(
-    accent: Color = Color(0xFF0078D4),
-    onAccent: Color = Color.White,
-    background: Color = Color(0xFFF3F3F3),
-    onBackground: Color = Color.Black
-): Colors = Colors(accent, onAccent, background, onBackground)
-
-fun darkColors(
-    accent: Color = Color(0xFF0078D4),
-    onAccent: Color = Color.White,
-    background: Color = Color(0xFF202020),
-    onBackground: Color = Color.White,
-): Colors = Colors(accent, onAccent, background, onBackground)
+fun lightColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(generateShades(accent), false)
+fun darkColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(generateShades(accent), true)
