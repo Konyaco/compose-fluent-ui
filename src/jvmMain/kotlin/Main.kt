@@ -73,7 +73,15 @@ private fun App() {
                             val onClick = { text = "Hello, Fluent Design!" }
                             Button(onClick) { Text(text) }
                             Spacer(Modifier.width(8.dp))
-                            AccentButton(onClick) { Text(text) }
+                            AccentButton(onClick) {
+                                Icon(
+                                    modifier = Modifier.size(12.dp),
+                                    painter = rememberResourcePainter("icon/AcceptMedium.svg"),
+                                    contentDescription = null
+                                )
+                                Text(text)
+                            }
+                            Spacer(Modifier.width(8.dp))
                         }
                         var checked by remember { mutableStateOf(false) }
                         Switcher(checked, text = null, onCheckStateChange = { checked = it })
