@@ -15,6 +15,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.component.*
@@ -133,6 +134,19 @@ private fun App() {
                         var value by remember { mutableStateOf(TextFieldValue("")) }
                         TextField(value, onValueChange = { value = it })
                         TextField(value, onValueChange = { value = it }, enabled = false)
+
+                        // ProgressRings
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(32.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            ProgressRing(size = ProgressRingSize.Medium)
+                            ProgressRing(progress = sliderValue)
+                            AccentButton(onClick = {}) {
+                                ProgressRing(size = ProgressRingSize.Small, color = LocalContentColor.current)
+                                Text("Small")
+                            }
+                        }
                     }
 
                     var displayDialog by remember { mutableStateOf(false) }
