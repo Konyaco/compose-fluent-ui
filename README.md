@@ -1,7 +1,7 @@
 # Compose Fluent
 
 [![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](https://github.com/Konyaco/compose-fluent-ui/blob/master/LICENSE)
-![Version](https://img.shields.io/badge/version-v0.0.1--dev1-yellow)
+[![Version](https://img.shields.io/github/v/release/Konyaco/compose-fluent-ui?include_prereleases)](https://github.com/Konyaco/compose-fluent-ui/releases)
 
 **Fluent Design** UI library for **Jetbrains Compose**
 
@@ -11,7 +11,7 @@
 
 > This library is experimental, any API (even the package name) would be changed in the future without any notification.
 
-Current version: `v0.0.1-dev1`
+Current version: `v0.0.1-dev2`
 
 Now supported:
 
