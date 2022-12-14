@@ -122,7 +122,9 @@ fun Switcher(
                 }
             )
 
-            val offsetX by derivedStateOf { with(density) { offset.toPx() } }
+            val offsetX by remember(density) {
+                derivedStateOf { with(density) { offset.toPx() } }
+            }
 
             // Control
             Box(
