@@ -41,7 +41,7 @@ fun rememberResourcePainter(resPath: String): Painter {
 fun Icon(
     imageVector: ImageVector,
     contentDescription: String?,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current.copy(LocalContentAlpha.current)
 ) {
     val painter = rememberVectorPainter(imageVector)
@@ -51,9 +51,9 @@ fun Icon(
 @Composable
 fun Icon(
     painter: Painter,
-    tint: Color =  LocalContentColor.current.copy(LocalContentAlpha.current),
+    tint: Color = LocalContentColor.current.copy(LocalContentAlpha.current),
     contentDescription: String?,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     // TODO: b/149735981 semantics for content description
     val colorFilter = if (tint == Color.Unspecified) null else ColorFilter.tint(tint)
