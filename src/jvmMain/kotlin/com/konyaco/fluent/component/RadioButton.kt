@@ -88,9 +88,9 @@ fun RadioButton(
                 )
                 // Inner
                 Layer(
-                    modifier = Modifier.size(if (size == 0.dp) 0.dp else size + 2.dp), // TODO: Remove this 2dp if outside border is provided
+                    modifier = Modifier.size(if (size == 0.dp || !selected) size else size + 2.dp), // TODO: Remove this 2dp if outside border is provided
                     color = FluentTheme.colors.text.onAccent.primary,
-                    border = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
+                    border = if (selected) BorderStroke(1.dp, FluentTheme.colors.borders.circle) else null,
                     shape = CircleShape,
                     outsideBorder = true,
                     content = {}
