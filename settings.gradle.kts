@@ -9,4 +9,4 @@ pluginManagement {
 }
 
 rootProject.name = "FluentDesign"
-
+include("fluent", "example")

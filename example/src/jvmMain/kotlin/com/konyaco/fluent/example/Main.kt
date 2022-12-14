@@ -1,3 +1,5 @@
+package com.konyaco.fluent.example
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
