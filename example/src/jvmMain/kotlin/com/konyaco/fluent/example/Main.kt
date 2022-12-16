@@ -147,6 +147,8 @@ private fun App() {
                                 Text("Small")
                             }
                         }
+
+                        ProgressBar(sliderValue)
                     }
 
                     var displayDialog by remember { mutableStateOf(false) }
