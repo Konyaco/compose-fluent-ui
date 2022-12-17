@@ -122,7 +122,7 @@ private fun Button(
 private fun buttonColors(): ButtonColors {
     val colors = FluentTheme.colors
 
-    return derivedStateOf {
+    return remember(colors) {
         ButtonColors(
             default = ButtonColor(
                 colors.control.default,
@@ -145,13 +145,13 @@ private fun buttonColors(): ButtonColors {
                 SolidColor(colors.stroke.control.default)
             )
         )
-    }.value
+    }
 }
 
 @Composable
 private fun accentButtonColors(): ButtonColors {
     val colors = FluentTheme.colors
-    return derivedStateOf {
+    return remember(colors) {
         ButtonColors(
             default = ButtonColor(
                 colors.fillAccent.default,
@@ -174,5 +174,5 @@ private fun accentButtonColors(): ButtonColors {
                 SolidColor(Color.Transparent) // Disabled accent button does not have border
             )
         )
-    }.value
+    }
 }

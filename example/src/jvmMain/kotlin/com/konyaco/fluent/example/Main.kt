@@ -1,3 +1,5 @@
+package com.konyaco.fluent.example
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +15,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.component.*
@@ -73,7 +76,15 @@ private fun App() {
                             val onClick = { text = "Hello, Fluent Design!" }
                             Button(onClick) { Text(text) }
                             Spacer(Modifier.width(8.dp))
-                            AccentButton(onClick) { Text(text) }
+                            AccentButton(onClick) {
+                                Icon(
+                                    modifier = Modifier.size(12.dp),
+                                    painter = rememberResourcePainter("icon/AcceptMedium.svg"),
+                                    contentDescription = null
+                                )
+                                Text(text)
+                            }
+                            Spacer(Modifier.width(8.dp))
                         }
                         var checked by remember { mutableStateOf(false) }
                         Switcher(checked, text = null, onCheckStateChange = { checked = it })
@@ -123,6 +134,22 @@ private fun App() {
                         var value by remember { mutableStateOf(TextFieldValue("")) }
                         TextField(value, onValueChange = { value = it })
                         TextField(value, onValueChange = { value = it }, enabled = false)
+
+                        // ProgressRings
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(32.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            ProgressRing(size = ProgressRingSize.Medium)
+                            ProgressRing(progress = sliderValue)
+                            AccentButton(onClick = {}) {
+                                ProgressRing(size = ProgressRingSize.Small, color = LocalContentColor.current)
+                                Text("Small")
+                            }
+                        }
+
+                        ProgressBar(sliderValue)
+                        ProgressBar()
                     }
 
                     var displayDialog by remember { mutableStateOf(false) }
