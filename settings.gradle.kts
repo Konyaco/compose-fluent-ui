@@ -9,4 +9,4 @@ pluginManagement {
 }
 
 rootProject.name = "FluentDesign"
-include("fluent", "example")
+include("fluent", "fluent-icons-extended", "example", "fluent-icon-converter")

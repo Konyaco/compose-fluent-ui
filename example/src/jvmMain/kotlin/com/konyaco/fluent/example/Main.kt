@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
@@ -20,6 +21,8 @@ import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.darkColors
+import com.konyaco.fluent.icons.Icons
+import com.konyaco.fluent.icons.default.*
 import com.konyaco.fluent.lightColors
 
 fun main() = application {
@@ -79,7 +82,7 @@ private fun App() {
                             AccentButton(onClick) {
                                 Icon(
                                     modifier = Modifier.size(12.dp),
-                                    painter = rememberResourcePainter("icon/AcceptMedium.svg"),
+                                    imageVector = Icons.Default.Acceptmedium,
                                     contentDescription = null
                                 )
                                 Text(text)
@@ -150,6 +153,15 @@ private fun App() {
 
                         ProgressBar(sliderValue)
                         ProgressBar()
+
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            for (imageVector in icons) {
+                                Icon(
+                                    modifier = Modifier.size(18.dp),
+                                    imageVector = imageVector, contentDescription = null
+                                )
+                            }
+                        }
                     }
 
                     var displayDialog by remember { mutableStateOf(false) }
@@ -174,3 +186,12 @@ private fun App() {
         }
     }
 }
+
+private val icons = arrayOf(
+    Icons.Default.Accept,
+    Icons.Default.Acceptmedium,
+    Icons.Default.Add,
+    Icons.Default.Cancel,
+    Icons.Default.Back,
+    Icons.Default.Forward
+)
