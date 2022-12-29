@@ -24,6 +24,8 @@ class Colors(
         internal set
     var controlStrong by mutableStateOf(generateControlStrongColors(shades, darkMode))
         internal set
+    var subtleFill by mutableStateOf(generateSubtleFillColors(shades, darkMode))
+        internal set
     var fillAccent by mutableStateOf(generateFillAccentColors(shades, darkMode))
         internal set
     var background by mutableStateOf(generateBackground(shades, darkMode))
@@ -119,6 +121,13 @@ data class Stroke(
         val disabled: Color
     )
 }
+
+data class SubtleFillColors(
+    val transparent: Color,
+    val secondary: Color,
+    val tertiary: Color,
+    val disabled: Color
+)
 
 data class Background(
     val mica: Mica,
@@ -258,6 +267,19 @@ internal fun generateControlStrongColors(shades: Shades, darkMode: Boolean): Con
     else ControlStrongColors(
         default = Color(0x72000000),
         disabled = Color(0x51000000)
+    )
+
+internal fun generateSubtleFillColors(shades: Shades, darkMode: Boolean): SubtleFillColors =
+    if (darkMode) SubtleFillColors(
+        transparent = Color(0x00FFFFFF),
+        secondary = Color(0x0FFFFFFF),
+        tertiary = Color(0x0AFFFFFF),
+        disabled = Color(0x00FFFFFF)
+    ) else SubtleFillColors(
+        transparent = Color(0x00000000),
+        secondary = Color(0x09000000),
+        tertiary = Color(0x06000000),
+        disabled = Color(0x00000000)
     )
 
 internal fun generateFillAccentColors(shades: Shades, darkMode: Boolean): FillAccentColors =

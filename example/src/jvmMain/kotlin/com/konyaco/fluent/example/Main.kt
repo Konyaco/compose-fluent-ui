@@ -72,19 +72,22 @@ private fun App() {
                             onValueChange = { sliderValue = it },
                         )
                         var text by remember { mutableStateOf("Hello World") }
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             val onClick = { text = "Hello, Fluent Design!" }
                             Button(onClick) { Text(text) }
-                            Spacer(Modifier.width(8.dp))
+
                             AccentButton(onClick) {
                                 Icon(
                                     modifier = Modifier.size(12.dp),
                                     painter = rememberResourcePainter("icon/AcceptMedium.svg"),
                                     contentDescription = null
                                 )
-                                Text(text)
+                                Text("Accent Button")
                             }
-                            Spacer(Modifier.width(8.dp))
+
+                            SubtleButton(onClick) {
+                                Text("Text Button")
+                            }
                         }
                         var checked by remember { mutableStateOf(false) }
                         Switcher(checked, text = null, onCheckStateChange = { checked = it })
