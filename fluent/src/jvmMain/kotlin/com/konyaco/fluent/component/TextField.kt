@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
@@ -89,7 +91,11 @@ fun TextField(
             Layer(
                 modifier = Modifier.hoverable(interactionSource),
                 shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(1.dp, if (focused || pressed) SolidColor(FluentTheme.colors.stroke.control.default) else FluentTheme.colors.borders.textControl),
+                border = BorderStroke(
+                    1.dp,
+                    if (focused || pressed) SolidColor(FluentTheme.colors.stroke.control.default)
+                    else FluentTheme.colors.borders.textControl
+                ),
                 color = when {
                     !enabled -> FluentTheme.colors.control.disabled
                     pressed || focused -> FluentTheme.colors.control.inputActive
@@ -97,7 +103,10 @@ fun TextField(
                     else -> FluentTheme.colors.control.default
                 },
             ) {
-                Box(Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 3.dp), propagateMinConstraints = true) {
+                Box(
+                    Modifier.offset(y = (-1).dp).padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 3.dp),
+                    Alignment.CenterStart
+                ) {
                     innerTextField()
                 }
             }
