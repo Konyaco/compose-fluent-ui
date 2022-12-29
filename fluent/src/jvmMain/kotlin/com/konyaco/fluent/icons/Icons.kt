@@ -23,7 +23,7 @@ inline fun fluentIcon(
 ).block().build()
 
 /**
- * Adds a vector path to this icon with Material defaults.
+ * Adds a vector path to this icon with Fluent defaults.
  *
  * @param fillAlpha fill alpha for this path
  * @param strokeAlpha stroke alpha for this path
