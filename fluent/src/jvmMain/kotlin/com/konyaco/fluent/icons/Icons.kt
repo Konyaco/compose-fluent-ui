@@ -8,7 +8,9 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 object Icons {
-    object Default
+    object Filled
+    object Regular
+    val Default = Regular
 }
 
 inline fun fluentIcon(
