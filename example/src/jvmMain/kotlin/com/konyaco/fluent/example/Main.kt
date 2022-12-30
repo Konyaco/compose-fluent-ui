@@ -138,7 +138,10 @@ private fun Content() {
 
     var value by remember { mutableStateOf(TextFieldValue("")) }
     TextField(value, onValueChange = { value = it })
-    TextField(value, onValueChange = { value = it }, enabled = false)
+    TextField(
+        value = value, onValueChange = { value = it }, enabled = false,
+        header = { Text("With Header") }
+    )
 
     // ProgressRings
     Row(
