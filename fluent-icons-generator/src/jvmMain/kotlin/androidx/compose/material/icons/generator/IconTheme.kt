@@ -24,6 +24,8 @@ package androidx.compose.material.icons.generator
  */
 enum class IconTheme(val themePackageName: String, val themeClassName: String) {
     Default("default", "Default"),
+    Regular("regular", "Regular"),
+    Filled("filled", "Filled")
 }
 
 /**

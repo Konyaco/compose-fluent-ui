@@ -1,12 +1,12 @@
+package generator
+
 import androidx.compose.material.icons.generator.CoreIcons
 import androidx.compose.material.icons.generator.IconProcessor
 import androidx.compose.material.icons.generator.IconWriter
-import java.io.File
 
 fun main() {
-    val baseDir = File("fluent-icon-converter")
     val icons = IconProcessor(
-        listOf(baseDir.resolve("icon_output_xml")),
+        listOf(baseDir.resolve("icon_output_xml/filled"), baseDir.resolve("icon_output_xml/regular")),
         baseDir.resolve("expApis.txt"),
         baseDir.resolve("genApis.txt"),
         false

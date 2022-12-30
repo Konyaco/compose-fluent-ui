@@ -72,7 +72,7 @@ class IconProcessor(
         val themeDirs = iconDirectories
 
         return themeDirs.flatMap { dir ->
-            /*val theme = dir.name.toIconTheme()
+/*            val theme = dir.name.toIconTheme()
             val icons = dir.walk().filter { !it.isDirectory }.toList()
 
             val transformedIcons = icons.map { file ->
@@ -90,8 +90,13 @@ class IconProcessor(
                     fileContent = processXmlFile(file.readText())
                 )
             }*/
-            val theme = IconTheme.Default
             val icons = dir.walk().filter { !it.isDirectory }.toList()
+
+            val theme = when (dir.name) {
+                "regular" -> IconTheme.Regular
+                "filled" -> IconTheme.Filled
+                else -> IconTheme.Default
+            }
 
             val transformedIcons = icons.map { file ->
                 val filename = file.nameWithoutExtension
@@ -99,8 +104,9 @@ class IconProcessor(
 
                 // Prefix the icon name with a theme so we can ensure they will be unique when
                 // copied to res/drawable.
-                val xmlName = filename
+                val xmlName = "${theme.themePackageName}_$filename"
 
+                println("Name: $kotlinName, Theme: $theme")
                 Icon(
                     kotlinName = kotlinName,
                     xmlFileName = xmlName,

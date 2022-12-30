@@ -5,9 +5,6 @@ plugins {
 
 kotlin {
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
         withJava()
     }
     sourceSets {
@@ -32,5 +29,5 @@ kotlin {
 }
 
 application {
-    mainClass.set("ConvertToXmlKt")
+    mainClass.set("generator.ConvertToXmlKt")
 }
