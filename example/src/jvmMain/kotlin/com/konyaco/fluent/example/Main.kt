@@ -20,6 +20,8 @@ import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.darkColors
+import com.konyaco.fluent.icons.Icons
+import com.konyaco.fluent.icons.regular.*
 import com.konyaco.fluent.lightColors
 
 fun main() = application {
@@ -136,7 +138,7 @@ private fun Content() {
         )
     }
 
-    var value by remember { mutableStateOf(TextFieldValue("")) }
+    var value by remember { mutableStateOf(TextFieldValue("Hello Fluent!")) }
     TextField(value, onValueChange = { value = it })
     TextField(
         value = value, onValueChange = { value = it }, enabled = false,
@@ -158,6 +160,15 @@ private fun Content() {
 
     ProgressBar(sliderValue)
     ProgressBar()
+
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        for (imageVector in icons) {
+            Icon(
+                modifier = Modifier.size(18.dp),
+                imageVector = imageVector, contentDescription = null
+            )
+        }
+    }
 }
 
 @Composable
@@ -196,11 +207,11 @@ private fun Buttons() {
 
         AccentButton(onClick) {
             Icon(
-                modifier = Modifier.size(12.dp),
-                painter = rememberResourcePainter("icon/AcceptMedium.svg"),
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.Default.Checkmark,
                 contentDescription = null
             )
-            Text("Accent Button")
+            Text(text)
         }
 
         SubtleButton(onClick) {
@@ -208,3 +219,12 @@ private fun Buttons() {
         }
     }
 }
+
+private val icons = arrayOf(
+    Icons.Default.Add,
+    Icons.Default.Delete,
+    Icons.Default.Dismiss,
+    Icons.Default.ArrowLeft,
+    Icons.Default.Navigation,
+    Icons.Default.List
+)
