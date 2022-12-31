@@ -11,7 +11,7 @@
 
 > This library is experimental, any API (even the package name) would be changed in the future without any notification.
 
-Current version: `v0.0.1-dev2`
+Current version: `v0.0.1-dev3`
 
 Now supported:
 
@@ -41,7 +41,7 @@ About the API usage, just see `Main.kt`
 
 This library is under Apache-2.0 license.
 
-The copyright to the icon assets (in `/resources/icon/`) belongs to Microsoft.
+The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs to Microsoft.
 
 ## TODO
 

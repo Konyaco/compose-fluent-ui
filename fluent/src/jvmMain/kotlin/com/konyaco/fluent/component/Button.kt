@@ -62,6 +62,18 @@ fun AccentButton(
 }
 
 @Composable
+fun SubtleButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = subtleButtonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(modifier, interaction, disabled, buttonColors, true, onClick, content)
+}
+
+@Composable
 private fun Button(
     modifier: Modifier,
     interaction: MutableInteractionSource,
@@ -83,12 +95,12 @@ private fun Button(
 
     val fillColor by animateColorAsState(
         buttonColor.fillColor,
-        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
     )
 
     val contentColor by animateColorAsState(
         buttonColor.contentColor,
-        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
     )
 
     Layer(
@@ -173,6 +185,35 @@ private fun accentButtonColors(): ButtonColors {
                 colors.text.onAccent.disabled,
                 SolidColor(Color.Transparent) // Disabled accent button does not have border
             )
+        )
+    }
+}
+
+@Composable
+private fun subtleButtonColors(): ButtonColors {
+    val colors = FluentTheme.colors
+    return remember(colors) {
+        ButtonColors(
+            default = ButtonColor(
+                colors.subtleFill.transparent,
+                colors.text.text.primary,
+                SolidColor(Color.Transparent)
+            ),
+            hovered = ButtonColor(
+                colors.subtleFill.secondary,
+                colors.text.text.primary,
+                SolidColor(Color.Transparent)
+            ),
+            pressed = ButtonColor(
+                colors.subtleFill.tertiary,
+                colors.text.text.secondary,
+                SolidColor(Color.Transparent)
+            ),
+            disabled = ButtonColor(
+                colors.subtleFill.disabled,
+                colors.text.text.disabled,
+                SolidColor(Color.Transparent)
+            ),
         )
     }
 }

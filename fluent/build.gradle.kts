@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.konyaco.fluent"
-version = "0.0.1-dev2"
+version = "0.0.1-dev3"
 
 kotlin {
     jvm {
@@ -17,6 +17,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
+                api(project(":fluent-icons-core"))
             }
         }
         val jvmTest by getting
