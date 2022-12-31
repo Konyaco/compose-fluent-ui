@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -40,9 +39,16 @@ fun Slider(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     val progress = valueToFraction(value, valueRange.start, valueRange.endInclusive)
-    Slider(progress, onProgressChange = {
-        onValueChange(fractionToValue(it, valueRange.start, valueRange.endInclusive))
-    }, modifier, enabled, onValueChangeFinished, interactionSource)
+    Slider(
+        modifier = modifier,
+        progress = progress,
+        onProgressChange = {
+            onValueChange(fractionToValue(it, valueRange.start, valueRange.endInclusive))
+        },
+        enabled = enabled,
+        onValueChangeFinished = onValueChangeFinished,
+        interactionSource = interactionSource
+    )
 }
 
 @Composable
@@ -55,47 +61,51 @@ private fun Slider(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     // TODO: Refactor this component
-    val onValueChangeState by rememberUpdatedState(onProgressChange)
+    val currentOnProgressChange by rememberUpdatedState(onProgressChange)
     BoxWithConstraints(
         modifier = modifier.defaultMinSize(minWidth = 120.dp, minHeight = 32.dp),
-        contentAlignment = Alignment.CenterStart
+        contentAlignment = Alignment.CenterStart,
+        propagateMinConstraints = true
     ) {
-        val maxWidth by rememberUpdatedState(maxWidth)
+        val width by rememberUpdatedState(minWidth)
         var dragging by remember { mutableStateOf(false) }
 
         val density by rememberUpdatedState(LocalDensity.current)
         fun calcProgress(offset: Offset): Float {
             val radius = with(density) { (ThumbSizeWithBorder / 2).toPx() }
-            return valueToFraction(offset.x, radius, constraints.maxWidth - radius).coerceIn(0f, 1f)
+            return valueToFraction(offset.x, radius, constraints.minWidth - radius).coerceIn(0f, 1f)
         }
+
+        Rail()
 
         Box(Modifier.composed {
             var offset by remember { mutableStateOf(Offset.Zero) }
             draggable(
                 state = rememberDraggableState {
                     offset = Offset(x = offset.x + it, y = offset.y)
-                    onValueChangeState(calcProgress(offset))
+                    currentOnProgressChange(calcProgress(offset))
                 },
                 interactionSource = interactionSource,
                 onDragStarted = {
                     dragging = true
                     offset = it
-                }, onDragStopped = {
+                },
+                onDragStopped = {
                     dragging = false
                     onValueChangeFinished?.invoke()
-                }, orientation = Orientation.Horizontal
+                },
+                orientation = Orientation.Horizontal
             )
         }.pointerInput(Unit) {
             forEachGesture {
                 awaitPointerEventScope {
                     val down = awaitFirstDown()
-                    onValueChangeState(calcProgress(down.position))
+                    currentOnProgressChange(calcProgress(down.position))
                 }
             }
         }, contentAlignment = Alignment.CenterStart) {
-            Rail()
-            Track(progress, maxWidth)
-            Thumb(maxWidth, progress, dragging)
+            Track(progress, width)
+            Thumb(width, progress, dragging)
         }
     }
 }
@@ -118,7 +128,7 @@ private fun calcThumbOffset(
 @Composable
 private fun Rail() {
     // Rail
-    Layer(modifier = Modifier.requiredHeight(4.dp).fillMaxWidth(),
+    Layer(modifier = Modifier.requiredHeight(4.dp),
         shape = CircleShape,
         color = FluentTheme.colors.controlStrong.default,
         border = BorderStroke(
