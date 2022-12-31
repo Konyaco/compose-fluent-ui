@@ -24,8 +24,7 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.default.Accept
-import com.konyaco.fluent.icons.default.Acceptmedium
+import com.konyaco.fluent.icons.regular.Checkmark
 
 @Composable
 fun CheckBox(
@@ -89,13 +88,9 @@ fun CheckBox(
         ) {
             // TODO: Animation
             Box(contentAlignment = Alignment.Center) {
-                /*if (checked) Icon(
-                    painter = rememberResourcePainter("icon/AcceptMedium.svg"),
-                    contentDescription = null,
-                    modifier = Modifier.size(12.dp)
-                )*/
                 if (checked) Icon(
-                    imageVector = Icons.Default.Accept,
+                    modifier = Modifier.size(16.dp),
+                    imageVector = Icons.Default.Checkmark,
                     contentDescription = null
                 )
             }

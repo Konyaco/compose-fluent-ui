@@ -100,7 +100,7 @@ class IconProcessor(
 
             val transformedIcons = icons.map { file ->
                 val filename = file.nameWithoutExtension
-                val kotlinName = filename.toKotlinPropertyName()
+                val kotlinName = filename
 
                 // Prefix the icon name with a theme so we can ensure they will be unique when
                 // copied to res/drawable.

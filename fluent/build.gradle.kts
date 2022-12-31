@@ -17,6 +17,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
+                api(project(":fluent-icons-core"))
             }
         }
         val jvmTest by getting

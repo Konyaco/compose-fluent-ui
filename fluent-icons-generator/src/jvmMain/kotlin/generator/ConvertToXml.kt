@@ -1,6 +1,6 @@
 package generator
 
-import svgtoxml.Svg2Vector
+import com.android.ide.common.vectordrawable.Svg2Vector
 
 fun main() {
     val outDir = baseDir.resolve("icon_output_xml").also { it.mkdirs() }
