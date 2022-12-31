@@ -11,7 +11,7 @@
 
 > This library is experimental, any API (even the package name) would be changed in the future without any notification.
 
-Current version: `v0.0.1-dev2`
+Current version: `v0.0.1-dev3`
 
 Now supported:
 

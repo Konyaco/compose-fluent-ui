@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.konyaco.fluent"
-version = "0.0.1-dev2"
+version = "0.0.1-dev3"
 
 kotlin {
     jvm {
