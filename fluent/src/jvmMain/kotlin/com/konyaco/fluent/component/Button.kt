@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -44,9 +45,10 @@ fun Button(
     disabled: Boolean = false,
     buttonColors: ButtonColors = buttonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, buttonColors, false, onClick, content)
+    Button(modifier, interaction, disabled, buttonColors, false, onClick, iconOnly, content)
 }
 
 @Composable
@@ -56,9 +58,10 @@ fun AccentButton(
     disabled: Boolean = false,
     buttonColors: ButtonColors = accentButtonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, buttonColors, true, onClick, content)
+    Button(modifier, interaction, disabled, buttonColors, true, onClick, iconOnly, content)
 }
 
 @Composable
@@ -68,9 +71,10 @@ fun SubtleButton(
     disabled: Boolean = false,
     buttonColors: ButtonColors = subtleButtonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, buttonColors, true, onClick, content)
+    Button(modifier, interaction, disabled, buttonColors, true, onClick, iconOnly, content)
 }
 
 @Composable
@@ -81,6 +85,7 @@ private fun Button(
     buttonColors: ButtonColors,
     accentButton: Boolean,
     onClick: () -> Unit,
+    iconOnly: Boolean,
     content: @Composable RowScope.() -> Unit
 ) {
     val hovered by interaction.collectIsHoveredAsState()
@@ -104,10 +109,16 @@ private fun Button(
     )
 
     Layer(
-        modifier = modifier.defaultMinSize(
-            minWidth = 120.dp,
-            minHeight = 32.dp
-        ),
+        modifier = modifier.let {
+            if (iconOnly) {
+                it.defaultMinSize(32.dp, 32.dp)
+            } else {
+                it.defaultMinSize(
+                    minWidth = 120.dp,
+                    minHeight = 32.dp
+                )
+            }
+        },
         shape = RoundedCornerShape(4.dp),
         border = BorderStroke(1.dp, buttonColor.borderBrush),
         color = fillColor,
@@ -122,7 +133,10 @@ private fun Button(
                     interactionSource = interaction,
                     indication = null
                 )
-                .padding(horizontal = 12.dp),
+                .composed {
+                    if (!iconOnly) this
+                    else padding(horizontal = 12.dp)
+                },
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
             content = content

@@ -59,4 +59,4 @@ inline fun ImageVector.Builder.fluentPath(
 
 // All Fluent icons (currently) are 12dp by 12dp, with a viewport size of 12 by 12.
 @PublishedApi
-internal const val FluentIconDimension = 12f
+internal const val FluentIconDimension = 16f

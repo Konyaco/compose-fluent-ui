@@ -206,16 +206,25 @@ private fun Buttons() {
         Button(onClick) { Text(text) }
 
         AccentButton(onClick) {
-            Icon(
-                modifier = Modifier.size(16.dp),
-                imageVector = Icons.Default.Checkmark,
-                contentDescription = null
-            )
+            Icon(Icons.Default.Checkmark, contentDescription = null)
             Text(text)
         }
 
         SubtleButton(onClick) {
             Text("Text Button")
+        }
+
+
+    }
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        AccentButton({}, iconOnly = true) {
+            Icon(Icons.Default.Navigation, contentDescription = null)
+        }
+        Button({}, iconOnly = true) {
+            Icon(Icons.Default.Navigation, contentDescription = null)
+        }
+        SubtleButton({}, iconOnly = true) {
+            Icon(Icons.Default.Navigation, contentDescription = null)
         }
     }
 }
