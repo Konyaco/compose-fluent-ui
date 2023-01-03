@@ -7,6 +7,9 @@ import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
+/**
+ * Fluent icons. See [Fluent Icons Catalog](https://react.fluentui.dev/iframe.html?viewMode=docs&id=concepts-developer-icons-icons-catalog--page)
+ */
 object Icons {
     object Filled
     object Regular
@@ -18,8 +21,8 @@ inline fun fluentIcon(
     block: ImageVector.Builder.() -> ImageVector.Builder
 ): ImageVector = ImageVector.Builder(
     name = name,
-    defaultWidth = 24.dp,
-    defaultHeight = 24.dp,
+    defaultWidth = FluentIconDimension.dp,
+    defaultHeight = FluentIconDimension.dp,
     viewportWidth = 24f,
     viewportHeight = 24f
 ).block().build()
