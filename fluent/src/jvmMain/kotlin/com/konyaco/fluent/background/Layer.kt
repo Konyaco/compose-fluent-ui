@@ -30,12 +30,12 @@ import kotlin.math.floor
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
-    shape: Shape = RectangleShape,
+    shape: Shape = RoundedCornerShape(4.dp),
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = null,
     outsideBorder: Boolean = false,
-    cornerRadius: Dp = 0.dp,
+    cornerRadius: Dp = 4.dp,
     elevation: Dp = 0.dp,
     circular: Boolean = false, // If layer is circular, use this to remove 1px gap
     content: @Composable () -> Unit
