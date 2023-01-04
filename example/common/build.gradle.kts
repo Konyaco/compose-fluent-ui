@@ -4,32 +4,26 @@ plugins {
     id("com.android.library")
 }
 
-group = "com.konyaco.fluent"
-version = "0.0.1-dev3"
-
 kotlin {
-    jvm()
     android()
+    jvm()
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.foundation)
-                implementation(project(":fluent"))
-                implementation(project(":fluent-icons-core"))
+                api(project(":fluent"))
             }
         }
-        val jvmMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-            }
-        }
+        val commonTest by getting
+        val androidMain by getting
+        val androidTest by getting
+        val jvmMain by getting
         val jvmTest by getting
     }
 }
 
 android {
     compileSdk = 33
-    namespace = "com.konyaco.fluent.icons"
+    namespace = "com.konyaco.fluent.example"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 24
