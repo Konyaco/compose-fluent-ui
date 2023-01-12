@@ -96,18 +96,16 @@ internal fun DropdownMenuContent(
     AnimatedVisibility(
         visibleState = expandedStates,
         enter = expandVertically(
-            tween(
-                FluentDuration.MediumDuration,
-                easing = FluentEasing.FastInvokeEasing
-            )
+            tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
         ), // TODO: If popup direction is upward, the expanding animation should be bottom-to-top.
-        exit = fadeOut(tween(FluentDuration.MediumDuration))
+        exit = fadeOut(tween(FluentDuration.ShortDuration, easing = FluentEasing.FastDismissEasing))
     ) {
-        Mica(Modifier.shadow(4.dp, RoundedCornerShape(4.dp)).clip(RoundedCornerShape(4.dp))) {
+        Mica(Modifier.shadow(8.dp, RoundedCornerShape(8.dp)).clip(RoundedCornerShape(8.dp))) {
             // TODO: Dropdown should use Acrylic material.
             Layer(
-                shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout)
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
+                cornerRadius = 8.dp
             ) {
                 Column(
                     modifier = modifier
