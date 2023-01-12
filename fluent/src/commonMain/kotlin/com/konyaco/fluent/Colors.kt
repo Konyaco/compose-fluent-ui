@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
+import org.jetbrains.skia.defaultLanguageTag
 
 @Stable
 class Colors(
@@ -104,7 +105,8 @@ data class FillAccentColors(
 
 data class Stroke(
     val control: Control,
-    val controlStrong: ControlStrong
+    val controlStrong: ControlStrong,
+    val surface: Surface
 ) {
     data class Control(
         val default: Color,
@@ -119,6 +121,11 @@ data class Stroke(
     data class ControlStrong(
         val default: Color,
         val disabled: Color
+    )
+
+    data class Surface(
+        val default: Color,
+        val flyout: Color
     )
 }
 
@@ -322,6 +329,10 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         controlStrong = Stroke.ControlStrong(
             default = Color(0x9AFFFFFF),
             disabled = Color(0x28FFFFFF)
+        ),
+        surface = Stroke.Surface(
+            default = Color(0x66757575),
+            flyout = Color(0x33000000)
         )
     )
     else Stroke(
@@ -337,6 +348,10 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         controlStrong = Stroke.ControlStrong(
             default = Color(0x9C000000),
             disabled = Color(0x37000000)
+        ),
+        surface = Stroke.Surface(
+            default = Color(0x66757575),
+            flyout = Color(0x0F000000)
         )
     )
 

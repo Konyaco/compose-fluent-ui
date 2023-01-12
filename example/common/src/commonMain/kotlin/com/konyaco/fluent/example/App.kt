@@ -48,6 +48,25 @@ fun App() {
                     AccentButton(onClick = {
                         displayDialog = true
                     }) { Text("Display Dialog") }
+                    Box {
+                        var expanded by remember { mutableStateOf(false) }
+
+                        Button(onClick = {
+                            expanded = true
+                        }) {
+                            Text("Show DropdownMenu")
+                        }
+
+                        fun close() {
+                            expanded = false
+                        }
+
+                        DropdownMenu(expanded, ::close) {
+                            DropdownMenuItem(::close) { Text("Option 1")}
+                            DropdownMenuItem(::close) { Text("Option 2")}
+                            DropdownMenuItem(::close) { Text("Option 3")}
+                        }
+                    }
                 }
                 Dialog(
                     title = "This is a example dialog",
@@ -199,8 +218,6 @@ private fun Buttons() {
         SubtleButton(onClick) {
             Text("Text Button")
         }
-
-
     }
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         AccentButton({}, iconOnly = true) {
