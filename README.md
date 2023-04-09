@@ -3,35 +3,47 @@
 [![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](https://github.com/Konyaco/compose-fluent-ui/blob/master/LICENSE)
 [![Version](https://img.shields.io/github/v/release/Konyaco/compose-fluent-ui?include_prereleases)](https://github.com/Konyaco/compose-fluent-ui/releases)
 
-**Fluent Design** UI library for **Jetbrains Compose**
+**Fluent Design** UI library for **Compose Multiplatform**
 
 ![Example](assets/screenshot.png)
 
 ## Current Status
 
-> This library is experimental, any API (even the package name) would be changed in the future without any notification.
+> This library is experimental, any API would be changed in the future without any notification.
 
-Current version: `v0.0.1-dev3`
+Please note that there are lots of hard-coding and workarounds in our source code, which we plan to eliminate in the future.
 
-Now supported:
+Thank you for using our library. We look forward to receiving your feedback and contributions!
+## Quick Start
 
-- Coarse implementation of some basic components: `Button`, `Switcher`, `TextField`, `Slider`...
-- A fake `Mica` and `Layer`
-- Dark theme and light theme
+### Add Dependency
 
-There are lots of hard-code and workaround in our source code, we are going to eliminate them in the future
+```kts
+implementation("com.konyaco:fluent:0.0.1-dev4")
+implementation("com.konyaco:fluent-icons-extended:0.0.1-dev4") // If you want to use full fluent icons.
+```
 
-Thank you for using our library, and we look forward to your feedback and contributions!
+### Example
 
-### Multiplatform
+```kotlin
+import com.konyaco.fluent.component.*
 
-Currently, only Desktop platforms are supported. It might be easy to migrate to multiplatform.
+@Composable
+fun App() {
+  FluentTheme {
+    Mica(Modifier.fillMaxSize()) {
+      Column(Modifier.padding(24.dp)) {
+        Button(onClick = {}) {
+          Text("Hello Fluent Design")
+        }
+      }
+    }
+  }
+}
+```
+See `example` module for more details.
 
-## How to Use
-
-We are not yet published our library to maven. You can download the source code or jar in release page
-
-- `FluentTheme()` is the context and entry point of the application.
+- `FluentTheme()` is the context and entry point of the application, just like `MaterialTheme`
 - Components are under `component` package
 - `Mica` and `Layer` are under `background` package
 
@@ -43,32 +55,67 @@ This library is under Apache-2.0 license.
 
 The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs to Microsoft.
 
-## TODO
+## Components
 
-- M1
-    - [ ] Basic Inputs
-        - [x] Button
-        - [x] Toggle Switch
-        - [x] Checkbox
-        - [x] Radio Button
-        - [x] Slider
-        - [ ] Dropdown
-        - [ ] Pill Button
-    - [x] Layers
-        - [x] Fake Mica
-        - [x] Simple Layer
-    - [x] Text Field
-    - [x] Part of Animation
-- M2
-   - [ ] Theme
-       - [x] Light and Dark theme
-       - [ ] Custom Accent color
-   - [ ] Animation
-   - [ ] Refactor architecture, cleanup code, eliminate hard-code
-   - [ ] More
-- M3
-    - [ ] Compound components (Side Nav, Top Nav, Tab View, etc...)
-    - [ ] Layer (Might be delayed)
-        - [ ] Real Mica
-        - [ ] Acrylic
-    - [ ] Accessibility Semantics
+### Layers
+
+- Mica
+  - [x] Simple Mica
+  - [ ] Real Mica
+- Layer
+  - [x] Simple Layer
+  - [ ] Real Layer
+- [ ] Acrylic
+
+### Basic Inputs
+
+- [x] Button
+- [x] ToggleSwitch
+- [x] CheckBox
+- [x] RadioButton
+- [x] Slider
+- [x] DropdownMenu
+- [x] TextField
+- [x] ProgressBar
+- [x] ProgressRing
+- [ ] Pill Button
+- [ ] ComboBox
+- [ ] RatingControl
+
+### Basic Components
+
+- [ ] Tooltip
+- [ ] InfoBar
+- [ ] FilePicker
+- [ ] Menu
+
+### Dialogs
+
+- [x] Simple Dialog
+- [ ] Compound Dialog (Title, Content, Controls)
+- [ ] Flyout
+
+### Animations
+
+- [x] Animation Preset Constants (Duration, Easing Functions)
+
+### Theme
+
+- [x] Light and Dark theme (`LocalContentColor`)
+- [ ] Custom accent color
+
+### Compound Components
+
+- [ ] Color Picker
+- [ ] DateTime Picker
+- [ ] Calender
+- [ ] Navigation
+  - [ ] NavigationView
+  - [ ] BreadcrumbBar
+  - [ ] Pivot
+  - [ ] TabView
+
+### TODO
+
+
+- [ ] Accessibility Semantics
