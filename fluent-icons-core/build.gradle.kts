@@ -2,10 +2,11 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("com.android.library")
+    id("maven-publish")
 }
 
-group = "com.konyaco.fluent"
-version = "0.0.1-dev3"
+group = "com.konyaco"
+version = "0.0.1-dev4"
 
 kotlin {
     jvm()
