@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
-import org.jetbrains.skia.defaultLanguageTag
 
 @Stable
 class Colors(
