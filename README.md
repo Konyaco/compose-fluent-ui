@@ -101,7 +101,7 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 
 ### Theme
 
-- [x] Light and Dark theme (`LocalContentColor`)
+- [x] Light and Dark theme
 - [ ] Custom accent color
 
 ### Compound Components
