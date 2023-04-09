@@ -357,8 +357,8 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
 private fun generateBorders(fillAccent: FillAccentColors, stroke: Stroke, darkMode: Boolean): Borders =
     if (darkMode) Borders(
         control = Brush.verticalGradient(
-            0.0957f to stroke.control.default,
-            1f to stroke.control.secondary
+            0.0957f to stroke.control.secondary,
+            1f to stroke.control.default
         ),
         accentControl = Brush.verticalGradient(
             0.9067f to stroke.control.onAccentDefault,
