@@ -5,7 +5,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.konyaco.fluent"
+group = "com.konyaco"
 version = "0.0.1-dev3"
 
 kotlin {
