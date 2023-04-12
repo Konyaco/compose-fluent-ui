@@ -15,7 +15,8 @@ kotlin {
         }
         val commonTest by getting
         val androidMain by getting
-        val androidTest by getting
+        val androidUnitTest by getting
+        val androidInstrumentedTest by getting
         val jvmMain by getting
         val jvmTest by getting
     }
