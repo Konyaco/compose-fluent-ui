@@ -10,7 +10,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.konyaco:fluent:0.0.1-dev4")
+                api(project(":fluent"))
             }
         }
         val commonTest by getting
