@@ -105,7 +105,8 @@ data class FillAccentColors(
 data class Stroke(
     val control: Control,
     val controlStrong: ControlStrong,
-    val surface: Surface
+    val surface: Surface,
+    val card: Card
 ) {
     data class Control(
         val default: Color,
@@ -126,6 +127,11 @@ data class Stroke(
         val default: Color,
         val flyout: Color
     )
+    
+    data class Card(
+        val default: Color,
+        val defaultSolid: Color
+    )
 }
 
 data class SubtleFillColors(
@@ -138,7 +144,8 @@ data class SubtleFillColors(
 data class Background(
     val mica: Mica,
     val layer: Layer,
-    val solid: Solid
+    val solid: Solid,
+    val acrylic: Acrylic
 ) {
     data class Card(
         val default: Color,
@@ -183,7 +190,9 @@ data class Background(
 
     data class Acrylic(
         val base: Color,
-        val default: Color
+        val baseFallback: Color,
+        val default: Color,
+        val defaultFallback: Color
     )
 
     data class AccentAcrylic(
@@ -350,6 +359,12 @@ internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
     if (darkMode) Background(
         mica = Background.Mica(base = Color(0xFF202020), baseAlt = Color(0xFF0A0A0A)),
         layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0DFFFFFF)),
+        acrylic = Background.Acrylic(
+            base = Color(0xFF202020),
+            baseFallback = Color(0xFF1C1C1C),
+            default = Color(0xFF2C2C2C),
+            defaultFallback = Color(0xFF2C2C2C)
+        ),
         solid = Background.Solid(
             base = Color(0xFF202020),
             baseAlt = Color(0xFF0A0A0A),
@@ -363,6 +378,12 @@ internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
     else Background(
         mica = Background.Mica(base = Color(0xFFF3F3F3), baseAlt = Color(0xFFDADADA)),
         layer = Background.Layer(default = Color(0x80FFFFFF), alt = Color(0xFFFFFFFF)),
+        acrylic = Background.Acrylic(
+            base = Color(0xFFF3F3F3),
+            baseFallback = Color(0xFFEEEEEE),
+            default = Color(0xFFFCFCFC),
+            defaultFallback = Color(0xFFF9F9F9)
+        ),
         solid = Background.Solid(
             base = Color(0xFFF3F3F3),
             baseAlt = Color(0xFFDADADA),
@@ -391,7 +412,11 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         ),
         surface = Stroke.Surface(
             default = Color(0x66757575),
-            flyout = Color(0x33000000)
+            flyout = Color(0x33000000),
+        ),
+        card = Stroke.Card(
+            default = Color(0x19000000),
+            defaultSolid = Color(0xFF1C1C1C)
         )
     )
     else Stroke(
@@ -411,6 +436,10 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         surface = Stroke.Surface(
             default = Color(0x66757575),
             flyout = Color(0x0F000000)
+        ),
+        card = Stroke.Card(
+            default = Color(0x0F000000),
+            defaultSolid = Color(0xFFEBEBEB)
         )
     )
 

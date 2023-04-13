@@ -34,7 +34,7 @@ fun Layer(
     shape: Shape = RoundedCornerShape(4.dp),
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
-    border: BorderStroke? = null,
+    border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
     outsideBorder: Boolean = false,
     cornerRadius: Dp = 4.dp,
     elevation: Dp = 0.dp,

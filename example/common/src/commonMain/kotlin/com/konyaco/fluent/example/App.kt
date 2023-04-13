@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.background.Acrylic
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.component.*
@@ -27,65 +28,69 @@ fun App() {
     var displayDialog by remember { mutableStateOf(false) }
 
     FluentTheme(colors = if (darkMode) darkColors() else lightColors()) {
-        Mica(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).horizontalScroll(rememberScrollState())) {
+        Mica(Modifier.fillMaxSize()) {
             val density = LocalDensity.current
             var scale by remember(density) { mutableStateOf(density.density) }
+            Row(Modifier.fillMaxSize()) {
+                SideNav(Modifier.fillMaxHeight())
+                Layer(
+                    modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 0.dp)
+                        .defaultMinSize(minWidth = 600.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    color = FluentTheme.colors.background.layer.default,
+                    border = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
+                    cornerRadius = 8.dp
+                ) {
+                    Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
+                        Controller(scale, { scale = it }, darkMode, { darkMode = it })
 
-            Layer(
-                modifier = Modifier.padding(start = 32.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .defaultMinSize(minWidth = 600.dp),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-                cornerRadius = 8.dp
-            ) {
-                Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
-                    Controller(scale, { scale = it }, darkMode, { darkMode = it })
+                        CompositionLocalProvider(LocalDensity provides Density(scale)) {
+                            Content()
+                        }
 
-                    CompositionLocalProvider(LocalDensity provides Density(scale)) {
-                        Content()
+                        AccentButton(onClick = {
+                            displayDialog = true
+                        }) { Text("Display Dialog") }
+
+                        Box {
+                            var expanded by remember { mutableStateOf(false) }
+
+                            Button(onClick = {
+                                expanded = true
+                            }) {
+                                Text("Show DropdownMenu")
+                            }
+
+                            fun close() {
+                                expanded = false
+                            }
+
+                            DropdownMenu(expanded, ::close) {
+                                DropdownMenuItem(::close) { Text("Option 1")}
+                                DropdownMenuItem(::close) { Text("Option 2")}
+                                DropdownMenuItem(::close) { Text("Option 3")}
+                            }
+                        }
                     }
-
-                    AccentButton(onClick = {
-                        displayDialog = true
-                    }) { Text("Display Dialog") }
-                    Box {
-                        var expanded by remember { mutableStateOf(false) }
-
-                        Button(onClick = {
-                            expanded = true
-                        }) {
-                            Text("Show DropdownMenu")
+                    Dialog(
+                        title = "This is an example dialog",
+                        visible = displayDialog,
+                        cancelButtonText = "Cancel",
+                        confirmButtonText = "Confirm",
+                        onCancel = {
+                            displayDialog = false
+                        },
+                        onConfirm = {
+                            displayDialog = false
+                        },
+                        content = {
+                            Text("This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
+                                    "\n" +
+                                    "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
+                                color = LocalContentColor.current)
                         }
-
-                        fun close() {
-                            expanded = false
-                        }
-
-                        DropdownMenu(expanded, ::close) {
-                            DropdownMenuItem(::close) { Text("Option 1")}
-                            DropdownMenuItem(::close) { Text("Option 2")}
-                            DropdownMenuItem(::close) { Text("Option 3")}
-                        }
-                    }
+                    )
                 }
-                Dialog(
-                    title = "This is an example dialog",
-                    visible = displayDialog,
-                    cancelButtonText = "Cancel",
-                    confirmButtonText = "Confirm",
-                    onCancel = {
-                        displayDialog = false
-                    },
-                    onConfirm = {
-                        displayDialog = false
-                    },
-                    content = {
-                        Text("This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
-                                "\n" +
-                                "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                            color = LocalContentColor.current)
-                    }
-                )
             }
         }
     }
