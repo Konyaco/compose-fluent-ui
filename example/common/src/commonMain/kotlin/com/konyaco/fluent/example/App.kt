@@ -69,7 +69,7 @@ fun App() {
                     }
                 }
                 Dialog(
-                    title = "This is a example dialog",
+                    title = "This is an example dialog",
                     visible = displayDialog,
                     cancelButtonText = "Cancel",
                     confirmButtonText = "Confirm",
@@ -78,6 +78,12 @@ fun App() {
                     },
                     onConfirm = {
                         displayDialog = false
+                    },
+                    content = {
+                        Text("This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
+                                "\n" +
+                                "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
+                            color = LocalContentColor.current)
                     }
                 )
             }

@@ -137,16 +137,58 @@ data class SubtleFillColors(
 
 data class Background(
     val mica: Mica,
-    val layer: Layer
+    val layer: Layer,
+    val solid: Solid
 ) {
-    data class Mica(
-        val base: Color,
-        val baseAlt: Color
+    data class Card(
+        val default: Color,
+        val secondary: Color,
+        val tertiary: Color
+    )
+
+    data class Smoke(
+        val default: Color
     )
 
     data class Layer(
         val default: Color,
         val alt: Color
+    )
+
+    data class LayerOnAcrylic(
+        val default: Color
+    )
+
+    data class LayerOnMicaBaseAlt(
+        val default: Color,
+        val tertiary: Color,
+        val transparent: Color,
+        val secondary: Color
+    )
+
+    data class Solid(
+        val base: Color,
+        val baseAlt: Color,
+        val secondary: Color,
+        val tertiary: Color,
+        val quaternary: Color,
+        val quinary: Color,
+        val senary: Color
+    )
+
+    data class Mica(
+        val base: Color,
+        val baseAlt: Color
+    )
+
+    data class Acrylic(
+        val base: Color,
+        val default: Color
+    )
+
+    data class AccentAcrylic(
+        val base: Color,
+        val default: Color
     )
 }
 
@@ -307,11 +349,29 @@ internal fun generateFillAccentColors(shades: Shades, darkMode: Boolean): FillAc
 internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
     if (darkMode) Background(
         mica = Background.Mica(base = Color(0xFF202020), baseAlt = Color(0xFF0A0A0A)),
-        layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0DFFFFFF))
+        layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0DFFFFFF)),
+        solid = Background.Solid(
+            base = Color(0xFF202020),
+            baseAlt = Color(0xFF0A0A0A),
+            secondary = Color(0xFF1C1C1C),
+            tertiary = Color(0xFF282828),
+            quaternary = Color(0xFF2C2C2C),
+            quinary = Color(0xFF333333),
+            senary = Color(0xFF373737)
+        )
     )
     else Background(
         mica = Background.Mica(base = Color(0xFFF3F3F3), baseAlt = Color(0xFFDADADA)),
-        layer = Background.Layer(default = Color(0x80FFFFFF), alt = Color(0xFFFFFFFF))
+        layer = Background.Layer(default = Color(0x80FFFFFF), alt = Color(0xFFFFFFFF)),
+        solid = Background.Solid(
+            base = Color(0xFFF3F3F3),
+            baseAlt = Color(0xFFDADADA),
+            secondary = Color(0xFFEEEEEE),
+            tertiary = Color(0xFFF9F9F9),
+            quaternary = Color(0xFFFFFFFF),
+            quinary = Color(0xFFFDFDFD),
+            senary = Color(0xFFFFFFFF)
+        )
     )
 
 internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
