@@ -1,26 +1,34 @@
 package com.konyaco.fluent.example
 
-import androidx.compose.foundation.*
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
-import com.konyaco.fluent.background.Acrylic
+import com.konyaco.fluent.animation.FluentDuration
+import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.darkColors
-import com.konyaco.fluent.lightColors
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.*
+import com.konyaco.fluent.lightColors
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun App() {
     val systemDarkMode = isSystemInDarkTheme()
@@ -32,64 +40,101 @@ fun App() {
             val density = LocalDensity.current
             var scale by remember(density) { mutableStateOf(density.density) }
             Row(Modifier.fillMaxSize()) {
-                SideNav(Modifier.fillMaxHeight())
-                Layer(
-                    modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 0.dp)
-                        .defaultMinSize(minWidth = 600.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    color = FluentTheme.colors.background.layer.default,
-                    border = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
-                    cornerRadius = 8.dp
-                ) {
-                    Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
-                        Controller(scale, { scale = it }, darkMode, { darkMode = it })
+                var expanded by remember { mutableStateOf(false) }
+                var selected by remember { mutableStateOf(0) }
 
-                        CompositionLocalProvider(LocalDensity provides Density(scale)) {
-                            Content()
+                SideNav(Modifier.fillMaxHeight(), expanded, { expanded = it }) {
+                    SideNavItem(
+                        selected == 0,
+                        onClick = { selected = 0 },
+                        icon = { Icon(Icons.Default.Home, "Home") },
+                        content = { Text("Home") }
+                    )
+                    SideNavItem(
+                        selected == 1,
+                        onClick = { selected = 1 },
+                        icon = { Icon(Icons.Default.Checkmark, "Basic input") },
+                        content = { Text("Basic input") }
+                    )
+                    SideNavItem(
+                        selected == 2,
+                        onClick = { selected = 2 },
+                        icon = { Icon(Icons.Default.Home, "Collections") },
+                        content = { Text("Collections") }
+                    )
+                }
+
+                AnimatedContent(selected, Modifier.fillMaxHeight().weight(1f), transitionSpec = {
+                    fadeIn(tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)) + 
+                            slideInVertically(tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing), { it / 6 }) with 
+                            fadeOut(tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing))
+                }) {
+                    when (it) {
+                        0 -> Layer(
+                            modifier = Modifier.padding(top = 16.dp).fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            shape = RoundedCornerShape(8.dp),
+                            color = FluentTheme.colors.background.layer.default,
+                            border = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
+                            cornerRadius = 8.dp
+                        ) {
+                            Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
+                                Controller(scale, { scale = it }, darkMode, { darkMode = it })
+
+                                CompositionLocalProvider(LocalDensity provides Density(scale)) {
+                                    Content()
+                                }
+
+                                AccentButton(onClick = {
+                                    displayDialog = true
+                                }) { Text("Display Dialog") }
+
+                                Box {
+                                    var expanded by remember { mutableStateOf(false) }
+
+                                    Button(onClick = {
+                                        expanded = true
+                                    }) {
+                                        Text("Show DropdownMenu")
+                                    }
+
+                                    fun close() {
+                                        expanded = false
+                                    }
+
+                                    DropdownMenu(expanded, ::close) {
+                                        DropdownMenuItem(::close) { Text("Option 1") }
+                                        DropdownMenuItem(::close) { Text("Option 2") }
+                                        DropdownMenuItem(::close) { Text("Option 3") }
+                                    }
+                                }
+                            }
+                            Dialog(
+                                title = "This is an example dialog",
+                                visible = displayDialog,
+                                cancelButtonText = "Cancel",
+                                confirmButtonText = "Confirm",
+                                onCancel = {
+                                    displayDialog = false
+                                },
+                                onConfirm = {
+                                    displayDialog = false
+                                },
+                                content = {
+                                    Text(
+                                        "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
+                                                "\n" +
+                                                "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
+                                        color = LocalContentColor.current
+                                    )
+                                }
+                            )
                         }
 
-                        AccentButton(onClick = {
-                            displayDialog = true
-                        }) { Text("Display Dialog") }
-
-                        Box {
-                            var expanded by remember { mutableStateOf(false) }
-
-                            Button(onClick = {
-                                expanded = true
-                            }) {
-                                Text("Show DropdownMenu")
-                            }
-
-                            fun close() {
-                                expanded = false
-                            }
-
-                            DropdownMenu(expanded, ::close) {
-                                DropdownMenuItem(::close) { Text("Option 1")}
-                                DropdownMenuItem(::close) { Text("Option 2")}
-                                DropdownMenuItem(::close) { Text("Option 3")}
-                            }
+                        else -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("Not implemented yet")
                         }
                     }
-                    Dialog(
-                        title = "This is an example dialog",
-                        visible = displayDialog,
-                        cancelButtonText = "Cancel",
-                        confirmButtonText = "Confirm",
-                        onCancel = {
-                            displayDialog = false
-                        },
-                        onConfirm = {
-                            displayDialog = false
-                        },
-                        content = {
-                            Text("This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
-                                    "\n" +
-                                    "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                                color = LocalContentColor.current)
-                        }
-                    )
                 }
             }
         }

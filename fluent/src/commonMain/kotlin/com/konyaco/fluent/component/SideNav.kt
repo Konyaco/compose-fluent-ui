@@ -1,7 +1,10 @@
 package com.konyaco.fluent.component
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,13 +22,17 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Home
 import com.konyaco.fluent.icons.regular.Navigation
 
-@Composable
-fun SideNav(modifier: Modifier) {
-    var expanded by remember { mutableStateOf(true) }
+private val LocalExpand = compositionLocalOf { false }
 
+@Composable
+fun SideNav(
+    modifier: Modifier,
+    expanded: Boolean,
+    onExpandStateChange: (Boolean) -> Unit,
+    content: @Composable () -> Unit
+) {
     val width by animateDpAsState(
         if (expanded) 320.dp else 48.dp,
         tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
@@ -35,40 +42,23 @@ fun SideNav(modifier: Modifier) {
         Spacer(Modifier.height(8.dp))
         SubtleButton(
             modifier = Modifier.padding(4.dp).size(38.dp, 34.dp),
-            onClick = { expanded = !expanded },
+            onClick = { onExpandStateChange(!expanded) },
             iconOnly = true
         ) {
             Icon(Icons.Default.Navigation, "Expand")
         }
-        var selected by remember { mutableStateOf(0) }
-
-        repeat(10) {
-            Item(
-                modifier = Modifier.fillMaxWidth().height(36.dp),
-                selected = selected == it,
-                onClick = { _ ->
-                    selected = it
-                },
-                icon = {
-                    Icon(Icons.Default.Home, contentDescription = null)
-                },
-                content = {
-                    Text("Item $it")
-                },
-                expand = expanded
-            )
+        CompositionLocalProvider(LocalExpand provides expanded) {
+            content()
         }
         Spacer(Modifier.height(8.dp))
     }
     // Item
-
 }
 
 @Composable
-fun Item(
-    modifier: Modifier,
+fun SideNavItem(
     selected: Boolean,
-    expand: Boolean,
+    expand: Boolean = LocalExpand.current,
     onClick: (Boolean) -> Unit,
     icon: @Composable (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit
@@ -80,16 +70,18 @@ fun Item(
     val color = when {
         selected && hovered -> FluentTheme.colors.subtleFill.tertiary
         selected -> FluentTheme.colors.subtleFill.secondary
-        hovered -> FluentTheme.colors.subtleFill.secondary
         pressed -> FluentTheme.colors.subtleFill.tertiary
+        hovered -> FluentTheme.colors.subtleFill.secondary
         else -> FluentTheme.colors.subtleFill.transparent
     }
 
     Box(Modifier.height(40.dp).fillMaxWidth().padding(4.dp, 2.dp)) {
         Layer(
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth().height(36.dp),
             shape = RoundedCornerShape(4.dp),
-            color = color,
+            color = animateColorAsState(
+                color, tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
+            ).value,
             contentColor = FluentTheme.colors.text.text.primary,
             outsideBorder = false,
             cornerRadius = 4.dp,
@@ -117,12 +109,15 @@ fun Item(
                 }
             }
         }
-        // TODO: Animation
-        if (selected) Indicator(Modifier.align(Alignment.CenterStart))
+        Indicator(Modifier.align(Alignment.CenterStart), selected)
     }
 }
 
 @Composable
-private fun Indicator(modifier: Modifier) {
-    Box(modifier.size(3.dp, 16.dp).background(FluentTheme.colors.fillAccent.default, CircleShape))
+private fun Indicator(modifier: Modifier, display: Boolean) {
+    val height by updateTransition(display).animateDp(transitionSpec = {
+        if (targetState) tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+        else tween(FluentDuration.QuickDuration, easing = FluentEasing.SoftDismissEasing)
+    }, targetValueByState = { if (it) 16.dp else 0.dp })
+    Box(modifier.size(3.dp, height).background(FluentTheme.colors.fillAccent.default, CircleShape))
 }
