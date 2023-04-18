@@ -11,6 +11,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":fluent"))
+                api(project(":fluent-icons-extended"))
             }
         }
         val commonTest by getting

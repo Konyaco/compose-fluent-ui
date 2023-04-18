@@ -5,8 +5,7 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -31,6 +30,7 @@ fun SideNav(
     modifier: Modifier,
     expanded: Boolean,
     onExpandStateChange: (Boolean) -> Unit,
+    footer: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     val width by animateDpAsState(
@@ -48,11 +48,43 @@ fun SideNav(
             Icon(Icons.Default.Navigation, "Expand")
         }
         CompositionLocalProvider(LocalExpand provides expanded) {
-            content()
+            val scrollState = rememberScrollState()
+            Box(Modifier.width(width).weight(1f)) {
+                Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
+                    content()
+                }
+                
+                // TODO: Fluent scrollbar
+                val interactionSource = remember { MutableInteractionSource() }
+                val hovered by interactionSource.collectIsHoveredAsState()
+                val pressed by interactionSource.collectIsPressedAsState()
+                val thickness by animateDpAsState(if (hovered || pressed) 6.dp else 2.dp)
+                
+                VerticalScrollbar(
+                    rememberScrollbarAdapter(scrollState),
+                    Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                    style = ScrollbarStyle(
+                        thickness = thickness,
+                        unhoverColor = FluentTheme.colors.stroke.controlStrong.default,
+                        hoverColor = FluentTheme.colors.stroke.controlStrong.default,
+                        shape = CircleShape,
+                        hoverDurationMillis = 300,
+                        minimalHeight = 16.dp
+                    ),
+                    interactionSource = interactionSource
+                )
+            }
+            footer?.let {
+                // Divider
+                Box(
+                    Modifier.fillMaxWidth().padding(vertical = 8.dp).height(1.dp)
+                        .background(FluentTheme.colors.stroke.surface.default.copy(0.2f))
+                )
+                it()
+                Spacer(Modifier.height(4.dp))
+            }
         }
-        Spacer(Modifier.height(8.dp))
     }
-    // Item
 }
 
 @Composable
