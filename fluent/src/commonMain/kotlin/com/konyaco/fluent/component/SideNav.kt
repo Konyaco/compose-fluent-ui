@@ -48,8 +48,11 @@ fun SideNav(
             Icon(Icons.Default.Navigation, "Expand")
         }
         CompositionLocalProvider(LocalExpand provides expanded) {
-            val scrollState = rememberScrollState()
-            Box(Modifier.width(width).weight(1f)) {
+//            val scrollState = rememberScrollState()
+            ColumnWithScrollBar(Modifier.width(width).weight(1f)) {
+                content()
+            }
+            /*Box(Modifier.width(width).weight(1f)) {
                 Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
                     content()
                 }
@@ -73,7 +76,7 @@ fun SideNav(
                     ),
                     interactionSource = interactionSource
                 )
-            }
+            }*/
             footer?.let {
                 // Divider
                 Box(

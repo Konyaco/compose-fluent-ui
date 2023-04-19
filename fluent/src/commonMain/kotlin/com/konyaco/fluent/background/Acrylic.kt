@@ -1,5 +1,6 @@
 package com.konyaco.fluent.background
 
+/*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,4 +54,4 @@ fun Acrylic(
             content()
         }
     }
-}
+}*/

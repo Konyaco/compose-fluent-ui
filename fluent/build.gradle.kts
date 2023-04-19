@@ -11,7 +11,7 @@ version = "0.0.1-dev4"
 
 kotlin {
     jvm()
-    android {
+    android("android") {
         publishLibraryVariants("release")
     }
     sourceSets {
@@ -32,6 +32,8 @@ kotlin {
                 api("androidx.core:core-ktx:1.10.0")
             }
         }
+        val androidUnitTest by getting
+        val androidInstrumentedTest by getting
         val jvmMain by getting {
             dependencies {
                 api(compose.preview)
@@ -52,8 +54,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlin {
+        jvmToolchain(11)
+    }
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")

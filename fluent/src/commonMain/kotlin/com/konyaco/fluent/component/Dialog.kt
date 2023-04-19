@@ -11,16 +11,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupPositionProviderAtPosition
+import androidx.compose.ui.window.PopupPositionProvider
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
@@ -29,7 +26,9 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
+internal expect val DialogPopupPositionProvider : PopupPositionProvider
+
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Dialog(
     title: String,
@@ -47,14 +46,11 @@ fun Dialog(
     }
 
     if (visibleState.currentState || visibleState.targetState) Popup(
-        popupPositionProvider = remember {
-            PopupPositionProviderAtPosition(Offset.Zero, false, Offset.Zero, windowMarginPx = 0)
-        }
+        popupPositionProvider = DialogPopupPositionProvider
     ) {
-        val background = 
         Box(
             Modifier.fillMaxSize()
-                .background(Color.Black.copy(0.12f))
+                .background(Color.Black.copy(0.3f))
                 .pointerInput(Unit) {},
             Alignment.Center
         ) {
