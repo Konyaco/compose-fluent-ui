@@ -23,10 +23,6 @@ android {
             useSupportLibrary = true
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -41,6 +37,10 @@ android {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
     }
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 dependencies {

@@ -41,6 +41,7 @@ kotlin {
         }
         val jvmTest by getting
     }
+    jvmToolchain(11)
 }
 
 android {
@@ -50,18 +51,6 @@ android {
         minSdk = 24
         targetSdk = 33
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlin {
-        jvmToolchain(11)
-    }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }
 
 val javadocJar by tasks.registering(Jar::class) {

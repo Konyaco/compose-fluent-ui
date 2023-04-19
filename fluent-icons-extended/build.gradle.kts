@@ -29,6 +29,7 @@ kotlin {
         }
         val jvmTest by getting
     }
+    jvmToolchain(11)
 }
 
 android {
@@ -37,10 +38,6 @@ android {
     defaultConfig {
         minSdk = 24
         targetSdk = 33
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
