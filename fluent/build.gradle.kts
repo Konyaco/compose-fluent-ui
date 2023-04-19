@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.konyaco"
-version = "0.0.1-dev4"
+version = "0.0.1-dev.5"
 
 kotlin {
     jvm()
