@@ -33,8 +33,7 @@ kotlin {
 
 android {
     compileSdk = 33
-    namespace = "com.konyaco.fluent.icons"
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    namespace = "com.konyaco.fluent.icons.extended"
     defaultConfig {
         minSdk = 24
         targetSdk = 33

@@ -9,35 +9,35 @@ import androidx.compose.ui.unit.sp
 internal val LocalTypography = staticCompositionLocalOf {
     Typography(
         caption = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.Light,
+            fontWeight = FontWeight.Light,
             fontSize = 12.sp, lineHeight = 16.sp
         ),
         body = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Normal,
             fontSize = 14.sp, lineHeight = 20.sp
         ),
         bodyStrong = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp, lineHeight = 20.sp
         ),
         bodyLarge = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Normal,
             fontSize = 18.sp, lineHeight = 24.sp
         ),
         subtitle = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp, lineHeight = 28.sp
         ),
         title = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold,
             fontSize = 28.sp, lineHeight = 36.sp
         ),
         titleLarge = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold,
             fontSize = 40.sp, lineHeight = 52.sp
         ),
         display = TextStyle(
-            color = Color.Black, fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold,
             fontSize = 68.sp, lineHeight = 92.sp
         )
     )

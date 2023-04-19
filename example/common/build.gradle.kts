@@ -10,12 +10,14 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.konyaco:fluent:0.0.1-dev4")
+                api(project(":fluent"))
+                api(project(":fluent-icons-extended"))
             }
         }
         val commonTest by getting
         val androidMain by getting
-        val androidTest by getting
+        val androidUnitTest by getting
+        val androidInstrumentedTest by getting
         val jvmMain by getting
         val jvmTest by getting
     }

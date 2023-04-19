@@ -1,242 +1,114 @@
 package com.konyaco.fluent.example
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.LocalContentColor
-import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.animation.FluentDuration
+import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Mica
-import com.konyaco.fluent.component.*
+import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.component.SideNav
+import com.konyaco.fluent.component.SideNavItem
+import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.darkColors
-import com.konyaco.fluent.lightColors
+import com.konyaco.fluent.example.screen.HomeScreen
+import com.konyaco.fluent.example.screen.TodoScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.*
+import com.konyaco.fluent.lightColors
 
+private data class NavItem(
+    val label: String,
+    val icon: ImageVector,
+    val content: @Composable () -> Unit
+)
+
+private val navs = listOf(
+    NavItem("Home", Icons.Default.Home) { HomeScreen() },
+    NavItem("Design guidance", Icons.Default.Ruler) { TodoScreen() },
+    NavItem("All samples", Icons.Default.AppsList) { TodoScreen() },
+    NavItem("Basic input", Icons.Default.CheckboxChecked) { TodoScreen() },
+    NavItem("Collections", Icons.Default.Table) { TodoScreen() },
+    NavItem("Date & time", Icons.Default.CalendarClock) { TodoScreen() },
+    NavItem("Dialogs & flyouts", Icons.Default.Chat) { TodoScreen() },
+    NavItem("Layout", Icons.Default.SlideLayout) { TodoScreen() },
+    NavItem("Media", Icons.Default.VideoClip) { TodoScreen() },
+    NavItem("Menus & toolbars", Icons.Default.Save) { TodoScreen() },
+    NavItem("Motion", Icons.Default.Flash) { TodoScreen() },
+    NavItem("Navigation", Icons.Default.Navigation) { TodoScreen() },
+    NavItem("Scrolling", Icons.Default.ArrowSort) { TodoScreen() },
+    NavItem("Status & info", Icons.Default.ChatMultiple) { TodoScreen() },
+    NavItem("Styles", Icons.Default.Color) { TodoScreen() },
+    NavItem("System", Icons.Default.System) { TodoScreen() },
+    NavItem("Text", Icons.Default.TextFont) { TodoScreen() },
+    NavItem("Windowing", Icons.Default.Window) { TodoScreen() },
+)
+
+
+internal val LocalStore = compositionLocalOf<Store> { error("Not provided") }
+class Store(
+    systemDarkMode: Boolean
+) {
+    var darkMode by mutableStateOf(systemDarkMode)
+}
+
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun App() {
     val systemDarkMode = isSystemInDarkTheme()
-    var darkMode by remember(systemDarkMode) { mutableStateOf(systemDarkMode) }
-    var displayDialog by remember { mutableStateOf(false) }
+    
+    val store = remember { Store(systemDarkMode) }
+    
+    LaunchedEffect(systemDarkMode) {
+        store.darkMode = systemDarkMode
+    }
 
-    FluentTheme(colors = if (darkMode) darkColors() else lightColors()) {
-        Mica(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).horizontalScroll(rememberScrollState())) {
-            val density = LocalDensity.current
-            var scale by remember(density) { mutableStateOf(density.density) }
+    CompositionLocalProvider(LocalStore provides store) {
+        FluentTheme(colors = if (store.darkMode) darkColors() else lightColors()) {
+            Mica(Modifier.fillMaxSize()) {
+                Row(Modifier.fillMaxSize()) {
+                    var expanded by remember { mutableStateOf(true) }
+                    var selected by remember { mutableStateOf(0) }
 
-            Layer(
-                modifier = Modifier.padding(start = 32.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .defaultMinSize(minWidth = 600.dp),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-                cornerRadius = 8.dp
-            ) {
-                Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
-                    Controller(scale, { scale = it }, darkMode, { darkMode = it })
-
-                    CompositionLocalProvider(LocalDensity provides Density(scale)) {
-                        Content()
+                    SideNav(Modifier.fillMaxHeight(), expanded, { expanded = it },
+                        footer = {
+                            SideNavItem(false, onClick = {
+                                // TODO
+                            }, icon = { Icon(Icons.Default.Settings, "Settings") }) {
+                                Text("Settings")
+                            }
+                        }
+                    ) {
+                        navs.forEachIndexed { index, navItem ->
+                            SideNavItem(
+                                selected == index,
+                                onClick = { selected = index },
+                                icon = { Icon(navItem.icon, null) },
+                                content = { Text(navItem.label) }
+                            )
+                        }
                     }
 
-                    AccentButton(onClick = {
-                        displayDialog = true
-                    }) { Text("Display Dialog") }
-                    Box {
-                        var expanded by remember { mutableStateOf(false) }
-
-                        Button(onClick = {
-                            expanded = true
-                        }) {
-                            Text("Show DropdownMenu")
-                        }
-
-                        fun close() {
-                            expanded = false
-                        }
-
-                        DropdownMenu(expanded, ::close) {
-                            DropdownMenuItem(::close) { Text("Option 1")}
-                            DropdownMenuItem(::close) { Text("Option 2")}
-                            DropdownMenuItem(::close) { Text("Option 3")}
-                        }
+                    AnimatedContent(selected, Modifier.fillMaxHeight().weight(1f), transitionSpec = {
+                        fadeIn(tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)) +
+                                slideInVertically(
+                                    tween(
+                                        FluentDuration.ShortDuration,
+                                        easing = FluentEasing.FastInvokeEasing
+                                    ), { it / 6 }) with
+                                fadeOut(tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing))
+                    }) {
+                        navs[it].content()
                     }
                 }
-                Dialog(
-                    title = "This is a example dialog",
-                    visible = displayDialog,
-                    cancelButtonText = "Cancel",
-                    confirmButtonText = "Confirm",
-                    onCancel = {
-                        displayDialog = false
-                    },
-                    onConfirm = {
-                        displayDialog = false
-                    }
-                )
             }
         }
     }
 }
-
-@Composable
-private fun Controller(
-    scale: Float,
-    onScaleChange: (Float) -> Unit,
-    darkMode: Boolean,
-    onDarkModeChange: (Boolean) -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text("Scale: %.2f".format(scale))
-        val density = LocalDensity.current
-        Button(onClick = { onScaleChange(density.density) }) { Text("Reset") }
-        Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })
-    }
-    Slider(
-        modifier = Modifier.width(200.dp),
-        value = scale,
-        onValueChange = { onScaleChange(it) },
-        valueRange = 1f..10f
-    )
-}
-
-@Composable
-private fun Content() {
-
-    var sliderValue by remember { mutableStateOf(0.5f) }
-    Slider(
-        modifier = Modifier.width(200.dp),
-        value = sliderValue,
-        onValueChange = { sliderValue = it },
-    )
-    Buttons()
-
-    Controls()
-
-    Row {
-        Layer(
-            modifier = Modifier.size(32.dp),
-            shape = RoundedCornerShape(4.dp),
-            cornerRadius = 4.dp,
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {},
-            outsideBorder = false
-        )
-        Layer(
-            modifier = Modifier.size(32.dp),
-            shape = RoundedCornerShape(4.dp),
-            cornerRadius = 4.dp,
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {},
-            outsideBorder = true
-        )
-    }
-
-    var value by remember { mutableStateOf(TextFieldValue("Hello Fluent!")) }
-    TextField(value, onValueChange = { value = it })
-    TextField(
-        value = value, onValueChange = { value = it }, enabled = false,
-        header = { Text("With Header") }
-    )
-
-    // ProgressRings
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(32.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ProgressRing(size = ProgressRingSize.Medium)
-        ProgressRing(progress = sliderValue)
-        AccentButton(onClick = {}) {
-            ProgressRing(size = ProgressRingSize.Small, color = LocalContentColor.current)
-            Text("Small")
-        }
-    }
-
-    ProgressBar(sliderValue)
-    ProgressBar()
-
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        for (imageVector in icons) {
-            Icon(
-                modifier = Modifier.size(18.dp),
-                imageVector = imageVector, contentDescription = null
-            )
-        }
-    }
-}
-
-@Composable
-private fun Controls() {
-    var checked by remember { mutableStateOf(false) }
-    Switcher(checked, text = null, onCheckStateChange = { checked = it })
-
-    var checked2 by remember { mutableStateOf(true) }
-    Switcher(checked2, text = "With Label", onCheckStateChange = { checked2 = it })
-
-    var checked3 by remember { mutableStateOf(true) }
-    Switcher(
-        checked3,
-        text = "Before Label",
-        textBefore = true,
-        onCheckStateChange = { checked3 = it }
-    )
-
-    var checked4 by remember { mutableStateOf(false) }
-    CheckBox(checked4) { checked4 = it }
-
-    var checked5 by remember { mutableStateOf(true) }
-    CheckBox(checked5, label = "With Label") { checked5 = it }
-
-    var selectedRadio by remember { mutableStateOf(0) }
-    RadioButton(selectedRadio == 0, onClick = { selectedRadio = 0 })
-    RadioButton(selectedRadio == 1, onClick = { selectedRadio = 1 }, label = "With Label")
-}
-
-@Composable
-private fun Buttons() {
-    var text by remember { mutableStateOf("Hello World") }
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        val onClick = { text = "Hello, Fluent Design!" }
-        Button(onClick) { Text(text) }
-
-        AccentButton(onClick) {
-            Icon(Icons.Default.Checkmark, contentDescription = null)
-            Text(text)
-        }
-
-        SubtleButton(onClick) {
-            Text("Text Button")
-        }
-    }
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        AccentButton({}, iconOnly = true) {
-            Icon(Icons.Default.Navigation, contentDescription = null)
-        }
-        Button({}, iconOnly = true) {
-            Icon(Icons.Default.Navigation, contentDescription = null)
-        }
-        SubtleButton({}, iconOnly = true) {
-            Icon(Icons.Default.Navigation, contentDescription = null)
-        }
-    }
-}
-
-private val icons = arrayOf(
-    Icons.Default.Add,
-    Icons.Default.Delete,
-    Icons.Default.Dismiss,
-    Icons.Default.ArrowLeft,
-    Icons.Default.Navigation,
-    Icons.Default.List
-)
