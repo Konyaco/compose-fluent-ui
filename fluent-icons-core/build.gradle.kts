@@ -27,6 +27,7 @@ kotlin {
         }
         val jvmTest by getting
     }
+    jvmToolchain(11)
 }
 
 android {

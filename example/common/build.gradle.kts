@@ -21,12 +21,12 @@ kotlin {
         val jvmMain by getting
         val jvmTest by getting
     }
+    jvmToolchain(11)
 }
 
 android {
     compileSdk = 33
     namespace = "com.konyaco.fluent.example"
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 24
         targetSdk = 33
