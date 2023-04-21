@@ -11,6 +11,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(project(":example:common"))
+                implementation("com.mayakapps.compose:window-styler:0.3.2")
             }
         }
         val jvmTest by getting
