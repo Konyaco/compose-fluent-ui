@@ -48,39 +48,23 @@ fun SideNav(
             Icon(Icons.Default.Navigation, "Expand")
         }
         CompositionLocalProvider(LocalExpand provides expanded) {
-//            val scrollState = rememberScrollState()
-            ColumnWithScrollBar(Modifier.width(width).weight(1f)) {
-                content()
-            }
-            /*Box(Modifier.width(width).weight(1f)) {
-                Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
+            val scrollState = rememberScrollState()
+            ScrollbarContainer(
+                adapter = rememberScrollbarAdapter(scrollState),
+                modifier = Modifier.weight(1f)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxHeight().verticalScroll(scrollState).padding(
+                        bottom = 8.dp
+                    )
+                ) {
                     content()
                 }
-                
-                // TODO: Fluent scrollbar
-                val interactionSource = remember { MutableInteractionSource() }
-                val hovered by interactionSource.collectIsHoveredAsState()
-                val pressed by interactionSource.collectIsPressedAsState()
-                val thickness by animateDpAsState(if (hovered || pressed) 6.dp else 2.dp)
-                
-                VerticalScrollbar(
-                    rememberScrollbarAdapter(scrollState),
-                    Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                    style = ScrollbarStyle(
-                        thickness = thickness,
-                        unhoverColor = FluentTheme.colors.stroke.controlStrong.default,
-                        hoverColor = FluentTheme.colors.stroke.controlStrong.default,
-                        shape = CircleShape,
-                        hoverDurationMillis = 300,
-                        minimalHeight = 16.dp
-                    ),
-                    interactionSource = interactionSource
-                )
-            }*/
+            }
             footer?.let {
                 // Divider
                 Box(
-                    Modifier.fillMaxWidth().padding(vertical = 8.dp).height(1.dp)
+                    Modifier.fillMaxWidth().padding(bottom = 4.dp).height(1.dp)
                         .background(FluentTheme.colors.stroke.surface.default.copy(0.2f))
                 )
                 it()
