@@ -118,7 +118,7 @@ object ScrollbarDefaults {
     val thickness = 2.dp
     const val hoverDurationMillis = 300
     val shape = CircleShape
-    const val indicatorPressedAlpha = 0.875f
+    const val indicatorPressedScale = 0.875f
     val indicatorScrollOffset = 24.dp
 
     @Composable
@@ -159,7 +159,7 @@ fun ScrollbarIndicator(
     val offset = with(LocalDensity.current) { ScrollbarDefaults.indicatorScrollOffset.toPx() }
     val targetScale by animateFloatAsState(
         if (pressed) {
-            ScrollbarDefaults.indicatorPressedAlpha
+            ScrollbarDefaults.indicatorPressedScale
         } else {
             1f
         }
