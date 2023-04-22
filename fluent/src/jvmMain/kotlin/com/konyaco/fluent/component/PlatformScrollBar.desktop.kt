@@ -37,7 +37,7 @@ internal actual fun PlatformScrollBar(
     val dragged by interactionSource.collectIsDraggedAsState()
     val isThicknessHighLight by remember {
         derivedStateOf {
-            hovered || pressed || focused || dragged
+            (hovered || pressed || focused || dragged) && adapter.contentSize > adapter.viewportSize
         }
     }
 
