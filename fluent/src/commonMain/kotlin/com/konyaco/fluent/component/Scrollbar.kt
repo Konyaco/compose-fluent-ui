@@ -116,7 +116,7 @@ data class ScrollbarColors(
 object ScrollbarDefaults {
     val thicknessHighlight = 6.dp
     val thickness = 2.dp
-    const val hoverDurationMillis = 300
+    const val hoverDurationMillis = 500
     val shape = CircleShape
     const val indicatorPressedScale = 0.875f
     val indicatorScrollOffset = 24.dp
@@ -125,12 +125,9 @@ object ScrollbarDefaults {
     fun colors(
         contentColor: Color = FluentTheme.colors.controlStrong.default,
         contentColorDisabled: Color = FluentTheme.colors.controlStrong.disabled,
-        contentColorHovered: Color = FluentTheme.colors.text.text.secondary,
-        contentColorPressed: Color = FluentTheme.colors.text.text.secondary,
-        /*
-        * TODO find the actual scrollbar background color
-         */
-        backgroundColor: Color = FluentTheme.colors.subtleFill.transparent
+        contentColorHovered: Color = FluentTheme.colors.controlStrong.default,
+        contentColorPressed: Color = FluentTheme.colors.controlStrong.default,
+        backgroundColor: Color = FluentTheme.colors.background.acrylic.default
     ) = ScrollbarColors(
         contentColor = contentColor,
         contentColorDisabled = contentColorDisabled,

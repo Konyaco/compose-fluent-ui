@@ -1,18 +1,24 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.TextFieldScrollState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.animation.FluentDuration
+import com.konyaco.fluent.animation.FluentEasing
 import kotlinx.coroutines.launch
 
 actual typealias ScrollbarAdapter = androidx.compose.foundation.v2.ScrollbarAdapter
@@ -46,7 +52,8 @@ internal actual fun PlatformScrollBar(
             ScrollbarDefaults.thicknessHighlight
         } else {
             ScrollbarDefaults.thickness
-        }
+        },
+        tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
     )
 
     val style = ScrollbarStyle(
@@ -57,6 +64,7 @@ internal actual fun PlatformScrollBar(
         } else {
             colors.contentColorHovered
         },
+        // FIXME: hoverDurationMillis is not working. Scrollbar should have 500ms delay to show, and remain 500ms delay to hide.
         hoverDurationMillis = ScrollbarDefaults.hoverDurationMillis,
         shape = ScrollbarDefaults.shape,
         minimalHeight = 16.dp
@@ -73,23 +81,25 @@ internal actual fun PlatformScrollBar(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.hoverable(containerInteraction)
-                .background(if (isThicknessHighLight) {
-                    colors.backgroundColor
-                } else {
-                    Color.Transparent
-                })
+                .width(12.dp)
+                .background(
+                    if (isThicknessHighLight) colors.backgroundColor else Color.Transparent,
+                    CircleShape
+                )
                 .scrollable(
                     state = scrollbarScrollState,
                     orientation = Orientation.Vertical,
                     reverseDirection = reverseLayout
                 )
         ) {
+            Spacer(Modifier.height(2.dp))
             ScrollbarIndicator(
                 adapter = adapter,
                 isVertical = true,
                 visible = isThicknessHighLight,
                 forward = true
             )
+            // TODO: Use Acrylic as scrollbar's track 
             VerticalScrollbar(
                 adapter = adapter,
                 modifier = modifier.width(ScrollbarDefaults.thicknessHighlight)
@@ -104,22 +114,24 @@ internal actual fun PlatformScrollBar(
                 isVertical = true,
                 visible = isThicknessHighLight
             )
+            Spacer(Modifier.height(2.dp))
         }
     } else {
-        Row (
+        Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.hoverable(containerInteraction)
-                .background(if (isThicknessHighLight) {
-                    colors.backgroundColor
-                } else {
-                    Color.Transparent
-                })
+                .height(12.dp)
+                .background(
+                    if (isThicknessHighLight) colors.backgroundColor else Color.Transparent,
+                    CircleShape
+                )
                 .scrollable(
                     state = scrollbarScrollState,
                     orientation = Orientation.Horizontal,
                     reverseDirection = reverseLayout
                 )
         ) {
+            Spacer(Modifier.width(2.dp))
             ScrollbarIndicator(
                 adapter = adapter,
                 isVertical = false,
@@ -140,6 +152,7 @@ internal actual fun PlatformScrollBar(
                 isVertical = false,
                 visible = isThicknessHighLight
             )
+            Spacer(Modifier.width(2.dp))
         }
     }
 }
