@@ -71,7 +71,7 @@ fun App() {
                     ) { it / 6 } with
                     fadeOut(tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing))
         }) {
-            selectedItemWithContent.content?.invoke()
+            it.content?.invoke()
         }
     }
 }
