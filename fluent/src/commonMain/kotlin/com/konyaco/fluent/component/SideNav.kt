@@ -237,6 +237,11 @@ fun SideNavItem(
                 ) + expandVertically(
                     animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
                 ),
+                exit = fadeOut(
+                    animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+                ) + shrinkVertically(
+                    animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+                ),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CompositionLocalProvider(
