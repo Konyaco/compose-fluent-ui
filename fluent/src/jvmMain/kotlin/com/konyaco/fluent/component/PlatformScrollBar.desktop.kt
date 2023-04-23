@@ -1,6 +1,6 @@
 package com.konyaco.fluent.component
 
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
@@ -15,10 +15,10 @@ import androidx.compose.foundation.text.TextFieldScrollState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 actual typealias ScrollbarAdapter = androidx.compose.foundation.v2.ScrollbarAdapter
@@ -38,22 +38,34 @@ internal actual fun PlatformScrollBar(
         MutableInteractionSource()
     }
     val hovered by containerInteraction.collectIsHoveredAsState()
+    var delayedHovered by remember(containerInteraction) {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(hovered) {
+        delay(ScrollbarDefaults.hoverDurationMillis.toLong())
+        delayedHovered = hovered
+    }
     val pressed by interactionSource.collectIsPressedAsState()
     val focused by interactionSource.collectIsFocusedAsState()
     val dragged by interactionSource.collectIsDraggedAsState()
     val isThicknessHighLight by remember {
         derivedStateOf {
-            (hovered || pressed || focused || dragged) && adapter.contentSize > adapter.viewportSize
+            (delayedHovered || pressed || focused || dragged) && adapter.contentSize > adapter.viewportSize
         }
     }
 
-    val thickness by animateDpAsState(
-        if (isThicknessHighLight) {
-            ScrollbarDefaults.thicknessHighlight
+    val animationFraction by animateFloatAsState(
+        targetValue = if (isThicknessHighLight) {
+            1f
         } else {
-            ScrollbarDefaults.thickness
+            0f
         },
-        tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+    )
+    val thickness = androidx.compose.ui.unit.lerp(
+        ScrollbarDefaults.thickness,
+        ScrollbarDefaults.thicknessHighlight,
+        animationFraction
     )
 
     val style = ScrollbarStyle(
@@ -64,8 +76,7 @@ internal actual fun PlatformScrollBar(
         } else {
             colors.contentColorHovered
         },
-        // FIXME: hoverDurationMillis is not working. Scrollbar should have 500ms delay to show, and remain 500ms delay to hide.
-        hoverDurationMillis = ScrollbarDefaults.hoverDurationMillis,
+        hoverDurationMillis = FluentDuration.ShortDuration,
         shape = ScrollbarDefaults.shape,
         minimalHeight = 16.dp
     )
@@ -77,14 +88,15 @@ internal actual fun PlatformScrollBar(
         }
         it
     }
+    val trackColor = colors.backgroundColor.copy(animationFraction)
     if (isVertical) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.hoverable(containerInteraction)
                 .width(12.dp)
                 .background(
-                    if (isThicknessHighLight) colors.backgroundColor else Color.Transparent,
-                    CircleShape
+                    color = trackColor,
+                    shape = CircleShape
                 )
                 .scrollable(
                     state = scrollbarScrollState,
@@ -122,8 +134,8 @@ internal actual fun PlatformScrollBar(
             modifier = Modifier.hoverable(containerInteraction)
                 .height(12.dp)
                 .background(
-                    if (isThicknessHighLight) colors.backgroundColor else Color.Transparent,
-                    CircleShape
+                    color = trackColor,
+                    shape = CircleShape
                 )
                 .scrollable(
                     state = scrollbarScrollState,

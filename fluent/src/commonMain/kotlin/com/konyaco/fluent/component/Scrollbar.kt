@@ -1,6 +1,7 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,6 +23,8 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirstOrNull
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.animation.FluentDuration
+import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.CaretRight
 import kotlinx.coroutines.launch
@@ -154,6 +157,14 @@ fun ScrollbarIndicator(
     val pressed by interaction.collectIsPressedAsState()
     val scrollScope = rememberCoroutineScope()
     val offset = with(LocalDensity.current) { ScrollbarDefaults.indicatorScrollOffset.toPx() }
+    val animationFraction by animateFloatAsState(
+        targetValue = if (visible) {
+            1f
+        } else {
+            0f
+        },
+        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+    )
     val targetScale by animateFloatAsState(
         if (pressed) {
             ScrollbarDefaults.indicatorPressedScale
@@ -161,13 +172,7 @@ fun ScrollbarIndicator(
             1f
         }
     )
-    val targetAlpha by animateFloatAsState(
-        if (visible) {
-            1f
-        } else {
-            0f
-        }
-    )
+    val targetAlpha = animationFraction
     Icon(
         imageVector = Icons.Filled.CaretRight,
         contentDescription = null,
