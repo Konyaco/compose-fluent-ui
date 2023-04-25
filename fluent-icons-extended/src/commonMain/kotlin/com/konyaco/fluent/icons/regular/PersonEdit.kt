@@ -14,7 +14,7 @@ public val Icons.Regular.PersonEdit: ImageVector
         }
         _personEdit = fluentIcon(name = "Regular.PersonEdit") {
             fluentPath {
-                moveTo(14.86f, 15.5f)
+                moveToRelative(14.86f, 15.5f)
                 lineToRelative(1.5f, -1.5f)
                 lineTo(6.26f, 14.0f)
                 curveTo(5.0f, 14.0f, 4.0f, 15.0f, 4.0f, 16.25f)
@@ -38,7 +38,7 @@ public val Icons.Regular.PersonEdit: ImageVector
                 arcToRelative(3.5f, 3.5f, 0.0f, false, false, 0.0f, -7.0f)
                 close()
                 moveTo(19.1f, 12.67f)
-                lineToRelative(-5.9f, 5.9f)
+                lineTo(13.2f, 18.57f)
                 curveToRelative(-0.35f, 0.35f, -0.6f, 0.78f, -0.7f, 1.25f)
                 lineToRelative(-0.47f, 1.83f)
                 curveToRelative(-0.2f, 0.8f, 0.53f, 1.52f, 1.32f, 1.32f)

@@ -45,7 +45,7 @@ public val Icons.Filled.LinkEdit: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 0.77f, 1.64f)
                 close()
                 moveTo(18.1f, 11.67f)
-                lineToRelative(-5.9f, 5.9f)
+                lineTo(12.2f, 17.57f)
                 curveToRelative(-0.35f, 0.34f, -0.6f, 0.78f, -0.71f, 1.25f)
                 lineToRelative(-0.46f, 1.83f)
                 curveToRelative(-0.2f, 0.8f, 0.52f, 1.52f, 1.32f, 1.32f)

@@ -19,7 +19,7 @@ public val Icons.Regular.FolderProhibited: ImageVector
                 arcToRelative(5.5f, 5.5f, 0.0f, false, true, 0.0f, -11.0f)
                 close()
                 moveTo(20.8f, 14.25f)
-                lineToRelative(-5.55f, 5.56f)
+                lineTo(15.25f, 19.81f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, false, 5.56f, -5.56f)
                 close()
                 moveTo(8.2f, 4.0f)

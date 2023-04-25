@@ -14,7 +14,7 @@ public val Icons.Filled.Eraser: ImageVector
         }
         _eraser = fluentIcon(name = "Filled.Eraser") {
             fluentPath {
-                moveTo(15.87f, 2.67f)
+                moveToRelative(15.87f, 2.67f)
                 lineToRelative(4.97f, 4.97f)
                 curveToRelative(0.88f, 0.88f, 0.88f, 2.3f, 0.0f, 3.18f)
                 lineToRelative(-8.68f, 8.68f)

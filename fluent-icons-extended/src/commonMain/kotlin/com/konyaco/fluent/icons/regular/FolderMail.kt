@@ -52,7 +52,7 @@ public val Icons.Regular.FolderMail: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.75f, -0.65f)
                 close()
                 moveTo(17.5f, 18.93f)
-                lineToRelative(-5.5f, -3.2f)
+                lineTo(12.0f, 15.73f)
                 arcTo(2.0f, 2.0f, 0.0f, false, true, 14.0f, 14.0f)
                 horizontalLineToRelative(7.0f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, true, 2.0f, 1.97f)

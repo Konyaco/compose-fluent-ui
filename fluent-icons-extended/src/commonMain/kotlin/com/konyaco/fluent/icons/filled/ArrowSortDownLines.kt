@@ -14,7 +14,7 @@ public val Icons.Filled.ArrowSortDownLines: ImageVector
         }
         _arrowSortDownLines = fluentIcon(name = "Filled.ArrowSortDownLines") {
             fluentPath {
-                moveTo(8.5f, 4.0f)
+                moveToRelative(8.5f, 4.0f)
                 lineToRelative(-0.12f, 0.01f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -0.88f, 1.0f)
                 verticalLineToRelative(11.57f)

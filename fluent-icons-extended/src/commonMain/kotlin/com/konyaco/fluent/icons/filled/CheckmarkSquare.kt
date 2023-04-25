@@ -25,7 +25,7 @@ public val Icons.Filled.CheckmarkSquare: ImageVector
                 lineTo(6.25f, 3.0f)
                 close()
                 moveTo(16.28f, 9.78f)
-                lineToRelative(-5.0f, 5.0f)
+                lineTo(11.28f, 14.78f)
                 curveToRelative(-0.3f, 0.3f, -0.77f, 0.3f, -1.06f, 0.0f)
                 lineToRelative(-2.0f, -2.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 1.06f, -1.06f)

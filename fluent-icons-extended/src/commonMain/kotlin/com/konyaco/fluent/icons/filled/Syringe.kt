@@ -52,10 +52,10 @@ public val Icons.Filled.Syringe: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.0f, -1.06f)
                 close()
                 moveTo(19.19f, 5.75f)
-                lineToRelative(-0.94f, -0.94f)
-                lineToRelative(-1.69f, 1.69f)
-                lineToRelative(0.94f, 0.94f)
-                lineToRelative(1.7f, -1.7f)
+                lineTo(18.25f, 4.81f)
+                lineTo(16.56f, 6.5f)
+                lineTo(17.5f, 7.44f)
+                lineTo(19.2f, 5.74f)
                 close()
             }
         }

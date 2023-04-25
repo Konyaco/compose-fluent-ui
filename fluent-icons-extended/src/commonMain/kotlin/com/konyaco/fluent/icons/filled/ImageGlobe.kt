@@ -95,7 +95,7 @@ public val Icons.Filled.ImageGlobe: ImageVector
                 close()
             }
             fluentPath {
-                moveTo(11.47f, 13.72f)
+                moveToRelative(11.47f, 13.72f)
                 lineToRelative(0.09f, -0.07f)
                 curveToRelative(0.26f, -0.2f, 0.61f, -0.2f, 0.87f, -0.01f)
                 lineToRelative(0.1f, 0.08f)

@@ -14,7 +14,7 @@ public val Icons.Filled.ImageAdd: ImageVector
         }
         _imageAdd = fluentIcon(name = "Filled.ImageAdd") {
             fluentPath {
-                moveTo(13.43f, 14.64f)
+                moveToRelative(13.43f, 14.64f)
                 lineToRelative(0.1f, 0.08f)
                 lineToRelative(6.92f, 6.8f)
                 curveToRelative(-0.5f, 0.3f, -1.08f, 0.48f, -1.7f, 0.48f)

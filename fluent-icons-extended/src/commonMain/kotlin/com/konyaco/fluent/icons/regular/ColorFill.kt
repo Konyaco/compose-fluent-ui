@@ -39,7 +39,7 @@ public val Icons.Regular.ColorFill: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, -1.5f, 0.0f)
                 close()
                 moveTo(6.13f, 10.01f)
-                lineToRelative(3.13f, 3.13f)
+                lineTo(9.26f, 13.14f)
                 curveToRelative(0.2f, 0.2f, 0.51f, 0.2f, 0.7f, 0.0f)
                 lineTo(13.1f, 10.0f)
                 lineTo(6.13f, 10.0f)

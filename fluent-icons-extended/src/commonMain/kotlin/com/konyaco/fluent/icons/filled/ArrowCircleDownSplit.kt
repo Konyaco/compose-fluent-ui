@@ -19,7 +19,7 @@ public val Icons.Filled.ArrowCircleDownSplit: ImageVector
                 arcToRelative(10.0f, 10.0f, 0.0f, false, true, 0.0f, 20.0f)
                 close()
                 moveTo(11.0f, 14.0f)
-                lineToRelative(-0.08f, -0.07f)
+                lineTo(10.92f, 13.93f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.98f, 0.07f)
                 lineToRelative(-0.44f, 0.44f)
                 lineTo(9.5f, 10.5f)

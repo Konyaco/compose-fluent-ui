@@ -40,7 +40,7 @@ public val Icons.Filled.QuizNew: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.0f, 1.5f)
                 close()
                 moveTo(10.69f, 5.46f)
-                lineToRelative(2.25f, 5.5f)
+                lineTo(12.94f, 10.96f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.39f, 0.57f)
                 lineToRelative(-0.42f, -1.03f)
                 lineTo(8.87f, 10.5f)

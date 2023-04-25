@@ -36,7 +36,7 @@ public val Icons.Filled.DocumentEdit: ImageVector
                 lineToRelative(-6.0f, -6.0f)
                 close()
                 moveTo(12.2f, 17.57f)
-                lineToRelative(5.9f, -5.9f)
+                lineTo(18.1f, 11.67f)
                 arcToRelative(2.29f, 2.29f, 0.0f, true, true, 3.23f, 3.23f)
                 lineToRelative(-5.9f, 5.9f)
                 curveToRelative(-0.35f, 0.35f, -0.78f, 0.6f, -1.25f, 0.71f)

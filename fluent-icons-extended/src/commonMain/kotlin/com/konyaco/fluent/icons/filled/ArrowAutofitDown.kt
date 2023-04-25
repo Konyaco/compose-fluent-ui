@@ -14,7 +14,7 @@ public val Icons.Filled.ArrowAutofitDown: ImageVector
         }
         _arrowAutofitDown = fluentIcon(name = "Filled.ArrowAutofitDown") {
             fluentPath {
-                moveTo(12.95f, 18.1f)
+                moveToRelative(12.95f, 18.1f)
                 lineToRelative(0.09f, 0.1f)
                 lineToRelative(2.35f, 2.36f)
                 curveToRelative(0.18f, 0.27f, 0.5f, 0.44f, 0.86f, 0.44f)

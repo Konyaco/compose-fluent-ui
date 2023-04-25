@@ -79,7 +79,7 @@ public val Icons.Regular.PositionToFront: ImageVector
                 verticalLineToRelative(-1.07f)
                 close()
                 moveTo(8.75f, 16.43f)
-                lineToRelative(7.68f, -7.68f)
+                lineTo(16.43f, 8.75f)
                 curveToRelative(0.05f, 0.16f, 0.07f, 0.33f, 0.07f, 0.5f)
                 verticalLineToRelative(1.31f)
                 lineToRelative(-5.94f, 5.94f)

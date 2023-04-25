@@ -25,7 +25,7 @@ public val Icons.Filled.ShareCloseTray: ImageVector
                 lineTo(4.25f, 20.0f)
                 close()
                 moveTo(12.53f, 16.53f)
-                lineToRelative(3.25f, -3.25f)
+                lineTo(15.78f, 13.28f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, -1.06f, -1.06f)
                 lineToRelative(-1.97f, 1.97f)
                 lineTo(12.75f, 7.75f)

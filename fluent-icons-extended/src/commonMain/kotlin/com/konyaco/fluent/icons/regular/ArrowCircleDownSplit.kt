@@ -14,7 +14,7 @@ public val Icons.Regular.ArrowCircleDownSplit: ImageVector
         }
         _arrowCircleDownSplit = fluentIcon(name = "Regular.ArrowCircleDownSplit") {
             fluentPath {
-                moveTo(11.0f, 14.0f)
+                moveToRelative(11.0f, 14.0f)
                 lineToRelative(-0.08f, -0.07f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.98f, 0.07f)
                 lineToRelative(-0.44f, 0.44f)

@@ -35,7 +35,7 @@ public val Icons.Filled.EqualOff: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, true, false, 0.0f, -2.0f)
                 close()
                 moveTo(11.18f, 8.0f)
-                lineToRelative(2.0f, 2.0f)
+                lineTo(13.18f, 10.0f)
                 lineTo(20.0f, 10.0f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, false, 0.0f, -2.0f)
                 horizontalLineToRelative(-8.82f)

@@ -39,7 +39,7 @@ public val Icons.Regular.BuildingShop: ImageVector
                 horizontalLineToRelative(12.0f)
                 close()
                 moveTo(15.08f, 10.44f)
-                lineToRelative(-0.01f, 0.02f)
+                lineTo(15.07f, 10.46f)
                 arcToRelative(3.83f, 3.83f, 0.0f, false, true, -6.15f, -0.02f)
                 arcToRelative(3.82f, 3.82f, 0.0f, false, true, -4.42f, 1.32f)
                 verticalLineToRelative(8.74f)

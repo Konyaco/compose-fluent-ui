@@ -48,7 +48,7 @@ public val Icons.Regular.BeakerEdit: ImageVector
                 curveToRelative(0.3f, -0.55f, 0.45f, -1.17f, 0.45f, -1.8f)
                 close()
                 moveTo(19.1f, 12.67f)
-                lineToRelative(-5.9f, 5.9f)
+                lineTo(13.2f, 18.57f)
                 curveToRelative(-0.35f, 0.35f, -0.6f, 0.78f, -0.7f, 1.25f)
                 lineToRelative(-0.47f, 1.83f)
                 curveToRelative(-0.2f, 0.8f, 0.53f, 1.52f, 1.32f, 1.32f)

@@ -29,7 +29,7 @@ public val Icons.Regular.FastForward: ImageVector
                 lineTo(11.5f, 5.5f)
                 close()
                 moveTo(11.5f, 11.46f)
-                lineToRelative(-7.0f, -5.96f)
+                lineTo(4.5f, 5.5f)
                 verticalLineToRelative(13.0f)
                 lineToRelative(7.0f, -5.96f)
                 verticalLineToRelative(-1.08f)

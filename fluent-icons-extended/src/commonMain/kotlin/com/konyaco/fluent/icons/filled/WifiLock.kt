@@ -61,7 +61,7 @@ public val Icons.Filled.WifiLock: ImageVector
                 verticalLineToRelative(1.0f)
                 horizontalLineToRelative(2.0f)
                 verticalLineToRelative(-1.0f)
-                arcToRelative(1.0f, 1.0f, 0.0f, true, false, -2.0f, 0.0f)
+                arcToRelative(1.0f, 1.0f, 0.0f, false, false, -2.0f, 0.0f)
                 close()
                 moveTo(7.5f, 18.0f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, false, -2.0f, 0.0f)

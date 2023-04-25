@@ -36,7 +36,7 @@ public val Icons.Regular.EyeOff: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.06f, 0.0f)
                 close()
                 moveTo(10.2f, 11.27f)
-                lineToRelative(3.54f, 3.53f)
+                lineTo(13.74f, 14.8f)
                 arcTo(2.5f, 2.5f, 0.0f, false, true, 9.5f, 13.0f)
                 curveToRelative(0.0f, -0.67f, 0.27f, -1.28f, 0.7f, -1.73f)
                 close()
@@ -48,7 +48,7 @@ public val Icons.Regular.EyeOff: ImageVector
                 arcTo(10.0f, 10.0f, 0.0f, false, false, 12.0f, 5.5f)
                 close()
                 moveTo(12.2f, 9.0f)
-                lineToRelative(3.8f, 3.81f)
+                lineTo(16.0f, 12.81f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, false, -3.8f, -3.8f)
                 close()
             }

@@ -14,9 +14,9 @@ public val Icons.Filled.Sparkle: ImageVector
         }
         _sparkle = fluentIcon(name = "Filled.Sparkle") {
             fluentPath {
-                moveTo(8.66f, 15.73f)
+                moveTo(8.67f, 15.73f)
                 arcToRelative(1.44f, 1.44f, 0.0f, false, false, 2.16f, -0.61f)
-                lineToRelative(0.62f, -1.86f)
+                lineToRelative(0.61f, -1.86f)
                 arcToRelative(2.87f, 2.87f, 0.0f, false, true, 1.82f, -1.81f)
                 lineToRelative(1.78f, -0.58f)
                 arcToRelative(1.44f, 1.44f, 0.0f, false, false, -0.06f, -2.74f)
@@ -31,7 +31,7 @@ public val Icons.Filled.Sparkle: ImageVector
                 lineToRelative(1.76f, 0.57f)
                 arcToRelative(2.89f, 2.89f, 0.0f, false, true, 1.82f, 1.83f)
                 lineToRelative(0.58f, 1.77f)
-                curveToRelative(0.1f, 0.29f, 0.28f, 0.53f, 0.52f, 0.7f)
+                curveToRelative(0.1f, 0.29f, 0.28f, 0.53f, 0.53f, 0.7f)
                 close()
                 moveTo(16.33f, 20.78f)
                 curveToRelative(-0.19f, -0.13f, -0.33f, -0.33f, -0.4f, -0.55f)
@@ -48,10 +48,10 @@ public val Icons.Filled.Sparkle: ImageVector
                 arcToRelative(1.3f, 1.3f, 0.0f, false, false, 0.82f, 0.82f)
                 lineToRelative(0.99f, 0.32f)
                 arcToRelative(1.14f, 1.14f, 0.0f, false, true, 0.04f, 2.17f)
-                lineToRelative(-1.02f, 0.33f)
-                arcToRelative(1.32f, 1.32f, 0.0f, false, false, -0.81f, 0.82f)
-                lineToRelative(-0.33f, 0.99f)
-                arcToRelative(1.14f, 1.14f, 0.0f, false, true, -1.75f, 0.56f)
+                lineToRelative(-1.01f, 0.33f)
+                arcToRelative(1.32f, 1.32f, 0.0f, false, false, -0.82f, 0.82f)
+                lineToRelative(-0.32f, 0.99f)
+                arcToRelative(1.14f, 1.14f, 0.0f, false, true, -1.76f, 0.56f)
                 close()
             }
         }

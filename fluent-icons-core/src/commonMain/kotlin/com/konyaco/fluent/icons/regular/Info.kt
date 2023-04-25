@@ -28,7 +28,7 @@ public val Icons.Regular.Info: ImageVector
                 lineToRelative(0.01f, 5.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.5f, 0.1f)
                 verticalLineToRelative(-5.6f)
-                curveToRelative(0.0f, -0.41f, 0.33f, -0.75f, 0.75f, -0.75f)
+                curveToRelative(0.0f, -0.42f, 0.33f, -0.75f, 0.75f, -0.75f)
                 close()
                 moveTo(12.0f, 7.0f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, true, 0.0f, 2.0f)

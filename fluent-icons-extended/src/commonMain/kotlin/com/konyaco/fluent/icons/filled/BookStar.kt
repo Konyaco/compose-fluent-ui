@@ -46,7 +46,7 @@ public val Icons.Filled.BookStar: ImageVector
                 verticalLineToRelative(-15.0f)
                 close()
                 moveTo(10.54f, 8.6f)
-                lineToRelative(-2.46f, 0.37f)
+                lineTo(8.08f, 8.97f)
                 arcToRelative(0.68f, 0.68f, 0.0f, false, false, -0.37f, 1.15f)
                 lineToRelative(1.78f, 1.74f)
                 lineToRelative(-0.42f, 2.45f)

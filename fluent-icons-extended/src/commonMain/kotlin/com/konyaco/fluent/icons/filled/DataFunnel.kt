@@ -15,9 +15,9 @@ public val Icons.Filled.DataFunnel: ImageVector
         _dataFunnel = fluentIcon(name = "Filled.DataFunnel") {
             fluentPath {
                 moveTo(19.25f, 7.5f)
-                arcToRelative(2.75f, 2.75f, 0.0f, true, false, 0.0f, -5.5f)
+                arcToRelative(2.75f, 2.75f, 0.0f, false, false, 0.0f, -5.5f)
                 lineTo(4.75f, 2.0f)
-                arcToRelative(2.75f, 2.75f, 0.0f, false, false, 0.0f, 5.5f)
+                arcToRelative(2.75f, 2.75f, 0.0f, true, false, 0.0f, 5.5f)
                 horizontalLineToRelative(14.5f)
                 close()
                 moveTo(17.25f, 14.5f)

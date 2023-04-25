@@ -50,7 +50,7 @@ public val Icons.Regular.Box: ImageVector
                 verticalLineToRelative(9.08f)
                 close()
                 moveTo(12.85f, 20.1f)
-                lineToRelative(7.5f, -3.04f)
+                lineTo(20.35f, 17.06f)
                 curveToRelative(0.09f, -0.04f, 0.15f, -0.13f, 0.15f, -0.23f)
                 lineTo(20.5f, 7.77f)
                 lineToRelative(-7.75f, 3.0f)

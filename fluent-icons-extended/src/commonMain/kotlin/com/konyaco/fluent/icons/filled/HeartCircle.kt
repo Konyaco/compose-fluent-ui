@@ -19,7 +19,7 @@ public val Icons.Filled.HeartCircle: ImageVector
                 arcToRelative(10.0f, 10.0f, 0.0f, false, false, 0.0f, 20.0f)
                 close()
                 moveTo(11.7f, 16.86f)
-                lineToRelative(-4.11f, -4.8f)
+                lineTo(7.59f, 12.06f)
                 arcToRelative(2.46f, 2.46f, 0.0f, false, true, 3.58f, -3.36f)
                 lineToRelative(0.83f, 0.8f)
                 lineToRelative(0.83f, -0.8f)

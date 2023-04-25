@@ -36,7 +36,7 @@ public val Icons.Filled.SaveEdit: ImageVector
                 lineTo(6.75f, 3.0f)
                 close()
                 moveTo(14.1f, 14.25f)
-                lineToRelative(-2.61f, 2.61f)
+                lineTo(11.49f, 16.86f)
                 curveToRelative(-0.47f, 0.48f, -0.8f, 1.07f, -0.97f, 1.72f)
                 lineToRelative(-0.46f, 1.83f)
                 curveToRelative(-0.05f, 0.2f, -0.07f, 0.4f, -0.06f, 0.59f)

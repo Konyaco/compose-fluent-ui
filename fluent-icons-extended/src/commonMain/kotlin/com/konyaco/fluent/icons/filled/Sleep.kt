@@ -22,7 +22,7 @@ public val Icons.Filled.Sleep: ImageVector
                 arcToRelative(0.68f, 0.68f, 0.0f, false, true, 0.69f, -0.83f)
                 close()
                 moveTo(10.99f, 3.65f)
-                lineToRelative(0.01f, 0.1f)
+                lineTo(11.0f, 3.75f)
                 lineTo(11.0f, 9.0f)
                 arcToRelative(2.0f, 2.0f, 0.0f, true, true, -1.5f, -1.94f)
                 verticalLineToRelative(-2.3f)

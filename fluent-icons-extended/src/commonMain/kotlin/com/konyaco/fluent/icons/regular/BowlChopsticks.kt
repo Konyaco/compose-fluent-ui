@@ -20,7 +20,7 @@ public val Icons.Regular.BowlChopsticks: ImageVector
                 horizontalLineTo(2.75f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.75f, 0.75f)
                 verticalLineTo(12.0f)
-                arcToRelative(10.0f, 10.0f, 0.0f, false, false, 20.0f, 0.0f)
+                arcToRelative(10.0f, 10.0f, 0.0f, true, false, 20.0f, 0.0f)
                 verticalLineToRelative(-0.25f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.75f, -0.75f)
                 horizontalLineToRelative(-5.88f)

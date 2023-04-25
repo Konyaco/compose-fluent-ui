@@ -27,7 +27,7 @@ public val Icons.Regular.TextDirectionRotate270Right: ImageVector
                 lineToRelative(-2.0f, 2.0f)
                 close()
                 moveTo(12.97f, 20.95f)
-                lineToRelative(-9.5f, -3.76f)
+                lineTo(3.47f, 17.19f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.1f, -1.34f)
                 lineToRelative(0.1f, -0.05f)
                 lineToRelative(9.5f, -3.75f)

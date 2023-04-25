@@ -33,7 +33,7 @@ public val Icons.Regular.MailAllRead: ImageVector
                 lineToRelative(-7.14f, 3.9f)
                 close()
                 moveTo(11.36f, 12.66f)
-                lineToRelative(7.14f, -3.9f)
+                lineTo(18.5f, 8.76f)
                 verticalLineToRelative(6.99f)
                 curveToRelative(0.0f, 0.97f, -0.78f, 1.75f, -1.75f, 1.75f)
                 lineTo(5.25f, 17.5f)

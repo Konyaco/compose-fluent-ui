@@ -14,7 +14,7 @@ public val Icons.Regular.AlertOff: ImageVector
         }
         _alertOff = fluentIcon(name = "Regular.AlertOff") {
             fluentPath {
-                moveTo(5.22f, 6.28f)
+                moveToRelative(5.22f, 6.28f)
                 lineToRelative(-3.0f, -3.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.06f, -1.06f)
                 lineToRelative(18.5f, 18.5f)
@@ -42,8 +42,8 @@ public val Icons.Regular.AlertOff: ImageVector
                 verticalLineToRelative(-0.15f)
                 close()
                 moveTo(18.0f, 13.9f)
-                lineToRelative(0.7f, 1.63f)
-                lineToRelative(2.2f, 2.18f)
+                lineTo(18.7f, 15.53f)
+                lineTo(20.9f, 17.71f)
                 arcToRelative(1.25f, 1.25f, 0.0f, false, false, -0.02f, -0.96f)
                 lineToRelative(-1.38f, -3.16f)
                 lineTo(19.5f, 9.25f)

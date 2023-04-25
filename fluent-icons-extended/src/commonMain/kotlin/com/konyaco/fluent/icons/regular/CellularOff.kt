@@ -35,7 +35,7 @@ public val Icons.Regular.CellularOff: ImageVector
                 verticalLineToRelative(10.06f)
                 close()
                 moveTo(15.0f, 11.82f)
-                lineToRelative(1.5f, 1.5f)
+                lineTo(16.5f, 13.32f)
                 lineTo(16.5f, 8.65f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.5f, 0.1f)
                 verticalLineToRelative(3.07f)

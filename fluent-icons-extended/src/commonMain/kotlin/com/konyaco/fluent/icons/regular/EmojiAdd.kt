@@ -54,7 +54,7 @@ public val Icons.Regular.EmojiAdd: ImageVector
                 close()
                 moveTo(8.46f, 14.78f)
                 arcToRelative(4.5f, 4.5f, 0.0f, false, false, 2.63f, 1.63f)
-                arcToRelative(6.45f, 6.45f, 0.0f, false, false, -0.08f, 1.5f)
+                arcToRelative(6.46f, 6.46f, 0.0f, false, false, -0.08f, 1.5f)
                 arcToRelative(5.98f, 5.98f, 0.0f, false, true, -3.73f, -2.2f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 1.18f, -0.93f)
                 close()

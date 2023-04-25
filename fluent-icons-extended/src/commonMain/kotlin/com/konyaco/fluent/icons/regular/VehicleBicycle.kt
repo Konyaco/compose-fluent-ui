@@ -35,7 +35,7 @@ public val Icons.Regular.VehicleBicycle: ImageVector
                 horizontalLineToRelative(-2.0f)
                 close()
                 moveTo(16.33f, 12.4f)
-                lineToRelative(0.7f, 2.55f)
+                lineTo(17.03f, 14.95f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, 1.44f, -0.4f)
                 lineToRelative(-0.7f, -2.55f)
                 arcToRelative(2.75f, 2.75f, 0.0f, true, true, -1.44f, 0.4f)

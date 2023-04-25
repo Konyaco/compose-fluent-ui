@@ -14,7 +14,7 @@ public val Icons.Filled.NumberSymbolSquare: ImageVector
         }
         _numberSymbolSquare = fluentIcon(name = "Filled.NumberSymbolSquare") {
             fluentPath {
-                moveTo(13.44f, 11.0f)
+                moveToRelative(13.44f, 11.0f)
                 lineToRelative(-0.4f, 2.0f)
                 horizontalLineToRelative(-2.47f)
                 lineToRelative(0.4f, -2.0f)

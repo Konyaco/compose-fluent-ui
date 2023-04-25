@@ -14,7 +14,7 @@ public val Icons.Filled.ArrowSwap: ImageVector
         }
         _arrowSwap = fluentIcon(name = "Filled.ArrowSwap") {
             fluentPath {
-                moveTo(15.2f, 2.3f)
+                moveToRelative(15.2f, 2.3f)
                 lineToRelative(4.0f, 3.99f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 0.1f, 1.32f)
                 lineToRelative(-0.1f, 0.09f)

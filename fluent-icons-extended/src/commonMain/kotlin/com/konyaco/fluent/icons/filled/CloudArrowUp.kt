@@ -14,21 +14,18 @@ public val Icons.Filled.CloudArrowUp: ImageVector
         }
         _cloudArrowUp = fluentIcon(name = "Filled.CloudArrowUp") {
             fluentPath {
-                moveTo(6.09f, 7.75f)
-                arcToRelative(5.75f, 5.75f, 0.0f, false, true, 11.32f, 0.0f)
-                horizontalLineToRelative(0.09f)
-                arcToRelative(4.0f, 4.0f, 0.0f, false, true, 3.96f, 4.55f)
-                arcToRelative(6.49f, 6.49f, 0.0f, false, false, -11.42f, 3.45f)
-                lineTo(6.0f, 15.75f)
-                arcToRelative(4.0f, 4.0f, 0.0f, false, true, 0.0f, -8.0f)
-                horizontalLineToRelative(0.09f)
+                moveTo(6.08f, 8.02f)
+                arcToRelative(6.0f, 6.0f, 0.0f, false, true, 11.84f, 0.0f)
+                arcToRelative(4.5f, 4.5f, 0.0f, false, true, 4.05f, 4.97f)
+                arcTo(6.5f, 6.5f, 0.0f, false, false, 10.02f, 17.0f)
+                lineTo(6.5f, 17.0f)
+                arcToRelative(4.5f, 4.5f, 0.0f, false, true, -0.42f, -8.98f)
                 close()
                 moveTo(22.0f, 16.5f)
                 arcToRelative(5.5f, 5.5f, 0.0f, true, true, -11.0f, 0.0f)
                 arcToRelative(5.5f, 5.5f, 0.0f, false, true, 11.0f, 0.0f)
                 close()
-                moveTo(16.0f, 14.7f)
-                verticalLineToRelative(4.8f)
+                moveTo(16.0f, 19.5f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, false, 1.0f, 0.0f)
                 verticalLineToRelative(-4.8f)
                 lineToRelative(1.65f, 1.65f)
@@ -38,6 +35,7 @@ public val Icons.Filled.CloudArrowUp: ImageVector
                 lineToRelative(-2.5f, 2.5f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, false, 0.7f, 0.7f)
                 lineTo(16.0f, 14.71f)
+                verticalLineToRelative(4.79f)
                 close()
             }
         }

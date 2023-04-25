@@ -14,7 +14,7 @@ public val Icons.Filled.ColorFill: ImageVector
         }
         _colorFill = fluentIcon(name = "Filled.ColorFill") {
             fluentPath {
-                moveTo(13.02f, 14.0f)
+                moveToRelative(13.02f, 14.0f)
                 lineToRelative(-0.02f, 0.37f)
                 curveToRelative(0.0f, 1.86f, 1.4f, 3.63f, 3.5f, 3.63f)
                 arcToRelative(3.54f, 3.54f, 0.0f, false, false, 3.48f, -3.95f)

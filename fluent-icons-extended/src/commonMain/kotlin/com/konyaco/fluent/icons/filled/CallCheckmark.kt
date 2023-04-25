@@ -27,7 +27,7 @@ public val Icons.Filled.CallCheckmark: ImageVector
                 lineToRelative(-1.08f, 0.34f)
                 arcToRelative(3.26f, 3.26f, 0.0f, false, false, -2.15f, 2.4f)
                 curveToRelative(-0.62f, 2.73f, 0.13f, 6.05f, 2.26f, 9.97f)
-                curveToRelative(2.13f, 3.91f, 4.46f, 6.26f, 7.0f, 7.05f)
+                curveToRelative(2.13f, 3.91f, 4.47f, 6.26f, 7.0f, 7.05f)
                 curveToRelative(1.08f, 0.34f, 2.24f, 0.04f, 3.06f, -0.77f)
                 lineToRelative(0.81f, -0.82f)
                 curveToRelative(0.77f, -0.77f, 0.88f, -2.02f, 0.26f, -2.92f)

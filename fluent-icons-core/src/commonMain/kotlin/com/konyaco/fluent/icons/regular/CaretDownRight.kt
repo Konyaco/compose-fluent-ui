@@ -14,7 +14,7 @@ public val Icons.Regular.CaretDownRight: ImageVector
         }
         _caretDownRight = fluentIcon(name = "Regular.CaretDownRight") {
             fluentPath {
-                moveTo(16.5f, 7.81f)
+                moveToRelative(16.5f, 7.81f)
                 lineToRelative(-8.69f, 8.7f)
                 horizontalLineToRelative(8.44f)
                 curveToRelative(0.14f, -0.01f, 0.25f, -0.12f, 0.25f, -0.26f)

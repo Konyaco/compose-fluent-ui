@@ -14,7 +14,7 @@ public val Icons.Filled.Cellular5G: ImageVector
         }
         _cellular5G = fluentIcon(name = "Filled.Cellular5G") {
             fluentPath {
-                moveTo(12.9f, 3.62f)
+                moveToRelative(12.9f, 3.62f)
                 lineToRelative(-0.01f, -0.02f)
                 arcToRelative(1.03f, 1.03f, 0.0f, false, false, -0.06f, -0.08f)
                 lineToRelative(-0.13f, -0.16f)

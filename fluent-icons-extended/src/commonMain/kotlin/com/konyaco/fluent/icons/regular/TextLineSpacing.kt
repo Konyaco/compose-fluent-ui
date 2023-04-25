@@ -14,7 +14,7 @@ public val Icons.Regular.TextLineSpacing: ImageVector
         }
         _textLineSpacing = fluentIcon(name = "Regular.TextLineSpacing") {
             fluentPath {
-                moveTo(19.53f, 3.22f)
+                moveToRelative(19.53f, 3.22f)
                 lineToRelative(2.0f, 2.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.06f, 1.06f)
                 lineToRelative(-0.72f, -0.72f)

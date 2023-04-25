@@ -34,7 +34,7 @@ public val Icons.Regular.Cart: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.75f, -0.75f)
                 close()
                 moveTo(7.57f, 10.84f)
-                lineToRelative(0.75f, 2.74f)
+                lineTo(8.32f, 13.58f)
                 curveToRelative(0.15f, 0.54f, 0.65f, 0.92f, 1.21f, 0.92f)
                 horizontalLineToRelative(5.95f)
                 curveToRelative(0.56f, 0.0f, 1.05f, -0.37f, 1.2f, -0.9f)

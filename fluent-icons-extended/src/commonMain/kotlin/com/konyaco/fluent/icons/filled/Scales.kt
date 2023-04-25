@@ -46,8 +46,8 @@ public val Icons.Filled.Scales: ImageVector
                 lineTo(5.5f, 6.74f)
                 close()
                 moveTo(16.87f, 10.75f)
-                lineToRelative(1.63f, -4.01f)
-                lineToRelative(1.63f, 4.01f)
+                lineTo(18.5f, 6.74f)
+                lineTo(20.13f, 10.75f)
                 horizontalLineToRelative(-3.26f)
                 close()
             }

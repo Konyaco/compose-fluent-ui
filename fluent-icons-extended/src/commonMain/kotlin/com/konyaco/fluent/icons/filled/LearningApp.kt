@@ -43,7 +43,7 @@ public val Icons.Filled.LearningApp: ImageVector
                 arcToRelative(5.5f, 5.5f, 0.0f, false, false, 11.0f, 0.0f)
                 close()
                 moveTo(16.91f, 15.1f)
-                lineToRelative(2.81f, 1.84f)
+                lineTo(19.72f, 16.94f)
                 arcToRelative(0.6f, 0.6f, 0.0f, false, true, 0.28f, 0.52f)
                 curveToRelative(0.0f, 0.1f, -0.02f, 0.2f, -0.07f, 0.3f)
                 arcToRelative(0.57f, 0.57f, 0.0f, false, true, -0.2f, 0.22f)

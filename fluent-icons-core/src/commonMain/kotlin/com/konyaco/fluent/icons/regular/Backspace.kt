@@ -50,7 +50,7 @@ public val Icons.Regular.Backspace: ImageVector
                 lineToRelative(-0.15f, -0.01f)
                 close()
                 moveTo(11.45f, 8.4f)
-                lineToRelative(0.08f, 0.07f)
+                lineTo(11.53f, 8.47f)
                 lineTo(14.0f, 10.94f)
                 lineToRelative(2.47f, -2.47f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.13f, 0.98f)

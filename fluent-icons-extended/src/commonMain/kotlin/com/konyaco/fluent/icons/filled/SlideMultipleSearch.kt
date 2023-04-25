@@ -26,7 +26,7 @@ public val Icons.Filled.SlideMultipleSearch: ImageVector
                 lineTo(2.0f, 7.75f)
                 close()
                 moveTo(10.43f, 18.95f)
-                lineToRelative(1.54f, 1.55f)
+                lineTo(11.97f, 20.5f)
                 horizontalLineToRelative(7.78f)
                 curveToRelative(1.24f, 0.0f, 2.25f, -1.0f, 2.25f, -2.25f)
                 verticalLineToRelative(-9.5f)

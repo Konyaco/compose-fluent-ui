@@ -14,7 +14,7 @@ public val Icons.Regular.TextDirectionHorizontalRight: ImageVector
         }
         _textDirectionHorizontalRight = fluentIcon(name = "Regular.TextDirectionHorizontalRight") {
             fluentPath {
-                moveTo(3.05f, 12.97f)
+                moveToRelative(3.05f, 12.97f)
                 lineToRelative(3.76f, -9.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.34f, -0.1f)
                 lineToRelative(0.05f, 0.1f)

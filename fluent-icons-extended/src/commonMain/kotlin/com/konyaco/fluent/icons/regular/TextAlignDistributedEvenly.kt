@@ -22,7 +22,7 @@ public val Icons.Regular.TextAlignDistributedEvenly: ImageVector
                 arcTo(0.75f, 0.75f, 0.0f, false, true, 2.0f, 5.75f)
                 close()
                 moveTo(5.28f, 20.22f)
-                lineToRelative(-0.72f, -0.72f)
+                lineTo(4.56f, 19.5f)
                 horizontalLineToRelative(14.88f)
                 lineToRelative(-0.72f, 0.72f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, 1.06f, 1.06f)

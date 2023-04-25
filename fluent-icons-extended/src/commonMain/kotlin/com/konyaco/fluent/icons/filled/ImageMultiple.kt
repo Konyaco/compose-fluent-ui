@@ -31,7 +31,7 @@ public val Icons.Filled.ImageMultiple: ImageVector
                 arcToRelative(1.25f, 1.25f, 0.0f, false, false, 0.0f, 2.5f)
                 close()
                 moveTo(11.26f, 12.72f)
-                lineToRelative(5.65f, 5.33f)
+                lineTo(16.91f, 18.05f)
                 curveToRelative(-0.49f, 0.28f, -1.06f, 0.45f, -1.66f, 0.45f)
                 horizontalLineToRelative(-9.0f)
                 curveToRelative(-0.6f, 0.0f, -1.17f, -0.17f, -1.66f, -0.45f)

@@ -14,7 +14,7 @@ public val Icons.Regular.Pulse: ImageVector
         }
         _pulse = fluentIcon(name = "Regular.Pulse") {
             fluentPath {
-                moveTo(8.46f, 6.8f)
+                moveToRelative(8.46f, 6.8f)
                 lineToRelative(3.29f, 13.63f)
                 curveToRelative(0.17f, 0.73f, 1.2f, 0.77f, 1.44f, 0.05f)
                 lineToRelative(3.26f, -10.12f)

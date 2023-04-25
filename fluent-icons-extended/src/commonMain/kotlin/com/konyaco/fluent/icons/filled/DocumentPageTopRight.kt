@@ -14,7 +14,7 @@ public val Icons.Filled.DocumentPageTopRight: ImageVector
         }
         _documentPageTopRight = fluentIcon(name = "Filled.DocumentPageTopRight") {
             fluentPath {
-                moveTo(13.26f, 9.0f)
+                moveToRelative(13.26f, 9.0f)
                 lineToRelative(0.23f, -1.5f)
                 horizontalLineToRelative(1.48f)
                 lineTo(14.74f, 9.0f)

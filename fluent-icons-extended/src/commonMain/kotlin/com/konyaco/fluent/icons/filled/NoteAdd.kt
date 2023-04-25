@@ -46,7 +46,7 @@ public val Icons.Filled.NoteAdd: ImageVector
                 arcTo(6.47f, 6.47f, 0.0f, false, false, 6.5f, 13.0f)
                 close()
                 moveTo(20.56f, 14.5f)
-                lineToRelative(-6.06f, 6.06f)
+                lineTo(14.5f, 20.56f)
                 verticalLineToRelative(-4.31f)
                 curveToRelative(0.0f, -0.97f, 0.78f, -1.75f, 1.75f, -1.75f)
                 horizontalLineToRelative(4.31f)

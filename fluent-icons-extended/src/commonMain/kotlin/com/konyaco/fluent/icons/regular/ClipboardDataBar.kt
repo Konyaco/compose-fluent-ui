@@ -29,7 +29,7 @@ public val Icons.Regular.ClipboardDataBar: ImageVector
                 horizontalLineToRelative(-1.76f)
                 close()
                 moveTo(15.99f, 4.1f)
-                lineToRelative(0.01f, 0.15f)
+                lineTo(16.0f, 4.25f)
                 lineTo(16.0f, 4.1f)
                 close()
                 moveTo(10.25f, 6.5f)

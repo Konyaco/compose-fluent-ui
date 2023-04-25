@@ -19,7 +19,7 @@ public val Icons.Regular.ImageReflection: ImageVector
                 arcToRelative(1.25f, 1.25f, 0.0f, false, true, 2.5f, 0.0f)
                 close()
                 moveTo(16.92f, 16.99f)
-                lineToRelative(-0.17f, 0.01f)
+                lineTo(16.75f, 17.0f)
                 horizontalLineToRelative(-1.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, 1.5f)
                 horizontalLineToRelative(1.0f)

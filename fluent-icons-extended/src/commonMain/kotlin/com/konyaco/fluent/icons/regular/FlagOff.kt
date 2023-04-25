@@ -14,7 +14,7 @@ public val Icons.Regular.FlagOff: ImageVector
         }
         _flagOff = fluentIcon(name = "Regular.FlagOff") {
             fluentPath {
-                moveTo(2.5f, 2.5f)
+                moveToRelative(2.5f, 2.5f)
                 lineToRelative(18.0f, 18.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.06f, 1.06f)
                 lineToRelative(-5.06f, -5.06f)

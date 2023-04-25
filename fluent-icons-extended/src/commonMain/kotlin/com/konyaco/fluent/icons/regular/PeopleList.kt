@@ -53,7 +53,7 @@ public val Icons.Regular.PeopleList: ImageVector
                 horizontalLineToRelative(-7.5f)
                 close()
                 moveTo(12.53f, 16.5f)
-                lineToRelative(-0.03f, 0.03f)
+                lineTo(12.5f, 16.53f)
                 verticalLineToRelative(-0.06f)
                 lineToRelative(0.03f, 0.03f)
                 close()

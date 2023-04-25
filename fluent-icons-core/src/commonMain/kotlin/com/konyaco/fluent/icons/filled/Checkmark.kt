@@ -14,7 +14,7 @@ public val Icons.Filled.Checkmark: ImageVector
         }
         _checkmark = fluentIcon(name = "Filled.Checkmark") {
             fluentPath {
-                moveTo(8.5f, 16.59f)
+                moveToRelative(8.5f, 16.59f)
                 lineToRelative(-3.8f, -3.8f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -1.4f, 1.42f)
                 lineToRelative(4.5f, 4.5f)

@@ -19,7 +19,7 @@ public val Icons.Filled.PresenceAvailable: ImageVector
                 arcToRelative(12.0f, 12.0f, 0.0f, false, false, 0.0f, 24.0f)
                 close()
                 moveTo(17.06f, 10.56f)
-                lineToRelative(-5.5f, 5.5f)
+                lineTo(11.56f, 16.06f)
                 arcToRelative(1.5f, 1.5f, 0.0f, false, true, -2.12f, 0.0f)
                 lineToRelative(-2.0f, -2.0f)
                 arcToRelative(1.5f, 1.5f, 0.0f, false, true, 2.12f, -2.12f)

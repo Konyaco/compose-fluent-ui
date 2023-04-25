@@ -53,7 +53,7 @@ public val Icons.Regular.HdrOff: ImageVector
                 lineTo(17.94f, 19.0f)
                 close()
                 moveTo(11.24f, 12.31f)
-                lineToRelative(1.08f, 1.07f)
+                lineTo(12.32f, 13.38f)
                 curveToRelative(-0.25f, 0.23f, -0.58f, 0.37f, -0.94f, 0.37f)
                 horizontalLineToRelative(-0.13f)
                 lineTo(11.25f, 12.3f)

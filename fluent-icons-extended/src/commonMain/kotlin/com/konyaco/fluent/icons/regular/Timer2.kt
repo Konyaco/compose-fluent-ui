@@ -28,7 +28,7 @@ public val Icons.Regular.Timer2: ImageVector
                 verticalLineToRelative(-4.6f)
                 close()
                 moveTo(19.23f, 5.17f)
-                lineToRelative(-0.08f, -0.06f)
+                lineTo(19.15f, 5.11f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.88f, 1.22f)
                 lineToRelative(1.16f, 0.96f)
                 lineToRelative(0.08f, 0.06f)

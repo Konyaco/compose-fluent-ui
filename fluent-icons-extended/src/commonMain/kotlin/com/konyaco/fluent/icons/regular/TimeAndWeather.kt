@@ -69,7 +69,7 @@ public val Icons.Regular.TimeAndWeather: ImageVector
                 horizontalLineToRelative(1.6f)
                 close()
                 moveTo(5.89f, 4.87f)
-                lineToRelative(0.08f, 0.07f)
+                lineTo(5.97f, 4.94f)
                 lineTo(7.03f, 6.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.97f, 1.13f)
                 lineToRelative(-0.09f, -0.07f)

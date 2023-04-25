@@ -14,7 +14,7 @@ public val Icons.Regular.CallEnd: ImageVector
         }
         _callEnd = fluentIcon(name = "Regular.CallEnd") {
             fluentPath {
-                moveTo(21.9f, 13.2f)
+                moveToRelative(21.9f, 13.2f)
                 lineToRelative(-0.19f, 0.82f)
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, -2.95f, 2.1f)
                 lineTo(17.0f, 15.96f)

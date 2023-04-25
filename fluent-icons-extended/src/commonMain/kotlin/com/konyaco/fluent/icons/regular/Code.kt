@@ -14,7 +14,7 @@ public val Icons.Regular.Code: ImageVector
         }
         _code = fluentIcon(name = "Regular.Code") {
             fluentPath {
-                moveTo(8.07f, 18.94f)
+                moveToRelative(8.07f, 18.94f)
                 lineToRelative(6.5f, -14.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.4f, 0.52f)
                 lineToRelative(-0.04f, 0.1f)
@@ -25,7 +25,7 @@ public val Icons.Regular.Code: ImageVector
                 lineToRelative(-6.5f, 14.5f)
                 close()
                 moveTo(2.22f, 11.47f)
-                lineToRelative(4.25f, -4.25f)
+                lineTo(6.47f, 7.22f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.13f, 0.98f)
                 lineToRelative(-0.07f, 0.08f)
                 lineTo(3.81f, 12.0f)

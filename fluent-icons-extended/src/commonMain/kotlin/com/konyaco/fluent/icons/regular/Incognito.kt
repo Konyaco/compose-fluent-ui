@@ -23,7 +23,7 @@ public val Icons.Regular.Incognito: ImageVector
                 horizontalLineToRelative(7.24f)
                 curveToRelative(1.08f, 0.0f, 2.06f, 0.63f, 2.5f, 1.61f)
                 lineToRelative(1.06f, 2.33f)
-                arcToRelative(0.75f, 0.75f, 0.0f, true, true, -1.36f, 0.62f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.36f, 0.62f)
                 lineToRelative(-1.06f, -2.33f)
                 curveToRelative(-0.2f, -0.44f, -0.65f, -0.73f, -1.14f, -0.73f)
                 lineTo(8.38f, 4.5f)

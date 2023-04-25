@@ -45,7 +45,7 @@ public val Icons.Regular.AnimalDog: ImageVector
                 curveTo(11.0f, 3.01f, 12.0f, 2.0f, 13.25f, 2.0f)
                 close()
                 moveTo(7.75f, 19.25f)
-                lineToRelative(0.75f, 0.03f)
+                lineTo(8.5f, 19.28f)
                 verticalLineToRelative(0.04f)
                 arcToRelative(2.57f, 2.57f, 0.0f, false, true, -0.05f, 0.38f)
                 curveToRelative(-0.04f, 0.21f, -0.12f, 0.5f, -0.25f, 0.8f)

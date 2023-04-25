@@ -41,7 +41,7 @@ public val Icons.Regular.Map: ImageVector
                 lineTo(9.2f, 4.0f)
                 close()
                 moveTo(19.5f, 6.2f)
-                lineToRelative(-4.0f, 2.8f)
+                lineTo(15.5f, 9.0f)
                 verticalLineToRelative(8.8f)
                 lineToRelative(4.0f, -2.8f)
                 lineTo(19.5f, 6.2f)

@@ -14,7 +14,7 @@ public val Icons.Filled.TagOff: ImageVector
         }
         _tagOff = fluentIcon(name = "Filled.TagOff") {
             fluentPath {
-                moveTo(16.0f, 17.06f)
+                moveToRelative(16.0f, 17.06f)
                 lineToRelative(4.72f, 4.72f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, 1.06f, -1.06f)
                 lineTo(3.28f, 2.22f)

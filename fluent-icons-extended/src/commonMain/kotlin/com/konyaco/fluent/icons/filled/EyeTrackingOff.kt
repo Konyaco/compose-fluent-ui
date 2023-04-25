@@ -43,7 +43,7 @@ public val Icons.Filled.EyeTrackingOff: ImageVector
                 lineTo(3.28f, 2.22f)
                 close()
                 moveTo(11.45f, 8.27f)
-                lineToRelative(-1.33f, -1.33f)
+                lineTo(10.12f, 6.94f)
                 curveToRelative(0.57f, -0.12f, 1.2f, -0.19f, 1.88f, -0.19f)
                 arcToRelative(7.73f, 7.73f, 0.0f, false, true, 6.84f, 3.75f)
                 arcToRelative(6.3f, 6.3f, 0.0f, false, true, 0.33f, 0.67f)

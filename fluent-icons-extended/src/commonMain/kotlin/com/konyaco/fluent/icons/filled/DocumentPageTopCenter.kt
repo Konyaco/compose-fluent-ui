@@ -14,7 +14,7 @@ public val Icons.Filled.DocumentPageTopCenter: ImageVector
         }
         _documentPageTopCenter = fluentIcon(name = "Filled.DocumentPageTopCenter") {
             fluentPath {
-                moveTo(11.26f, 9.0f)
+                moveToRelative(11.26f, 9.0f)
                 lineToRelative(0.23f, -1.5f)
                 horizontalLineToRelative(1.48f)
                 lineTo(12.74f, 9.0f)

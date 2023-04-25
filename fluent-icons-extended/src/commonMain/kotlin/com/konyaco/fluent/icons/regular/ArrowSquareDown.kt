@@ -14,7 +14,7 @@ public val Icons.Regular.ArrowSquareDown: ImageVector
         }
         _arrowSquareDown = fluentIcon(name = "Regular.ArrowSquareDown") {
             fluentPath {
-                moveTo(16.53f, 11.72f)
+                moveToRelative(16.53f, 11.72f)
                 lineToRelative(-0.08f, -0.07f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.98f, 0.07f)
                 lineToRelative(-2.72f, 2.72f)

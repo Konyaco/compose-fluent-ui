@@ -41,7 +41,7 @@ public val Icons.Regular.ImageShadow: ImageVector
                 horizontalLineToRelative(-9.0f)
                 close()
                 moveTo(14.77f, 15.92f)
-                lineToRelative(-4.5f, -4.21f)
+                lineTo(10.27f, 11.71f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.03f, 0.0f)
                 lineToRelative(-4.5f, 4.21f)
                 curveToRelative(0.16f, 0.05f, 0.33f, 0.08f, 0.51f, 0.08f)

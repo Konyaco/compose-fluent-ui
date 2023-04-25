@@ -28,7 +28,7 @@ public val Icons.Filled.DeviceMeetingRoomRemote: ImageVector
                 lineTo(7.07f, 3.0f)
                 close()
                 moveTo(10.49f, 20.5f)
-                lineToRelative(0.01f, -0.25f)
+                lineTo(10.5f, 20.25f)
                 lineTo(10.5f, 19.0f)
                 horizontalLineToRelative(6.75f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.0f, 1.5f)

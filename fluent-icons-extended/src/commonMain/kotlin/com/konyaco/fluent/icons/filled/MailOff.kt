@@ -31,7 +31,7 @@ public val Icons.Filled.MailOff: ImageVector
                 lineTo(3.28f, 2.22f)
                 close()
                 moveTo(15.3f, 12.12f)
-                lineToRelative(6.26f, 6.26f)
+                lineTo(21.56f, 18.38f)
                 curveToRelative(0.28f, -0.48f, 0.44f, -1.04f, 0.44f, -1.63f)
                 lineTo(22.0f, 8.61f)
                 lineToRelative(-6.7f, 3.5f)

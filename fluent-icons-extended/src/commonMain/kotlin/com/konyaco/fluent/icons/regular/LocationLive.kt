@@ -25,7 +25,7 @@ public val Icons.Regular.LocationLive: ImageVector
                 arcToRelative(1.13f, 1.13f, 0.0f, false, false, 0.0f, 2.25f)
                 close()
                 moveTo(7.98f, 21.77f)
-                lineToRelative(-0.4f, -0.38f)
+                lineTo(7.58f, 21.39f)
                 arcToRelative(4307.72f, 4307.72f, 0.0f, false, true, -2.96f, -2.96f)
                 arcToRelative(5.5f, 5.5f, 0.0f, true, true, 7.77f, 0.0f)
                 lineToRelative(-2.01f, 2.0f)

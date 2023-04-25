@@ -19,7 +19,7 @@ public val Icons.Filled.ArrowCircleRight: ImageVector
                 arcToRelative(10.0f, 10.0f, 0.0f, false, true, 0.0f, -20.0f)
                 close()
                 moveTo(12.78f, 7.47f)
-                lineToRelative(-0.08f, -0.07f)
+                lineTo(12.7f, 7.4f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.89f, -0.01f)
                 lineToRelative(-0.09f, 0.08f)
                 lineToRelative(-0.07f, 0.08f)

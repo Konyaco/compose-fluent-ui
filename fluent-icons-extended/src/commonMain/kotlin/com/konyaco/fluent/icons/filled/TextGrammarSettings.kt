@@ -40,7 +40,7 @@ public val Icons.Filled.TextGrammarSettings: ImageVector
                 arcTo(1.0f, 1.0f, 0.0f, false, false, 21.0f, 5.0f)
                 close()
                 moveTo(14.28f, 13.98f)
-                lineToRelative(-0.2f, -0.7f)
+                lineTo(14.08f, 13.28f)
                 curveToRelative(0.44f, -0.37f, 0.94f, -0.68f, 1.48f, -0.9f)
                 lineToRelative(0.5f, 0.52f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, false, 2.9f, 0.0f)

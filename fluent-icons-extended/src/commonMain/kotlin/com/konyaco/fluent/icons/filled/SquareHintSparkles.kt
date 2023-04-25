@@ -36,7 +36,7 @@ public val Icons.Filled.SquareHintSparkles: ImageVector
                 curveToRelative(-0.1f, -0.3f, -0.25f, -0.6f, -0.45f, -0.85f)
                 close()
                 moveTo(23.79f, 10.21f)
-                lineToRelative(-0.77f, -0.25f)
+                lineTo(23.02f, 9.96f)
                 arcToRelative(1.58f, 1.58f, 0.0f, false, true, -1.0f, -1.0f)
                 lineToRelative(-0.25f, -0.76f)
                 arcToRelative(0.3f, 0.3f, 0.0f, false, false, -0.57f, 0.0f)

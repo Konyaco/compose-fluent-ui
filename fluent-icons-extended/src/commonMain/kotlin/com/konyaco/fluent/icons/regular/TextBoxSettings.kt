@@ -53,7 +53,7 @@ public val Icons.Regular.TextBoxSettings: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.1f, -1.5f)
                 close()
                 moveTo(12.5f, 15.63f)
-                lineToRelative(0.45f, 0.43f)
+                lineTo(12.95f, 16.06f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, true, 0.0f, 2.88f)
                 lineToRelative(-0.45f, 0.43f)
                 curveToRelative(0.2f, 0.57f, 0.5f, 1.1f, 0.85f, 1.57f)

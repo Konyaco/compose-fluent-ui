@@ -24,7 +24,7 @@ public val Icons.Filled.ProhibitedMultiple: ImageVector
                 arcToRelative(6.75f, 6.75f, 0.0f, false, true, -5.43f, 10.76f)
                 close()
                 moveTo(14.76f, 5.32f)
-                lineToRelative(-9.44f, 9.44f)
+                lineTo(5.32f, 14.76f)
                 arcToRelative(6.75f, 6.75f, 0.0f, false, true, 9.44f, -9.44f)
                 close()
                 moveTo(20.5f, 10.75f)

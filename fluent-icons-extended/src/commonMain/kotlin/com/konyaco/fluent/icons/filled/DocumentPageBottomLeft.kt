@@ -14,7 +14,7 @@ public val Icons.Filled.DocumentPageBottomLeft: ImageVector
         }
         _documentPageBottomLeft = fluentIcon(name = "Filled.DocumentPageBottomLeft") {
             fluentPath {
-                moveTo(9.26f, 16.88f)
+                moveToRelative(9.26f, 16.88f)
                 lineToRelative(0.23f, -1.5f)
                 horizontalLineToRelative(1.48f)
                 lineToRelative(-0.23f, 1.5f)

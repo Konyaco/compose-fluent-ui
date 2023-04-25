@@ -23,7 +23,7 @@ public val Icons.Regular.CaretDown: ImageVector
                 lineToRelative(-5.52f, -6.3f)
                 close()
                 moveTo(6.66f, 9.5f)
-                lineToRelative(5.15f, 5.9f)
+                lineTo(11.81f, 15.4f)
                 curveToRelative(0.1f, 0.11f, 0.28f, 0.11f, 0.38f, 0.0f)
                 lineToRelative(5.16f, -5.9f)
                 lineTo(6.65f, 9.5f)

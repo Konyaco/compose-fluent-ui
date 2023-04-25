@@ -32,7 +32,7 @@ public val Icons.Filled.DocumentSplitHintOff: ImageVector
                 lineTo(3.28f, 2.22f)
                 close()
                 moveTo(18.5f, 15.32f)
-                lineToRelative(1.36f, 1.36f)
+                lineTo(19.86f, 16.68f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.14f, -0.44f)
                 verticalLineToRelative(-2.49f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.5f, 0.0f)

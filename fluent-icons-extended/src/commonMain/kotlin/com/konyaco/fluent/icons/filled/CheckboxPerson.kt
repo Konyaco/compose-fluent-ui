@@ -30,7 +30,7 @@ public val Icons.Filled.CheckboxPerson: ImageVector
                 lineTo(6.25f, 3.0f)
                 close()
                 moveTo(17.28f, 9.28f)
-                lineToRelative(-6.75f, 6.75f)
+                lineTo(10.53f, 16.03f)
                 curveToRelative(-0.3f, 0.29f, -0.77f, 0.29f, -1.06f, 0.0f)
                 lineToRelative(-2.75f, -2.75f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.06f, -1.06f)

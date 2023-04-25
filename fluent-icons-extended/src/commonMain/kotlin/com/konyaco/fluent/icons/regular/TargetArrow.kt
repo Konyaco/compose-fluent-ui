@@ -45,7 +45,7 @@ public val Icons.Regular.TargetArrow: ImageVector
                 curveToRelative(0.1f, 0.24f, 0.16f, 0.5f, 0.16f, 0.78f)
                 close()
                 moveTo(18.44f, 8.0f)
-                lineToRelative(1.0f, -1.0f)
+                lineTo(19.44f, 7.0f)
                 horizontalLineToRelative(-1.69f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.75f, -0.75f)
                 lineTo(17.0f, 4.56f)

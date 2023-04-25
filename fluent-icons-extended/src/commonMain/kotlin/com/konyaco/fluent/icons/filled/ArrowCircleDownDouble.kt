@@ -39,7 +39,7 @@ public val Icons.Filled.ArrowCircleDownDouble: ImageVector
                 arcToRelative(10.0f, 10.0f, 0.0f, false, false, -20.0f, 0.0f)
                 close()
                 moveTo(17.67f, 13.68f)
-                lineToRelative(0.08f, 0.07f)
+                lineTo(17.75f, 13.75f)
                 curveToRelative(0.27f, 0.27f, 0.29f, 0.68f, 0.07f, 0.98f)
                 lineToRelative(-0.07f, 0.08f)
                 lineToRelative(-1.97f, 1.97f)

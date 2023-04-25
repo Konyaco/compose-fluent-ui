@@ -77,7 +77,7 @@ public val Icons.Regular.DocumentDismiss: ImageVector
                 arcToRelative(0.5f, 0.5f, 0.0f, false, false, -0.57f, 0.0f)
                 close()
                 moveTo(13.49f, 4.56f)
-                lineToRelative(0.01f, 3.2f)
+                lineTo(13.5f, 7.76f)
                 curveToRelative(0.0f, 0.37f, 0.28f, 0.69f, 0.65f, 0.74f)
                 lineTo(17.45f, 8.5f)
                 lineTo(13.5f, 4.56f)

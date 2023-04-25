@@ -14,7 +14,7 @@ public val Icons.Filled.DocumentPageNumber: ImageVector
         }
         _documentPageNumber = fluentIcon(name = "Filled.DocumentPageNumber") {
             fluentPath {
-                moveTo(11.26f, 13.0f)
+                moveToRelative(11.26f, 13.0f)
                 lineToRelative(0.23f, -1.5f)
                 horizontalLineToRelative(1.48f)
                 lineToRelative(-0.23f, 1.5f)
