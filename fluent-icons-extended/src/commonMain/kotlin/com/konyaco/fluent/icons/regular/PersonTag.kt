@@ -39,7 +39,7 @@ public val Icons.Regular.PersonTag: ImageVector
                 arcToRelative(3.5f, 3.5f, 0.0f, false, true, -7.0f, 0.0f)
                 close()
                 moveTo(16.57f, 22.4f)
-                lineToRelative(-4.0f, -4.07f)
+                lineTo(12.57f, 18.33f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, true, -0.57f, -1.4f)
                 verticalLineToRelative(-2.94f)
                 curveToRelative(0.0f, -1.1f, 0.9f, -2.0f, 2.0f, -2.0f)

@@ -43,7 +43,7 @@ public val Icons.Regular.ShieldProhibited: ImageVector
                 lineToRelative(-5.57f, 5.56f)
                 close()
                 moveTo(14.25f, 19.81f)
-                lineToRelative(5.56f, -5.56f)
+                lineTo(19.81f, 14.25f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, true, -5.56f, 5.56f)
                 close()
             }

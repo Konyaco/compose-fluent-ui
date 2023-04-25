@@ -14,7 +14,7 @@ public val Icons.Regular.Apps: ImageVector
         }
         _apps = fluentIcon(name = "Regular.Apps") {
             fluentPath {
-                moveTo(18.5f, 2.33f)
+                moveToRelative(18.5f, 2.33f)
                 lineToRelative(3.17f, 3.18f)
                 curveToRelative(0.88f, 0.88f, 0.88f, 2.3f, 0.0f, 3.18f)
                 lineToRelative(-2.58f, 2.59f)

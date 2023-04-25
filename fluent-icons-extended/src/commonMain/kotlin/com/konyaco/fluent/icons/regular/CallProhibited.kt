@@ -64,7 +64,7 @@ public val Icons.Regular.CallProhibited: ImageVector
                 curveToRelative(0.64f, 0.44f, 1.42f, 0.69f, 2.25f, 0.69f)
                 close()
                 moveTo(8.7f, 18.75f)
-                lineToRelative(5.55f, -5.56f)
+                lineTo(14.25f, 13.19f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, false, -5.56f, 5.56f)
                 close()
             }

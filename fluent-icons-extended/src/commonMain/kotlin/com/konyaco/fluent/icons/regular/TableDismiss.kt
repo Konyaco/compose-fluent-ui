@@ -75,7 +75,7 @@ public val Icons.Regular.TableDismiss: ImageVector
                 arcToRelative(5.5f, 5.5f, 0.0f, false, true, 11.0f, 0.0f)
                 close()
                 moveTo(17.5f, 16.8f)
-                lineToRelative(-1.65f, -1.65f)
+                lineTo(15.85f, 15.15f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, false, -0.7f, 0.7f)
                 lineToRelative(1.64f, 1.65f)
                 lineToRelative(-1.64f, 1.65f)

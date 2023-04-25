@@ -14,7 +14,7 @@ public val Icons.Filled.DrawImage: ImageVector
         }
         _drawImage = fluentIcon(name = "Filled.DrawImage") {
             fluentPath {
-                moveTo(15.66f, 14.7f)
+                moveToRelative(15.66f, 14.7f)
                 lineToRelative(-2.08f, -2.05f)
                 lineToRelative(-0.13f, -0.12f)
                 curveToRelative(-0.84f, -0.7f, -2.06f, -0.7f, -2.9f, 0.0f)
@@ -38,7 +38,7 @@ public val Icons.Filled.DrawImage: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.0f, -1.5f)
                 close()
                 moveTo(11.47f, 13.71f)
-                lineToRelative(0.09f, -0.07f)
+                lineTo(11.56f, 13.64f)
                 curveToRelative(0.26f, -0.2f, 0.61f, -0.2f, 0.87f, -0.01f)
                 lineToRelative(0.1f, 0.08f)
                 lineToRelative(2.07f, 2.03f)
@@ -52,7 +52,7 @@ public val Icons.Filled.DrawImage: ImageVector
                 lineToRelative(3.7f, -3.62f)
                 close()
                 moveTo(19.1f, 12.66f)
-                lineToRelative(-5.9f, 5.9f)
+                lineTo(13.2f, 18.56f)
                 curveToRelative(-0.35f, 0.35f, -0.6f, 0.78f, -0.7f, 1.25f)
                 lineToRelative(-0.44f, 1.71f)
                 curveToRelative(-0.35f, 0.17f, -0.7f, 0.2f, -1.13f, 0.1f)

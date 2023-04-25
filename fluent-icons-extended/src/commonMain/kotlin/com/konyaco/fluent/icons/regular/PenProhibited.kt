@@ -45,7 +45,7 @@ public val Icons.Regular.PenProhibited: ImageVector
                 arcToRelative(3.98f, 3.98f, 0.0f, false, true, -0.69f, -2.25f)
                 close()
                 moveTo(16.5f, 21.5f)
-                curveToRelative(-0.83f, 0.0f, -1.6f, -0.25f, -2.25f, -0.7f)
+                curveToRelative(-0.83f, 0.0f, -1.6f, -0.26f, -2.25f, -0.7f)
                 lineToRelative(5.56f, -5.55f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, true, -3.3f, 6.25f)
                 close()

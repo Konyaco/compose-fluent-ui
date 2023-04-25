@@ -14,7 +14,7 @@ public val Icons.Filled.TextDirectionRotate90Right: ImageVector
         }
         _textDirectionRotate90Right = fluentIcon(name = "Filled.TextDirectionRotate90Right") {
             fluentPath {
-                moveTo(20.38f, 8.67f)
+                moveToRelative(20.38f, 8.67f)
                 lineToRelative(-9.0f, 3.75f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, true, -0.76f, -1.84f)
                 lineToRelative(2.38f, -1.0f)

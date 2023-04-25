@@ -35,7 +35,7 @@ public val Icons.Regular.TextColor: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.75f, -0.75f)
                 close()
                 moveTo(7.05f, 11.97f)
-                lineToRelative(3.76f, -9.5f)
+                lineTo(10.81f, 2.47f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.34f, -0.1f)
                 lineToRelative(0.05f, 0.1f)
                 lineToRelative(3.75f, 9.5f)

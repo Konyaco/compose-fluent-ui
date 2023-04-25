@@ -14,7 +14,7 @@ public val Icons.Regular.BookStar: ImageVector
         }
         _bookStar = fluentIcon(name = "Regular.BookStar") {
             fluentPath {
-                moveTo(10.54f, 8.6f)
+                moveToRelative(10.54f, 8.6f)
                 lineToRelative(1.1f, -2.22f)
                 curveToRelative(0.25f, -0.5f, 0.97f, -0.5f, 1.22f, 0.0f)
                 lineToRelative(1.1f, 2.23f)

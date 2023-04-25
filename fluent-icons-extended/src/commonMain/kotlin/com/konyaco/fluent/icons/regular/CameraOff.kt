@@ -37,7 +37,7 @@ public val Icons.Regular.CameraOff: ImageVector
                 lineToRelative(3.55f, 3.55f)
                 close()
                 moveTo(9.62f, 10.68f)
-                lineToRelative(4.2f, 4.2f)
+                lineTo(13.82f, 14.88f)
                 arcToRelative(3.0f, 3.0f, 0.0f, false, true, -4.2f, -4.2f)
                 close()
                 moveTo(11.24f, 8.06f)

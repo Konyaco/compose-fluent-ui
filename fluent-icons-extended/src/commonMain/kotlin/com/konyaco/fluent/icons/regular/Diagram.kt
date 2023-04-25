@@ -54,7 +54,7 @@ public val Icons.Regular.Diagram: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.1f, -0.8f)
                 close()
                 moveTo(9.37f, 13.5f)
-                lineToRelative(2.95f, 3.52f)
+                lineTo(12.32f, 17.02f)
                 curveToRelative(0.24f, 0.28f, 0.24f, 0.68f, 0.0f, 0.96f)
                 lineTo(9.36f, 21.5f)
                 horizontalLineToRelative(8.42f)

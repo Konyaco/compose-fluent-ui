@@ -14,7 +14,7 @@ public val Icons.Filled.TextFontSize: ImageVector
         }
         _textFontSize = fluentIcon(name = "Filled.TextFontSize") {
             fluentPath {
-                moveTo(9.97f, 16.17f)
+                moveToRelative(9.97f, 16.17f)
                 lineToRelative(4.59f, -12.51f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.83f, -0.12f)
                 lineToRelative(0.05f, 0.12f)
@@ -64,7 +64,7 @@ public val Icons.Filled.TextFontSize: ImageVector
                 lineTo(6.5f, 12.76f)
                 close()
                 moveTo(15.5f, 6.9f)
-                lineToRelative(-2.42f, 6.6f)
+                lineTo(13.08f, 13.5f)
                 horizontalLineToRelative(4.84f)
                 lineTo(15.5f, 6.9f)
                 close()

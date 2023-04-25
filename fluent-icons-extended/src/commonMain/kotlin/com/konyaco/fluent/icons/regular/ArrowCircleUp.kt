@@ -14,7 +14,7 @@ public val Icons.Regular.ArrowCircleUp: ImageVector
         }
         _arrowCircleUp = fluentIcon(name = "Regular.ArrowCircleUp") {
             fluentPath {
-                moveTo(7.47f, 12.28f)
+                moveToRelative(7.47f, 12.28f)
                 lineToRelative(0.08f, 0.07f)
                 curveToRelative(0.3f, 0.22f, 0.71f, 0.2f, 0.98f, -0.07f)
                 lineToRelative(2.72f, -2.72f)

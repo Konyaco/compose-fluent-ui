@@ -14,7 +14,7 @@ public val Icons.Regular.HeartCircle: ImageVector
         }
         _heartCircle = fluentIcon(name = "Regular.HeartCircle") {
             fluentPath {
-                moveTo(11.7f, 16.86f)
+                moveToRelative(11.7f, 16.86f)
                 lineToRelative(-4.11f, -4.8f)
                 arcToRelative(2.46f, 2.46f, 0.0f, false, true, 3.58f, -3.36f)
                 lineToRelative(0.83f, 0.8f)

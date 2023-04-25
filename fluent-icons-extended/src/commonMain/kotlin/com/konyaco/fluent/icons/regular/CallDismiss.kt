@@ -14,7 +14,7 @@ public val Icons.Regular.CallDismiss: ImageVector
         }
         _callDismiss = fluentIcon(name = "Regular.CallDismiss") {
             fluentPath {
-                moveTo(9.53f, 3.57f)
+                moveToRelative(9.53f, 3.57f)
                 lineToRelative(0.9f, 2.0f)
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, -0.64f, 3.15f)
                 lineTo(8.3f, 10.1f)
@@ -28,7 +28,7 @@ public val Icons.Regular.CallDismiss: ImageVector
                 curveToRelative(0.8f, 1.12f, 0.66f, 2.66f, -0.34f, 3.6f)
                 lineToRelative(-0.88f, 0.85f)
                 arcToRelative(3.75f, 3.75f, 0.0f, false, true, -3.6f, 0.89f)
-                curveToRelative(-2.75f, -0.77f, -5.21f, -3.1f, -7.43f, -6.93f)
+                curveToRelative(-2.74f, -0.77f, -5.21f, -3.1f, -7.43f, -6.93f)
                 curveToRelative(-2.21f, -3.83f, -2.99f, -7.14f, -2.27f, -9.91f)
                 arcToRelative(3.75f, 3.75f, 0.0f, false, true, 2.34f, -2.58f)
                 lineToRelative(0.2f, -0.07f)
@@ -43,10 +43,10 @@ public val Icons.Regular.CallDismiss: ImageVector
                 curveToRelative(2.04f, 3.53f, 4.23f, 5.59f, 6.54f, 6.23f)
                 curveToRelative(0.76f, 0.21f, 1.58f, 0.01f, 2.15f, -0.53f)
                 lineToRelative(0.9f, -0.84f)
-                curveToRelative(0.45f, -0.43f, 0.51f, -1.13f, 0.14f, -1.64f)
-                lineToRelative(-1.28f, -1.77f)
-                arcToRelative(1.25f, 1.25f, 0.0f, false, false, -1.38f, -0.47f)
-                lineToRelative(-2.01f, 0.62f)
+                curveToRelative(0.45f, -0.43f, 0.51f, -1.13f, 0.15f, -1.64f)
+                lineToRelative(-1.29f, -1.77f)
+                arcToRelative(1.25f, 1.25f, 0.0f, false, false, -1.37f, -0.47f)
+                lineToRelative(-2.02f, 0.62f)
                 curveToRelative(-1.17f, 0.35f, -2.23f, -0.6f, -3.37f, -2.57f)
                 curveTo(7.0f, 11.93f, 6.64f, 10.9f, 6.73f, 10.1f)
                 curveToRelative(0.05f, -0.42f, 0.24f, -0.8f, 0.55f, -1.09f)

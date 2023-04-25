@@ -27,7 +27,7 @@ public val Icons.Regular.TextDirectionVertical: ImageVector
                 lineTo(6.0f, 3.75f)
                 close()
                 moveTo(11.55f, 12.97f)
-                lineToRelative(3.76f, -9.5f)
+                lineTo(15.31f, 3.47f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.34f, -0.1f)
                 lineToRelative(0.05f, 0.1f)
                 lineToRelative(3.75f, 9.5f)

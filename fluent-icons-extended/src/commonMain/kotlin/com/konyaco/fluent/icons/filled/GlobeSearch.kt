@@ -31,7 +31,7 @@ public val Icons.Filled.GlobeSearch: ImageVector
                 horizontalLineToRelative(-4.3f)
                 close()
                 moveTo(12.25f, 16.5f)
-                lineToRelative(2.28f, 2.29f)
+                lineTo(14.53f, 18.79f)
                 curveToRelative(0.2f, -0.6f, 0.39f, -1.27f, 0.53f, -2.0f)
                 lineToRelative(0.06f, -0.29f)
                 horizontalLineToRelative(-2.87f)

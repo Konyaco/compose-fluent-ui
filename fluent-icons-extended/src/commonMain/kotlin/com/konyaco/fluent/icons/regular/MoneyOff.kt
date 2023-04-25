@@ -89,7 +89,7 @@ public val Icons.Regular.MoneyOff: ImageVector
                 curveToRelative(0.41f, 0.0f, 0.75f, 0.34f, 0.75f, 0.75f)
                 close()
                 moveTo(20.06f, 16.88f)
-                lineToRelative(1.09f, 1.09f)
+                lineTo(21.15f, 17.97f)
                 curveToRelative(0.53f, -0.77f, 0.85f, -1.71f, 0.85f, -2.72f)
                 lineTo(22.0f, 10.0f)
                 arcToRelative(3.0f, 3.0f, 0.0f, false, false, -1.5f, -2.6f)

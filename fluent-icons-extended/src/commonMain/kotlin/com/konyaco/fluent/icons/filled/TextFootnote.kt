@@ -14,7 +14,7 @@ public val Icons.Filled.TextFootnote: ImageVector
         }
         _textFootnote = fluentIcon(name = "Filled.TextFootnote") {
             fluentPath {
-                moveTo(20.02f, 7.54f)
+                moveToRelative(20.02f, 7.54f)
                 lineToRelative(-0.22f, 0.16f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, true, -1.1f, -1.67f)
                 arcToRelative(3.31f, 3.31f, 0.0f, false, false, 1.35f, -1.74f)
@@ -44,8 +44,8 @@ public val Icons.Filled.TextFootnote: ImageVector
                 curveToRelative(-0.3f, 0.0f, -0.57f, -0.08f, -0.8f, -0.27f)
                 close()
                 moveTo(7.64f, 13.11f)
-                lineToRelative(-1.01f, -2.8f)
-                lineToRelative(-1.02f, 2.8f)
+                lineTo(6.63f, 10.31f)
+                lineTo(5.61f, 13.11f)
                 horizontalLineToRelative(2.03f)
                 close()
                 moveTo(11.75f, 17.15f)

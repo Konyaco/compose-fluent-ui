@@ -14,7 +14,7 @@ public val Icons.Regular.AlertUrgent: ImageVector
         }
         _alertUrgent = fluentIcon(name = "Regular.AlertUrgent") {
             fluentPath {
-                moveTo(10.43f, 19.92f)
+                moveToRelative(10.43f, 19.92f)
                 lineToRelative(3.56f, -1.5f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, true, -3.56f, 1.5f)
                 close()

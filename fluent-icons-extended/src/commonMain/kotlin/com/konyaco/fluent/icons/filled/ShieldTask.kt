@@ -27,7 +27,7 @@ public val Icons.Filled.ShieldTask: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.75f, -0.75f)
                 close()
                 moveTo(16.75f, 9.3f)
-                lineToRelative(-6.0f, 5.5f)
+                lineTo(10.75f, 14.8f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.03f, -0.02f)
                 lineToRelative(-2.5f, -2.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 1.06f, -1.06f)

@@ -35,7 +35,7 @@ public val Icons.Regular.PulseSquare: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.75f, -0.75f)
                 close()
                 moveTo(8.25f, 11.5f)
-                lineToRelative(1.56f, -3.55f)
+                lineTo(9.81f, 7.95f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.34f, -0.08f)
                 lineToRelative(0.04f, 0.1f)
                 lineToRelative(2.39f, 5.95f)

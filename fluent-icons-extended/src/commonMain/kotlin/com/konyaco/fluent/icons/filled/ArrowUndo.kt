@@ -14,7 +14,7 @@ public val Icons.Filled.ArrowUndo: ImageVector
         }
         _arrowUndo = fluentIcon(name = "Filled.ArrowUndo") {
             fluentPath {
-                moveTo(6.9f, 6.68f)
+                moveToRelative(6.9f, 6.68f)
                 lineToRelative(2.74f, -2.73f)
                 arcToRelative(6.66f, 6.66f, 0.0f, true, true, 9.42f, 9.42f)
                 lineToRelative(-8.34f, 8.34f)

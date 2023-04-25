@@ -14,7 +14,7 @@ public val Icons.Filled.FlashOff: ImageVector
         }
         _flashOff = fluentIcon(name = "Filled.FlashOff") {
             fluentPath {
-                moveTo(14.44f, 15.5f)
+                moveToRelative(14.44f, 15.5f)
                 lineToRelative(6.28f, 6.28f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 1.06f, -1.06f)
                 lineTo(3.28f, 2.22f)
@@ -28,9 +28,9 @@ public val Icons.Filled.FlashOff: ImageVector
                 lineToRelative(5.85f, -6.04f)
                 close()
                 moveTo(19.64f, 10.12f)
-                lineToRelative(-3.12f, 3.22f)
-                lineToRelative(-9.47f, -9.47f)
-                lineToRelative(0.37f, -1.04f)
+                lineTo(16.52f, 13.34f)
+                lineTo(7.05f, 3.87f)
+                lineTo(7.42f, 2.83f)
                 curveTo(7.6f, 2.33f, 8.07f, 2.0f, 8.6f, 2.0f)
                 horizontalLineToRelative(6.46f)
                 curveToRelative(0.85f, 0.0f, 1.45f, 0.84f, 1.18f, 1.65f)

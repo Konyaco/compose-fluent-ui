@@ -14,7 +14,7 @@ public val Icons.Regular.CallOutbound: ImageVector
         }
         _callOutbound = fluentIcon(name = "Regular.CallOutbound") {
             fluentPath {
-                moveTo(9.53f, 3.57f)
+                moveToRelative(9.53f, 3.57f)
                 lineToRelative(0.9f, 2.0f)
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, -0.64f, 3.15f)
                 lineTo(8.3f, 10.1f)

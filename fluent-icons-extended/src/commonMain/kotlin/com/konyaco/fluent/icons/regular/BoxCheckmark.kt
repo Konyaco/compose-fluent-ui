@@ -58,7 +58,7 @@ public val Icons.Regular.BoxCheckmark: ImageVector
                 arcToRelative(5.5f, 5.5f, 0.0f, false, false, 0.0f, 11.0f)
                 close()
                 moveTo(16.5f, 18.8f)
-                lineToRelative(3.65f, -3.65f)
+                lineTo(20.15f, 15.15f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, true, 0.7f, 0.7f)
                 lineToRelative(-4.0f, 4.0f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, true, -0.7f, 0.0f)

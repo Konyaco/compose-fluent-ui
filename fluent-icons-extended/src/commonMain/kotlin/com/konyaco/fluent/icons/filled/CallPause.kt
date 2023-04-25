@@ -27,7 +27,7 @@ public val Icons.Filled.CallPause: ImageVector
                 verticalLineToRelative(-7.5f)
                 close()
                 moveTo(10.23f, 5.34f)
-                lineToRelative(-0.86f, -2.03f)
+                lineTo(9.37f, 3.31f)
                 arcTo(2.06f, 2.06f, 0.0f, false, false, 6.85f, 2.1f)
                 lineToRelative(-1.08f, 0.34f)
                 arcToRelative(3.26f, 3.26f, 0.0f, false, false, -2.15f, 2.4f)

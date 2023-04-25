@@ -1,3 +1,5 @@
+import org.jetbrains.compose.compose
+
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
@@ -19,6 +21,7 @@ kotlin {
             dependencies {
                 api(compose.foundation)
                 api(project(":fluent-icons-core"))
+                implementation(compose("org.jetbrains.compose.ui:ui-util"))
             }
         }
         val commonTest by getting {

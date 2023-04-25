@@ -14,7 +14,7 @@ public val Icons.Filled.Layer: ImageVector
         }
         _layer = fluentIcon(name = "Filled.Layer") {
             fluentPath {
-                moveTo(13.39f, 3.42f)
+                moveToRelative(13.39f, 3.42f)
                 lineToRelative(6.36f, 4.25f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 0.0f, 1.66f)
                 lineToRelative(-6.36f, 4.25f)

@@ -41,7 +41,7 @@ public val Icons.Regular.PlugConnected: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, 1.06f, 1.06f)
                 close()
                 moveTo(7.67f, 11.29f)
-                lineToRelative(5.04f, 5.04f)
+                lineTo(12.71f, 16.33f)
                 curveToRelative(0.3f, 0.31f, 0.39f, 0.8f, 0.12f, 1.14f)
                 arcToRelative(4.5f, 4.5f, 0.0f, true, true, -6.3f, -6.3f)
                 curveToRelative(0.35f, -0.27f, 0.83f, -0.19f, 1.14f, 0.12f)

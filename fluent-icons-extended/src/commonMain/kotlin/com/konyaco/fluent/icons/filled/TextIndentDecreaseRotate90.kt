@@ -22,7 +22,7 @@ public val Icons.Filled.TextIndentDecreaseRotate90: ImageVector
                 lineTo(8.0f, 9.0f)
                 close()
                 moveTo(12.7f, 2.3f)
-                lineToRelative(2.0f, 2.0f)
+                lineTo(14.7f, 4.3f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, -1.31f, 1.49f)
                 lineToRelative(-0.1f, -0.08f)
                 lineTo(12.0f, 4.4f)

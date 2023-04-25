@@ -14,7 +14,7 @@ public val Icons.Filled.PortHdmi: ImageVector
         }
         _portHdmi = fluentIcon(name = "Filled.PortHdmi") {
             fluentPath {
-                moveTo(21.41f, 11.41f)
+                moveToRelative(21.41f, 11.41f)
                 lineToRelative(-2.82f, -2.82f)
                 arcTo(2.0f, 2.0f, 0.0f, false, false, 17.17f, 8.0f)
                 horizontalLineTo(6.83f)

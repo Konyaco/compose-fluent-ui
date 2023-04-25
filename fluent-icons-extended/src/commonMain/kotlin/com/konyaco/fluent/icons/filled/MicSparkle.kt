@@ -65,7 +65,7 @@ public val Icons.Filled.MicSparkle: ImageVector
                 horizontalLineToRelative(0.72f)
                 close()
                 moveTo(22.02f, 18.96f)
-                lineToRelative(0.76f, 0.25f)
+                lineTo(22.78f, 19.21f)
                 horizontalLineToRelative(0.02f)
                 arcToRelative(0.3f, 0.3f, 0.0f, false, true, 0.14f, 0.47f)
                 arcToRelative(0.3f, 0.3f, 0.0f, false, true, -0.14f, 0.1f)

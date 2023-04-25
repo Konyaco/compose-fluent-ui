@@ -14,7 +14,7 @@ public val Icons.Regular.ArrowCircleLeft: ImageVector
         }
         _arrowCircleLeft = fluentIcon(name = "Regular.ArrowCircleLeft") {
             fluentPath {
-                moveTo(12.28f, 16.53f)
+                moveToRelative(12.28f, 16.53f)
                 lineToRelative(0.07f, -0.08f)
                 curveToRelative(0.22f, -0.3f, 0.2f, -0.71f, -0.07f, -0.98f)
                 lineToRelative(-2.72f, -2.72f)

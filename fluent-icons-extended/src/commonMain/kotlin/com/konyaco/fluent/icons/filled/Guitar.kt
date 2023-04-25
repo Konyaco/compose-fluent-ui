@@ -14,7 +14,7 @@ public val Icons.Filled.Guitar: ImageVector
         }
         _guitar = fluentIcon(name = "Filled.Guitar") {
             fluentPath {
-                moveTo(18.5f, 3.43f)
+                moveToRelative(18.5f, 3.43f)
                 lineToRelative(1.18f, -1.18f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.41f, 0.0f)
                 lineToRelative(0.7f, 0.7f)

@@ -19,7 +19,7 @@ public val Icons.Filled.DismissCircle: ImageVector
                 arcToRelative(10.0f, 10.0f, 0.0f, false, true, 0.0f, -20.0f)
                 close()
                 moveTo(15.53f, 8.47f)
-                lineToRelative(-0.08f, -0.07f)
+                lineTo(15.45f, 8.4f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.89f, -0.01f)
                 lineToRelative(-0.09f, 0.08f)
                 lineTo(12.0f, 10.94f)

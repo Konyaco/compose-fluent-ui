@@ -41,7 +41,7 @@ public val Icons.Regular.ClipboardTaskAdd: ImageVector
                 horizontalLineToRelative(-1.76f)
                 close()
                 moveTo(13.99f, 4.1f)
-                lineToRelative(0.01f, 0.15f)
+                lineTo(14.0f, 4.25f)
                 lineTo(14.0f, 4.1f)
                 close()
                 moveTo(8.25f, 3.5f)

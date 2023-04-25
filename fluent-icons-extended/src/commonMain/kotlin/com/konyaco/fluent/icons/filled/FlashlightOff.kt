@@ -37,7 +37,7 @@ public val Icons.Filled.FlashlightOff: ImageVector
                 lineToRelative(4.91f, -4.9f)
                 close()
                 moveTo(9.53f, 15.53f)
-                lineToRelative(-1.5f, 1.5f)
+                lineTo(8.03f, 17.03f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, -1.06f, -1.06f)
                 lineToRelative(1.5f, -1.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 1.06f, 1.06f)

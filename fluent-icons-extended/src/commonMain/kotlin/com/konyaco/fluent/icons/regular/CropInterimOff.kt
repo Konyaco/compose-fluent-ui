@@ -95,7 +95,7 @@ public val Icons.Regular.CropInterimOff: ImageVector
                 lineToRelative(-0.03f, -0.02f)
                 close()
                 moveTo(20.26f, 17.07f)
-                lineToRelative(1.15f, 1.16f)
+                lineTo(21.41f, 18.23f)
                 arcToRelative(6.5f, 6.5f, 0.0f, false, false, -4.74f, -9.12f)
                 lineToRelative(0.25f, 1.6f)
                 arcToRelative(5.0f, 5.0f, 0.0f, false, true, 3.33f, 6.36f)

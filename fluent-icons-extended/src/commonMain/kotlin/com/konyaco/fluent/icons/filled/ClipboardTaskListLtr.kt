@@ -48,7 +48,7 @@ public val Icons.Filled.ClipboardTaskListLtr: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 0.0f, -1.5f)
                 close()
                 moveTo(10.78f, 9.78f)
-                lineToRelative(-2.0f, 2.0f)
+                lineTo(8.78f, 11.78f)
                 curveToRelative(-0.3f, 0.3f, -0.77f, 0.3f, -1.06f, 0.0f)
                 lineToRelative(-1.0f, -1.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 1.06f, -1.06f)

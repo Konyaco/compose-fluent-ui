@@ -23,7 +23,7 @@ public val Icons.Filled.ArrowImport: ImageVector
                 curveToRelative(0.0f, -0.41f, 0.34f, -0.75f, 0.75f, -0.75f)
                 close()
                 moveTo(12.21f, 6.39f)
-                lineToRelative(0.08f, -0.1f)
+                lineTo(12.29f, 6.29f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.32f, -0.08f)
                 lineToRelative(0.1f, 0.08f)
                 lineToRelative(5.0f, 5.0f)

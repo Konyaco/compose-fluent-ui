@@ -30,7 +30,7 @@ public val Icons.Filled.PersonMail: ImageVector
                 arcToRelative(5.0f, 5.0f, 0.0f, false, true, 0.0f, -10.0f)
                 close()
                 moveTo(17.51f, 18.93f)
-                lineToRelative(-5.5f, -3.2f)
+                lineTo(12.01f, 15.73f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, true, 2.0f, -1.73f)
                 lineTo(21.0f, 14.0f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, true, 2.0f, 1.97f)

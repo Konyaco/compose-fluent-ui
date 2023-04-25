@@ -14,7 +14,7 @@ public val Icons.Filled.KeyboardTab: ImageVector
         }
         _keyboardTab = fluentIcon(name = "Filled.KeyboardTab") {
             fluentPath {
-                moveTo(18.2f, 11.3f)
+                moveToRelative(18.2f, 11.3f)
                 lineToRelative(-6.5f, -6.5f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -1.49f, 1.31f)
                 lineToRelative(0.08f, 0.1f)

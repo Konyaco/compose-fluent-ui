@@ -21,7 +21,7 @@ public val Icons.Regular.TextIndentDecreaseRotate270: ImageVector
                 verticalLineToRelative(-9.0f)
                 close()
                 moveTo(11.22f, 21.28f)
-                lineToRelative(-2.0f, -2.0f)
+                lineTo(9.22f, 19.28f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.98f, -1.13f)
                 lineToRelative(0.08f, 0.07f)
                 lineToRelative(1.47f, 1.47f)

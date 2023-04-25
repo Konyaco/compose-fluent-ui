@@ -61,7 +61,7 @@ public val Icons.Regular.WindowDevTools: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.06f, 0.04f)
                 close()
                 moveTo(13.26f, 15.8f)
-                lineToRelative(2.02f, -1.85f)
+                lineTo(15.28f, 13.95f)
                 arcToRelative(4.5f, 4.5f, 0.0f, false, true, -0.01f, -2.9f)
                 lineTo(13.26f, 9.2f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.02f, 1.1f)

@@ -14,7 +14,7 @@ public val Icons.Filled.Send: ImageVector
         }
         _send = fluentIcon(name = "Filled.Send") {
             fluentPath {
-                moveTo(12.81f, 12.2f)
+                moveToRelative(12.81f, 12.2f)
                 lineToRelative(-7.53f, 1.25f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, false, -0.38f, 0.32f)
                 lineToRelative(-2.6f, 6.96f)

@@ -14,7 +14,7 @@ public val Icons.Filled.MusicNoteOff1: ImageVector
         }
         _musicNoteOff1 = fluentIcon(name = "Filled.MusicNoteOff1") {
             fluentPath {
-                moveTo(12.0f, 13.06f)
+                moveToRelative(12.0f, 13.06f)
                 lineToRelative(8.72f, 8.72f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 1.06f, -1.06f)
                 lineTo(3.28f, 2.22f)
@@ -25,8 +25,8 @@ public val Icons.Filled.MusicNoteOff1: ImageVector
                 verticalLineToRelative(-5.19f)
                 close()
                 moveTo(18.99f, 11.46f)
-                lineToRelative(-6.97f, -2.62f)
-                lineToRelative(-1.52f, -1.52f)
+                lineTo(12.02f, 8.84f)
+                lineTo(10.5f, 7.32f)
                 lineTo(10.5f, 2.75f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.01f, -0.7f)
                 lineToRelative(6.38f, 2.39f)

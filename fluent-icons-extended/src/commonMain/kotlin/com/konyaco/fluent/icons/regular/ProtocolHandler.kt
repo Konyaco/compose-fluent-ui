@@ -14,7 +14,7 @@ public val Icons.Regular.ProtocolHandler: ImageVector
         }
         _protocolHandler = fluentIcon(name = "Regular.ProtocolHandler") {
             fluentPath {
-                moveTo(13.73f, 17.73f)
+                moveToRelative(13.73f, 17.73f)
                 lineToRelative(-1.02f, -1.02f)
                 lineToRelative(1.06f, -1.06f)
                 lineToRelative(1.02f, 1.02f)
@@ -33,7 +33,7 @@ public val Icons.Regular.ProtocolHandler: ImageVector
                 arcToRelative(2.5f, 2.5f, 0.0f, false, true, -3.54f, 0.0f)
                 close()
                 moveTo(6.73f, 6.27f)
-                lineToRelative(-3.96f, 3.96f)
+                lineTo(2.77f, 10.23f)
                 arcToRelative(2.5f, 2.5f, 0.0f, false, false, 0.0f, 3.54f)
                 lineToRelative(3.96f, 3.96f)
                 arcToRelative(2.5f, 2.5f, 0.0f, false, false, 3.54f, 0.0f)
@@ -43,7 +43,7 @@ public val Icons.Regular.ProtocolHandler: ImageVector
                 arcToRelative(2.5f, 2.5f, 0.0f, false, false, -3.54f, 0.0f)
                 close()
                 moveTo(3.83f, 11.29f)
-                lineToRelative(3.96f, -3.96f)
+                lineTo(7.79f, 7.33f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.42f, 0.0f)
                 lineToRelative(3.96f, 3.96f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 0.0f, 1.42f)

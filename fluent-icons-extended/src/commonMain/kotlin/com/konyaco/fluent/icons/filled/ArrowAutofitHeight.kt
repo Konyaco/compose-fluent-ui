@@ -14,7 +14,7 @@ public val Icons.Filled.ArrowAutofitHeight: ImageVector
         }
         _arrowAutofitHeight = fluentIcon(name = "Filled.ArrowAutofitHeight") {
             fluentPath {
-                moveTo(12.95f, 5.9f)
+                moveToRelative(12.95f, 5.9f)
                 lineToRelative(0.09f, -0.1f)
                 lineToRelative(2.35f, -2.36f)
                 curveToRelative(0.18f, -0.27f, 0.5f, -0.44f, 0.86f, -0.44f)
@@ -56,7 +56,7 @@ public val Icons.Filled.ArrowAutofitHeight: ImageVector
                 verticalLineToRelative(-11.0f)
                 close()
                 moveTo(14.45f, 16.79f)
-                lineToRelative(-0.1f, -0.09f)
+                lineTo(14.35f, 16.7f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -1.3f, 1.5f)
                 lineToRelative(2.34f, 2.36f)
                 curveToRelative(0.18f, 0.27f, 0.5f, 0.44f, 0.86f, 0.44f)

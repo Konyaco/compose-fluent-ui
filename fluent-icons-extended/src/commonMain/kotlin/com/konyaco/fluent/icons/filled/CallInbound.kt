@@ -14,7 +14,7 @@ public val Icons.Filled.CallInbound: ImageVector
         }
         _callInbound = fluentIcon(name = "Filled.CallInbound") {
             fluentPath {
-                moveTo(9.37f, 3.31f)
+                moveToRelative(9.37f, 3.31f)
                 lineToRelative(0.86f, 2.03f)
                 curveToRelative(0.37f, 0.88f, 0.16f, 1.92f, -0.52f, 2.57f)
                 lineToRelative(-1.9f, 1.8f)
@@ -33,7 +33,7 @@ public val Icons.Filled.CallInbound: ImageVector
                 curveToRelative(1.0f, -0.33f, 2.09f, 0.2f, 2.52f, 1.21f)
                 close()
                 moveTo(14.5f, 8.44f)
-                lineToRelative(6.22f, -6.22f)
+                lineTo(20.72f, 2.22f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.13f, 0.97f)
                 lineToRelative(-0.07f, 0.09f)
                 lineToRelative(-6.22f, 6.22f)

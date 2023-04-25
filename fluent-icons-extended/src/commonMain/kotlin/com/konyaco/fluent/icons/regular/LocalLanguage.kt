@@ -14,7 +14,7 @@ public val Icons.Regular.LocalLanguage: ImageVector
         }
         _localLanguage = fluentIcon(name = "Regular.LocalLanguage") {
             fluentPath {
-                moveTo(9.34f, 6.37f)
+                moveToRelative(9.34f, 6.37f)
                 lineToRelative(0.05f, 0.1f)
                 lineToRelative(5.56f, 14.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.42f, 0.98f)

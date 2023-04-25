@@ -84,7 +84,7 @@ public val Icons.Filled.TimePicker: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, 1.5f)
                 close()
                 moveTo(12.63f, 22.03f)
-                lineToRelative(4.0f, -3.25f)
+                lineTo(16.63f, 18.78f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -1.26f, -1.56f)
                 lineTo(12.0f, 19.96f)
                 lineToRelative(-3.37f, -2.74f)

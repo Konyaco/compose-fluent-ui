@@ -44,7 +44,7 @@ public val Icons.Regular.DocumentProhibited: ImageVector
                 verticalLineToRelative(10.0f)
                 close()
                 moveTo(13.5f, 4.62f)
-                lineToRelative(3.88f, 3.88f)
+                lineTo(17.38f, 8.5f)
                 lineTo(14.0f, 8.5f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, true, -0.5f, -0.5f)
                 lineTo(13.5f, 4.62f)

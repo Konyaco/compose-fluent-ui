@@ -56,7 +56,7 @@ public val Icons.Regular.ImageArrowBack: ImageVector
                 verticalLineToRelative(-5.77f)
                 close()
                 moveTo(18.33f, 19.4f)
-                lineToRelative(-5.8f, -5.69f)
+                lineTo(12.53f, 13.71f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.97f, -0.07f)
                 lineToRelative(-0.08f, 0.07f)
                 lineToRelative(-5.81f, 5.7f)

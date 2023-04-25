@@ -14,7 +14,7 @@ public val Icons.Filled.Dismiss: ImageVector
         }
         _dismiss = fluentIcon(name = "Filled.Dismiss") {
             fluentPath {
-                moveTo(4.21f, 4.39f)
+                moveToRelative(4.21f, 4.39f)
                 lineToRelative(0.08f, -0.1f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.32f, -0.08f)
                 lineToRelative(0.1f, 0.08f)

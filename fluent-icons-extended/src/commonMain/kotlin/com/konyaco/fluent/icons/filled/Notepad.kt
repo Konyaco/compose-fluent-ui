@@ -41,7 +41,7 @@ public val Icons.Filled.Notepad: ImageVector
                 curveToRelative(0.0f, -0.41f, 0.34f, -0.75f, 0.75f, -0.75f)
                 close()
                 moveTo(19.55f, 17.5f)
-                lineToRelative(-4.06f, 4.07f)
+                lineTo(15.49f, 21.57f)
                 verticalLineToRelative(-3.32f)
                 lineToRelative(0.01f, -0.1f)
                 curveToRelative(0.05f, -0.33f, 0.31f, -0.6f, 0.64f, -0.64f)

@@ -49,7 +49,7 @@ public val Icons.Filled.LeafThree: ImageVector
                 arcTo(6.47f, 6.47f, 0.0f, false, true, 9.0f, 15.5f)
                 close()
                 moveTo(12.18f, 19.88f)
-                lineToRelative(4.6f, -4.6f)
+                lineTo(16.78f, 15.28f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, -1.06f, -1.06f)
                 lineToRelative(-4.6f, 4.6f)
                 curveToRelative(0.3f, 0.4f, 0.66f, 0.76f, 1.06f, 1.06f)

@@ -14,7 +14,7 @@ public val Icons.Regular.Wand: ImageVector
         }
         _wand = fluentIcon(name = "Regular.Wand") {
             fluentPath {
-                moveTo(13.31f, 7.57f)
+                moveToRelative(13.31f, 7.57f)
                 lineToRelative(-0.13f, 0.12f)
                 lineTo(2.7f, 18.18f)
                 arcToRelative(2.27f, 2.27f, 0.0f, false, false, 3.2f, 3.2f)
@@ -24,8 +24,8 @@ public val Icons.Regular.Wand: ImageVector
                 arcToRelative(2.25f, 2.25f, 0.0f, false, false, -2.92f, 0.0f)
                 close()
                 moveTo(12.47f, 10.53f)
-                lineToRelative(1.08f, 1.08f)
-                lineToRelative(-8.7f, 8.72f)
+                lineTo(13.55f, 11.61f)
+                lineTo(4.85f, 20.33f)
                 arcToRelative(0.77f, 0.77f, 0.0f, true, true, -1.1f, -1.1f)
                 lineToRelative(8.72f, -8.7f)
                 close()
@@ -94,7 +94,7 @@ public val Icons.Regular.Wand: ImageVector
                 horizontalLineToRelative(0.1f)
                 close()
                 moveTo(18.85f, 3.01f)
-                lineToRelative(-0.1f, -0.01f)
+                lineTo(18.75f, 3.0f)
                 curveToRelative(-0.38f, 0.0f, -0.7f, 0.28f, -0.74f, 0.65f)
                 lineToRelative(-0.01f, 0.1f)
                 verticalLineToRelative(0.75f)

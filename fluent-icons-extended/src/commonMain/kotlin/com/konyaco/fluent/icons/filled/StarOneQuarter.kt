@@ -14,7 +14,7 @@ public val Icons.Filled.StarOneQuarter: ImageVector
         }
         _starOneQuarter = fluentIcon(name = "Filled.StarOneQuarter") {
             fluentPath {
-                moveTo(9.0f, 6.72f)
+                moveToRelative(9.0f, 6.72f)
                 lineToRelative(-0.57f, 1.16f)
                 lineToRelative(-5.27f, 0.77f)
                 arcToRelative(1.35f, 1.35f, 0.0f, false, false, -0.75f, 2.3f)

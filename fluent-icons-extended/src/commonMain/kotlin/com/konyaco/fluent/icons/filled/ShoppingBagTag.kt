@@ -48,7 +48,7 @@ public val Icons.Filled.ShoppingBagTag: ImageVector
                 arcToRelative(1.5f, 1.5f, 0.0f, false, false, -3.0f, 0.0f)
                 close()
                 moveTo(12.57f, 18.33f)
-                lineToRelative(4.0f, 4.07f)
+                lineTo(16.57f, 22.4f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, false, 2.86f, 0.02f)
                 lineToRelative(2.99f, -3.0f)
                 arcToRelative(2.0f, 2.0f, 0.0f, false, false, -0.01f, -2.83f)

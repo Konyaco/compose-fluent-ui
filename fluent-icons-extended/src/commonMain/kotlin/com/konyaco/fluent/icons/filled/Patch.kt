@@ -14,7 +14,7 @@ public val Icons.Filled.Patch: ImageVector
         }
         _patch = fluentIcon(name = "Filled.Patch") {
             fluentPath {
-                moveTo(9.8f, 3.24f)
+                moveToRelative(9.8f, 3.24f)
                 lineToRelative(1.5f, 1.5f)
                 lineToRelative(-6.57f, 6.55f)
                 lineToRelative(-1.5f, -1.5f)
@@ -23,9 +23,9 @@ public val Icons.Filled.Patch: ImageVector
                 arcToRelative(3.25f, 3.25f, 0.0f, false, true, 4.6f, 0.0f)
                 close()
                 moveTo(14.2f, 20.76f)
-                lineToRelative(-1.5f, -1.5f)
-                lineToRelative(6.57f, -6.55f)
-                lineToRelative(1.5f, 1.5f)
+                lineTo(12.7f, 19.26f)
+                lineTo(19.27f, 12.71f)
+                lineTo(20.77f, 14.21f)
                 arcToRelative(3.25f, 3.25f, 0.0f, false, true, 0.0f, 4.59f)
                 lineToRelative(-1.97f, 1.96f)
                 arcToRelative(3.25f, 3.25f, 0.0f, false, true, -4.6f, 0.0f)

@@ -29,7 +29,7 @@ public val Icons.Filled.ArrowAutofitWidth: ImageVector
                 horizontalLineToRelative(11.0f)
                 close()
                 moveTo(18.2f, 13.04f)
-                lineToRelative(-0.1f, -0.09f)
+                lineTo(18.1f, 12.95f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -1.4f, 1.4f)
                 lineToRelative(0.09f, 0.1f)
                 lineToRelative(0.8f, 0.8f)

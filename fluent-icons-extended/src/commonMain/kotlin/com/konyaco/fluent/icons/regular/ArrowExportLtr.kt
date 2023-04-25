@@ -22,7 +22,7 @@ public val Icons.Regular.ArrowExportLtr: ImageVector
                 curveToRelative(0.0f, -0.41f, 0.34f, -0.75f, 0.75f, -0.75f)
                 close()
                 moveTo(15.65f, 6.3f)
-                lineToRelative(0.07f, -0.08f)
+                lineTo(15.72f, 6.22f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.98f, -0.07f)
                 lineToRelative(0.08f, 0.07f)
                 lineToRelative(5.0f, 5.0f)

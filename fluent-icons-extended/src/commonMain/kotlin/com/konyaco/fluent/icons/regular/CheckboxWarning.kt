@@ -44,7 +44,7 @@ public val Icons.Regular.CheckboxWarning: ImageVector
                 lineToRelative(6.75f, -6.75f)
                 close()
                 moveTo(16.16f, 12.83f)
-                lineToRelative(-4.0f, 8.0f)
+                lineTo(12.16f, 20.83f)
                 arcTo(1.5f, 1.5f, 0.0f, false, false, 13.51f, 23.0f)
                 horizontalLineToRelative(8.0f)
                 arcToRelative(1.5f, 1.5f, 0.0f, false, false, 1.33f, -2.17f)

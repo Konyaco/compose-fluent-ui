@@ -20,7 +20,7 @@ public val Icons.Filled.ShiftsAvailability: ImageVector
                 arcTo(6.5f, 6.5f, 0.0f, false, false, 8.5f, 2.0f)
                 close()
                 moveTo(11.28f, 7.78f)
-                lineToRelative(-3.0f, 3.0f)
+                lineTo(8.28f, 10.78f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.06f, 0.0f)
                 lineToRelative(-1.5f, -1.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.06f, -1.06f)

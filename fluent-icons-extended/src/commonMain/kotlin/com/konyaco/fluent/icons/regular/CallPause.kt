@@ -27,7 +27,7 @@ public val Icons.Regular.CallPause: ImageVector
                 verticalLineToRelative(-7.5f)
                 close()
                 moveTo(10.43f, 5.63f)
-                lineToRelative(-0.9f, -2.0f)
+                lineTo(9.53f, 3.63f)
                 arcToRelative(2.75f, 2.75f, 0.0f, false, false, -3.3f, -1.51f)
                 lineToRelative(-1.17f, 0.35f)
                 lineToRelative(-0.2f, 0.07f)

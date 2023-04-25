@@ -29,7 +29,7 @@ public val Icons.Filled.TableCellsMerge: ImageVector
                 lineTo(3.0f, 8.0f)
                 close()
                 moveTo(15.58f, 11.25f)
-                lineToRelative(-0.89f, -1.0f)
+                lineTo(14.69f, 10.25f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.12f, -1.0f)
                 lineToRelative(2.0f, 2.25f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.01f, 0.99f)

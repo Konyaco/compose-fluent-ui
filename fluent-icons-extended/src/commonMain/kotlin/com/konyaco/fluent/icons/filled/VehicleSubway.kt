@@ -50,7 +50,7 @@ public val Icons.Filled.VehicleSubway: ImageVector
                 moveTo(13.25f, 6.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.0f, 1.5f)
                 horizontalLineToRelative(-2.5f)
-                arcToRelative(0.75f, 0.75f, 0.0f, true, true, 0.0f, -1.5f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.0f, -1.5f)
                 horizontalLineToRelative(2.5f)
                 close()
             }

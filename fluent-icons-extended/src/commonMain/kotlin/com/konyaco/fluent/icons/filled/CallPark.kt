@@ -14,7 +14,7 @@ public val Icons.Filled.CallPark: ImageVector
         }
         _callPark = fluentIcon(name = "Filled.CallPark") {
             fluentPath {
-                moveTo(9.37f, 3.31f)
+                moveToRelative(9.37f, 3.31f)
                 lineToRelative(0.86f, 2.03f)
                 curveToRelative(0.37f, 0.88f, 0.16f, 1.92f, -0.52f, 2.57f)
                 lineToRelative(-1.9f, 1.8f)

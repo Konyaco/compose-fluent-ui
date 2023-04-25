@@ -39,7 +39,7 @@ public val Icons.Regular.SportAmericanFootball: ImageVector
                 verticalLineToRelative(-1.0f)
                 close()
                 moveTo(20.15f, 10.27f)
-                lineToRelative(-6.42f, -6.42f)
+                lineTo(13.73f, 3.85f)
                 arcToRelative(13.27f, 13.27f, 0.0f, false, false, -9.9f, 9.97f)
                 lineToRelative(6.35f, 6.36f)
                 arcToRelative(13.27f, 13.27f, 0.0f, false, false, 9.97f, -9.9f)

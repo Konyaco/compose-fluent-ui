@@ -19,7 +19,7 @@ public val Icons.Regular.ShoppingBagArrowLeft: ImageVector
                 arcToRelative(5.5f, 5.5f, 0.0f, false, false, 11.0f, 0.0f)
                 close()
                 moveTo(16.65f, 14.65f)
-                lineToRelative(0.07f, -0.06f)
+                lineTo(16.72f, 14.59f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, true, 0.64f, 0.06f)
                 lineToRelative(0.05f, 0.07f)
                 arcToRelative(0.5f, 0.5f, 0.0f, false, true, -0.05f, 0.63f)

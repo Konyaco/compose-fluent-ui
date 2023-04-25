@@ -31,7 +31,7 @@ public val Icons.Regular.LeafTwo: ImageVector
                 curveTo(2.77f, 3.0f, 2.0f, 3.76f, 2.0f, 4.7f)
                 close()
                 moveTo(11.68f, 17.38f)
-                lineToRelative(4.1f, -4.1f)
+                lineTo(15.78f, 13.28f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.06f, -1.06f)
                 lineToRelative(-4.1f, 4.1f)
                 arcTo(5.5f, 5.5f, 0.0f, false, true, 15.0f, 7.5f)

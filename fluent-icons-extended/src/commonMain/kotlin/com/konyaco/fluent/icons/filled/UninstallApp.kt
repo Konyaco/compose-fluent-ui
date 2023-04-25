@@ -14,7 +14,7 @@ public val Icons.Filled.UninstallApp: ImageVector
         }
         _uninstallApp = fluentIcon(name = "Filled.UninstallApp") {
             fluentPath {
-                moveTo(16.61f, 8.79f)
+                moveToRelative(16.61f, 8.79f)
                 lineToRelative(0.1f, -0.08f)
                 lineToRelative(1.79f, -1.8f)
                 lineToRelative(1.8f, 1.8f)

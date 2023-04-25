@@ -14,7 +14,7 @@ public val Icons.Regular.Eraser: ImageVector
         }
         _eraser = fluentIcon(name = "Regular.Eraser") {
             fluentPath {
-                moveTo(15.87f, 2.67f)
+                moveToRelative(15.87f, 2.67f)
                 lineToRelative(4.97f, 4.97f)
                 curveToRelative(0.88f, 0.88f, 0.88f, 2.3f, 0.0f, 3.18f)
                 lineToRelative(-8.68f, 8.68f)
@@ -31,7 +31,7 @@ public val Icons.Regular.Eraser: ImageVector
                 curveToRelative(0.88f, -0.88f, 2.3f, -0.88f, 3.18f, 0.0f)
                 close()
                 moveTo(5.71f, 11.77f)
-                lineToRelative(-1.49f, 1.49f)
+                lineTo(4.22f, 13.26f)
                 curveToRelative(-0.3f, 0.29f, -0.3f, 0.76f, 0.0f, 1.06f)
                 lineToRelative(4.97f, 4.96f)
                 curveToRelative(0.15f, 0.15f, 0.34f, 0.22f, 0.53f, 0.22f)
@@ -44,7 +44,7 @@ public val Icons.Regular.Eraser: ImageVector
                 lineTo(6.77f, 10.7f)
                 lineToRelative(6.03f, 6.03f)
                 lineToRelative(6.98f, -6.98f)
-                curveToRelative(0.3f, -0.3f, 0.3f, -0.77f, 0.0f, -1.06f)
+                curveToRelative(0.29f, -0.3f, 0.29f, -0.77f, 0.0f, -1.06f)
                 lineTo(14.8f, 3.73f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.06f, 0.0f)
                 close()

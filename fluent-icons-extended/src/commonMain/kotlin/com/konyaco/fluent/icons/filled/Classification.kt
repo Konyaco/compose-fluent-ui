@@ -14,7 +14,7 @@ public val Icons.Filled.Classification: ImageVector
         }
         _classification = fluentIcon(name = "Filled.Classification") {
             fluentPath {
-                moveTo(9.02f, 6.0f)
+                moveToRelative(9.02f, 6.0f)
                 lineToRelative(-1.5f, 1.5f)
                 lineTo(4.26f, 7.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.75f, 0.76f)
@@ -33,7 +33,7 @@ public val Icons.Filled.Classification: ImageVector
                 horizontalLineToRelative(4.77f)
                 close()
                 moveTo(5.22f, 12.22f)
-                lineToRelative(2.0f, -2.0f)
+                lineTo(7.22f, 10.22f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.98f, -0.07f)
                 lineToRelative(0.08f, 0.07f)
                 lineToRelative(5.5f, 5.5f)
@@ -79,10 +79,10 @@ public val Icons.Filled.Classification: ImageVector
                 curveToRelative(1.01f, -1.0f, 2.64f, -1.0f, 3.65f, 0.0f)
                 close()
                 moveTo(11.75f, 7.82f)
-                lineToRelative(-0.94f, 0.93f)
-                lineToRelative(4.44f, 4.44f)
-                lineToRelative(0.94f, -0.94f)
-                lineToRelative(-4.44f, -4.44f)
+                lineTo(10.81f, 8.75f)
+                lineTo(15.25f, 13.19f)
+                lineTo(16.19f, 12.25f)
+                lineTo(11.75f, 7.81f)
                 close()
                 moveTo(18.69f, 3.78f)
                 curveToRelative(-0.05f, 0.05f, -0.1f, 0.1f, -0.13f, 0.17f)

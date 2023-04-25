@@ -14,7 +14,7 @@ public val Icons.Regular.Pin: ImageVector
         }
         _pin = fluentIcon(name = "Regular.Pin") {
             fluentPath {
-                moveTo(16.24f, 2.93f)
+                moveToRelative(16.24f, 2.93f)
                 lineToRelative(4.83f, 4.83f)
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, -0.72f, 4.4f)
                 lineToRelative(-4.87f, 2.44f)
@@ -34,7 +34,7 @@ public val Icons.Regular.Pin: ImageVector
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, 4.4f, -0.72f)
                 close()
                 moveTo(20.01f, 8.82f)
-                lineToRelative(-4.83f, -4.83f)
+                lineTo(15.18f, 3.99f)
                 curveToRelative(-0.6f, -0.6f, -1.62f, -0.44f, -2.0f, 0.33f)
                 lineToRelative(-2.44f, 4.87f)
                 curveToRelative(-0.26f, 0.52f, -0.72f, 0.93f, -1.27f, 1.12f)

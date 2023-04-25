@@ -35,7 +35,7 @@ public val Icons.Regular.PersonProhibited: ImageVector
                 horizontalLineToRelative(7.77f)
                 close()
                 moveTo(20.81f, 15.25f)
-                lineToRelative(-5.56f, 5.56f)
+                lineTo(15.25f, 20.81f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, false, 5.56f, -5.56f)
                 close()
                 moveTo(17.5f, 13.5f)

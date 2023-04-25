@@ -21,7 +21,7 @@ public val Icons.Filled.TapSingle: ImageVector
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, 2.3f, 3.29f)
                 lineToRelative(-0.05f, 0.17f)
                 lineToRelative(-1.22f, 4.44f)
-                curveToRelative(-0.17f, 0.62f, -0.67f, 1.1f, -1.3f, 1.24f)
+                curveToRelative(-0.18f, 0.62f, -0.67f, 1.1f, -1.3f, 1.24f)
                 lineToRelative(-0.14f, 0.03f)
                 lineToRelative(-3.06f, 0.43f)
                 curveToRelative(-0.76f, 0.11f, -1.5f, -0.29f, -1.83f, -0.97f)

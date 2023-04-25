@@ -31,7 +31,7 @@ public val Icons.Filled.Rewind: ImageVector
                 lineToRelative(7.41f, -6.3f)
                 close()
                 moveTo(2.62f, 10.66f)
-                lineToRelative(0.49f, 0.58f)
+                lineTo(3.11f, 11.24f)
                 close()
             }
         }

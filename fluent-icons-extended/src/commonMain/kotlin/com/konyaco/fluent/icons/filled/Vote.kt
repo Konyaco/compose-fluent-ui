@@ -14,7 +14,7 @@ public val Icons.Filled.Vote: ImageVector
         }
         _vote = fluentIcon(name = "Filled.Vote") {
             fluentPath {
-                moveTo(21.94f, 14.47f)
+                moveToRelative(21.94f, 14.47f)
                 lineToRelative(0.03f, 0.06f)
                 lineToRelative(0.02f, 0.1f)
                 lineTo(21.99f, 21.25f)
@@ -58,7 +58,7 @@ public val Icons.Filled.Vote: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.94f, -0.31f)
                 close()
                 moveTo(13.36f, 3.78f)
-                lineToRelative(-3.57f, 6.2f)
+                lineTo(9.79f, 9.98f)
                 lineTo(11.57f, 11.0f)
                 horizontalLineToRelative(2.81f)
                 lineToRelative(2.87f, -4.97f)

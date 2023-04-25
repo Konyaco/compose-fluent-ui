@@ -41,7 +41,7 @@ public val Icons.Filled.PresenterOff: ImageVector
                 horizontalLineToRelative(-4.06f)
                 close()
                 moveTo(12.18f, 9.0f)
-                lineToRelative(3.0f, 3.0f)
+                lineTo(15.18f, 12.0f)
                 lineTo(17.0f, 12.0f)
                 lineTo(17.0f, 10.61f)
                 curveTo(16.92f, 9.7f, 16.16f, 9.0f, 15.24f, 9.0f)

@@ -39,7 +39,7 @@ public val Icons.Regular.WifiOff: ImageVector
                 arcToRelative(8.04f, 8.04f, 0.0f, false, false, -7.65f, -4.42f)
                 close()
                 moveTo(8.48f, 5.3f)
-                lineToRelative(1.23f, 1.23f)
+                lineTo(9.71f, 6.53f)
                 arcToRelative(10.44f, 10.44f, 0.0f, false, true, 10.91f, 4.3f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 1.24f, -0.85f)
                 arcTo(11.95f, 11.95f, 0.0f, false, false, 8.49f, 5.3f)

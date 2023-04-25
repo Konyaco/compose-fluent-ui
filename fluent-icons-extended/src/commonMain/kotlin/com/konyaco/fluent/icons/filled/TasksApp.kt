@@ -62,7 +62,7 @@ public val Icons.Filled.TasksApp: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, 2.0f, 0.0f)
                 close()
                 moveTo(16.25f, 20.19f)
-                lineToRelative(4.47f, -4.47f)
+                lineTo(20.72f, 15.72f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 1.06f, 1.06f)
                 lineToRelative(-5.0f, 5.0f)
                 arcToRelative(0.73f, 0.73f, 0.0f, false, true, -0.5f, 0.22f)

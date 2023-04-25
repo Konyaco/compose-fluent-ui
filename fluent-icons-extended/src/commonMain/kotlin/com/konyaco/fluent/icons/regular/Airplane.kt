@@ -14,7 +14,7 @@ public val Icons.Regular.Airplane: ImageVector
         }
         _airplane = fluentIcon(name = "Regular.Airplane") {
             fluentPath {
-                moveTo(9.47f, 9.64f)
+                moveToRelative(9.47f, 9.64f)
                 lineToRelative(-0.7f, -5.87f)
                 verticalLineToRelative(-0.08f)
                 curveToRelative(0.0f, -0.88f, 0.72f, -1.6f, 1.6f, -1.6f)

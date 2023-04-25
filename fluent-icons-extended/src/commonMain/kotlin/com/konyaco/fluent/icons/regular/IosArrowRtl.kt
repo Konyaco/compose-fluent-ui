@@ -14,7 +14,7 @@ public val Icons.Regular.IosArrowRtl: ImageVector
         }
         _iosArrowRtl = fluentIcon(name = "Regular.IosArrowRtl") {
             fluentPath {
-                moveTo(19.7f, 12.0f)
+                moveToRelative(19.7f, 12.0f)
                 lineToRelative(-8.49f, -8.73f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 1.08f, -1.04f)
                 lineToRelative(9.0f, 9.25f)

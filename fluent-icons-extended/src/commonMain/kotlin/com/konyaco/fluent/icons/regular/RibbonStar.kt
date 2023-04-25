@@ -14,7 +14,7 @@ public val Icons.Regular.RibbonStar: ImageVector
         }
         _ribbonStar = fluentIcon(name = "Regular.RibbonStar") {
             fluentPath {
-                moveTo(12.23f, 5.64f)
+                moveToRelative(12.23f, 5.64f)
                 lineToRelative(0.91f, 1.86f)
                 lineToRelative(2.05f, 0.29f)
                 curveToRelative(0.2f, 0.03f, 0.29f, 0.29f, 0.14f, 0.44f)

@@ -54,7 +54,7 @@ public val Icons.Regular.FoodApple: ImageVector
                 arcToRelative(3.67f, 3.67f, 0.0f, false, true, -2.64f, -3.64f)
                 close()
                 moveTo(9.03f, 8.68f)
-                lineToRelative(0.2f, 0.04f)
+                lineTo(9.23f, 8.72f)
                 curveToRelative(0.25f, 0.07f, 0.49f, 0.12f, 0.73f, 0.15f)
                 lineToRelative(0.97f, 0.2f)
                 curveToRelative(0.7f, 0.15f, 1.43f, 0.15f, 2.14f, 0.0f)

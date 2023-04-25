@@ -32,7 +32,7 @@ public val Icons.Filled.Live: ImageVector
                 arcToRelative(3.92f, 3.92f, 0.0f, false, false, 0.0f, 5.54f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, true, -1.41f, 1.41f)
                 arcToRelative(5.92f, 5.92f, 0.0f, false, true, 0.0f, -8.37f)
-                arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.4f, 0.0f)
+                arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.41f, 0.0f)
                 close()
                 moveTo(16.27f, 7.8f)
                 arcToRelative(5.92f, 5.92f, 0.0f, false, true, 0.0f, 8.37f)

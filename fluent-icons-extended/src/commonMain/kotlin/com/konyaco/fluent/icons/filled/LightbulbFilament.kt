@@ -14,7 +14,7 @@ public val Icons.Filled.LightbulbFilament: ImageVector
         }
         _lightbulbFilament = fluentIcon(name = "Filled.LightbulbFilament") {
             fluentPath {
-                moveTo(15.54f, 19.0f)
+                moveToRelative(15.54f, 19.0f)
                 lineToRelative(-0.3f, 1.26f)
                 arcToRelative(2.25f, 2.25f, 0.0f, false, true, -2.01f, 1.73f)
                 lineToRelative(-0.17f, 0.01f)

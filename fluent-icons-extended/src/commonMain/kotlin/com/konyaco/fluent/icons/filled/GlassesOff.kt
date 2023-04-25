@@ -41,7 +41,7 @@ public val Icons.Filled.GlassesOff: ImageVector
                 lineTo(7.94f, 9.0f)
                 close()
                 moveTo(13.3f, 10.12f)
-                lineToRelative(7.3f, 7.3f)
+                lineTo(20.6f, 17.42f)
                 arcToRelative(3.25f, 3.25f, 0.0f, false, false, 1.4f, -2.67f)
                 verticalLineToRelative(-3.5f)
                 curveToRelative(0.0f, -0.53f, -0.18f, -1.02f, -0.49f, -1.4f)

@@ -25,7 +25,7 @@ public val Icons.Filled.ShareScreenStart: ImageVector
                 lineTo(4.25f, 4.0f)
                 close()
                 moveTo(12.53f, 7.47f)
-                lineToRelative(3.25f, 3.25f)
+                lineTo(15.78f, 10.72f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, -1.06f, 1.06f)
                 lineToRelative(-1.97f, -1.97f)
                 verticalLineToRelative(6.44f)

@@ -44,7 +44,7 @@ public val Icons.Regular.NoteEdit: ImageVector
                 curveToRelative(-0.08f, 0.9f, -0.83f, 1.61f, -1.75f, 1.61f)
                 close()
                 moveTo(19.1f, 12.67f)
-                lineToRelative(-5.9f, 5.9f)
+                lineTo(13.2f, 18.57f)
                 curveToRelative(-0.35f, 0.35f, -0.6f, 0.78f, -0.7f, 1.25f)
                 lineToRelative(-0.47f, 1.83f)
                 curveToRelative(-0.2f, 0.8f, 0.53f, 1.52f, 1.32f, 1.32f)

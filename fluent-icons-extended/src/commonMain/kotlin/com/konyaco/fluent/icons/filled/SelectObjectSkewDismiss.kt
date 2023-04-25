@@ -48,7 +48,7 @@ public val Icons.Filled.SelectObjectSkewDismiss: ImageVector
                 horizontalLineToRelative(4.68f)
                 close()
                 moveTo(20.18f, 8.0f)
-                lineToRelative(-0.92f, 3.24f)
+                lineTo(19.26f, 11.24f)
                 arcToRelative(6.5f, 6.5f, 0.0f, false, false, -2.02f, -0.24f)
                 lineToRelative(1.02f, -3.55f)
                 arcToRelative(2.99f, 2.99f, 0.0f, false, false, 1.92f, 0.54f)
