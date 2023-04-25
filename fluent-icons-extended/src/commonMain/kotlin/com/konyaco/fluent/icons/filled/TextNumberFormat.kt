@@ -139,7 +139,7 @@ public val Icons.Filled.TextNumberFormat: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, true, false, 2.0f, 0.0f)
                 close()
                 moveTo(5.02f, 16.79f)
-                lineToRelative(-0.21f, 0.16f)
+                lineTo(4.81f, 16.95f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, -1.11f, -1.67f)
                 arcToRelative(3.31f, 3.31f, 0.0f, false, false, 1.35f, -1.74f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.97f, 0.21f)

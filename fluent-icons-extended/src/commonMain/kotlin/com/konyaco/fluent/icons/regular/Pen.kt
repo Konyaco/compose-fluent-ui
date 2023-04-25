@@ -25,7 +25,7 @@ public val Icons.Regular.Pen: ImageVector
                 lineToRelative(10.0f, -10.0f)
                 curveToRelative(0.68f, 0.68f, 0.68f, 1.79f, 0.0f, 2.47f)
                 lineToRelative(-1.79f, 1.78f)
-                arcToRelative(0.75f, 0.75f, 0.0f, false, false, 1.06f, 1.06f)
+                arcToRelative(0.75f, 0.75f, 0.0f, true, false, 1.06f, 1.06f)
                 lineToRelative(1.79f, -1.78f)
                 arcToRelative(3.25f, 3.25f, 0.0f, false, false, 0.0f, -4.59f)
                 lineToRelative(0.9f, -0.9f)
@@ -38,7 +38,7 @@ public val Icons.Regular.Pen: ImageVector
                 lineToRelative(-3.42f, 0.8f)
                 lineToRelative(0.82f, -3.4f)
                 curveToRelative(0.06f, -0.3f, 0.21f, -0.56f, 0.42f, -0.77f)
-                lineTo(16.95f, 4.11f)
+                lineTo(16.95f, 4.1f)
                 close()
             }
         }

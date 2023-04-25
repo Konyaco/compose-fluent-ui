@@ -14,7 +14,7 @@ public val Icons.Regular.FontSpaceTrackingIn: ImageVector
         }
         _fontSpaceTrackingIn = fluentIcon(name = "Regular.FontSpaceTrackingIn") {
             fluentPath {
-                moveTo(8.45f, 16.15f)
+                moveToRelative(8.45f, 16.15f)
                 lineToRelative(0.08f, 0.07f)
                 lineToRelative(2.25f, 2.25f)
                 curveToRelative(0.27f, 0.27f, 0.3f, 0.68f, 0.07f, 0.98f)

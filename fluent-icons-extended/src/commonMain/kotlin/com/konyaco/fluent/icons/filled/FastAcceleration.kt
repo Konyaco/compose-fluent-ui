@@ -43,7 +43,7 @@ public val Icons.Filled.FastAcceleration: ImageVector
                 curveToRelative(-0.43f, 0.65f, -0.69f, 1.42f, -0.69f, 2.25f)
                 close()
                 moveTo(16.82f, 10.26f)
-                lineToRelative(-1.1f, 1.1f)
+                lineTo(15.72f, 11.36f)
                 arcToRelative(2.49f, 2.49f, 0.0f, false, true, 0.0f, 2.3f)
                 lineToRelative(1.1f, 1.1f)
                 arcToRelative(3.98f, 3.98f, 0.0f, false, false, 0.0f, -4.5f)

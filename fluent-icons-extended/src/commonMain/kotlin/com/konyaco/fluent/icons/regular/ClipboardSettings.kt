@@ -45,7 +45,7 @@ public val Icons.Regular.ClipboardSettings: ImageVector
                 verticalLineToRelative(0.03f)
                 close()
                 moveTo(15.99f, 4.1f)
-                lineToRelative(0.01f, 0.15f)
+                lineTo(16.0f, 4.25f)
                 verticalLineToRelative(-0.17f)
                 verticalLineToRelative(0.02f)
                 close()

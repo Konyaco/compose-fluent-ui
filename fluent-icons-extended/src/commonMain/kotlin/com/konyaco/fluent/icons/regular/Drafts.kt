@@ -14,7 +14,7 @@ public val Icons.Regular.Drafts: ImageVector
         }
         _drafts = fluentIcon(name = "Regular.Drafts") {
             fluentPath {
-                moveTo(20.88f, 2.83f)
+                moveToRelative(20.88f, 2.83f)
                 lineToRelative(0.15f, 0.14f)
                 lineToRelative(0.15f, 0.15f)
                 arcToRelative(3.58f, 3.58f, 0.0f, false, true, -0.15f, 4.91f)
@@ -43,13 +43,13 @@ public val Icons.Regular.Drafts: ImageVector
                 horizontalLineToRelative(3.78f)
                 close()
                 moveTo(10.53f, 7.0f)
-                lineToRelative(-1.5f, 1.5f)
+                lineTo(9.03f, 8.5f)
                 lineTo(2.75f, 8.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, 0.0f, -1.5f)
                 horizontalLineToRelative(7.78f)
                 close()
                 moveTo(17.03f, 4.03f)
-                lineToRelative(-0.97f, 0.97f)
+                lineTo(16.06f, 5.0f)
                 lineTo(19.0f, 7.94f)
                 lineToRelative(0.97f, -0.97f)
                 arcToRelative(2.08f, 2.08f, 0.0f, true, false, -2.94f, -2.94f)

@@ -14,7 +14,7 @@ public val Icons.Filled.Whiteboard: ImageVector
         }
         _whiteboard = fluentIcon(name = "Filled.Whiteboard") {
             fluentPath {
-                moveTo(15.99f, 4.0f)
+                moveToRelative(15.99f, 4.0f)
                 lineToRelative(-3.07f, 3.06f)
                 curveToRelative(-0.34f, 0.34f, -0.6f, 0.74f, -0.78f, 1.18f)
                 lineToRelative(-0.08f, 0.23f)
@@ -59,8 +59,8 @@ public val Icons.Filled.Whiteboard: ImageVector
                 horizontalLineToRelative(10.74f)
                 close()
                 moveTo(21.18f, 3.54f)
-                lineToRelative(0.13f, 0.13f)
-                lineToRelative(0.12f, 0.13f)
+                lineTo(21.31f, 3.67f)
+                lineTo(21.43f, 3.8f)
                 curveToRelative(0.76f, 0.89f, 0.72f, 2.23f, -0.13f, 3.07f)
                 lineToRelative(-4.28f, 4.28f)
                 curveToRelative(-0.26f, 0.26f, -0.58f, 0.45f, -0.94f, 0.56f)

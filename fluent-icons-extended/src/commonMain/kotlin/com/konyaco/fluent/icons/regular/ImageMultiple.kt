@@ -41,7 +41,7 @@ public val Icons.Regular.ImageMultiple: ImageVector
                 verticalLineToRelative(-9.0f)
                 close()
                 moveTo(11.26f, 12.71f)
-                lineToRelative(4.5f, 4.21f)
+                lineTo(15.76f, 16.92f)
                 curveToRelative(-0.16f, 0.05f, -0.33f, 0.08f, -0.51f, 0.08f)
                 horizontalLineToRelative(-9.0f)
                 curveToRelative(-0.18f, 0.0f, -0.35f, -0.03f, -0.52f, -0.08f)

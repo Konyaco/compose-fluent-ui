@@ -43,7 +43,7 @@ public val Icons.Filled.DrinkMargarita: ImageVector
                 curveToRelative(0.4f, -0.07f, 0.8f, 0.2f, 0.86f, 0.62f)
                 close()
                 moveTo(11.99f, 8.75f)
-                lineToRelative(0.45f, -2.25f)
+                lineTo(12.44f, 6.5f)
                 lineTo(6.5f, 6.5f)
                 verticalLineToRelative(2.25f)
                 horizontalLineToRelative(5.48f)

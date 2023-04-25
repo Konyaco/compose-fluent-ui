@@ -50,7 +50,7 @@ public val Icons.Regular.TextChangeCase: ImageVector
                 arcToRelative(4.46f, 4.46f, 0.0f, false, true, 2.68f, -0.65f)
                 close()
                 moveTo(7.5f, 15.32f)
-                lineToRelative(-0.3f, -0.09f)
+                lineTo(7.2f, 15.23f)
                 curveToRelative(-0.81f, -0.22f, -1.6f, -0.28f, -2.36f, -0.19f)
                 curveToRelative(-1.23f, 0.15f, -1.84f, 0.8f, -1.84f, 1.76f)
                 curveToRelative(0.0f, 1.1f, 0.71f, 1.75f, 1.75f, 1.75f)

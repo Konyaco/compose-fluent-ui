@@ -14,7 +14,7 @@ public val Icons.Filled.BookLetter: ImageVector
         }
         _bookLetter = fluentIcon(name = "Filled.BookLetter") {
             fluentPath {
-                moveTo(12.5f, 8.74f)
+                moveToRelative(12.5f, 8.74f)
                 lineToRelative(1.12f, 2.76f)
                 horizontalLineToRelative(-2.24f)
                 lineToRelative(1.12f, -2.76f)

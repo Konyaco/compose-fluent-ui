@@ -14,7 +14,7 @@ public val Icons.Regular.ArrowRepeatAll: ImageVector
         }
         _arrowRepeatAll = fluentIcon(name = "Regular.ArrowRepeatAll") {
             fluentPath {
-                moveTo(14.61f, 2.47f)
+                moveToRelative(14.61f, 2.47f)
                 lineToRelative(-0.08f, -0.07f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.98f, 0.07f)
                 lineToRelative(-0.07f, 0.08f)

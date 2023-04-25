@@ -62,7 +62,7 @@ public val Icons.Regular.GlobeVideo: ImageVector
                 lineTo(12.0f, 3.5f)
                 close()
                 moveTo(15.12f, 4.1f)
-                lineToRelative(0.1f, 0.16f)
+                lineTo(15.22f, 4.26f)
                 arcTo(12.65f, 12.65f, 0.0f, false, true, 16.7f, 8.5f)
                 horizontalLineToRelative(3.05f)
                 arcToRelative(8.53f, 8.53f, 0.0f, false, false, -4.34f, -4.29f)

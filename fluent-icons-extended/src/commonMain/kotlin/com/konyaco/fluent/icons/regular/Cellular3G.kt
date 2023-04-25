@@ -43,7 +43,7 @@ public val Icons.Regular.Cellular3G: ImageVector
                 close()
             }
             fluentPath {
-                moveTo(4.5f, 4.57f)
+                moveToRelative(4.5f, 4.57f)
                 lineToRelative(-0.06f, 0.04f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, -0.88f, -1.22f)
                 curveToRelative(-0.07f, 0.06f, 0.64f, -0.64f, 1.69f, -0.64f)

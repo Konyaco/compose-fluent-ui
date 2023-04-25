@@ -44,7 +44,7 @@ public val Icons.Regular.SignOut: ImageVector
                 curveToRelative(0.46f, -0.07f, 0.87f, 0.28f, 0.87f, 0.74f)
                 close()
                 moveTo(10.5f, 5.24f)
-                lineToRelative(-7.0f, 1.15f)
+                lineTo(3.5f, 6.39f)
                 verticalLineToRelative(10.73f)
                 lineToRelative(7.0f, 1.24f)
                 lineTo(10.5f, 5.24f)

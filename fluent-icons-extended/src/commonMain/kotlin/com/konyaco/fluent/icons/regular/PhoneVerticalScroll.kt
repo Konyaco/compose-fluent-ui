@@ -48,7 +48,7 @@ public val Icons.Regular.PhoneVerticalScroll: ImageVector
                 curveToRelative(0.3f, -0.3f, 0.77f, -0.3f, 1.06f, 0.0f)
                 close()
                 moveTo(12.54f, 7.23f)
-                lineToRelative(2.25f, 2.3f)
+                lineTo(14.79f, 9.53f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, -1.08f, 1.04f)
                 lineTo(12.0f, 8.82f)
                 lineToRelative(-1.72f, 1.75f)

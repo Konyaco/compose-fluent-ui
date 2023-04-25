@@ -43,7 +43,7 @@ public val Icons.Regular.FlashAuto: ImageVector
                 lineToRelative(3.32f, -9.32f)
                 close()
                 moveTo(18.19f, 11.47f)
-                lineToRelative(3.75f, 9.5f)
+                lineTo(21.94f, 20.97f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.35f, 0.64f)
                 lineToRelative(-0.04f, -0.09f)
                 lineToRelative(-1.0f, -2.52f)

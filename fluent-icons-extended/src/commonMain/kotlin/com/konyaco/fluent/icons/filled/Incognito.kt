@@ -14,7 +14,7 @@ public val Icons.Filled.Incognito: ImageVector
         }
         _incognito = fluentIcon(name = "Filled.Incognito") {
             fluentPath {
-                moveTo(18.12f, 4.61f)
+                moveToRelative(18.12f, 4.61f)
                 lineToRelative(2.11f, 4.64f)
                 curveToRelative(0.41f, 0.08f, 0.82f, 0.17f, 1.2f, 0.27f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, true, -0.36f, 1.45f)

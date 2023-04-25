@@ -15,7 +15,7 @@ public val Icons.Regular.Location: ImageVector
         _location = fluentIcon(name = "Regular.Location") {
             fluentPath {
                 moveTo(5.84f, 4.57f)
-                arcToRelative(8.7f, 8.7f, 0.0f, true, true, 12.32f, 12.31f)
+                arcToRelative(8.7f, 8.7f, 0.0f, false, true, 12.32f, 12.31f)
                 lineToRelative(-1.19f, 1.18f)
                 lineToRelative(-3.4f, 3.3f)
                 curveToRelative(-0.88f, 0.85f, -2.26f, 0.85f, -3.13f, 0.0f)
@@ -26,7 +26,7 @@ public val Icons.Regular.Location: ImageVector
                 moveTo(17.1f, 5.63f)
                 arcToRelative(7.2f, 7.2f, 0.0f, true, false, -10.2f, 10.2f)
                 lineToRelative(1.5f, 1.46f)
-                lineToRelative(3.08f, 3.0f)
+                curveToRelative(0.8f, 0.8f, 1.84f, 1.8f, 3.08f, 3.0f)
                 curveToRelative(0.29f, 0.28f, 0.75f, 0.28f, 1.04f, 0.0f)
                 lineToRelative(3.4f, -3.3f)
                 lineToRelative(1.18f, -1.17f)

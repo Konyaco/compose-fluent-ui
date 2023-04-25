@@ -36,7 +36,7 @@ public val Icons.Regular.CalligraphyPen: ImageVector
                 verticalLineToRelative(-3.0f)
                 close()
                 moveTo(14.84f, 7.5f)
-                lineToRelative(1.24f, 3.06f)
+                lineTo(16.08f, 10.56f)
                 curveToRelative(0.25f, 0.6f, 0.22f, 1.33f, -0.07f, 1.9f)
                 lineToRelative(-3.26f, 6.5f)
                 lineTo(12.75f, 12.3f)

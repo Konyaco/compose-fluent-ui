@@ -26,7 +26,7 @@ public val Icons.Filled.TextDirectionHorizontalLeft: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -0.92f, -0.62f)
                 close()
                 moveTo(16.25f, 6.6f)
-                lineToRelative(1.0f, 2.4f)
+                lineTo(17.25f, 9.0f)
                 horizontalLineToRelative(-2.0f)
                 lineToRelative(1.0f, -2.4f)
                 close()

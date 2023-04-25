@@ -67,7 +67,7 @@ public val Icons.Filled.BowlSalad: ImageVector
                 lineTo(3.07f, 16.5f)
                 close()
                 moveTo(12.75f, 10.95f)
-                lineToRelative(0.02f, 0.05f)
+                lineTo(12.77f, 11.0f)
                 close()
             }
         }

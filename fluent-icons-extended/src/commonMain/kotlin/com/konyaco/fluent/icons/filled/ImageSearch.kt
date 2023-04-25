@@ -51,8 +51,8 @@ public val Icons.Filled.ImageSearch: ImageVector
                 lineToRelative(-2.83f, -2.83f)
                 close()
                 moveTo(6.5f, 18.0f)
-                arcToRelative(3.0f, 3.0f, 0.0f, true, false, 0.0f, -6.0f)
-                arcToRelative(3.0f, 3.0f, 0.0f, false, false, 0.0f, 6.0f)
+                arcToRelative(3.0f, 3.0f, 0.0f, true, true, 0.0f, -6.0f)
+                arcToRelative(3.0f, 3.0f, 0.0f, false, true, 0.0f, 6.0f)
                 close()
             }
         }

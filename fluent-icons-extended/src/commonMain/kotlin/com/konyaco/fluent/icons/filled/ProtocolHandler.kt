@@ -14,7 +14,7 @@ public val Icons.Filled.ProtocolHandler: ImageVector
         }
         _protocolHandler = fluentIcon(name = "Filled.ProtocolHandler") {
             fluentPath {
-                moveTo(13.48f, 17.73f)
+                moveToRelative(13.48f, 17.73f)
                 lineToRelative(-0.77f, -0.77f)
                 lineToRelative(2.48f, -2.49f)
                 arcToRelative(3.5f, 3.5f, 0.0f, false, false, 0.0f, -4.95f)

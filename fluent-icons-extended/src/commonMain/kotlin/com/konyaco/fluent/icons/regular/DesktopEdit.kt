@@ -14,7 +14,7 @@ public val Icons.Regular.DesktopEdit: ImageVector
         }
         _desktopEdit = fluentIcon(name = "Regular.DesktopEdit") {
             fluentPath {
-                moveTo(19.1f, 1.67f)
+                moveToRelative(19.1f, 1.67f)
                 lineToRelative(-5.9f, 5.9f)
                 curveToRelative(-0.35f, 0.35f, -0.6f, 0.78f, -0.7f, 1.25f)
                 lineToRelative(-0.47f, 1.83f)

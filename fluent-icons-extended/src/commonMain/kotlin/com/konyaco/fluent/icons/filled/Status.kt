@@ -22,7 +22,7 @@ public val Icons.Filled.Status: ImageVector
                 arcTo(9.0f, 9.0f, 0.0f, true, true, 12.0f, 3.0f)
                 close()
                 moveTo(21.16f, 2.57f)
-                lineToRelative(0.14f, 0.13f)
+                lineTo(21.3f, 2.7f)
                 arcToRelative(2.4f, 2.4f, 0.0f, false, true, 0.0f, 3.4f)
                 lineToRelative(-6.75f, 6.81f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, -0.4f, 0.25f)

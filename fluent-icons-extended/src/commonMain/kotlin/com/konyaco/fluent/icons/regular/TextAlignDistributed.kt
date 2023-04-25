@@ -14,7 +14,7 @@ public val Icons.Regular.TextAlignDistributed: ImageVector
         }
         _textAlignDistributed = fluentIcon(name = "Regular.TextAlignDistributed") {
             fluentPath {
-                moveTo(5.28f, 7.22f)
+                moveToRelative(5.28f, 7.22f)
                 lineToRelative(-0.72f, -0.72f)
                 horizontalLineToRelative(16.69f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, -1.5f)

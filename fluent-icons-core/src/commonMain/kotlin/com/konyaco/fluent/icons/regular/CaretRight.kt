@@ -23,7 +23,7 @@ public val Icons.Regular.CaretRight: ImageVector
                 lineToRelative(-6.3f, 5.52f)
                 close()
                 moveTo(10.5f, 17.34f)
-                lineToRelative(5.9f, -5.15f)
+                lineTo(16.4f, 12.19f)
                 arcToRelative(0.25f, 0.25f, 0.0f, false, false, 0.0f, -0.38f)
                 lineToRelative(-5.9f, -5.16f)
                 verticalLineToRelative(10.7f)

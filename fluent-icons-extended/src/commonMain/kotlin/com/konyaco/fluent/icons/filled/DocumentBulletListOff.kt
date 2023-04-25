@@ -26,7 +26,7 @@ public val Icons.Filled.DocumentBulletListOff: ImageVector
                 lineTo(4.0f, 5.06f)
                 close()
                 moveTo(16.47f, 17.53f)
-                lineToRelative(0.5f, 0.5f)
+                lineTo(16.97f, 18.03f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.72f, 0.97f)
                 horizontalLineToRelative(-5.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.0f, -1.5f)

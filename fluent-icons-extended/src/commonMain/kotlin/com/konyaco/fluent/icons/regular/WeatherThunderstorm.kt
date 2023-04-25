@@ -14,7 +14,7 @@ public val Icons.Regular.WeatherThunderstorm: ImageVector
         }
         _weatherThunderstorm = fluentIcon(name = "Regular.WeatherThunderstorm") {
             fluentPath {
-                moveTo(10.46f, 15.75f)
+                moveToRelative(10.46f, 15.75f)
                 lineToRelative(2.24f, -2.49f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.18f, 0.92f)
                 lineToRelative(-0.06f, 0.08f)

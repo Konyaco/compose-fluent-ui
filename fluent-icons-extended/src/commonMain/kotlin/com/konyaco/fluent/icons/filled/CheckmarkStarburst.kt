@@ -14,7 +14,7 @@ public val Icons.Filled.CheckmarkStarburst: ImageVector
         }
         _checkmarkStarburst = fluentIcon(name = "Filled.CheckmarkStarburst") {
             fluentPath {
-                moveTo(9.84f, 2.03f)
+                moveToRelative(9.84f, 2.03f)
                 lineToRelative(0.32f, 0.14f)
                 lineToRelative(1.29f, 0.63f)
                 curveToRelative(0.35f, 0.17f, 0.75f, 0.17f, 1.1f, 0.0f)
@@ -52,8 +52,8 @@ public val Icons.Filled.CheckmarkStarburst: ImageVector
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, 3.49f, -1.72f)
                 close()
                 moveTo(15.47f, 8.97f)
-                lineToRelative(-5.42f, 5.42f)
-                lineToRelative(-1.97f, -2.37f)
+                lineTo(10.05f, 14.39f)
+                lineTo(8.08f, 12.02f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, -1.16f, 0.96f)
                 lineToRelative(2.5f, 3.0f)
                 curveToRelative(0.29f, 0.34f, 0.8f, 0.36f, 1.11f, 0.05f)

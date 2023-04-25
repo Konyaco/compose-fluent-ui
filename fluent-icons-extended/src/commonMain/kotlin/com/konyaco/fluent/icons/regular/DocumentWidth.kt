@@ -14,7 +14,7 @@ public val Icons.Regular.DocumentWidth: ImageVector
         }
         _documentWidth = fluentIcon(name = "Regular.DocumentWidth") {
             fluentPath {
-                moveTo(18.5f, 15.72f)
+                moveToRelative(18.5f, 15.72f)
                 lineToRelative(0.01f, 0.02f)
                 curveToRelative(0.4f, 0.4f, 0.95f, 0.57f, 1.49f, 0.48f)
                 verticalLineToRelative(3.53f)

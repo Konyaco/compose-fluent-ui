@@ -34,7 +34,7 @@ public val Icons.Filled.Map: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.17f, 0.5f)
                 close()
                 moveTo(10.0f, 4.35f)
-                lineToRelative(4.0f, 2.82f)
+                lineTo(14.0f, 7.17f)
                 verticalLineToRelative(12.47f)
                 lineToRelative(-4.0f, -2.82f)
                 lineTo(10.0f, 4.36f)

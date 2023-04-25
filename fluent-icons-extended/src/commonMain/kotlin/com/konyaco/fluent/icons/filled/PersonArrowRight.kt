@@ -15,7 +15,7 @@ public val Icons.Filled.PersonArrowRight: ImageVector
         _personArrowRight = fluentIcon(name = "Filled.PersonArrowRight") {
             fluentPath {
                 moveTo(11.0f, 17.5f)
-                curveToRelative(0.0f, -1.29f, 0.37f, -2.49f, 1.02f, -3.5f)
+                curveToRelative(0.0f, -1.29f, 0.38f, -2.49f, 1.02f, -3.5f)
                 lineTo(4.25f, 14.0f)
                 curveTo(3.01f, 14.0f, 2.0f, 15.0f, 2.0f, 16.25f)
                 verticalLineToRelative(0.92f)

@@ -14,7 +14,7 @@ public val Icons.Regular.CallForward: ImageVector
         }
         _callForward = fluentIcon(name = "Regular.CallForward") {
             fluentPath {
-                moveTo(9.98f, 2.05f)
+                moveToRelative(9.98f, 2.05f)
                 lineToRelative(0.22f, 0.05f)
                 lineToRelative(0.82f, 0.2f)
                 arcToRelative(2.75f, 2.75f, 0.0f, false, true, 2.1f, 2.95f)
@@ -59,7 +59,7 @@ public val Icons.Regular.CallForward: ImageVector
                 curveToRelative(-0.74f, -0.12f, -1.5f, 0.15f, -2.01f, 0.7f)
                 close()
                 moveTo(15.65f, 7.3f)
-                lineToRelative(0.07f, -0.08f)
+                lineTo(15.72f, 7.22f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.98f, -0.07f)
                 lineToRelative(0.08f, 0.07f)
                 lineToRelative(4.0f, 4.0f)

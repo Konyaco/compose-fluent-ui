@@ -33,7 +33,7 @@ public val Icons.Regular.ArrowForwardDownLightning: ImageVector
                 arcToRelative(0.5f, 0.5f, 0.0f, false, false, -0.47f, -0.68f)
                 close()
                 moveTo(16.63f, 6.54f)
-                lineToRelative(2.96f, 2.96f)
+                lineTo(19.59f, 9.5f)
                 horizontalLineToRelative(-5.92f)
                 arcToRelative(6.25f, 6.25f, 0.0f, false, true, -6.02f, -6.25f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, -1.5f, 0.0f)

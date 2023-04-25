@@ -14,7 +14,7 @@ public val Icons.Regular.ConferenceRoom: ImageVector
         }
         _conferenceRoom = fluentIcon(name = "Regular.ConferenceRoom") {
             fluentPath {
-                moveTo(10.82f, 2.0f)
+                moveToRelative(10.82f, 2.0f)
                 lineToRelative(0.1f, 0.02f)
                 lineToRelative(8.5f, 2.0f)
                 curveToRelative(0.3f, 0.07f, 0.53f, 0.32f, 0.57f, 0.63f)

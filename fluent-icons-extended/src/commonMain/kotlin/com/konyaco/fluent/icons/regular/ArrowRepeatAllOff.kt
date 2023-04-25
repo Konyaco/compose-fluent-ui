@@ -14,7 +14,7 @@ public val Icons.Regular.ArrowRepeatAllOff: ImageVector
         }
         _arrowRepeatAllOff = fluentIcon(name = "Regular.ArrowRepeatAllOff") {
             fluentPath {
-                moveTo(3.2f, 2.15f)
+                moveToRelative(3.2f, 2.15f)
                 lineToRelative(0.08f, 0.07f)
                 lineToRelative(18.5f, 18.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.98f, 1.13f)

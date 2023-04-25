@@ -14,7 +14,7 @@ public val Icons.Filled.Predictions: ImageVector
         }
         _predictions = fluentIcon(name = "Filled.Predictions") {
             fluentPath {
-                moveTo(16.68f, 14.93f)
+                moveToRelative(16.68f, 14.93f)
                 lineToRelative(1.29f, 3.85f)
                 curveToRelative(0.26f, 0.8f, -0.08f, 1.67f, -0.81f, 2.08f)
                 curveToRelative(-1.37f, 0.77f, -3.1f, 1.14f, -5.16f, 1.14f)

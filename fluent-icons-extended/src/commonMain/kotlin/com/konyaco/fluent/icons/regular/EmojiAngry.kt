@@ -39,7 +39,7 @@ public val Icons.Regular.EmojiAngry: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.12f, -1.06f)
                 close()
                 moveTo(13.28f, 8.66f)
-                lineToRelative(2.5f, -2.0f)
+                lineTo(15.78f, 6.66f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.02f, 1.1f)
                 lineToRelative(-0.08f, 0.07f)
                 lineToRelative(-1.26f, 1.0f)

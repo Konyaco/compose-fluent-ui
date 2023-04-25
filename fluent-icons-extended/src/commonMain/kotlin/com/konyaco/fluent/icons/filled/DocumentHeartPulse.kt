@@ -50,7 +50,7 @@ public val Icons.Filled.DocumentHeartPulse: ImageVector
                 arcToRelative(3.6f, 3.6f, 0.0f, false, true, 1.04f, -2.78f)
                 close()
                 moveTo(3.25f, 19.5f)
-                lineToRelative(3.25f, 3.25f)
+                lineTo(6.5f, 22.75f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 1.06f, 0.0f)
                 lineToRelative(3.26f, -3.25f)
                 lineTo(8.67f, 19.5f)

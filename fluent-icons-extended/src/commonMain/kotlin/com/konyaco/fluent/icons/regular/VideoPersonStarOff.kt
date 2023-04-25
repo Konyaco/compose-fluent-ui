@@ -61,7 +61,7 @@ public val Icons.Regular.VideoPersonStarOff: ImageVector
                 arcToRelative(3.0f, 3.0f, 0.0f, false, false, -4.08f, -4.08f)
                 close()
                 moveTo(15.55f, 12.36f)
-                lineToRelative(1.7f, 1.7f)
+                lineTo(17.25f, 14.06f)
                 curveToRelative(0.29f, -0.15f, 0.68f, -0.03f, 0.8f, 0.36f)
                 lineToRelative(0.21f, 0.66f)
                 lineToRelative(1.13f, 1.13f)

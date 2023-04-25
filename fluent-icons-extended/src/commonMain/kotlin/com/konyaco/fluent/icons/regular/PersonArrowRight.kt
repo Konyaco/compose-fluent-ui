@@ -25,7 +25,7 @@ public val Icons.Regular.PersonArrowRight: ImageVector
                 arcToRelative(6.51f, 6.51f, 0.0f, false, true, -0.92f, -1.36f)
                 curveToRelative(-0.52f, 0.07f, -1.08f, 0.1f, -1.68f, 0.1f)
                 curveToRelative(-2.74f, 0.0f, -4.7f, -0.74f, -5.96f, -2.21f)
-                curveToRelative(-0.35f, -0.4f, -0.54f, -0.93f, -0.54f, -1.46f)
+                curveToRelative(-0.34f, -0.4f, -0.54f, -0.93f, -0.54f, -1.46f)
                 verticalLineToRelative(-0.58f)
                 curveToRelative(0.0f, -0.41f, 0.34f, -0.75f, 0.75f, -0.75f)
                 horizontalLineToRelative(7.06f)

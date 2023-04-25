@@ -39,7 +39,7 @@ public val Icons.Filled.VehicleTruckProfile: ImageVector
                 verticalLineToRelative(-1.5f)
                 close()
                 moveTo(20.18f, 11.0f)
-                lineToRelative(-1.45f, -3.07f)
+                lineTo(18.73f, 7.93f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.68f, -0.43f)
                 lineTo(16.5f, 7.5f)
                 lineTo(16.5f, 11.0f)

@@ -41,7 +41,7 @@ public val Icons.Filled.EyeOff: ImageVector
                 arcTo(10.0f, 10.0f, 0.0f, false, false, 12.0f, 5.5f)
                 close()
                 moveTo(12.2f, 9.0f)
-                lineToRelative(3.8f, 3.81f)
+                lineTo(16.0f, 12.81f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, false, -3.8f, -3.8f)
                 close()
             }

@@ -39,7 +39,7 @@ public val Icons.Filled.SlideEraser: ImageVector
                 close()
             }
             fluentPath {
-                moveTo(13.45f, 17.36f)
+                moveToRelative(13.45f, 17.36f)
                 lineToRelative(1.1f, -1.1f)
                 lineToRelative(4.21f, 4.2f)
                 lineToRelative(-1.1f, 1.1f)

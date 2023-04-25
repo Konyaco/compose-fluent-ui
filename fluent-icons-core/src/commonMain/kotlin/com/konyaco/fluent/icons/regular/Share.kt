@@ -56,7 +56,7 @@ public val Icons.Regular.Share: ImageVector
                 close()
                 moveTo(16.0f, 5.5f)
                 verticalLineToRelative(1.74f)
-                curveToRelative(0.0f, 0.41f, -0.34f, 0.75f, -0.75f, 0.75f)
+                curveToRelative(0.0f, 0.41f, -0.33f, 0.75f, -0.75f, 0.75f)
                 curveToRelative(-3.87f, 0.0f, -6.27f, 1.68f, -7.31f, 5.16f)
                 lineToRelative(-0.08f, 0.28f)
                 lineToRelative(0.35f, -0.24f)

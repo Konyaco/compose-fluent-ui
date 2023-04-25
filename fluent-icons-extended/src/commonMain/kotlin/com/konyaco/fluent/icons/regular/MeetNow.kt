@@ -31,7 +31,7 @@ public val Icons.Regular.MeetNow: ImageVector
                 horizontalLineToRelative(-6.5f)
                 close()
                 moveTo(15.5f, 11.2f)
-                lineToRelative(3.0f, -1.67f)
+                lineTo(18.5f, 9.53f)
                 verticalLineToRelative(4.95f)
                 lineToRelative(-3.0f, -1.67f)
                 verticalLineToRelative(-1.62f)

@@ -44,7 +44,7 @@ public val Icons.Regular.GroupList: ImageVector
                 horizontalLineToRelative(13.6f)
                 close()
                 moveTo(2.75f, 2.5f)
-                lineToRelative(2.5f, 0.01f)
+                lineTo(5.25f, 2.51f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.1f, 1.5f)
                 lineTo(3.5f, 4.01f)
                 verticalLineToRelative(5.48f)

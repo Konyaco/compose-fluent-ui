@@ -14,7 +14,7 @@ public val Icons.Filled.Location: ImageVector
         }
         _location = fluentIcon(name = "Filled.Location") {
             fluentPath {
-                moveTo(18.16f, 16.88f)
+                moveToRelative(18.16f, 16.88f)
                 lineToRelative(-1.19f, 1.18f)
                 lineToRelative(-3.4f, 3.3f)
                 curveToRelative(-0.88f, 0.85f, -2.26f, 0.85f, -3.13f, 0.0f)

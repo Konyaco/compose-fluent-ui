@@ -43,7 +43,7 @@ public val Icons.Filled.PaddingDown: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, -1.0f, 1.0f)
                 close()
                 moveTo(17.71f, 13.7f)
-                lineToRelative(-5.0f, 5.0f)
+                lineTo(12.71f, 18.7f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, -1.42f, 0.0f)
                 lineToRelative(-5.0f, -5.0f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, true, 1.42f, -1.4f)

@@ -14,7 +14,7 @@ public val Icons.Regular.AirplaneTakeOff: ImageVector
         }
         _airplaneTakeOff = fluentIcon(name = "Regular.AirplaneTakeOff") {
             fluentPath {
-                moveTo(8.32f, 8.4f)
+                moveToRelative(8.32f, 8.4f)
                 lineToRelative(-0.78f, -1.12f)
                 arcToRelative(2.1f, 2.1f, 0.0f, false, true, 3.05f, -2.81f)
                 lineToRelative(2.58f, 2.09f)
@@ -35,8 +35,8 @@ public val Icons.Regular.AirplaneTakeOff: ImageVector
                 lineToRelative(1.18f, -0.24f)
                 close()
                 moveTo(8.78f, 6.43f)
-                lineToRelative(1.13f, 1.65f)
-                lineToRelative(1.9f, -0.4f)
+                lineTo(9.91f, 8.08f)
+                lineTo(11.81f, 7.68f)
                 curveToRelative(0.09f, -0.02f, 0.17f, -0.05f, 0.26f, -0.09f)
                 lineTo(9.65f, 5.63f)
                 arcToRelative(0.6f, 0.6f, 0.0f, false, false, -0.87f, 0.8f)

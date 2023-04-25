@@ -51,7 +51,7 @@ public val Icons.Regular.GlassesOff: ImageVector
                 curveToRelative(0.0f, -0.41f, 0.34f, -0.75f, 0.75f, -0.75f)
                 close()
                 moveTo(13.3f, 10.12f)
-                lineToRelative(1.2f, 1.2f)
+                lineTo(14.5f, 11.32f)
                 verticalLineToRelative(-0.07f)
                 curveToRelative(0.0f, -0.41f, 0.34f, -0.75f, 0.75f, -0.75f)
                 horizontalLineToRelative(4.5f)

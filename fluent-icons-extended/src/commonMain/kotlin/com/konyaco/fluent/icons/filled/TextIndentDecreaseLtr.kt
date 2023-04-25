@@ -23,7 +23,7 @@ public val Icons.Filled.TextIndentDecreaseLtr: ImageVector
                 lineTo(9.0f, 16.0f)
                 close()
                 moveTo(2.3f, 11.3f)
-                lineToRelative(2.0f, -2.0f)
+                lineTo(4.3f, 9.3f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.49f, 1.31f)
                 lineToRelative(-0.08f, 0.1f)
                 lineTo(4.4f, 12.0f)

@@ -42,7 +42,7 @@ public val Icons.Filled.ClipboardCode: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, -1.5f)
                 close()
                 moveTo(11.19f, 18.5f)
-                lineToRelative(2.0f, 2.25f)
+                lineTo(13.19f, 20.75f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, 1.12f, -1.0f)
                 lineTo(12.75f, 18.0f)
                 lineToRelative(1.56f, -1.75f)

@@ -45,7 +45,7 @@ public val Icons.Filled.SportBaseball: ImageVector
                 reflectiveCurveToRelative(-0.75f, 0.1f, -0.9f, -0.55f)
                 close()
                 moveTo(9.93f, 7.27f)
-                lineToRelative(0.07f, 0.02f)
+                lineTo(10.0f, 7.29f)
                 arcToRelative(6.08f, 6.08f, 0.0f, false, false, 1.12f, 0.15f)
                 curveToRelative(0.76f, 0.06f, 1.82f, 0.06f, 2.98f, -0.18f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 0.3f, 1.48f)

@@ -24,7 +24,7 @@ public val Icons.Filled.PersonAccounts: ImageVector
                 curveToRelative(0.36f, 0.0f, 0.7f, -0.01f, 1.04f, -0.03f)
                 curveToRelative(-0.03f, -0.15f, -0.04f, -0.31f, -0.04f, -0.47f)
                 verticalLineToRelative(-5.0f)
-                arcToRelative(2.5f, 2.5f, 0.0f, false, true, 2.0f, -2.45f)
+                curveToRelative(0.0f, -1.2f, 0.86f, -2.22f, 2.0f, -2.45f)
                 close()
                 moveTo(10.0f, 2.0f)
                 arcToRelative(5.0f, 5.0f, 0.0f, true, true, 0.0f, 10.0f)

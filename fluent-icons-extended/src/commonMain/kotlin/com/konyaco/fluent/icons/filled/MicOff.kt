@@ -36,7 +36,7 @@ public val Icons.Filled.MicOff: ImageVector
                 lineTo(3.28f, 2.22f)
                 close()
                 moveTo(17.2f, 14.02f)
-                lineToRelative(1.14f, 1.14f)
+                lineTo(18.34f, 15.16f)
                 curveToRelative(0.42f, -0.88f, 0.66f, -1.87f, 0.66f, -2.91f)
                 verticalLineToRelative(-0.6f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.5f, 0.1f)

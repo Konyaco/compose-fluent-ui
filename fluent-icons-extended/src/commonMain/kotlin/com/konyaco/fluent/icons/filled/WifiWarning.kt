@@ -14,7 +14,7 @@ public val Icons.Filled.WifiWarning: ImageVector
         }
         _wifiWarning = fluentIcon(name = "Filled.WifiWarning") {
             fluentPath {
-                moveTo(17.78f, 10.7f)
+                moveToRelative(17.78f, 10.7f)
                 lineToRelative(0.35f, 0.38f)
                 curveToRelative(-0.8f, -0.2f, -1.67f, -0.02f, -2.3f, 0.56f)
                 arcToRelative(6.13f, 6.13f, 0.0f, false, false, -9.26f, 2.04f)
@@ -26,7 +26,7 @@ public val Icons.Filled.WifiWarning: ImageVector
                 arcTo(1.5f, 1.5f, 0.0f, true, false, 11.95f, 19.0f)
                 close()
                 moveTo(14.03f, 14.85f)
-                lineToRelative(0.9f, -1.8f)
+                lineTo(14.93f, 13.05f)
                 arcToRelative(5.23f, 5.23f, 0.0f, false, false, -7.69f, 2.26f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, false, 1.84f, 0.8f)
                 arcToRelative(3.23f, 3.23f, 0.0f, false, true, 4.95f, -1.26f)
@@ -39,7 +39,7 @@ public val Icons.Filled.WifiWarning: ImageVector
                 arcTo(11.92f, 11.92f, 0.0f, false, true, 20.42f, 8.3f)
                 close()
                 moveTo(16.16f, 12.83f)
-                lineToRelative(-4.0f, 8.0f)
+                lineTo(12.16f, 20.83f)
                 arcTo(1.5f, 1.5f, 0.0f, false, false, 13.5f, 23.0f)
                 horizontalLineToRelative(8.0f)
                 arcToRelative(1.5f, 1.5f, 0.0f, false, false, 1.34f, -2.17f)

@@ -45,7 +45,7 @@ public val Icons.Regular.SelectAllOn: ImageVector
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.75f, -0.75f)
                 close()
                 moveTo(9.58f, 11.36f)
-                lineToRelative(3.89f, -3.89f)
+                lineTo(13.47f, 7.47f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.13f, 0.98f)
                 lineToRelative(-0.07f, 0.08f)
                 lineToRelative(-4.5f, 4.5f)

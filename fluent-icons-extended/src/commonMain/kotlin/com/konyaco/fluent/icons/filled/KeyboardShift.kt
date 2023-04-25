@@ -17,7 +17,7 @@ public val Icons.Filled.KeyboardShift: ImageVector
                 moveTo(10.68f, 2.6f)
                 curveToRelative(0.7f, -0.8f, 1.94f, -0.8f, 2.64f, 0.0f)
                 lineToRelative(8.25f, 9.5f)
-                curveToRelative(0.98f, 1.14f, 0.18f, 2.9f, -1.32f, 2.9f)
+                curveToRelative(0.98f, 1.14f, 0.17f, 2.9f, -1.33f, 2.9f)
                 horizontalLineTo(17.0f)
                 verticalLineToRelative(5.25f)
                 curveToRelative(0.0f, 0.97f, -0.78f, 1.75f, -1.75f, 1.75f)

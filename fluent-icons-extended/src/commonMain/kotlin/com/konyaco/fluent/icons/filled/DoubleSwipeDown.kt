@@ -23,7 +23,7 @@ public val Icons.Filled.DoubleSwipeDown: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, true, true, 2.0f, 0.0f)
                 verticalLineToRelative(11.59f)
                 lineToRelative(1.3f, -1.3f)
-                arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.4f, 1.42f)
+                arcToRelative(1.0f, 1.0f, 0.0f, true, true, 1.4f, 1.42f)
                 lineToRelative(-3.0f, 3.0f)
                 close()
                 moveTo(12.5f, 7.0f)
@@ -50,7 +50,7 @@ public val Icons.Filled.DoubleSwipeDown: ImageVector
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 2.0f, 0.0f)
                 verticalLineToRelative(11.59f)
                 lineToRelative(1.3f, -1.3f)
-                arcToRelative(1.0f, 1.0f, 0.0f, false, true, 1.4f, 1.42f)
+                arcToRelative(1.0f, 1.0f, 0.0f, true, true, 1.4f, 1.42f)
                 lineToRelative(-3.0f, 3.0f)
                 close()
             }

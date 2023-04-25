@@ -55,7 +55,7 @@ public val Icons.Regular.ImageArrowCounterclockwise: ImageVector
                 curveToRelative(0.0f, -0.97f, -0.78f, -1.75f, -1.75f, -1.75f)
                 close()
                 moveTo(19.33f, 20.4f)
-                lineToRelative(-5.8f, -5.69f)
+                lineTo(13.53f, 14.71f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.97f, -0.07f)
                 lineToRelative(-0.08f, 0.07f)
                 lineToRelative(-5.81f, 5.7f)

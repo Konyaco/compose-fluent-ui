@@ -14,7 +14,7 @@ public val Icons.Filled.MailWarning: ImageVector
         }
         _mailWarning = fluentIcon(name = "Filled.MailWarning") {
             fluentPath {
-                moveTo(16.16f, 1.83f)
+                moveToRelative(16.16f, 1.83f)
                 lineToRelative(-4.0f, 8.0f)
                 arcTo(1.5f, 1.5f, 0.0f, false, false, 13.51f, 12.0f)
                 horizontalLineToRelative(8.0f)

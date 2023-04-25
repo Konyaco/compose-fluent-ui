@@ -51,7 +51,7 @@ public val Icons.Regular.MicOff: ImageVector
                 arcToRelative(2.5f, 2.5f, 0.0f, false, true, 5.0f, 0.0f)
                 close()
                 moveTo(17.2f, 14.01f)
-                lineToRelative(1.14f, 1.15f)
+                lineTo(18.34f, 15.16f)
                 curveToRelative(0.42f, -0.88f, 0.66f, -1.87f, 0.66f, -2.91f)
                 verticalLineToRelative(-0.6f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -1.5f, 0.1f)

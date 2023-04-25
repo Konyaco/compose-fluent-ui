@@ -29,7 +29,7 @@ public val Icons.Filled.Timer2: ImageVector
                 lineTo(11.25f, 8.65f)
                 close()
                 moveTo(19.26f, 5.18f)
-                lineToRelative(-0.09f, -0.06f)
+                lineTo(19.17f, 5.12f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.9f, 1.2f)
                 lineToRelative(1.15f, 1.0f)
                 lineToRelative(0.08f, 0.06f)

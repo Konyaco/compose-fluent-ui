@@ -14,7 +14,7 @@ public val Icons.Filled.ArrowRepeatAllOff: ImageVector
         }
         _arrowRepeatAllOff = fluentIcon(name = "Filled.ArrowRepeatAllOff") {
             fluentPath {
-                moveTo(3.61f, 2.2f)
+                moveToRelative(3.61f, 2.2f)
                 lineToRelative(0.1f, 0.1f)
                 lineToRelative(18.0f, 18.0f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, -1.32f, 1.49f)
@@ -60,8 +60,8 @@ public val Icons.Filled.ArrowRepeatAllOff: ImageVector
                 arcTo(1.0f, 1.0f, 0.0f, false, true, 20.0f, 7.68f)
                 close()
                 moveTo(14.63f, 2.22f)
-                lineToRelative(0.08f, 0.08f)
-                lineToRelative(3.0f, 3.0f)
+                lineTo(14.71f, 2.3f)
+                lineTo(17.71f, 5.3f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, true, 0.09f, 1.33f)
                 lineToRelative(-0.08f, 0.09f)
                 lineToRelative(-3.0f, 3.0f)

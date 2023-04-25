@@ -1,0 +1,116 @@
+
+
+package com.konyaco.fluent.icons.regular
+
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.konyaco.fluent.icons.Icons
+import com.konyaco.fluent.icons.fluentIcon
+import com.konyaco.fluent.icons.fluentPath
+
+public val Icons.Regular.ReceiptSparkles: ImageVector
+    get() {
+        if (_receiptSparkles != null) {
+            return _receiptSparkles!!
+        }
+        _receiptSparkles = fluentIcon(name = "Regular.ReceiptSparkles") {
+            fluentPath {
+                moveTo(15.85f, 6.15f)
+                arcToRelative(2.84f, 2.84f, 0.0f, false, true, 0.69f, 1.11f)
+                lineToRelative(0.45f, 1.38f)
+                arcToRelative(0.54f, 0.54f, 0.0f, false, false, 1.02f, 0.0f)
+                lineToRelative(0.45f, -1.38f)
+                arcToRelative(2.84f, 2.84f, 0.0f, false, true, 1.8f, -1.8f)
+                lineToRelative(1.38f, -0.44f)
+                arcToRelative(0.54f, 0.54f, 0.0f, false, false, 0.0f, -1.03f)
+                horizontalLineToRelative(-0.03f)
+                lineToRelative(-1.38f, -0.45f)
+                arcToRelative(2.84f, 2.84f, 0.0f, false, true, -1.8f, -1.8f)
+                lineTo(18.0f, 0.36f)
+                arcToRelative(0.54f, 0.54f, 0.0f, false, false, -1.03f, 0.0f)
+                lineToRelative(-0.45f, 1.38f)
+                lineToRelative(-0.01f, 0.03f)
+                arcToRelative(2.84f, 2.84f, 0.0f, false, true, -1.76f, 1.77f)
+                lineToRelative(-1.38f, 0.44f)
+                arcToRelative(0.57f, 0.57f, 0.0f, false, false, -0.26f, 0.2f)
+                arcToRelative(0.51f, 0.51f, 0.0f, false, false, -0.1f, 0.34f)
+                arcToRelative(0.5f, 0.5f, 0.0f, false, false, 0.1f, 0.3f)
+                arcToRelative(0.54f, 0.54f, 0.0f, false, false, 0.26f, 0.19f)
+                lineToRelative(1.38f, 0.45f)
+                arcToRelative(2.83f, 2.83f, 0.0f, false, true, 0.49f, 0.21f)
+                arcToRelative(2.8f, 2.8f, 0.0f, false, true, 0.62f, 0.48f)
+                close()
+                moveTo(23.02f, 9.96f)
+                lineTo(23.78f, 10.21f)
+                horizontalLineToRelative(0.02f)
+                arcToRelative(0.3f, 0.3f, 0.0f, false, true, 0.14f, 0.47f)
+                arcToRelative(0.3f, 0.3f, 0.0f, false, true, -0.14f, 0.1f)
+                lineToRelative(-0.77f, 0.26f)
+                arcToRelative(1.58f, 1.58f, 0.0f, false, false, -1.0f, 1.0f)
+                lineToRelative(-0.24f, 0.76f)
+                arcToRelative(0.3f, 0.3f, 0.0f, false, true, -0.58f, 0.0f)
+                lineToRelative(-0.24f, -0.77f)
+                arcToRelative(1.57f, 1.57f, 0.0f, false, false, -1.0f, -1.0f)
+                lineToRelative(-0.77f, -0.25f)
+                arcToRelative(0.3f, 0.3f, 0.0f, false, true, -0.14f, -0.46f)
+                arcToRelative(0.3f, 0.3f, 0.0f, false, true, 0.14f, -0.1f)
+                lineToRelative(0.77f, -0.26f)
+                arcToRelative(1.58f, 1.58f, 0.0f, false, false, 0.98f, -1.0f)
+                lineToRelative(0.25f, -0.76f)
+                arcToRelative(0.3f, 0.3f, 0.0f, false, true, 0.57f, 0.0f)
+                lineToRelative(0.25f, 0.77f)
+                arcToRelative(1.57f, 1.57f, 0.0f, false, false, 1.0f, 1.0f)
+                close()
+                moveTo(17.0f, 14.0f)
+                lineTo(17.0f, 9.94f)
+                curveToRelative(-0.15f, -0.05f, -0.3f, -0.12f, -0.43f, -0.21f)
+                curveToRelative(-0.26f, -0.2f, -0.46f, -0.46f, -0.57f, -0.77f)
+                lineToRelative(-0.44f, -1.38f)
+                lineToRelative(-0.06f, -0.16f)
+                lineTo(15.5f, 19.0f)
+                lineTo(7.25f, 19.0f)
+                curveToRelative(-0.97f, 0.0f, -1.75f, -0.78f, -1.75f, -1.75f)
+                verticalLineToRelative(-11.0f)
+                curveToRelative(0.0f, -0.41f, 0.34f, -0.75f, 0.75f, -0.75f)
+                horizontalLineToRelative(6.1f)
+                arcToRelative(1.57f, 1.57f, 0.0f, false, true, -0.28f, -1.5f)
+                lineTo(6.24f, 4.0f)
+                curveTo(5.01f, 4.0f, 4.0f, 5.0f, 4.0f, 6.25f)
+                verticalLineToRelative(11.0f)
+                curveToRelative(0.0f, 1.8f, 1.46f, 3.25f, 3.25f, 3.25f)
+                horizontalLineToRelative(10.0f)
+                curveToRelative(1.8f, 0.0f, 3.25f, -1.46f, 3.25f, -3.25f)
+                lineTo(20.5f, 14.5f)
+                arcToRelative(0.5f, 0.5f, 0.0f, false, false, -0.5f, -0.5f)
+                horizontalLineToRelative(-3.0f)
+                close()
+                moveTo(17.25f, 19.0f)
+                lineTo(17.0f, 19.0f)
+                verticalLineToRelative(-3.5f)
+                horizontalLineToRelative(2.0f)
+                verticalLineToRelative(1.75f)
+                curveToRelative(0.0f, 0.97f, -0.78f, 1.75f, -1.75f, 1.75f)
+                close()
+                moveTo(7.75f, 8.0f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, 1.5f)
+                horizontalLineToRelative(5.5f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, -1.5f)
+                horizontalLineToRelative(-5.5f)
+                close()
+                moveTo(7.75f, 11.5f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, 1.5f)
+                horizontalLineToRelative(5.5f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, -1.5f)
+                horizontalLineToRelative(-5.5f)
+                close()
+                moveTo(7.75f, 15.0f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, 1.5f)
+                horizontalLineToRelative(2.5f)
+                arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.0f, -1.5f)
+                horizontalLineToRelative(-2.5f)
+                close()
+            }
+        }
+        return _receiptSparkles!!
+    }
+
+private var _receiptSparkles: ImageVector? = null

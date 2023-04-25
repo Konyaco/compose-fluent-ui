@@ -23,7 +23,7 @@ public val Icons.Regular.CheckmarkCircle: ImageVector
                 arcToRelative(8.5f, 8.5f, 0.0f, false, false, 0.0f, -17.0f)
                 close()
                 moveTo(10.75f, 13.44f)
-                lineToRelative(4.47f, -4.47f)
+                lineTo(15.22f, 8.97f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.13f, 0.98f)
                 lineToRelative(-0.07f, 0.08f)
                 lineToRelative(-5.0f, 5.0f)

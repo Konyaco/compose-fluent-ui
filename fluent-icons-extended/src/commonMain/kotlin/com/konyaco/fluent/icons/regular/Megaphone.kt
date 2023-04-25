@@ -34,7 +34,7 @@ public val Icons.Regular.Megaphone: ImageVector
                 lineTo(7.5f, 16.44f)
                 close()
                 moveTo(19.54f, 5.54f)
-                lineToRelative(-15.5f, 4.61f)
+                lineTo(4.04f, 10.15f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.54f, 0.72f)
                 verticalLineToRelative(2.26f)
                 curveToRelative(0.0f, 0.33f, 0.22f, 0.63f, 0.54f, 0.72f)

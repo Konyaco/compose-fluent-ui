@@ -14,7 +14,7 @@ public val Icons.Regular.ArrowCircleDownDouble: ImageVector
         }
         _arrowCircleDownDouble = fluentIcon(name = "Regular.ArrowCircleDownDouble") {
             fluentPath {
-                moveTo(11.25f, 13.75f)
+                moveToRelative(11.25f, 13.75f)
                 lineToRelative(-0.08f, -0.07f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.98f, 0.07f)
                 lineToRelative(-0.69f, 0.69f)
@@ -42,7 +42,7 @@ public val Icons.Regular.ArrowCircleDownDouble: ImageVector
                 arcToRelative(8.5f, 8.5f, 0.0f, false, true, 17.0f, 0.0f)
                 close()
                 moveTo(17.75f, 13.75f)
-                lineToRelative(-0.08f, -0.07f)
+                lineTo(17.67f, 13.68f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.98f, 0.07f)
                 lineToRelative(-0.7f, 0.69f)
                 verticalLineToRelative(-6.8f)

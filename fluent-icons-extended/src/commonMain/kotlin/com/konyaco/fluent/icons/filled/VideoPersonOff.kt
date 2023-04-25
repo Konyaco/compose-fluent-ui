@@ -41,7 +41,7 @@ public val Icons.Filled.VideoPersonOff: ImageVector
                 lineToRelative(-1.0f, -1.0f)
                 close()
                 moveTo(14.63f, 11.45f)
-                lineToRelative(-4.08f, -4.08f)
+                lineTo(10.55f, 7.37f)
                 arcToRelative(3.0f, 3.0f, 0.0f, false, true, 4.08f, 4.08f)
                 close()
                 moveTo(20.5f, 17.31f)

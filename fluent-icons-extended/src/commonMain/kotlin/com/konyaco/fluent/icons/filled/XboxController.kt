@@ -17,7 +17,7 @@ public val Icons.Filled.XboxController: ImageVector
                 moveTo(9.8f, 5.5f)
                 arcToRelative(2.58f, 2.58f, 0.0f, false, false, -1.63f, -0.2f)
                 lineToRelative(-1.18f, 0.23f)
-                curveToRelative(-0.87f, 0.16f, -1.6f, 0.71f, -2.0f, 1.5f)
+                curveToRelative(-0.87f, 0.16f, -1.6f, 0.72f, -2.0f, 1.5f)
                 curveToRelative(-1.38f, 2.67f, -2.4f, 4.86f, -2.8f, 6.73f)
                 curveToRelative(-0.42f, 1.92f, -0.17f, 3.57f, 1.07f, 5.07f)
                 curveToRelative(0.82f, 1.0f, 2.23f, 0.8f, 2.97f, -0.03f)

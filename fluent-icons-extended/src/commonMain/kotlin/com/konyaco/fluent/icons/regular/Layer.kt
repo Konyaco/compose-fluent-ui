@@ -48,7 +48,7 @@ public val Icons.Regular.Layer: ImageVector
                 arcToRelative(2.5f, 2.5f, 0.0f, false, true, 2.78f, 0.0f)
                 close()
                 moveTo(11.56f, 4.61f)
-                lineToRelative(-0.11f, 0.06f)
+                lineTo(11.45f, 4.67f)
                 lineTo(5.7f, 8.5f)
                 lineToRelative(5.74f, 3.83f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, 0.99f, 0.06f)

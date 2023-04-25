@@ -38,7 +38,7 @@ public val Icons.Regular.PresenterOff: ImageVector
                 lineTo(3.28f, 2.22f)
                 close()
                 moveTo(15.51f, 16.57f)
-                lineToRelative(-0.73f, 0.6f)
+                lineTo(14.78f, 17.17f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.28f, 0.58f)
                 verticalLineToRelative(2.0f)
                 curveToRelative(0.0f, 0.42f, -0.34f, 0.75f, -0.75f, 0.75f)

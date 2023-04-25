@@ -14,7 +14,7 @@ public val Icons.Filled.ArrowRedo: ImageVector
         }
         _arrowRedo = fluentIcon(name = "Filled.ArrowRedo") {
             fluentPath {
-                moveTo(18.0f, 7.59f)
+                moveToRelative(18.0f, 7.59f)
                 lineToRelative(-3.64f, -3.64f)
                 arcToRelative(6.66f, 6.66f, 0.0f, true, false, -9.42f, 9.42f)
                 lineToRelative(8.34f, 8.34f)

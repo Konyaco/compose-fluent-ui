@@ -14,7 +14,7 @@ public val Icons.Regular.OpenOff: ImageVector
         }
         _openOff = fluentIcon(name = "Regular.OpenOff") {
             fluentPath {
-                moveTo(3.28f, 2.22f)
+                moveToRelative(3.28f, 2.22f)
                 lineToRelative(18.5f, 18.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -1.06f, 1.06f)
                 lineToRelative(-1.26f, -1.26f)
@@ -35,7 +35,7 @@ public val Icons.Regular.OpenOff: ImageVector
                 curveToRelative(0.2f, 0.0f, 0.4f, -0.04f, 0.59f, -0.1f)
                 close()
                 moveTo(13.08f, 9.9f)
-                lineToRelative(1.02f, 1.02f)
+                lineTo(14.1f, 10.92f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.18f, -0.14f)
                 lineToRelative(5.22f, -5.22f)
                 verticalLineToRelative(4.69f)

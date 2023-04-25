@@ -64,10 +64,10 @@ public val Icons.Regular.Syringe: ImageVector
                 lineTo(12.0f, 9.06f)
                 close()
                 moveTo(19.2f, 5.75f)
-                lineToRelative(-0.95f, -0.94f)
-                lineToRelative(-1.69f, 1.69f)
-                lineToRelative(0.94f, 0.94f)
-                lineToRelative(1.7f, -1.7f)
+                lineTo(18.25f, 4.81f)
+                lineTo(16.56f, 6.5f)
+                lineTo(17.5f, 7.44f)
+                lineTo(19.2f, 5.74f)
                 close()
             }
         }

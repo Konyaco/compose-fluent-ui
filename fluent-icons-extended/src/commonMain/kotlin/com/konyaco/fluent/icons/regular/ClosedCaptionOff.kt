@@ -51,7 +51,7 @@ public val Icons.Regular.ClosedCaptionOff: ImageVector
                 lineToRelative(-1.13f, -1.13f)
                 close()
                 moveTo(14.55f, 11.37f)
-                lineToRelative(-1.2f, -1.2f)
+                lineTo(13.35f, 10.17f)
                 arcToRelative(3.26f, 3.26f, 0.0f, false, true, 4.77f, -1.57f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, -0.74f, 1.3f)
                 curveToRelative(-1.24f, -0.7f, -2.55f, -0.08f, -2.83f, 1.47f)

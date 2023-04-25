@@ -14,7 +14,7 @@ public val Icons.Filled.MailRead: ImageVector
         }
         _mailRead = fluentIcon(name = "Filled.MailRead") {
             fluentPath {
-                moveTo(2.0f, 10.13f)
+                moveToRelative(2.0f, 10.13f)
                 lineToRelative(9.65f, 5.03f)
                 curveToRelative(0.22f, 0.12f, 0.48f, 0.12f, 0.7f, 0.0f)
                 lineTo(22.0f, 10.13f)
@@ -27,11 +27,11 @@ public val Icons.Filled.MailRead: ImageVector
                 verticalLineToRelative(-7.62f)
                 close()
                 moveTo(3.1f, 8.17f)
-                lineToRelative(8.52f, -5.06f)
+                lineTo(11.62f, 3.11f)
                 curveToRelative(0.2f, -0.13f, 0.44f, -0.14f, 0.66f, -0.06f)
                 lineToRelative(0.1f, 0.06f)
                 lineToRelative(8.52f, 5.06f)
-                curveToRelative(0.23f, 0.14f, 0.44f, 0.32f, 0.6f, 0.52f)
+                curveToRelative(0.24f, 0.14f, 0.44f, 0.32f, 0.6f, 0.52f)
                 lineTo(12.0f, 13.65f)
                 lineTo(2.5f, 8.7f)
                 curveToRelative(0.12f, -0.15f, 0.27f, -0.29f, 0.43f, -0.4f)

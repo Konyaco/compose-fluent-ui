@@ -14,7 +14,7 @@ public val Icons.Filled.WifiOff: ImageVector
         }
         _wifiOff = fluentIcon(name = "Filled.WifiOff") {
             fluentPath {
-                moveTo(12.86f, 14.27f)
+                moveToRelative(12.86f, 14.27f)
                 lineToRelative(7.43f, 7.44f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, 1.42f, -1.42f)
                 lineToRelative(-18.0f, -18.0f)
@@ -33,7 +33,7 @@ public val Icons.Filled.WifiOff: ImageVector
                 arcToRelative(3.23f, 3.23f, 0.0f, false, true, 3.78f, -1.84f)
                 close()
                 moveTo(11.53f, 8.34f)
-                lineToRelative(2.22f, 2.23f)
+                lineTo(13.75f, 10.57f)
                 arcToRelative(6.1f, 6.1f, 0.0f, false, true, 3.76f, 3.13f)
                 arcToRelative(1.0f, 1.0f, 0.0f, true, false, 1.78f, -0.9f)
                 arcToRelative(8.1f, 8.1f, 0.0f, false, false, -7.76f, -4.45f)

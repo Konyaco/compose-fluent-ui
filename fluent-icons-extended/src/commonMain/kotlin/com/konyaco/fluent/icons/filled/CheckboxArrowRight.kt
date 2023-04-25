@@ -25,7 +25,7 @@ public val Icons.Filled.CheckboxArrowRight: ImageVector
                 lineTo(5.25f, 2.0f)
                 close()
                 moveTo(16.28f, 8.28f)
-                lineToRelative(-6.75f, 6.75f)
+                lineTo(9.53f, 15.03f)
                 curveToRelative(-0.3f, 0.29f, -0.77f, 0.29f, -1.06f, 0.0f)
                 lineToRelative(-2.75f, -2.75f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, true, 1.06f, -1.06f)

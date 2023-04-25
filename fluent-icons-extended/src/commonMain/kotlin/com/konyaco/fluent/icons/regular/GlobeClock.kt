@@ -58,7 +58,7 @@ public val Icons.Regular.GlobeClock: ImageVector
                 curveToRelative(0.57f, -2.88f, 1.79f, -4.88f, 3.06f, -5.0f)
                 close()
                 moveTo(15.23f, 4.26f)
-                lineToRelative(-0.1f, -0.17f)
+                lineTo(15.13f, 4.09f)
                 arcToRelative(8.53f, 8.53f, 0.0f, false, true, 4.62f, 4.41f)
                 lineTo(16.7f, 8.5f)
                 curveToRelative(-0.3f, -1.66f, -0.8f, -3.12f, -1.47f, -4.24f)

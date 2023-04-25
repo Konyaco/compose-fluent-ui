@@ -14,7 +14,7 @@ public val Icons.Filled.AnimalRabbit: ImageVector
         }
         _animalRabbit = fluentIcon(name = "Filled.AnimalRabbit") {
             fluentPath {
-                moveTo(15.53f, 5.44f)
+                moveToRelative(15.53f, 5.44f)
                 lineToRelative(5.43f, 5.43f)
                 arcToRelative(3.58f, 3.58f, 0.0f, false, true, -3.35f, 6.0f)
                 verticalLineTo(17.0f)

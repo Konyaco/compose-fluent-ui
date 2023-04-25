@@ -40,7 +40,7 @@ public val Icons.Filled.MailAttach: ImageVector
                 curveToRelative(-0.68f, 0.68f, -0.68f, 1.8f, 0.0f, 2.47f)
                 close()
                 moveTo(13.77f, 12.91f)
-                lineToRelative(0.15f, 0.16f)
+                lineTo(13.92f, 13.07f)
                 arcToRelative(3.17f, 3.17f, 0.0f, false, false, 4.49f, 0.0f)
                 lineToRelative(3.58f, -3.59f)
                 verticalLineToRelative(7.26f)

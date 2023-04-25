@@ -35,7 +35,7 @@ public val Icons.Filled.BookNumber: ImageVector
                 verticalLineToRelative(-15.0f)
                 close()
                 moveTo(11.02f, 7.57f)
-                lineToRelative(-0.22f, 0.91f)
+                lineTo(10.8f, 8.48f)
                 lineTo(9.63f, 8.48f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.65f, 0.75f)
                 verticalLineToRelative(0.1f)

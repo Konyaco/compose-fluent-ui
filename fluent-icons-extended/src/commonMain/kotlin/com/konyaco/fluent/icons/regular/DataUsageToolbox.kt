@@ -43,7 +43,7 @@ public val Icons.Regular.DataUsageToolbox: ImageVector
                 lineToRelative(0.01f, 0.1f)
                 close()
                 moveTo(11.71f, 11.72f)
-                lineToRelative(0.03f, 3.0f)
+                lineTo(11.74f, 14.72f)
                 curveToRelative(-0.34f, 0.34f, -0.59f, 0.78f, -0.69f, 1.28f)
                 horizontalLineToRelative(-0.03f)
                 arcToRelative(0.73f, 0.73f, 0.0f, false, true, -0.73f, -0.62f)

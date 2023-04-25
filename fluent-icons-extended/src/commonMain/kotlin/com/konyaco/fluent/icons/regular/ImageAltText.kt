@@ -58,7 +58,7 @@ public val Icons.Regular.ImageAltText: ImageVector
                 lineTo(4.0f, 12.0f)
                 close()
                 moveTo(19.33f, 20.4f)
-                lineToRelative(-5.8f, -5.69f)
+                lineTo(13.53f, 14.71f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, -0.97f, -0.07f)
                 lineToRelative(-0.08f, 0.07f)
                 lineToRelative(-5.81f, 5.7f)

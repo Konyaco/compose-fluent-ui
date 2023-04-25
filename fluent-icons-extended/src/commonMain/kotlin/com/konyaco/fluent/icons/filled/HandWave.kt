@@ -15,7 +15,7 @@ public val Icons.Filled.HandWave: ImageVector
         _handWave = fluentIcon(name = "Filled.HandWave") {
             fluentPath {
                 moveTo(7.94f, 2.66f)
-                arcToRelative(1.0f, 1.0f, 0.0f, false, false, -1.88f, 0.68f)
+                arcToRelative(1.0f, 1.0f, 0.0f, true, false, -1.88f, 0.68f)
                 lineToRelative(2.25f, 6.23f)
                 arcToRelative(0.68f, 0.68f, 0.0f, false, true, -1.27f, 0.48f)
                 lineToRelative(-2.1f, -5.41f)

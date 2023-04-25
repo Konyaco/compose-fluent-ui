@@ -27,7 +27,7 @@ public val Icons.Filled.AutoFitWidth: ImageVector
                 verticalLineToRelative(12.0f)
                 close()
                 moveTo(13.79f, 13.8f)
-                lineToRelative(-0.09f, 0.1f)
+                lineTo(13.7f, 13.9f)
                 arcToRelative(1.0f, 1.0f, 0.0f, false, false, 1.5f, 1.3f)
                 lineToRelative(2.36f, -2.34f)
                 curveToRelative(0.27f, -0.18f, 0.44f, -0.5f, 0.44f, -0.86f)

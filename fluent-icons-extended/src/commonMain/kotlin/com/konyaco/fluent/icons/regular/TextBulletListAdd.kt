@@ -22,7 +22,7 @@ public val Icons.Regular.TextBulletListAdd: ImageVector
                 lineTo(6.65f, 18.0f)
                 arcToRelative(0.75f, 0.75f, 0.0f, false, false, 0.1f, 1.5f)
                 horizontalLineToRelative(5.56f)
-                arcToRelative(6.47f, 6.47f, 0.0f, false, true, -0.3f, -1.5f)
+                arcToRelative(6.46f, 6.46f, 0.0f, false, true, -0.3f, -1.5f)
                 close()
                 moveTo(13.81f, 13.0f)
                 lineTo(6.75f, 13.0f)

@@ -36,7 +36,7 @@ public val Icons.Regular.Cut: ImageVector
                 arcToRelative(2.5f, 2.5f, 0.0f, false, true, -5.0f, 0.0f)
                 close()
                 moveTo(13.94f, 9.32f)
-                lineToRelative(3.94f, -6.17f)
+                lineTo(17.88f, 3.15f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, -1.26f, -0.8f)
                 lineToRelative(-3.6f, 5.62f)
                 lineToRelative(0.92f, 1.35f)

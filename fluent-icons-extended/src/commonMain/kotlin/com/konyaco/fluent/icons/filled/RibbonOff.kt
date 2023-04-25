@@ -32,7 +32,7 @@ public val Icons.Filled.RibbonOff: ImageVector
                 lineToRelative(3.23f, 3.23f)
                 close()
                 moveTo(7.15f, 3.96f)
-                lineToRelative(9.89f, 9.9f)
+                lineTo(17.04f, 13.86f)
                 arcToRelative(7.0f, 7.0f, 0.0f, false, false, -9.9f, -9.9f)
                 close()
             }

@@ -49,7 +49,7 @@ public val Icons.Regular.ImageProhibited: ImageVector
                 verticalLineToRelative(-5.06f)
                 close()
                 moveTo(12.52f, 13.71f)
-                lineToRelative(5.81f, 5.7f)
+                lineTo(18.33f, 19.41f)
                 curveToRelative(-0.18f, 0.06f, -0.38f, 0.09f, -0.58f, 0.09f)
                 lineTo(6.25f, 19.5f)
                 curveToRelative(-0.2f, 0.0f, -0.4f, -0.03f, -0.58f, -0.1f)

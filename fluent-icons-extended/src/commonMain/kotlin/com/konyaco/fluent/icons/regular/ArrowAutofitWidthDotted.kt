@@ -29,7 +29,7 @@ public val Icons.Regular.ArrowAutofitWidthDotted: ImageVector
                 horizontalLineToRelative(11.5f)
                 close()
                 moveTo(18.28f, 19.28f)
-                lineToRelative(2.5f, -2.5f)
+                lineTo(20.78f, 16.78f)
                 curveToRelative(0.3f, -0.3f, 0.3f, -0.77f, 0.0f, -1.06f)
                 lineToRelative(-2.5f, -2.5f)
                 arcToRelative(0.75f, 0.75f, 0.0f, true, false, -1.06f, 1.06f)
