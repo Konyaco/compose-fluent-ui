@@ -18,7 +18,6 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Copy
 import com.konyaco.fluent.icons.regular.Cut
 import com.konyaco.fluent.icons.regular.ClipboardPaste
-import org.jetbrains.skiko.hostOs
 
 internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
     @Composable
@@ -31,7 +30,6 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                 state.status = ContextMenuState.Status.Closed
             },
             onKeyEvent = { keyEvent ->
-                println("keyEvent: ${keyEvent.isMetaPressed}")
                 items().firstOrNull {
                     val result = it is FluentContextMenuItem &&
                             keyEvent.type == KeyEventType.KeyDown &&
