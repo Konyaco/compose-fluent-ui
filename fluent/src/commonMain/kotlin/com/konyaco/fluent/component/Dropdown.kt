@@ -14,10 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Popup
@@ -33,6 +35,9 @@ fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    focusable: Boolean = false,
+    onPreviewKeyEvent: ((KeyEvent) -> Boolean) = { false },
+    onKeyEvent: ((KeyEvent) -> Boolean) = { false },
     offset: DpOffset = DpOffset(0.dp, 0.dp), // TODO: Offset
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -46,7 +51,10 @@ fun DropdownMenu(
         val popupPositionProvider = DropdownMenuPositionProvider(density)
 
         Popup(
+            focusable = focusable,
             onDismissRequest = onDismissRequest,
+            onKeyEvent = onKeyEvent,
+            onPreviewKeyEvent = onPreviewKeyEvent,
             popupPositionProvider = popupPositionProvider,
         ) {
             DropdownMenuContent(
@@ -121,8 +129,8 @@ internal fun DropdownMenuContent(
 }
 
 @Composable
-fun DropdownMenuItem(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
-    SubtleButton(modifier = Modifier.defaultMinSize(minWidth = 100.dp), onClick = onClick, iconOnly = true, content = {
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), content = content)
+fun DropdownMenuItem(onClick: () -> Unit, modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
+    SubtleButton(modifier = modifier.defaultMinSize(minWidth = 100.dp), onClick = onClick, iconOnly = true, content = {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp), content = content)
     })
 }
