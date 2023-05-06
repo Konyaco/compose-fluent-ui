@@ -1,9 +1,11 @@
 package com.konyaco.fluent
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import com.konyaco.fluent.component.ProvideFontIcon
 
 @Composable
 fun FluentTheme(
@@ -25,12 +27,9 @@ fun FluentTheme(
                 titleLarge = typography.titleLarge.copy(fontFamily = defaultFontFamily),
                 display = typography.display.copy(fontFamily = defaultFontFamily),
             )
-        } ?: typography)
-    ) {
-        ProvideFontIcon {
-            PlatformCompositionLocalProvider(content)
-        }
-    }
+        } ?: typography),
+        content = content
+    )
 }
 
 object FluentTheme {
@@ -45,6 +44,7 @@ object FluentTheme {
 }
 
 internal val LocalColors = staticCompositionLocalOf { lightColors() }
+
 
 fun lightColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(generateShades(accent), false)
 fun darkColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(generateShades(accent), true)
