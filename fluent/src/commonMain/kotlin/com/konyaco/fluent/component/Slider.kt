@@ -76,8 +76,6 @@ private fun Slider(
             return valueToFraction(offset.x, radius, constraints.minWidth - radius).coerceIn(0f, 1f)
         }
 
-        Rail()
-
         Box(Modifier.composed {
             var offset by remember { mutableStateOf(Offset.Zero) }
             draggable(
@@ -97,13 +95,12 @@ private fun Slider(
                 orientation = Orientation.Horizontal
             )
         }.pointerInput(Unit) {
-            forEachGesture {
-                awaitPointerEventScope {
-                    val down = awaitFirstDown()
-                    currentOnProgressChange(calcProgress(down.position))
-                }
+            awaitEachGesture {
+                val down = awaitFirstDown()
+                currentOnProgressChange(calcProgress(down.position))
             }
         }, contentAlignment = Alignment.CenterStart) {
+            Rail()
             Track(progress, width)
             Thumb(width, progress, dragging)
         }
@@ -128,7 +125,7 @@ private fun calcThumbOffset(
 @Composable
 private fun Rail() {
     // Rail
-    Layer(modifier = Modifier.requiredHeight(4.dp),
+    Layer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp),
         shape = CircleShape,
         color = FluentTheme.colors.controlStrong.default,
         border = BorderStroke(
