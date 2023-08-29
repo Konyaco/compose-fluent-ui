@@ -32,9 +32,8 @@ fun HomeScreen() {
         modifier = Modifier.padding(top = 16.dp).fillMaxSize()
             .verticalScroll(rememberScrollState()),
         shape = RoundedCornerShape(8.dp),
-        color = FluentTheme.colors.background.layer.default,
-        border = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
-        cornerRadius = 8.dp
+        cornerRadius = 8.dp,
+        outsideBorder = true
     ) {
         Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
             Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it })
@@ -88,7 +87,6 @@ fun HomeScreen() {
             }
         )
     }
-
 }
 
 

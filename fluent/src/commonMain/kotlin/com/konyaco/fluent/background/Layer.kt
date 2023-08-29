@@ -49,18 +49,7 @@ fun Layer(
                 else shape
             }
             Box(
-                modifier.shadow(elevation, shape, clip = false)
-                    .composed { if (border != null) border(border, shape) else this }
-                    .composed {
-                        // TODO: A better way to implement outside border
-                        val density = LocalDensity.current
-                        if (outsideBorder) {
-                            if (circular) padding(calcCircularPadding(density))
-                            else padding(calcPadding(density))
-                        } else this
-                    }
-                    .background(color = color, shape = innerShape)
-                    .clip(shape = innerShape), // TODO: A better way to set content corner
+                modifier.layer(elevation, shape, border, outsideBorder, circular, color, innerShape), // TODO: A better way to set content corner
                 propagateMinConstraints = true
             ) {
                 content()
@@ -68,6 +57,19 @@ fun Layer(
         }
     }
 }
+
+private fun Modifier.layer(elevation: Dp, shape: Shape, border: BorderStroke?, outsideBorder: Boolean, circular: Boolean, color: Color, innerShape: Shape) = this.shadow(elevation, shape, clip = false)
+    .composed { if (border != null) border(border, shape) else this }
+    .composed {
+        // TODO: A better way to implement outside border
+        val density = LocalDensity.current
+        if (outsideBorder) {
+            if (circular) padding(calcCircularPadding(density))
+            else padding(calcPadding(density))
+        } else this
+    }
+    .background(color = color, shape = innerShape)
+    .clip(shape = innerShape)
 
 /**
  * This is a workaround solution to eliminate 1 pixel gap

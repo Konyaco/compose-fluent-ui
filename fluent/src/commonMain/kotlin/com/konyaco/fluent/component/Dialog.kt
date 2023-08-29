@@ -3,6 +3,7 @@ package com.konyaco.fluent.component
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,7 +70,9 @@ fun Dialog(
                     Layer(
                         Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
                         shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
                         cornerRadius = 8.dp,
+                        outsideBorder = true,
                         contentColor = FluentTheme.colors.text.text.primary,
                     ) {
                         Column(Modifier.background(FluentTheme.colors.background.solid.base)) {
