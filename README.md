@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/Konyaco/compose-fluent-ui?include_prereleases)](https://github.com/Konyaco/compose-fluent-ui/releases)
-![Maven Central](https://img.shields.io/maven-central/v/com.konyaco/fluent)
+[![Maven Central](https://img.shields.io/maven-central/v/com.konyaco/fluent)](https://central.sonatype.com/artifact/com.konyaco/fluent/)
 
 
 **Fluent Design** UI library for **Compose Multiplatform**
