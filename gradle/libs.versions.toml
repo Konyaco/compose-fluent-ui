@@ -1,0 +1,27 @@
+[versions]
+kotlin = "1.9.0"
+compose = "1.5.0"
+androidGradlePlugin = "7.4.2"
+androidBuildTools = "27.2.0-alpha16"
+
+[libraries]
+androidx-activity = "androidx.activity:activity-compose:1.6.1"
+androidx-test-junit = "androidx.test.ext:junit:1.1.5"
+
+mayakapps-window-styler = "com.mayakapps.compose:window-styler:0.3.2"
+
+ktor-client-java = "io.ktor:ktor-client-java:2.2.1"
+jsoup = "org.jsoup:jsoup:1.15.3"
+google-guava = "com.google.guava:guava:31.1-jre"
+squareup-kotlinpoet = "com.squareup:kotlinpoet:1.12.0"
+android-tools-common = { module = "com.android.tools:common", version.ref = "androidBuildTools" }
+android-tools-sdk-common = { module = "com.android.tools:sdk-common", version.ref = "androidBuildTools" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
