@@ -22,7 +22,7 @@ kotlin {
 
 gradlePlugin {
     plugins {
-        create("VersionPlugin") {
+        create("BuildPlugin") {
             id = "com.konyaco.fluent.plugin.build"
             implementationClass = "com.konyaco.fluent.plugin.build.BuildPlugin"
         }
