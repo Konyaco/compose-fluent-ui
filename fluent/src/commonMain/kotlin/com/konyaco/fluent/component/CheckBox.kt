@@ -8,14 +8,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -40,10 +38,10 @@ fun CheckBox(
     val pressed by interactionSource.collectIsPressedAsState()
 
     Row(
-        modifier = modifier.composed {
+        modifier = modifier.then(
             if (label != null) Modifier.defaultMinSize(minWidth = 120.dp)
             else Modifier
-        }.clickable(
+        ).clickable(
             role = Role.Checkbox,
             indication = null,
             interactionSource = interactionSource

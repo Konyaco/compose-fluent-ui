@@ -20,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.graphicsLayer
@@ -327,12 +326,13 @@ private fun Indicator(modifier: Modifier, display: Boolean) {
     Box(modifier.width(3.dp).then(animationModifier).background(FluentTheme.colors.fillAccent.default, CircleShape))
 }
 
+@Composable
 private fun Modifier.indicatorOffsetAnimation(
     size: Dp,
     indicatorState: MutableTransitionState<Boolean>,
     selectedPosition: MutableTransitionState<Float>,
     isVertical: Boolean = true
-) = composed {
+): Modifier {
     val fraction by updateTransition(indicatorState).animateFloat(
         transitionSpec = {
             tween(FluentDuration.VeryLongDuration , easing = FluentEasing.PointToPointEasing)
@@ -348,7 +348,7 @@ private fun Modifier.indicatorOffsetAnimation(
             )
         }) { it }
     }
-    layout { measurable, constraints ->
+    return layout { measurable, constraints ->
         val stickSize = size.toPx()
         val containerSize = if (isVertical) {
             constraints.maxHeight

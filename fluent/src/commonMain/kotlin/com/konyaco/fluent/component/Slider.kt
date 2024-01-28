@@ -32,7 +32,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -94,33 +93,35 @@ private fun Slider(
             return valueToFraction(offset.x, radius, constraints.minWidth - radius).coerceIn(0f, 1f)
         }
 
-        Box(Modifier.composed {
-            var offset by remember { mutableStateOf(Offset.Zero) }
-            draggable(
-                state = rememberDraggableState {
-                    offset = Offset(x = offset.x + it, y = offset.y)
-                    currentOnProgressChange(calcProgress(offset))
-                },
-                interactionSource = interactionSource,
-                onDragStarted = {
+        var offset by remember { mutableStateOf(Offset.Zero) }
+        Box(
+            modifier = Modifier
+                .draggable(
+                    state = rememberDraggableState {
+                        offset = Offset(x = offset.x + it, y = offset.y)
+                        currentOnProgressChange(calcProgress(offset))
+                    },
+                    interactionSource = interactionSource,
+                    onDragStarted = {
+                        dragging = true
+                        offset = it
+                    },
+                    onDragStopped = {
+                        dragging = false
+                        onValueChangeFinished?.invoke()
+                    },
+                    orientation = Orientation.Horizontal
+                )
+                .pointerInput(Unit) {
+                awaitEachGesture {
+                    val down = awaitFirstDown()
                     dragging = true
-                    offset = it
-                },
-                onDragStopped = {
+                    currentOnProgressChange(calcProgress(down.position))
+                    waitForUpOrCancellation()
                     dragging = false
-                    onValueChangeFinished?.invoke()
-                },
-                orientation = Orientation.Horizontal
-            )
-        }.pointerInput(Unit) {
-            awaitEachGesture {
-                val down = awaitFirstDown()
-                dragging = true
-                currentOnProgressChange(calcProgress(down.position))
-                waitForUpOrCancellation()
-                dragging = false
-            }
-        }, contentAlignment = Alignment.CenterStart) {
+                }
+            }, contentAlignment = Alignment.CenterStart
+        ) {
             Rail()
             Track(progress, width)
             Thumb(width, progress, dragging)
@@ -129,7 +130,8 @@ private fun Slider(
 }
 
 @Stable
-private fun fractionToValue(fraction: Float, start: Float, end: Float): Float = (end - start) * fraction + start
+private fun fractionToValue(fraction: Float, start: Float, end: Float): Float =
+    (end - start) * fraction + start
 
 @Stable
 private fun valueToFraction(
