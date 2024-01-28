@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
 }
 
 kotlin {
@@ -9,12 +9,12 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-java:2.2.1")
-                implementation("org.jsoup:jsoup:1.15.3")
-                implementation("com.google.guava:guava:31.1-jre")
-                implementation("com.android.tools:common:27.2.0-alpha16")
-                implementation("com.android.tools:sdk-common:27.2.0-alpha16")
-                implementation("com.squareup:kotlinpoet:1.12.0")
+                implementation(libs.ktor.client.java)
+                implementation(libs.jsoup)
+                implementation(libs.google.guava)
+                implementation(libs.android.tools.common)
+                implementation(libs.android.tools.sdk.common)
+                implementation(libs.squareup.kotlinpoet)
             }
         }
         val jvmTest by getting

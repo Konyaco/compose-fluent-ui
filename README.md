@@ -45,7 +45,7 @@ fun App() {
   }
 }
 ```
-See [`example`](example) module for more details.
+See [`gallery`](gallery) module for more details.
 
 - `FluentTheme()` is the context and entry point of the application, just like `MaterialTheme`
 - Components are under `component` package
