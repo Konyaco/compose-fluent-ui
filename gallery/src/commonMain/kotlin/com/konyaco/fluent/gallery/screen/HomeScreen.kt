@@ -27,7 +27,7 @@ fun HomeScreen() {
     val density = LocalDensity.current
     var scale by remember(density) { mutableStateOf(density.density) }
     val store = LocalStore.current
-    
+
     Layer(
         modifier = Modifier.padding(top = 16.dp).fillMaxSize()
             .verticalScroll(rememberScrollState()),
@@ -65,7 +65,32 @@ fun HomeScreen() {
                     DropdownMenuItem(::close) { Text("Option 3") }
                 }
             }
+            FlyoutContainer(
+                flyout = {
+                    Text("this is a flyout")
+                },
+                content = {
+                    Button(
+                        onClick = { isFlyoutVisible = true }
+                    ) {
+                        Text("Open Flyout")
+                    }
+                }
+            )
+            MenuFlyoutContainer(
+                flyout = {
+                    Text("implement menu items")
+                },
+                content = {
+                    Button(
+                        onClick = { isFlyoutVisible = true }
+                    ) {
+                        Text("Open MenuFlyout")
+                    }
+                }
+            )
         }
+
         Dialog(
             title = "This is an example dialog",
             visible = displayDialog,
