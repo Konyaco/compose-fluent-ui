@@ -1,5 +1,7 @@
 /icon_output/
 /icon_output_xml/
-/icon_output_kt/
+/icon_output_kt_core/
+/icon_output_kt_extended/
+/icons-catalog_files/
 icons.html
 icons-catalog.html
