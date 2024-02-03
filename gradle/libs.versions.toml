@@ -8,6 +8,8 @@ androidBuildTools = "27.2.0-alpha16"
 androidx-activity = "androidx.activity:activity-compose:1.6.1"
 androidx-test-junit = "androidx.test.ext:junit:1.1.5"
 
+uuid = "com.benasher44:uuid:0.8.2"
+
 mayakapps-window-styler = "com.mayakapps.compose:window-styler:0.3.2"
 
 ktor-client-java = "io.ktor:ktor-client-java:2.2.1"

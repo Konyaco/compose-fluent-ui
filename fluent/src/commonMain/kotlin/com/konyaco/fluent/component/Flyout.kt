@@ -1,13 +1,13 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
@@ -29,6 +33,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
@@ -43,7 +48,7 @@ fun FlyoutContainer(
     flyout: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
-    placement: FlyoutPlacement = FlyoutPlacement.Top,
+    placement: FlyoutPlacement = FlyoutPlacement.Auto,
     content: @Composable FlyoutScope.() -> Unit
 ) {
     BasicFlyoutContainer(
@@ -81,7 +86,20 @@ internal fun BasicFlyoutContainer(
 }
 
 enum class FlyoutPlacement {
-    Top, Bottom
+    Auto,
+    Full,
+    Start,
+    StartAlignedTop,
+    StartAlignedBottom,
+    Top,
+    TopAlignedStart,
+    TopAlignedEnd,
+    End,
+    EndAlignedTop,
+    EndAlignedBottom,
+    Bottom,
+    BottomAlignedStart,
+    BottomAlignedEnd
 }
 
 @Composable
@@ -89,18 +107,17 @@ fun Flyout(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    placement: FlyoutPlacement = FlyoutPlacement.Top,
+    placement: FlyoutPlacement = FlyoutPlacement.Auto,
     shape: Shape = RoundedCornerShape(8.dp),
     content: @Composable () -> Unit
 ) {
     BasicFlyout(
-        visible,
-        onDismissRequest,
-        modifier,
-        placement,
-        shape,
-        PaddingValues(12.dp),
-        content
+        visible = visible,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        positionProvider = rememberFlyoutPositionProvider(initialPlacement = placement),
+        shape = shape,
+        content = content
     )
 }
 
@@ -109,9 +126,10 @@ internal fun BasicFlyout(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    placement: FlyoutPlacement = FlyoutPlacement.Top,
+    enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
     shape: Shape = RoundedCornerShape(8.dp),
     contentPadding: PaddingValues = PaddingValues(12.dp),
+    positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     content: @Composable () -> Unit
 ) {
     val visibleState = remember {
@@ -119,28 +137,27 @@ internal fun BasicFlyout(
     }
     visibleState.targetState = visible
     if (visibleState.currentState || visibleState.targetState) {
-        val targetPlacement = remember(placement) {
-            mutableStateOf(placement)
-        }
-        val density = LocalDensity.current
-        val flyoutPopupPositionProvider = remember(placement, density) {
-            FlyoutPositionProvider(placement, density) {
-                targetPlacement.value = it
-            }
-        }
         Popup(
             onDismissRequest = onDismissRequest,
             properties = PopupProperties(clippingEnabled = false),
-            popupPositionProvider = flyoutPopupPositionProvider,
+            popupPositionProvider = positionProvider,
         ) {
-            FlyoutContent(
-                modifier = modifier,
-                visibleState = visibleState,
-                placement = targetPlacement.value,
-                shape = shape,
-                content = content,
-                contentPadding = contentPadding
-            )
+            if (positionProvider.applyAnimation) {
+                FlyoutContent(
+                    modifier = modifier,
+                    visibleState = visibleState,
+                    placement = positionProvider.targetPlacement,
+                    shape = shape,
+                    content = content,
+                    contentPadding = contentPadding,
+                    enterPlacementAnimation = enterPlacementAnimation
+                )
+            } else {
+                /* this is the workaround for placement animation */
+                Box(Modifier.alpha(0f).padding(contentPadding)) {
+                    content()
+                }
+            }
         }
     }
 }
@@ -149,43 +166,21 @@ internal fun BasicFlyout(
 internal fun FlyoutContent(
     visibleState: MutableTransitionState<Boolean>,
     modifier: Modifier = Modifier,
-    placement: FlyoutPlacement = FlyoutPlacement.Top,
+    placement: FlyoutPlacement = FlyoutPlacement.Auto,
+    enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
     shape: Shape = RoundedCornerShape(8.dp),
     contentPadding: PaddingValues = PaddingValues(12.dp),
     content: @Composable () -> Unit
 ) {
-    fun <T> enterSpec() =
-        tween<T>(FluentDuration.MediumDuration, easing = FluentEasing.PointToPointEasing)
 
-    fun <T> exitSpec() =
-        tween<T>(FluentDuration.ShortDuration, easing = FluentEasing.FastDismissEasing)
-
-    val animatedTransition = updateTransition(visibleState, label = "visibleTransition")
-    val animatedElevation = animatedTransition.animateDp(
-        transitionSpec = { if (targetState) enterSpec() else exitSpec() },
-        targetValueByState = { targetState -> if (targetState) 8.dp else 0.dp },
-        label = "visibleTransitionElevation"
-    )
-    val animatedAlpha = animatedTransition.animateFloat(
-        transitionSpec = { if (targetState) enterSpec() else exitSpec() },
-        targetValueByState = { targetState -> if (targetState) 1f else 0f },
-        label = "visibleTransitionAlpha"
-    )
     AnimatedVisibility(
         visibleState = visibleState,
-        enter = fadeIn(enterSpec()) + slideInVertically(enterSpec()) {
-            if (placement == FlyoutPlacement.Bottom) {
-                -it / 2
-            } else {
-                (it * 2f / 3).toInt()
-            }
-        },
-        exit = fadeOut(exitSpec())
+        enter = enterPlacementAnimation(placement),
+        exit = fadeOut(flyoutExitSpec())
     ) {
         Mica(
             modifier = modifier.padding(flyoutPopPaddingFixShadowRender).graphicsLayer {
-                shadowElevation = animatedElevation.value.toPx()
-                alpha = animatedAlpha.value
+                shadowElevation = 8.dp.toPx()
                 this.shape = shape
                 clip = true
             }
@@ -199,43 +194,353 @@ internal fun FlyoutContent(
     }
 }
 
-//TODO Remove when shadow can show with animated visibility
-private val flyoutPopPaddingFixShadowRender = 16.dp
-private val flyoutDefaultPadding = 8.dp
+@Composable
+internal fun rememberFlyoutPositionProvider(
+    initialPlacement: FlyoutPlacement = FlyoutPlacement.Auto,
+    paddingToAnchor: PaddingValues = PaddingValues(flyoutDefaultPadding)
+): FlyoutPositionProvider {
+    val density = LocalDensity.current
+    return remember(initialPlacement, density, paddingToAnchor) {
+        FlyoutPositionProvider(density, initialPlacement, paddingToAnchor)
+    }
+}
 
 @Stable
-private class FlyoutPositionProvider(
-    private val initialPlacement: FlyoutPlacement,
+internal open class FlyoutPositionProvider(
     private val density: Density,
-    private val targetPlacement: (targetPlacement: FlyoutPlacement) -> Unit
+    private val initialPlacement: FlyoutPlacement = FlyoutPlacement.Auto,
+    private val paddingToAnchor: PaddingValues = PaddingValues(flyoutDefaultPadding),
 ) : PopupPositionProvider {
 
-    //TODO RTL support
+    var applyAnimation by mutableStateOf(false)
+        private set
+
+    var targetPlacement by mutableStateOf(initialPlacement)
+        private set
+
     override fun calculatePosition(
         anchorBounds: IntRect,
         windowSize: IntSize,
         layoutDirection: LayoutDirection,
         popupContentSize: IntSize
     ): IntOffset {
-        val maxWidth = maxOf(anchorBounds.width, popupContentSize.width)
-        val anchorHalf = anchorBounds.width / 2
-        val start = (anchorHalf + anchorBounds.left - maxWidth / 2).coerceAtLeast(0)
-        val isPlaceToBottom = initialPlacement == FlyoutPlacement.Bottom
-        val popupPadding = with(density) { flyoutPopPaddingFixShadowRender.toPx() }
-        val flyoutDefaultPadding = with(density) { flyoutDefaultPadding.toPx() }
-        val popupActualHeight = popupContentSize.height - popupPadding * 2
-        val topSpace = anchorBounds.top - popupActualHeight - flyoutDefaultPadding
-        val bottomSpace = windowSize.height - anchorBounds.bottom
-        val y =
-            if (bottomSpace >= (popupActualHeight + flyoutDefaultPadding) && (isPlaceToBottom || topSpace < popupContentSize.height)) {
-                targetPlacement(FlyoutPlacement.Bottom)
-                anchorBounds.bottom - popupPadding.toInt() + flyoutDefaultPadding.toInt()
+        applyAnimation = false
+        with(density) {
+            val popupPadding = flyoutPopPaddingFixShadowRender.toPx()
+            val popupActualSize = Size(
+                popupContentSize.width - popupPadding * 2,
+                popupContentSize.height - popupPadding * 2
+            )
+            val horizontalPlacement: HorizontalPlacement
+            val verticalPlacement: VerticalPlacement
+
+            targetPlacement = if (initialPlacement != FlyoutPlacement.Auto) {
+                initialPlacement.apply {
+                    val (targetHorizontalPlacement, targetVerticalPlacement) = transformPlacement(
+                        initialPlacement
+                    )
+                    horizontalPlacement = targetHorizontalPlacement
+                    verticalPlacement = targetVerticalPlacement
+                }
             } else {
-                targetPlacement(FlyoutPlacement.Top)
-                (anchorBounds.top - popupActualHeight - popupPadding - flyoutDefaultPadding).toInt()
-                    .coerceAtLeast(0)
+                val (targetHorizontalPlacement, targetVerticalPlacement) = calculateTargetPlacement(
+                    anchorBounds,
+                    windowSize,
+                    layoutDirection,
+                    popupActualSize
+                )
+                horizontalPlacement = targetHorizontalPlacement
+                verticalPlacement = targetVerticalPlacement
+                transformPlacement(horizontalPlacement, verticalPlacement)
             }
-        return IntOffset(start, y)
+            applyAnimation = true
+            val popupActualCenter = popupActualSize.center
+            val anchorCenter = anchorBounds.center
+            return IntOffset(
+                x = (getOffsetX(
+                    horizontalPlacement,
+                    layoutDirection,
+                    anchorBounds,
+                    anchorCenter,
+                    popupActualSize,
+                    popupActualCenter,
+                    windowSize
+                ) - popupPadding).toInt(),
+                y = (getOffsetY(
+                    verticalPlacement,
+                    anchorBounds,
+                    anchorCenter,
+                    popupActualSize,
+                    popupActualCenter,
+                    windowSize
+                ) - popupPadding).toInt()
+            )
+        }
+    }
+
+    private fun Density.getOffsetX(
+        placement: HorizontalPlacement,
+        layoutDirection: LayoutDirection,
+        anchorBounds: IntRect,
+        anchorCenter: IntOffset,
+        popupContentSize: Size,
+        popupContentCenter: Offset,
+        windowSize: IntSize
+    ): Float {
+        val isLTR = layoutDirection == LayoutDirection.Ltr
+        return if (isLTR) {
+            when (placement) {
+                HorizontalPlacement.Start -> anchorBounds.left - popupContentSize.width - paddingToAnchor.calculateLeftPadding(
+                    layoutDirection
+                ).toPx()
+
+                HorizontalPlacement.End -> anchorBounds.right + paddingToAnchor.calculateRightPadding(
+                    layoutDirection
+                ).toPx()
+
+                HorizontalPlacement.Center -> anchorCenter.x - popupContentCenter.x
+                HorizontalPlacement.AlignedStart -> anchorBounds.left.toFloat()
+                HorizontalPlacement.AlignedEnd -> anchorBounds.right - popupContentSize.width
+                else -> windowSize.center.x - popupContentCenter.x
+            }
+        } else {
+            when (placement) {
+                HorizontalPlacement.End -> anchorBounds.left - popupContentSize.width - paddingToAnchor.calculateLeftPadding(
+                    layoutDirection
+                ).toPx()
+
+                HorizontalPlacement.Start -> anchorBounds.right + paddingToAnchor.calculateRightPadding(
+                    layoutDirection
+                ).toPx()
+
+                HorizontalPlacement.Center -> anchorCenter.x - popupContentCenter.x
+                HorizontalPlacement.AlignedEnd -> anchorBounds.left.toFloat()
+                HorizontalPlacement.AlignedStart -> anchorBounds.right - popupContentSize.width
+                else -> windowSize.center.x - popupContentCenter.x
+            }
+        }
+    }
+
+    private fun Density.getOffsetY(
+        placement: VerticalPlacement,
+        anchorBounds: IntRect,
+        anchorCenter: IntOffset,
+        popupContentSize: Size,
+        popupContentCenter: Offset,
+        windowSize: IntSize
+    ): Float {
+        return when (placement) {
+            VerticalPlacement.Top -> (anchorBounds.top - popupContentSize.height - paddingToAnchor.calculateTopPadding()
+                .toPx())
+
+            VerticalPlacement.Center -> anchorCenter.y - popupContentCenter.y
+            VerticalPlacement.Bottom -> anchorBounds.bottom + paddingToAnchor.calculateBottomPadding()
+                .toPx()
+
+            VerticalPlacement.AlignedTop -> anchorBounds.top.toFloat()
+            VerticalPlacement.AlignedBottom -> anchorBounds.bottom - popupContentSize.height
+            else -> windowSize.center.y - popupContentCenter.y
+        }
+    }
+
+    protected open fun Density.calculateTargetPlacement(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: Size
+    ): Pair<HorizontalPlacement, VerticalPlacement> {
+        return calculateVerticalPlacement(
+            anchorBounds,
+            windowSize,
+            layoutDirection,
+            popupContentSize
+        )
+    }
+
+    private fun Density.calculateVerticalPlacement(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: Size
+    ): Pair<HorizontalPlacement, VerticalPlacement> {
+        val hasTopSpace = anchorBounds.top - paddingToAnchor.calculateTopPadding()
+            .toPx() >= popupContentSize.height
+        val halfContentWidth = popupContentSize.width / 2f
+        val center = anchorBounds.center
+
+        fun calculateStartOrEndOrCenter(): HorizontalPlacement {
+            val hasLeftSpace = center.x >= halfContentWidth
+            val hasRightSpace = windowSize.width - center.x >= halfContentWidth
+            return when {
+                hasRightSpace && hasLeftSpace -> HorizontalPlacement.Center
+                (hasLeftSpace && layoutDirection == LayoutDirection.Ltr) or
+                        (hasRightSpace && layoutDirection == LayoutDirection.Rtl) -> HorizontalPlacement.Start
+
+                hasRightSpace -> HorizontalPlacement.Center
+                hasLeftSpace -> HorizontalPlacement.End
+                else -> HorizontalPlacement.None
+            }
+        }
+
+        if (hasTopSpace) {
+            return calculateStartOrEndOrCenter() to VerticalPlacement.Top
+        }
+        val hasBottomSpace = anchorBounds.bottom - paddingToAnchor.calculateBottomPadding()
+            .toPx() >= popupContentSize.height
+
+        if (hasBottomSpace) {
+            return calculateStartOrEndOrCenter() to VerticalPlacement.Bottom
+        }
+        return HorizontalPlacement.Center to VerticalPlacement.Top
+    }
+
+    protected fun Density.calculateHorizontalPlacement(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: Size
+    ): Pair<HorizontalPlacement, VerticalPlacement> {
+        val isLRT = layoutDirection == LayoutDirection.Ltr
+        val halfContentWidth = popupContentSize.width / 2f
+        val halfContentHeight = popupContentSize.height / 2f
+        val center = anchorBounds.center
+        val hasLeftSpace =
+            center.x >= halfContentWidth + paddingToAnchor.calculateLeftPadding(layoutDirection)
+                .toPx()
+        val hasRightSpace =
+            windowSize.width - center.x >= halfContentWidth + paddingToAnchor.calculateRightPadding(
+                layoutDirection
+            ).toPx()
+
+        fun calculateTopOrBottomOrCenter(): VerticalPlacement {
+            val hasAlignedTopSpace = windowSize.height - anchorBounds.top >= popupContentSize.height
+            val hasAlignedBottomSpace = anchorBounds.bottom >= popupContentSize.height
+            if (hasAlignedTopSpace) {
+                return VerticalPlacement.AlignedTop
+            }
+            if (hasAlignedBottomSpace) {
+                return VerticalPlacement.AlignedBottom
+            }
+            if (center.y - halfContentHeight > 0) {
+                return VerticalPlacement.Center
+            }
+            return VerticalPlacement.None
+        }
+
+        if (isLRT) {
+            if (hasRightSpace) {
+                return HorizontalPlacement.End to calculateTopOrBottomOrCenter()
+            }
+
+            if (hasLeftSpace) {
+                return HorizontalPlacement.Start to calculateTopOrBottomOrCenter()
+            }
+        } else {
+            if (hasLeftSpace) {
+                return HorizontalPlacement.End to calculateTopOrBottomOrCenter()
+            }
+            if (hasRightSpace) {
+                return HorizontalPlacement.Start to calculateTopOrBottomOrCenter()
+            }
+        }
+
+        return HorizontalPlacement.End to VerticalPlacement.AlignedTop
+    }
+
+    private fun transformPlacement(
+        horizontalPlacement: HorizontalPlacement,
+        verticalPlacement: VerticalPlacement
+    ): FlyoutPlacement {
+        return when (horizontalPlacement) {
+            HorizontalPlacement.Start -> {
+                when (verticalPlacement) {
+                    VerticalPlacement.AlignedTop -> FlyoutPlacement.StartAlignedTop
+                    VerticalPlacement.AlignedBottom -> FlyoutPlacement.StartAlignedBottom
+                    else -> FlyoutPlacement.Start
+                }
+            }
+
+            HorizontalPlacement.End -> {
+                when (verticalPlacement) {
+                    VerticalPlacement.AlignedTop -> FlyoutPlacement.EndAlignedTop
+                    VerticalPlacement.AlignedBottom -> FlyoutPlacement.EndAlignedBottom
+                    else -> FlyoutPlacement.End
+                }
+            }
+
+            HorizontalPlacement.Center -> {
+                when (verticalPlacement) {
+                    VerticalPlacement.Top -> FlyoutPlacement.Top
+                    VerticalPlacement.Bottom -> FlyoutPlacement.Bottom
+                    else -> FlyoutPlacement.Full
+                }
+            }
+
+            HorizontalPlacement.AlignedStart -> {
+                when (verticalPlacement) {
+                    VerticalPlacement.Top -> FlyoutPlacement.TopAlignedStart
+                    VerticalPlacement.Bottom -> FlyoutPlacement.BottomAlignedStart
+                    else -> FlyoutPlacement.Full
+                }
+            }
+
+            HorizontalPlacement.AlignedEnd -> {
+                when (verticalPlacement) {
+                    VerticalPlacement.Top -> FlyoutPlacement.TopAlignedEnd
+                    VerticalPlacement.Bottom -> FlyoutPlacement.BottomAlignedEnd
+                    else -> FlyoutPlacement.Full
+                }
+            }
+
+            else -> FlyoutPlacement.Full
+        }
+    }
+
+    private fun transformPlacement(flyoutPlacement: FlyoutPlacement): Pair<HorizontalPlacement, VerticalPlacement> {
+        return when (flyoutPlacement) {
+            FlyoutPlacement.Top -> HorizontalPlacement.Center to VerticalPlacement.Top
+            FlyoutPlacement.Bottom -> HorizontalPlacement.Center to VerticalPlacement.Bottom
+            FlyoutPlacement.Start -> HorizontalPlacement.Start to VerticalPlacement.Center
+            FlyoutPlacement.End -> HorizontalPlacement.End to VerticalPlacement.Center
+            FlyoutPlacement.TopAlignedStart -> HorizontalPlacement.AlignedStart to VerticalPlacement.Top
+            FlyoutPlacement.TopAlignedEnd -> HorizontalPlacement.AlignedEnd to VerticalPlacement.Top
+            FlyoutPlacement.BottomAlignedStart -> HorizontalPlacement.AlignedStart to VerticalPlacement.Bottom
+            FlyoutPlacement.BottomAlignedEnd -> HorizontalPlacement.AlignedEnd to VerticalPlacement.Bottom
+            FlyoutPlacement.StartAlignedTop -> HorizontalPlacement.Start to VerticalPlacement.AlignedTop
+            FlyoutPlacement.StartAlignedBottom -> HorizontalPlacement.Start to VerticalPlacement.AlignedBottom
+            FlyoutPlacement.EndAlignedTop -> HorizontalPlacement.End to VerticalPlacement.AlignedTop
+            FlyoutPlacement.EndAlignedBottom -> HorizontalPlacement.End to VerticalPlacement.AlignedBottom
+            FlyoutPlacement.Full -> HorizontalPlacement.Center to VerticalPlacement.Center
+            else -> HorizontalPlacement.None to VerticalPlacement.None
+        }
+    }
+
+    @JvmInline
+    protected value class HorizontalPlacement(
+        private val value: Int
+    ) {
+        companion object {
+            val Start = HorizontalPlacement(0)
+            val Center = HorizontalPlacement(1)
+            val End = HorizontalPlacement(2)
+            val None = HorizontalPlacement(-1)
+            val AlignedStart = HorizontalPlacement(3)
+            val AlignedEnd = HorizontalPlacement(4)
+        }
+    }
+
+    @JvmInline
+    protected value class VerticalPlacement(
+        private val value: Int
+    ) {
+        companion object {
+            val Top = VerticalPlacement(0)
+            val Center = VerticalPlacement(1)
+            val Bottom = VerticalPlacement(2)
+            val AlignedTop = VerticalPlacement(3)
+            val AlignedBottom = VerticalPlacement(4)
+            val None = VerticalPlacement(-1)
+        }
     }
 }
 
@@ -248,4 +553,35 @@ interface FlyoutScope {
 
     var isFlyoutVisible: Boolean
 
+}
+
+//TODO Remove when shadow can show with animated visibility
+private val flyoutPopPaddingFixShadowRender = 16.dp
+internal val flyoutDefaultPadding = 8.dp
+
+internal fun <T> flyoutEnterSpec() =
+    tween<T>(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+
+internal fun <T> flyoutExitSpec() =
+    tween<T>(FluentDuration.ShortDuration, easing = FluentEasing.FastDismissEasing)
+
+internal fun defaultFlyoutEnterPlacementAnimation(placement: FlyoutPlacement): EnterTransition {
+    return fadeIn(flyoutEnterSpec()) + when (placement) {
+        FlyoutPlacement.Auto, FlyoutPlacement.Full -> scaleIn(flyoutEnterSpec())
+        FlyoutPlacement.Top, FlyoutPlacement.TopAlignedEnd, FlyoutPlacement.TopAlignedStart -> slideInVertically(
+            flyoutEnterSpec()
+        ) { (it / 2f).toInt() }
+
+        FlyoutPlacement.Bottom, FlyoutPlacement.BottomAlignedEnd, FlyoutPlacement.BottomAlignedStart -> slideInVertically(
+            flyoutEnterSpec()
+        )
+
+        FlyoutPlacement.Start, FlyoutPlacement.StartAlignedTop, FlyoutPlacement.StartAlignedBottom -> slideInHorizontally(
+            flyoutEnterSpec()
+        ) { (it / 2f).toInt() }
+
+        FlyoutPlacement.End, FlyoutPlacement.EndAlignedTop, FlyoutPlacement.EndAlignedBottom -> slideInHorizontally(
+            flyoutEnterSpec()
+        )
+    }
 }

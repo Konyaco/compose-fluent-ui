@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Density
@@ -65,25 +66,114 @@ fun HomeScreen() {
                     DropdownMenuItem(::close) { Text("Option 3") }
                 }
             }
-            FlyoutContainer(
-                flyout = {
-                    Text("this is a flyout")
-                },
-                content = {
-                    Button(
-                        onClick = { isFlyoutVisible = true }
-                    ) {
-                        Text("Open Flyout")
+            var currentPlacement by remember {
+                mutableStateOf(FlyoutPlacement.Auto)
+            }
+            Row {
+
+                FlyoutContainer(
+                    flyout = {
+                        Text("this is a flyout")
+                    },
+                    placement = currentPlacement,
+                    content = {
+                        Button(
+                            onClick = { isFlyoutVisible = true }
+                        ) {
+                            Text("Open Flyout")
+                        }
+                    }
+                )
+
+                Box {
+                    var isFlyoutPlacementDropdownMenuOpened by remember {
+                        mutableStateOf(false)
+                    }
+                    Button(onClick = {
+                        isFlyoutPlacementDropdownMenuOpened = true
+                    }) {
+                        Text("Flyout placement")
+                    }
+                    val item = @Composable { placement: FlyoutPlacement ->
+                        DropdownMenuItem({
+                            currentPlacement = placement
+                            isFlyoutPlacementDropdownMenuOpened = false
+                        }) {
+                            Icon(
+                                Icons.Default.Checkmark,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 8.dp)
+                                    .alpha(if (placement == currentPlacement) 1f else 0f)
+                            )
+                            Text(text = placement.toString())
+                        }
+                    }
+                    DropdownMenu(
+                        isFlyoutPlacementDropdownMenuOpened,
+                        { isFlyoutPlacementDropdownMenuOpened = false }) {
+                        FlyoutPlacement.entries.forEach { item(it) }
                     }
                 }
-            )
+            }
+
             MenuFlyoutContainer(
+                placement = currentPlacement,
                 flyout = {
-                    Text("implement menu items")
+                    MenuFlyoutItem(
+                        onClick = {
+
+                        },
+                        icon = {
+                            Icon(Icons.Default.Delete, contentDescription = null)
+                        },
+                        text = {
+                            Text("Delete")
+                        }
+                    )
+                    MenuFlyoutSeparator()
+                    MenuFlyoutItem(
+                        onClick = {
+
+                        },
+                        icon = {
+                            Icon(Icons.Default.Add, contentDescription = null)
+                        },
+                        text = {
+                            Text("Add")
+                        }
+                    )
+                    MenuFlyoutSeparator()
+                    MenuFlyoutItem(
+                        onClick = {},
+                        icon = {},
+                        paddingIcon = true,
+                        text = { Text("test") }
+                    )
+                    MenuFlyoutItem(
+                        items = {
+                            MenuFlyoutItem(
+                                onClick = {
+
+                                },
+                                icon = {
+                                    Icon(Icons.Default.Add, contentDescription = null)
+                                },
+                                text = {
+                                    Text("Add")
+                                }
+                            )
+                        },
+                        icon = {
+                            Icon(Icons.Default.ClipboardMore, contentDescription = null)
+                        },
+                        text = {
+                            Text("More")
+                        }
+                    )
                 },
                 content = {
                     Button(
-                        onClick = { isFlyoutVisible = true }
+                        onClick = { isFlyoutVisible = !isFlyoutVisible }
                     ) {
                         Text("Open MenuFlyout")
                     }
