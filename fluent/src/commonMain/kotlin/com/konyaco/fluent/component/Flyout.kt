@@ -154,7 +154,11 @@ internal fun BasicFlyout(
                 )
             } else {
                 /* this is the workaround for placement animation */
-                Box(Modifier.alpha(0f).padding(contentPadding)) {
+                Box(
+                    Modifier.alpha(0f)
+                        .padding(contentPadding)
+                        .padding(flyoutPopPaddingFixShadowRender)
+                ) {
                     content()
                 }
             }
@@ -556,7 +560,7 @@ interface FlyoutScope {
 }
 
 //TODO Remove when shadow can show with animated visibility
-private val flyoutPopPaddingFixShadowRender = 16.dp
+internal val flyoutPopPaddingFixShadowRender = 16.dp
 internal val flyoutDefaultPadding = 8.dp
 
 internal fun <T> flyoutEnterSpec() =

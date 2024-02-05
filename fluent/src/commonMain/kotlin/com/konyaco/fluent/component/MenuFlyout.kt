@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -223,13 +224,19 @@ fun MenuFlyoutScope.MenuFlyoutItem(
     enabled: Boolean = true,
     colors: MenuColors = menuColors(),
 ) {
+    val paddingTop = with(LocalDensity.current) { flyoutPopPaddingFixShadowRender.roundToPx() }
     BasicFlyoutContainer(
         flyout = {
             MenuFlyout(
                 visible = isFlyoutVisible,
                 onDismissRequest = { isFlyoutVisible = false },
                 positionProvider = rememberSubMenuFlyoutPositionProvider(),
-                enterPlacementAnimation = ::defaultMenuFlyoutEnterPlacementAnimation,
+                enterPlacementAnimation = {
+                    defaultMenuFlyoutEnterPlacementAnimation(
+                        it,
+                        paddingTop
+                    )
+                },
                 content = items
             )
         },
@@ -346,9 +353,12 @@ interface MenuFlyoutScope {
     )
 }
 
-private fun defaultMenuFlyoutEnterPlacementAnimation(placement: FlyoutPlacement): EnterTransition {
-    return fadeIn(flyoutEnterSpec()) + when (placement) {
-        FlyoutPlacement.Auto, FlyoutPlacement.Full -> scaleIn(flyoutEnterSpec())
+private fun defaultMenuFlyoutEnterPlacementAnimation(
+    placement: FlyoutPlacement,
+    paddingTop: Int
+): EnterTransition {
+    return fadeIn(menuFlyoutEnterSpec()) + when (placement) {
+        FlyoutPlacement.Auto, FlyoutPlacement.Full -> scaleIn(menuFlyoutEnterSpec())
 
         // slide from top
         FlyoutPlacement.Start,
@@ -357,12 +367,23 @@ private fun defaultMenuFlyoutEnterPlacementAnimation(placement: FlyoutPlacement)
         FlyoutPlacement.BottomAlignedStart,
         FlyoutPlacement.BottomAlignedEnd,
         FlyoutPlacement.StartAlignedTop,
-        FlyoutPlacement.EndAlignedTop -> expandVertically(flyoutEnterSpec()) { 0 }
+        FlyoutPlacement.EndAlignedTop -> slideInVertically(menuFlyoutEnterSpec()) { -paddingTop } +
+                expandVertically(
+                    animationSpec = menuFlyoutEnterSpec(),
+                    expandFrom = Alignment.Top,
+                    initialHeight = { it }
+                )
 
         //slide from bottom
-        FlyoutPlacement.Top, FlyoutPlacement.TopAlignedStart, FlyoutPlacement.TopAlignedEnd, FlyoutPlacement.StartAlignedBottom, FlyoutPlacement.EndAlignedBottom -> expandVertically(
-            flyoutEnterSpec()
-        )
+        FlyoutPlacement.Top,
+        FlyoutPlacement.TopAlignedStart,
+        FlyoutPlacement.TopAlignedEnd,
+        FlyoutPlacement.StartAlignedBottom,
+        FlyoutPlacement.EndAlignedBottom -> slideInVertically(menuFlyoutEnterSpec()) { paddingTop } +
+                expandVertically(
+                    animationSpec = menuFlyoutEnterSpec(),
+                    initialHeight = { it }
+                )
     }
 }
 
@@ -397,3 +418,6 @@ private class SubMenuFlyoutPositionProvider(
         )
     }
 }
+
+private fun <T> menuFlyoutEnterSpec() =
+    tween<T>(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
