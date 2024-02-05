@@ -258,6 +258,9 @@ internal open class FlyoutPositionProvider(
                 transformPlacement(horizontalPlacement, verticalPlacement)
             }
             applyAnimation = true
+            if (targetPlacement == FlyoutPlacement.Full) {
+                return IntOffset((windowSize.width - popupContentSize.width) / 2, (windowSize.height - popupContentSize.height) / 2)
+            }
             val popupActualCenter = popupActualSize.center
             val anchorCenter = anchorBounds.center
             return IntOffset(
