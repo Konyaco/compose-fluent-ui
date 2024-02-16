@@ -23,6 +23,7 @@ kotlin {
                 api(compose.foundation)
                 api(project(":fluent-icons-core"))
                 implementation(compose("org.jetbrains.compose.ui:ui-util"))
+                implementation(libs.uuid)
             }
         }
         val commonTest by getting {
