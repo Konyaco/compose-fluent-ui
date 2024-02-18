@@ -39,7 +39,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.preview)
-                implementation("com.mayakapps.compose:window-styler:0.3.2")
+                implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
             }
         }
         val desktopTest by getting
