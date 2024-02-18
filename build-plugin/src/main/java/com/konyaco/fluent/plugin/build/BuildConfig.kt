@@ -8,7 +8,7 @@ object BuildConfig {
 
     const val packageName = "$group.fluent"
 
-    const val libraryVersion = "0.0.1-dev.6"
+    const val libraryVersion = "0.0.1-dev.7"
 
     object Android {
         const val compileSdkVersion = 34

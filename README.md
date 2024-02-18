@@ -23,8 +23,8 @@ Thank you for using our library. We look forward to receiving your feedback and 
 ### Add Dependency
 
 ```kts
-implementation("com.konyaco:fluent:0.0.1-dev.6")
-implementation("com.konyaco:fluent-icons-extended:0.0.1-dev.6") // If you want to use full fluent icons.
+implementation("com.konyaco:fluent:0.0.1-dev.7")
+implementation("com.konyaco:fluent-icons-extended:0.0.1-dev.7") // If you want to use full fluent icons.
 ```
 
 ### Example
