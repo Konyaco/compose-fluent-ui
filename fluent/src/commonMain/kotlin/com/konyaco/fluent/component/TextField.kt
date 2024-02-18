@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
@@ -57,26 +56,7 @@ fun TextField(
         }
         BasicTextField(
             modifier = modifier.defaultMinSize(160.dp, 32.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .composed {
-                    if (enabled) {
-                        val height by rememberUpdatedState(with(LocalDensity.current) {
-                            (if (focused) 2.dp else 1.dp).toPx()
-                        })
-                        val fillColor by rememberUpdatedState(
-                            if (focused) FluentTheme.colors.fillAccent.default
-                            else FluentTheme.colors.stroke.controlStrong.default
-                        )
-                        drawWithContent {
-                            drawContent()
-                            drawRect(
-                                color = fillColor,
-                                topLeft = Offset(0f, size.height - height),
-                                size = Size(size.width, height)
-                            )
-                        }
-                    } else this
-                },
+                .clip(RoundedCornerShape(4.dp)),
             value = value,
             onValueChange = onValueChange,
             textStyle = LocalTextStyle.current.copy(
@@ -94,7 +74,8 @@ fun TextField(
             interactionSource = interactionSource,
             decorationBox = { innerTextField ->
                 Layer(
-                    modifier = Modifier.hoverable(interactionSource),
+                    modifier = Modifier.hoverable(interactionSource)
+                        .drawBottomLine(enabled) { focused },
                     shape = RoundedCornerShape(4.dp),
                     border = BorderStroke(
                         1.dp,
@@ -118,4 +99,25 @@ fun TextField(
             }
         )
     }
+}
+
+@Composable
+private fun Modifier.drawBottomLine(enabled: Boolean, focused: () -> Boolean): Modifier {
+    return if (enabled) {
+        val height by rememberUpdatedState(with(LocalDensity.current) {
+            (if (focused()) 2.dp else 1.dp).toPx()
+        })
+        val fillColor by rememberUpdatedState(
+            if (focused()) FluentTheme.colors.fillAccent.default
+            else FluentTheme.colors.stroke.controlStrong.default
+        )
+        drawWithContent {
+            drawContent()
+            drawRect(
+                color = fillColor,
+                topLeft = Offset(0f, size.height - height),
+                size = Size(size.width, height)
+            )
+        }
+    } else this
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -132,10 +131,7 @@ private fun Button(
                     interactionSource = interaction,
                     indication = null
                 )
-                .composed {
-                    if (iconOnly) this
-                    else padding(horizontal = 12.dp)
-                },
+                .then(if (iconOnly) Modifier else Modifier.padding(horizontal = 12.dp)),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
             content = content

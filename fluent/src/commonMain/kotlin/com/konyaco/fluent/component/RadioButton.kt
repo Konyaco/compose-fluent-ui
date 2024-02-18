@@ -15,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
@@ -35,10 +34,10 @@ fun RadioButton(
     val hovered by interactionSource.collectIsHoveredAsState()
     val pressed by interactionSource.collectIsPressedAsState()
 
-    Row(modifier.composed {
-        if (label != null) defaultMinSize(minWidth = 120.dp)
-        else this
-    }.clickable(interactionSource, null) {
+    Row(modifier.then(
+        if (label != null) Modifier.defaultMinSize(minWidth = 120.dp)
+        else Modifier
+    ).clickable(interactionSource, null) {
         onClick?.invoke()
     }) {
         val fillColor by animateColorAsState(
@@ -90,7 +89,10 @@ fun RadioButton(
                 Layer(
                     modifier = Modifier.size(if (size == 0.dp || !selected) size else size + 2.dp), // TODO: Remove this 2dp if outside border is provided
                     color = FluentTheme.colors.text.onAccent.primary,
-                    border = if (selected) BorderStroke(1.dp, FluentTheme.colors.borders.circle) else null,
+                    border = if (selected) BorderStroke(
+                        1.dp,
+                        FluentTheme.colors.borders.circle
+                    ) else null,
                     shape = CircleShape,
                     outsideBorder = true,
                     content = {}
