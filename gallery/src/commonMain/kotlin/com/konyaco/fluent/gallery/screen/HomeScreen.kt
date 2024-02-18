@@ -84,7 +84,7 @@ fun HomeScreen() {
                         }
                     }
                 )
-
+                Spacer(Modifier.width(8.dp))
                 Box {
                     var isFlyoutPlacementDropdownMenuOpened by remember {
                         mutableStateOf(false)

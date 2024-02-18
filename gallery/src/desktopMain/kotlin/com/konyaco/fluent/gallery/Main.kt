@@ -15,12 +15,16 @@ fun main() = application {
         state = rememberWindowState(position = WindowPosition(Alignment.Center)),
         title = "Compose Fluent Design Gallery"
     ) {
-        GalleryTheme(displayMicaLayer = !hostOs.isWindows) {
+        GalleryTheme {
+            App()
+        }
+        // FIXME: Window styler doesn't work.
+        /*GalleryTheme(displayMicaLayer = !hostOs.isWindows) {
             WindowStyle(
                 isDarkTheme = LocalStore.current.darkMode,
                 backdropType = WindowBackdrop.Mica
             )
             App()
-        }
+        }*/
     }
 }
