@@ -11,12 +11,12 @@ import androidx.compose.ui.text.font.FontFamily
 fun FluentTheme(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
-    defaultFontFamily: FontFamily? = defaultFontFamily(),
+//    defaultFontFamily: FontFamily? = defaultFontFamily(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
         LocalColors provides colors,
-        LocalTypography provides (defaultFontFamily?.let {
+        LocalTypography provides typography/*(defaultFontFamily?.let {
             Typography(
                 caption = typography.caption.copy(fontFamily = defaultFontFamily),
                 body = typography.body.copy(fontFamily = defaultFontFamily),
@@ -27,7 +27,7 @@ fun FluentTheme(
                 titleLarge = typography.titleLarge.copy(fontFamily = defaultFontFamily),
                 display = typography.display.copy(fontFamily = defaultFontFamily),
             )
-        } ?: typography),
+        } ?: typography)*/,
         content = content
     )
 }

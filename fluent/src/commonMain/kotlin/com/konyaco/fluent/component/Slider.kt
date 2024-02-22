@@ -5,16 +5,33 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -76,34 +93,36 @@ private fun Slider(
             return valueToFraction(offset.x, radius, constraints.minWidth - radius).coerceIn(0f, 1f)
         }
 
-        Rail()
-
-        Box(Modifier.composed {
-            var offset by remember { mutableStateOf(Offset.Zero) }
-            draggable(
-                state = rememberDraggableState {
-                    offset = Offset(x = offset.x + it, y = offset.y)
-                    currentOnProgressChange(calcProgress(offset))
-                },
-                interactionSource = interactionSource,
-                onDragStarted = {
-                    dragging = true
-                    offset = it
-                },
-                onDragStopped = {
-                    dragging = false
-                    onValueChangeFinished?.invoke()
-                },
-                orientation = Orientation.Horizontal
-            )
-        }.pointerInput(Unit) {
-            forEachGesture {
-                awaitPointerEventScope {
+        var offset by remember { mutableStateOf(Offset.Zero) }
+        Box(
+            modifier = Modifier
+                .draggable(
+                    state = rememberDraggableState {
+                        offset = Offset(x = offset.x + it, y = offset.y)
+                        currentOnProgressChange(calcProgress(offset))
+                    },
+                    interactionSource = interactionSource,
+                    onDragStarted = {
+                        dragging = true
+                        offset = it
+                    },
+                    onDragStopped = {
+                        dragging = false
+                        onValueChangeFinished?.invoke()
+                    },
+                    orientation = Orientation.Horizontal
+                )
+                .pointerInput(Unit) {
+                awaitEachGesture {
                     val down = awaitFirstDown()
+                    dragging = true
                     currentOnProgressChange(calcProgress(down.position))
+                    waitForUpOrCancellation()
+                    dragging = false
                 }
-            }
-        }, contentAlignment = Alignment.CenterStart) {
+            }, contentAlignment = Alignment.CenterStart
+        ) {
+            Rail()
             Track(progress, width)
             Thumb(width, progress, dragging)
         }
@@ -111,7 +130,8 @@ private fun Slider(
 }
 
 @Stable
-private fun fractionToValue(fraction: Float, start: Float, end: Float): Float = (end - start) * fraction + start
+private fun fractionToValue(fraction: Float, start: Float, end: Float): Float =
+    (end - start) * fraction + start
 
 @Stable
 private fun valueToFraction(
@@ -128,7 +148,7 @@ private fun calcThumbOffset(
 @Composable
 private fun Rail() {
     // Rail
-    Layer(modifier = Modifier.requiredHeight(4.dp),
+    Layer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp),
         shape = CircleShape,
         color = FluentTheme.colors.controlStrong.default,
         border = BorderStroke(

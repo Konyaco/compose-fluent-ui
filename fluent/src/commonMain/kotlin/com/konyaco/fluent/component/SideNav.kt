@@ -23,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalTextStyle
@@ -35,9 +38,11 @@ import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.icons.regular.Search
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 private val LocalExpand = compositionLocalOf { false }
 private val LocalNavigationLevel = compositionLocalOf { 0 }
+private val LocalSelectedItemPosition = compositionLocalOf<MutableTransitionState<Float>?> { null }
 
 @Composable
 fun SideNav(
@@ -76,9 +81,13 @@ fun SideNav(
                 }
             }
         }
+        val positionState = remember {
+            MutableTransitionState(0f)
+        }
         CompositionLocalProvider(
             LocalExpand provides expanded,
-            LocalNavigationLevel provides 0
+            LocalNavigationLevel provides 0,
+            LocalSelectedItemPosition provides positionState,
         ) {
             autoSuggestionBox?.let {
                 val focusRequester = remember {
@@ -160,8 +169,20 @@ fun SideNavItem(
         hovered -> FluentTheme.colors.subtleFill.secondary
         else -> FluentTheme.colors.subtleFill.transparent
     }
-
-    Column(modifier = modifier) {
+    var currentPosition by remember {
+        mutableStateOf(0f)
+    }
+    val selectedState = LocalSelectedItemPosition.current
+    LaunchedEffect(selected, currentPosition) {
+        if (selected) {
+            selectedState?.targetState = currentPosition
+        }
+    }
+    Column(
+        modifier = modifier.onGloballyPositioned {
+            currentPosition = it.positionInRoot().y
+        }
+    ) {
         Box(Modifier.height(40.dp).fillMaxWidth().padding(4.dp, 2.dp)) {
             val navigationLevelPadding = 28.dp * LocalNavigationLevel.current
             Layer(
@@ -264,7 +285,7 @@ interface AutoSuggestionBoxScope {
 
 internal class AutoSuggestionBoxScopeImpl(
     private val focusRequest: FocusRequester
-): AutoSuggestionBoxScope {
+) : AutoSuggestionBoxScope {
     override fun Modifier.focusHandle() = focusRequester(focusRequest)
 }
 
@@ -288,9 +309,109 @@ fun NavigationItemSeparator(
 
 @Composable
 private fun Indicator(modifier: Modifier, display: Boolean) {
-    val height by updateTransition(display).animateDp(transitionSpec = {
-        if (targetState) tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
-        else tween(FluentDuration.QuickDuration, easing = FluentEasing.SoftDismissEasing)
-    }, targetValueByState = { if (it) 16.dp else 0.dp })
-    Box(modifier.size(3.dp, height).background(FluentTheme.colors.fillAccent.default, CircleShape))
+    val selectionState = LocalSelectedItemPosition.current
+    val indicatorState = remember {
+        MutableTransitionState(display)
+    }
+    indicatorState.targetState = display
+    val animationModifier = if (selectionState != null) {
+        Modifier.indicatorOffsetAnimation(16.dp, indicatorState, selectionState)
+    } else {
+        val height by updateTransition(display).animateDp(transitionSpec = {
+            if (targetState) tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+            else tween(FluentDuration.QuickDuration, easing = FluentEasing.SoftDismissEasing)
+        }, targetValueByState = { if (it) 16.dp else 0.dp })
+        Modifier.height(height)
+    }
+    Box(modifier.width(3.dp).then(animationModifier).background(FluentTheme.colors.fillAccent.default, CircleShape))
+}
+
+@Composable
+private fun Modifier.indicatorOffsetAnimation(
+    size: Dp,
+    indicatorState: MutableTransitionState<Boolean>,
+    selectedPosition: MutableTransitionState<Float>,
+    isVertical: Boolean = true
+): Modifier {
+    val fraction by updateTransition(indicatorState).animateFloat(
+        transitionSpec = {
+            tween(FluentDuration.VeryLongDuration , easing = FluentEasing.PointToPointEasing)
+        },
+        targetValueByState = { if (it) 1f else 0f }
+    )
+    //Delay set selected position
+    if (indicatorState.isIdle && indicatorState.targetState) {
+        updateTransition(selectedPosition).animateFloat(transitionSpec = {
+            tween(
+                FluentDuration.QuickDuration,
+                easing = FluentEasing.FastInvokeEasing
+            )
+        }) { it }
+    }
+    return layout { measurable, constraints ->
+        val stickSize = size.toPx()
+        val containerSize = if (isVertical) {
+            constraints.maxHeight
+        } else {
+            constraints.maxWidth
+        }
+        val goBackward = selectedPosition.currentState > selectedPosition.targetState
+        val contentPadding = ((containerSize - stickSize) / 2).coerceAtLeast(0f)
+        val extendSize = containerSize - contentPadding
+        val currentFraction = if (indicatorState.targetState) {
+            fraction
+        } else {
+            1 - fraction
+        }
+        val segmentFraction = when {
+            currentFraction > 0.75 -> (currentFraction - 0.75f) * 4
+            currentFraction > 0.5 -> (currentFraction - 0.5f) * 4
+            currentFraction > 0.25 -> (currentFraction - 0.25f) * 4
+            else -> currentFraction * 4
+        }
+        val currentSize = if (!indicatorState.targetState) {
+            when {
+                currentFraction <= 0.25 -> androidx.compose.ui.util.lerp(stickSize, extendSize, segmentFraction)
+                currentFraction <= 0.5f -> androidx.compose.ui.util.lerp(extendSize, 0f, segmentFraction)
+                else -> 0f
+            }
+        } else {
+            when {
+                currentFraction > 0.75f -> androidx.compose.ui.util.lerp(
+                    extendSize,
+                    stickSize,
+                    segmentFraction
+                )
+                currentFraction > 0.5f -> androidx.compose.ui.util.lerp(0f, extendSize, segmentFraction)
+                else -> 0f
+            }
+        }
+        val placeable = if (isVertical) {
+            measurable.measure(Constraints.fixed(constraints.maxWidth, currentSize.roundToInt().coerceAtLeast(0)))
+        } else {
+            measurable.measure(Constraints.fixed(currentSize.roundToInt().coerceAtLeast(0), constraints.maxHeight))
+        }
+
+        layout(
+            width = if (isVertical) placeable.width else constraints.maxWidth,
+            height = if (isVertical) constraints.maxHeight else placeable.height
+        ) {
+            val offset = when {
+                goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> extendSize - currentSize
+                goBackward && !indicatorState.targetState -> 0f
+                !goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> contentPadding
+                !goBackward && !indicatorState.targetState -> containerSize - currentSize
+                goBackward && currentFraction > 0.75f -> contentPadding
+                goBackward && currentFraction > 0.5f -> containerSize - currentSize
+                !goBackward && currentFraction > 0.75f -> extendSize - currentSize
+                !goBackward && currentFraction > 0.5f -> 0f
+                else -> 0f
+            }
+            if (isVertical) {
+                placeable.place(0, offset.roundToInt())
+            } else {
+                placeable.place(offset.roundToInt(), 0)
+            }
+        }
+    }
 }

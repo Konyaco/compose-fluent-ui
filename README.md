@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/Konyaco/compose-fluent-ui?include_prereleases)](https://github.com/Konyaco/compose-fluent-ui/releases)
-![Maven Central](https://img.shields.io/maven-central/v/com.konyaco/fluent)
+[![Maven Central](https://img.shields.io/maven-central/v/com.konyaco/fluent)](https://central.sonatype.com/artifact/com.konyaco/fluent/)
 
 
 **Fluent Design** UI library for **Compose Multiplatform**
@@ -23,8 +23,8 @@ Thank you for using our library. We look forward to receiving your feedback and 
 ### Add Dependency
 
 ```kts
-implementation("com.konyaco:fluent:0.0.1-dev.6")
-implementation("com.konyaco:fluent-icons-extended:0.0.1-dev.6") // If you want to use full fluent icons.
+implementation("com.konyaco:fluent:0.0.1-dev.7")
+implementation("com.konyaco:fluent-icons-extended:0.0.1-dev.7") // If you want to use full fluent icons.
 ```
 
 ### Example
@@ -45,7 +45,7 @@ fun App() {
   }
 }
 ```
-See [`example`](example) module for more details.
+See [`gallery`](gallery) module for more details.
 
 - `FluentTheme()` is the context and entry point of the application, just like `MaterialTheme`
 - Components are under `component` package

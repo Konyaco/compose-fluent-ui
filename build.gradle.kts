@@ -1,11 +1,15 @@
+import com.konyaco.fluent.plugin.build.BuildConfig
+
 plugins {
-    kotlin("multiplatform") version "1.8.20" apply false
-    id("org.jetbrains.compose") version "1.4.0" apply false
-    id("com.android.library") version "7.4.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.20" apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.compose) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    id("com.konyaco.fluent.plugin.build")
 }
 
-group = "com.konyaco"
+group = BuildConfig.group
 
 allprojects {
     repositories {

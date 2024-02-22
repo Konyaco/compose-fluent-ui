@@ -105,6 +105,7 @@ internal fun DropdownMenuContent(
             Layer(
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
+                outsideBorder = true,
                 cornerRadius = 8.dp
             ) {
                 Column(

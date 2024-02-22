@@ -9,6 +9,7 @@ pluginManagement {
 }
 
 rootProject.name = "FluentDesign"
+includeBuild("build-plugin")
 include("fluent", "fluent-icons-core", "fluent-icons-extended")
 include("fluent-icons-generator")
-include("example:common", "example:desktop", "example:android")
+include("gallery")
