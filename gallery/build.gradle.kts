@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
+    id("com.google.devtools.ksp") version libs.versions.ksp.get()
 }
 
 kotlin {
@@ -19,6 +20,7 @@ kotlin {
                 implementation(project(":fluent-icons-extended"))
                 implementation(compose("org.jetbrains.compose.ui:ui-util"))
             }
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
         val commonTest by getting {
             dependencies {
@@ -89,5 +91,18 @@ compose.desktop {
             packageName = "Compose Fluent Design Gallery"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+dependencies {
+    val processor = project(":gallery-processor")
+    add("kspCommonMainMetadata", processor)
+}
+
+// workaround for KSP only in Common Main.
+// https://github.com/google/ksp/issues/567
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
     }
 }

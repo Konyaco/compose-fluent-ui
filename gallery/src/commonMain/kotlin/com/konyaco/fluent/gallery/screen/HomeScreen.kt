@@ -18,9 +18,9 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.gallery.LocalStore
+import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.*
-
 
 @Composable
 fun HomeScreen() {
@@ -28,6 +28,9 @@ fun HomeScreen() {
     val density = LocalDensity.current
     var scale by remember(density) { mutableStateOf(density.density) }
     val store = LocalStore.current
+    var showSourceCode by remember {
+        mutableStateOf(false)
+    }
 
     Layer(
         modifier = Modifier.padding(top = 16.dp).fillMaxSize()
@@ -179,7 +182,26 @@ fun HomeScreen() {
                     }
                 }
             )
+            Button(
+                onClick = {
+                    showSourceCode = true
+                }
+            ) {
+                Text("Show source code of Buttons")
+            }
         }
+
+        Dialog(
+            visible = showSourceCode,
+            title = "Source Code of Buttons",
+            cancelButtonText = "Cancel",
+            confirmButtonText = "Confirm",
+            onConfirm = { showSourceCode = false },
+            onCancel = { showSourceCode = false },
+            content = {
+                Text(text = sourceCodeOfButtons, modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()))
+            }
+        )
 
         Dialog(
             title = "This is an example dialog",
@@ -323,6 +345,7 @@ private fun Controls() {
     RadioButton(selectedRadio == 1, onClick = { selectedRadio = 1 }, label = "With Label")
 }
 
+@Sample
 @Composable
 private fun Buttons() {
     var text by remember { mutableStateOf("Hello World") }
