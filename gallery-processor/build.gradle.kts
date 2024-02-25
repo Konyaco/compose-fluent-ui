@@ -5,7 +5,7 @@ plugins {
 }
 
 group = BuildConfig.group
-version = "gallery-processor"
+version = BuildConfig.libraryVersion
 
 kotlin {
     jvm()
