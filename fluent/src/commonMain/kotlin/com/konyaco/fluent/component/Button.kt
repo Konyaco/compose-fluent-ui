@@ -7,9 +7,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -20,6 +26,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 @Immutable
 data class ButtonColors(
@@ -117,12 +124,11 @@ private fun Button(
                 )
             }
         },
-        shape = RoundedCornerShape(4.dp),
+        shape = FluentRoundedCornerShape(4.dp),
         border = BorderStroke(1.dp, buttonColor.borderBrush),
         color = fillColor,
         contentColor = contentColor,
-        outsideBorder = !accentButton,
-        cornerRadius = 4.dp
+        outsideBorder = !accentButton
     ) {
         Row(
             Modifier

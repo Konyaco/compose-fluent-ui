@@ -1,11 +1,25 @@
 package com.konyaco.fluent.component
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -26,6 +40,7 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
+import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 internal expect val DialogPopupPositionProvider : PopupPositionProvider
 
@@ -69,9 +84,8 @@ fun Dialog(
                 Mica(Modifier.wrapContentSize().clip(RoundedCornerShape(8.dp))) {
                     Layer(
                         Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
-                        shape = RoundedCornerShape(8.dp),
+                        shape = FluentRoundedCornerShape(8.dp),
                         border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
-                        cornerRadius = 8.dp,
                         outsideBorder = true,
                         contentColor = FluentTheme.colors.text.text.primary,
                     ) {
