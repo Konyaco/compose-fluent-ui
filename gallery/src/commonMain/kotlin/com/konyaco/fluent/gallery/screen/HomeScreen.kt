@@ -69,183 +69,171 @@ fun HomeScreen() {
     var scale by remember(density) { mutableStateOf(density.density) }
     val store = LocalStore.current
 
-    Layer(
-        modifier = Modifier.padding(top = 16.dp).fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        shape = RoundedCornerShape(
-            topStart = 8.dp,
-            topEnd = 0.dp,
-            bottomStart = 0.dp,
-            bottomEnd = 0.dp
-        ),
-        outsideBorder = true
-    ) {
-        Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
-            Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it })
+    Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
+        Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it })
 
-            CompositionLocalProvider(LocalDensity provides Density(scale)) {
-                Content()
+        CompositionLocalProvider(LocalDensity provides Density(scale)) {
+            Content()
+        }
+
+        AccentButton(onClick = {
+            displayDialog = true
+        }) { Text("Display Dialog") }
+
+        Box {
+            var expanded by remember { mutableStateOf(false) }
+
+            Button(onClick = {
+                expanded = true
+            }) {
+                Text("Show DropdownMenu")
             }
 
-            AccentButton(onClick = {
-                displayDialog = true
-            }) { Text("Display Dialog") }
-
-            Box {
-                var expanded by remember { mutableStateOf(false) }
-
-                Button(onClick = {
-                    expanded = true
-                }) {
-                    Text("Show DropdownMenu")
-                }
-
-                fun close() {
-                    expanded = false
-                }
-
-                DropdownMenu(expanded, ::close) {
-                    DropdownMenuItem(::close) { Text("Option 1") }
-                    DropdownMenuItem(::close) { Text("Option 2") }
-                    DropdownMenuItem(::close) { Text("Option 3") }
-                }
-            }
-            var currentPlacement by remember {
-                mutableStateOf(FlyoutPlacement.Auto)
-            }
-            Row {
-
-                FlyoutContainer(
-                    flyout = {
-                        Text("this is a flyout")
-                    },
-                    placement = currentPlacement,
-                    content = {
-                        Button(
-                            onClick = { isFlyoutVisible = true }
-                        ) {
-                            Text("Open Flyout")
-                        }
-                    }
-                )
-                Spacer(Modifier.width(8.dp))
-                Box {
-                    var isFlyoutPlacementDropdownMenuOpened by remember {
-                        mutableStateOf(false)
-                    }
-                    Button(onClick = {
-                        isFlyoutPlacementDropdownMenuOpened = true
-                    }) {
-                        Text("Flyout placement")
-                    }
-                    val item = @Composable { placement: FlyoutPlacement ->
-                        DropdownMenuItem({
-                            currentPlacement = placement
-                            isFlyoutPlacementDropdownMenuOpened = false
-                        }) {
-                            Icon(
-                                Icons.Default.Checkmark,
-                                contentDescription = null,
-                                modifier = Modifier.padding(end = 8.dp)
-                                    .alpha(if (placement == currentPlacement) 1f else 0f)
-                            )
-                            Text(text = placement.toString())
-                        }
-                    }
-                    DropdownMenu(
-                        isFlyoutPlacementDropdownMenuOpened,
-                        { isFlyoutPlacementDropdownMenuOpened = false }) {
-                        FlyoutPlacement.entries.forEach { item(it) }
-                    }
-                }
+            fun close() {
+                expanded = false
             }
 
-            MenuFlyoutContainer(
-                placement = currentPlacement,
+            DropdownMenu(expanded, ::close) {
+                DropdownMenuItem(::close) { Text("Option 1") }
+                DropdownMenuItem(::close) { Text("Option 2") }
+                DropdownMenuItem(::close) { Text("Option 3") }
+            }
+        }
+        var currentPlacement by remember {
+            mutableStateOf(FlyoutPlacement.Auto)
+        }
+        Row {
+
+            FlyoutContainer(
                 flyout = {
-                    MenuFlyoutItem(
-                        onClick = {
-
-                        },
-                        icon = {
-                            Icon(Icons.Default.Delete, contentDescription = null)
-                        },
-                        text = {
-                            Text("Delete")
-                        }
-                    )
-                    MenuFlyoutSeparator()
-                    MenuFlyoutItem(
-                        onClick = {
-
-                        },
-                        icon = {
-                            Icon(Icons.Default.Add, contentDescription = null)
-                        },
-                        text = {
-                            Text("Add")
-                        }
-                    )
-                    MenuFlyoutSeparator()
-                    MenuFlyoutItem(
-                        onClick = {},
-                        icon = {},
-                        paddingIcon = true,
-                        text = { Text("test") }
-                    )
-                    MenuFlyoutItem(
-                        items = {
-                            MenuFlyoutItem(
-                                onClick = {
-
-                                },
-                                icon = {
-                                    Icon(Icons.Default.Add, contentDescription = null)
-                                },
-                                text = {
-                                    Text("Add")
-                                }
-                            )
-                        },
-                        icon = {
-                            Icon(Icons.Default.ClipboardMore, contentDescription = null)
-                        },
-                        text = {
-                            Text("More")
-                        }
-                    )
+                    Text("this is a flyout")
                 },
+                placement = currentPlacement,
                 content = {
                     Button(
-                        onClick = { isFlyoutVisible = !isFlyoutVisible }
+                        onClick = { isFlyoutVisible = true }
                     ) {
-                        Text("Open MenuFlyout")
+                        Text("Open Flyout")
                     }
                 }
             )
+            Spacer(Modifier.width(8.dp))
+            Box {
+                var isFlyoutPlacementDropdownMenuOpened by remember {
+                    mutableStateOf(false)
+                }
+                Button(onClick = {
+                    isFlyoutPlacementDropdownMenuOpened = true
+                }) {
+                    Text("Flyout placement")
+                }
+                val item = @Composable { placement: FlyoutPlacement ->
+                    DropdownMenuItem({
+                        currentPlacement = placement
+                        isFlyoutPlacementDropdownMenuOpened = false
+                    }) {
+                        Icon(
+                            Icons.Default.Checkmark,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 8.dp)
+                                .alpha(if (placement == currentPlacement) 1f else 0f)
+                        )
+                        Text(text = placement.toString())
+                    }
+                }
+                DropdownMenu(
+                    isFlyoutPlacementDropdownMenuOpened,
+                    { isFlyoutPlacementDropdownMenuOpened = false }) {
+                    FlyoutPlacement.entries.forEach { item(it) }
+                }
+            }
         }
 
-        Dialog(
-            title = "This is an example dialog",
-            visible = displayDialog,
-            cancelButtonText = "Cancel",
-            confirmButtonText = "Confirm",
-            onCancel = {
-                displayDialog = false
-            },
-            onConfirm = {
-                displayDialog = false
+        MenuFlyoutContainer(
+            placement = currentPlacement,
+            flyout = {
+                MenuFlyoutItem(
+                    onClick = {
+
+                    },
+                    icon = {
+                        Icon(Icons.Default.Delete, contentDescription = null)
+                    },
+                    text = {
+                        Text("Delete")
+                    }
+                )
+                MenuFlyoutSeparator()
+                MenuFlyoutItem(
+                    onClick = {
+
+                    },
+                    icon = {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                    },
+                    text = {
+                        Text("Add")
+                    }
+                )
+                MenuFlyoutSeparator()
+                MenuFlyoutItem(
+                    onClick = {},
+                    icon = {},
+                    paddingIcon = true,
+                    text = { Text("test") }
+                )
+                MenuFlyoutItem(
+                    items = {
+                        MenuFlyoutItem(
+                            onClick = {
+
+                            },
+                            icon = {
+                                Icon(Icons.Default.Add, contentDescription = null)
+                            },
+                            text = {
+                                Text("Add")
+                            }
+                        )
+                    },
+                    icon = {
+                        Icon(Icons.Default.ClipboardMore, contentDescription = null)
+                    },
+                    text = {
+                        Text("More")
+                    }
+                )
             },
             content = {
-                Text(
-                    "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
-                            "\n" +
-                            "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                    color = LocalContentColor.current
-                )
+                Button(
+                    onClick = { isFlyoutVisible = !isFlyoutVisible }
+                ) {
+                    Text("Open MenuFlyout")
+                }
             }
         )
     }
+
+    Dialog(
+        title = "This is an example dialog",
+        visible = displayDialog,
+        cancelButtonText = "Cancel",
+        confirmButtonText = "Confirm",
+        onCancel = {
+            displayDialog = false
+        },
+        onConfirm = {
+            displayDialog = false
+        },
+        content = {
+            Text(
+                "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
+                        "\n" +
+                        "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
+                color = LocalContentColor.current
+            )
+        }
+    )
 }
 
 
