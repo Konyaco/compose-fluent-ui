@@ -17,6 +17,7 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Dialog
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 
@@ -31,49 +32,38 @@ fun ContentDialogScreen() {
             Modifier.weight(1f).verticalScroll(rememberScrollState())
                 .padding(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 32.dp)
         ) {
-            GallerySection(Modifier.fillMaxWidth(), "A basic content dialog with content.",
-                """
-                    Dialog(
-                        title = "This is an example dialog",
-                        visible = displayDialog,
-                        cancelButtonText = "Cancel",
-                        confirmButtonText = "Confirm",
-                        onCancel = { displayDialog = false },
-                        onConfirm = { displayDialog = false },
-                        content = {
-                            Text(
-                                "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
-                                        "\n" +
-                                        "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                                color = LocalContentColor.current
-                            )
-                        }
-                    )
-                """.trimIndent()) {
-                // TODO: Style
-
-                var displayDialog by remember { mutableStateOf(false) }
-
-                Dialog(
-                    title = "This is an example dialog",
-                    visible = displayDialog,
-                    cancelButtonText = "Cancel",
-                    confirmButtonText = "Confirm",
-                    onCancel = { displayDialog = false },
-                    onConfirm = { displayDialog = false },
-                    content = {
-                        Text(
-                            "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
-                                    "\n" +
-                                    "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                            color = LocalContentColor.current
-                        )
-                    }
-                )
-                Button(onClick = { displayDialog = true }) {
-                    Text("Show dialog")
-                }
-            }
+            GallerySection(
+                modifier = Modifier.fillMaxWidth(),
+                title = "A basic content dialog with content.",
+                sourceCode = sourceCodeOfBasicContentDialogSample,
+                content = { BasicContentDialogSample() }
+            )
         }
+    }
+}
+
+@Sample
+@Composable
+private fun BasicContentDialogSample() {
+    // TODO: Style
+    var displayDialog by remember { mutableStateOf(false) }
+    Dialog(
+        title = "This is an example dialog",
+        visible = displayDialog,
+        cancelButtonText = "Cancel",
+        confirmButtonText = "Confirm",
+        onCancel = { displayDialog = false },
+        onConfirm = { displayDialog = false },
+        content = {
+            Text(
+                "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
+                        "\n" +
+                        "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
+                color = LocalContentColor.current
+            )
+        }
+    )
+    Button(onClick = { displayDialog = true }) {
+        Text("Show dialog")
     }
 }

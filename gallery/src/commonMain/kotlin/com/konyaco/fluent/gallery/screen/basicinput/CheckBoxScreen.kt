@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -17,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.CheckBox
-import com.konyaco.fluent.component.Slider
+import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 import com.konyaco.fluent.gallery.component.TodoComponent
@@ -34,15 +33,11 @@ fun CheckBoxScreen() {
                 .padding(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 32.dp)
         ) {
             GallerySection(
-                Modifier.fillMaxWidth(), "A 2-state CheckBox.",
-                """
-                    var checked by remember { mutableStateOf(false) }
-                    CheckBox(checked, "Two-state CheckBox", onCheckStateChange = { checked = it })
-                """.trimIndent()
-            ) {
-                var checked by remember { mutableStateOf(false) }
-                CheckBox(checked, "Two-state CheckBox", onCheckStateChange = { checked = it })
-            }
+                modifier = Modifier.fillMaxWidth(),
+                title = "A 2-state CheckBox.",
+                content = { TwoStateCheckBoxSample() },
+                sourceCode = sourceCodeOfTwoStateCheckBoxSample
+            )
             Spacer(Modifier.height(32.dp))
             GallerySection(
                 Modifier.fillMaxWidth(), "A 3-state CheckBox.", ""
@@ -57,4 +52,11 @@ fun CheckBoxScreen() {
             }
         }
     }
+}
+
+@Sample
+@Composable
+private fun TwoStateCheckBoxSample() {
+    var checked by remember { mutableStateOf(false) }
+    CheckBox(checked, "Two-state CheckBox", onCheckStateChange = { checked = it })
 }

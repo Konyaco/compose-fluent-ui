@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -18,7 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.Slider
-import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 import com.konyaco.fluent.gallery.component.TodoComponent
@@ -35,15 +34,11 @@ fun SliderScreen() {
                 .padding(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 32.dp)
         ) {
             GallerySection(
-                Modifier.fillMaxWidth(), "A simple Slider.",
-                """
-                    var value by remember { mutableStateOf(0f) }
-                    Slider(value, { value = it })
-                """.trimIndent()
-            ) {
-                var value by remember { mutableStateOf(0f) }
-                Slider(modifier = Modifier.width(200.dp), value = value, onValueChange = { value = it })
-            }
+                modifier = Modifier.fillMaxWidth(),
+                title = "A simple Slider.",
+                sourceCode = sourceCodeOfSliderSample,
+                content = { SliderSample() }
+            )
             Spacer(Modifier.height(32.dp))
             GallerySection(
                 Modifier.fillMaxWidth(), "A Slider with range and steps specified.", ""
@@ -64,4 +59,11 @@ fun SliderScreen() {
             }
         }
     }
+}
+
+@Sample
+@Composable
+private fun SliderSample() {
+    var value by remember { mutableStateOf(0f) }
+    Slider(modifier = Modifier.width(200.dp), value = value, onValueChange = { value = it })
 }
