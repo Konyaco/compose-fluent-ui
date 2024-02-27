@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.Switcher
-import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 import com.konyaco.fluent.gallery.component.TodoComponent
@@ -35,14 +35,9 @@ fun ToggleSwitchScreen() {
             GallerySection(
                 modifier = Modifier.fillMaxWidth(),
                 title = "A simple ToggleSwitch.",
-                sourceCode = """
-                    var checked by remember { mutableStateOf(false) }
-                    Switcher(checked, { checked = it }, text = if (checked) "On" else "Off")
-                """.trimIndent()
-            ) {
-                var checked by remember { mutableStateOf(false) }
-                Switcher(checked, { checked = it }, text = if (checked) "On" else "Off")
-            }
+                sourceCode = sourceCodeOfToggleSwitchSample,
+                content = { ToggleSwitchSample() }
+            )
             Spacer(Modifier.height(24.dp))
             GallerySection(
                 modifier = Modifier.fillMaxWidth(),
@@ -53,4 +48,11 @@ fun ToggleSwitchScreen() {
             }
         }
     }
+}
+
+@Sample
+@Composable
+private fun ToggleSwitchSample() {
+    var checked by remember { mutableStateOf(false) }
+    Switcher(checked, { checked = it }, text = if (checked) "On" else "Off")
 }

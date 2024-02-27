@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.AccentButton
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 
@@ -33,16 +34,8 @@ fun ButtonScreen() {
             GallerySection(
                 modifier = Modifier.fillMaxWidth(),
                 title = "A simple Button with text content.",
-                content = {
-                    Button(onClick = {}) {
-                        Text("Standard Compose Button")
-                    }
-                },
-                sourceCode = """
-                Button(onClick = {}) {
-                    Text("Standard Compose Button")
-                }
-            """.trimIndent()
+                content = { ButtonSample() },
+                sourceCode = sourceCodeOfButtonSample
             )
             // TODO: Button with graphical content.
             // TODO: Wrapping Buttons with large content.
@@ -51,16 +44,26 @@ fun ButtonScreen() {
                 modifier = Modifier.fillMaxWidth(),
                 title = "Accent style applied to Button.",
                 content = {
-                    AccentButton(onClick = {}) {
-                        Text("Accent Compose Button")
-                    }
+                    AccentButtonSample()
                 },
-                sourceCode = """
-                AccentButton(onClick = {}) {
-                    Text("Accent Compose Button")
-                }
-            """.trimIndent()
+                sourceCode = sourceCodeOfAccentButtonSample
             )
         }
+    }
+}
+
+@Sample
+@Composable
+private fun ButtonSample() {
+    Button(onClick = {}) {
+        Text("Standard Compose Button")
+    }
+}
+
+@Sample
+@Composable
+private fun AccentButtonSample() {
+    AccentButton(onClick = {}) {
+        Text("Accent Compose Button")
     }
 }
