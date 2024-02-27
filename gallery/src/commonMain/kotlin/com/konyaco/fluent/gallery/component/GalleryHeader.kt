@@ -12,7 +12,7 @@ import com.konyaco.fluent.component.Text
 
 @Composable
 fun GalleryHeader(title: String, description: String) {
-    Column(Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp)) {
+    Column(Modifier.padding(top = 32.dp, bottom = 12.dp, start = 32.dp, end = 32.dp)) {
         Text(
             text = title,
             style = FluentTheme.typography.title
@@ -20,6 +20,5 @@ fun GalleryHeader(title: String, description: String) {
         // TODO: Dropdown button
         Spacer(Modifier.height(24.dp))
         Text(description)
-        Spacer(Modifier.height(24.dp))
     }
 }

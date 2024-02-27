@@ -15,6 +15,18 @@ import com.konyaco.fluent.gallery.screen.HomeScreen
 import com.konyaco.fluent.gallery.screen.TodoScreen
 import com.konyaco.fluent.gallery.screen.basicinput.BasicInputIndexScreen
 import com.konyaco.fluent.gallery.screen.basicinput.ButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.CheckBoxScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ColorPickerScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ComboBoxScreen
+import com.konyaco.fluent.gallery.screen.basicinput.DropDownButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.HyperlinkButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.RadioButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.RatingControlScreen
+import com.konyaco.fluent.gallery.screen.basicinput.RepeatButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.SliderScreen
+import com.konyaco.fluent.gallery.screen.basicinput.SplitButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ToggleButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ToggleSwitchScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.*
 import com.konyaco.fluent.shape.FluentRoundedCornerShape
@@ -174,18 +186,18 @@ private val navs = listOf(
         nestedItems = listOf(
             NavItem("InputValidation") { TodoScreen() },
             NavItem("Button") { ButtonScreen() },
-            NavItem("DropDownButton") { TodoScreen() },
-            NavItem("HyperlinkButton") { TodoScreen() },
-            NavItem("RepeatButton") { TodoScreen() },
-            NavItem("ToggleButton") { TodoScreen() },
-            NavItem("SplitButton") { TodoScreen() },
-            NavItem("CheckBox") { TodoScreen() },
-            NavItem("ColorPicker") { TodoScreen() },
-            NavItem("ComboBox") { TodoScreen() },
-            NavItem("RadioButton") { TodoScreen() },
-            NavItem("RatingControl") { TodoScreen() },
-            NavItem("Slider") { TodoScreen() },
-            NavItem("ToggleSwitch") { TodoScreen() }
+            NavItem("DropDownButton") { DropDownButtonScreen() },
+            NavItem("HyperlinkButton") { HyperlinkButtonScreen() },
+            NavItem("RepeatButton") { RepeatButtonScreen() },
+            NavItem("ToggleButton") { ToggleButtonScreen() },
+            NavItem("SplitButton") { SplitButtonScreen() },
+            NavItem("CheckBox") { CheckBoxScreen() },
+            NavItem("ColorPicker") { ColorPickerScreen() },
+            NavItem("ComboBox") { ComboBoxScreen() },
+            NavItem("RadioButton") { RadioButtonScreen() },
+            NavItem("RatingControl") { RatingControlScreen() },
+            NavItem("Slider") { SliderScreen() },
+            NavItem("ToggleSwitch") { ToggleSwitchScreen() }
         )
     ) { TodoScreen() },
     NavItem(
