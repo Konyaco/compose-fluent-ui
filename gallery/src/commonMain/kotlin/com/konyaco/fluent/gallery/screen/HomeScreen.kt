@@ -69,7 +69,7 @@ fun HomeScreen() {
     var scale by remember(density) { mutableStateOf(density.density) }
     val store = LocalStore.current
 
-    Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), Arrangement.spacedBy(8.dp)) {
         Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it })
 
         CompositionLocalProvider(LocalDensity provides Density(scale)) {
