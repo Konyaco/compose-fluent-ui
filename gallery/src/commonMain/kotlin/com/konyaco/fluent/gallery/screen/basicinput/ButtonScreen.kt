@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -14,10 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.AccentButton
 import com.konyaco.fluent.component.Button
+import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.component.SubtleButton
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
+import com.konyaco.fluent.icons.Icons
+import com.konyaco.fluent.icons.regular.Home
 
 @Composable
 @Preview
@@ -37,9 +42,15 @@ fun ButtonScreen() {
                 content = { ButtonSample() },
                 sourceCode = sourceCodeOfButtonSample
             )
-            // TODO: Button with graphical content.
-            // TODO: Wrapping Buttons with large content.
             Spacer(Modifier.height(32.dp))
+            GallerySection(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Button with graphical content.",
+                content = { GraphicalButtonSample() },
+                sourceCode = sourceCodeOfGraphicalButtonSample
+            )
+            Spacer(Modifier.height(32.dp))
+            // TODO: Wrapping Buttons with large content.
             GallerySection(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Accent style applied to Button.",
@@ -47,6 +58,15 @@ fun ButtonScreen() {
                     AccentButtonSample()
                 },
                 sourceCode = sourceCodeOfAccentButtonSample
+            )
+            Spacer(Modifier.height(32.dp))
+            GallerySection(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Subtle button.",
+                content = {
+                    SubtleButtonSample()
+                },
+                sourceCode = sourceCodeOfSubtleButtonSample
             )
         }
     }
@@ -62,8 +82,24 @@ private fun ButtonSample() {
 
 @Sample
 @Composable
+private fun GraphicalButtonSample() {
+    Button(modifier = Modifier.size(48.dp), onClick = {}, iconOnly = true) {
+        Icon(modifier = Modifier.size(20.dp), imageVector = Icons.Default.Home, contentDescription = null)
+    }
+}
+
+@Sample
+@Composable
 private fun AccentButtonSample() {
     AccentButton(onClick = {}) {
         Text("Accent Compose Button")
+    }
+}
+
+@Sample
+@Composable
+private fun SubtleButtonSample() {
+    SubtleButton(onClick = {}) {
+        Text("Subtle Compose Button")
     }
 }
