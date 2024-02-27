@@ -8,7 +8,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +26,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.shape.FluentCircleShape
 
 @Composable
 fun RadioButton(
@@ -56,7 +63,7 @@ fun RadioButton(
         )
         Layer(
             modifier = Modifier.size(20.dp),
-            shape = CircleShape,
+            shape = FluentCircleShape,
             color = fillColor,
             outsideBorder = true,
             border = BorderStroke(
@@ -68,8 +75,7 @@ fun RadioButton(
                     !enabled || pressed -> FluentTheme.colors.stroke.controlStrong.disabled
                     else -> FluentTheme.colors.stroke.controlStrong.default
                 }
-            ),
-            circular = true
+            )
         ) {
             Box(contentAlignment = Alignment.Center) {
                 // Bullet, Only displays when selected, or is pressed

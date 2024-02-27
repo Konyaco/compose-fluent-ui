@@ -13,13 +13,29 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.gallery.screen.HomeScreen
 import com.konyaco.fluent.gallery.screen.TodoScreen
+import com.konyaco.fluent.gallery.screen.basicinput.BasicInputIndexScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.CheckBoxScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ColorPickerScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ComboBoxScreen
+import com.konyaco.fluent.gallery.screen.basicinput.DropDownButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.HyperlinkButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.RadioButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.RatingControlScreen
+import com.konyaco.fluent.gallery.screen.basicinput.RepeatButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.SliderScreen
+import com.konyaco.fluent.gallery.screen.basicinput.SplitButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ToggleButtonScreen
+import com.konyaco.fluent.gallery.screen.basicinput.ToggleSwitchScreen
+import com.konyaco.fluent.gallery.screen.dialogs.ContentDialogScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.*
+import com.konyaco.fluent.shape.FluentRoundedCornerShape
+import com.konyaco.fluent.surface.Card
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun App() {
-
     Row(Modifier.fillMaxSize()) {
         var expanded by remember { mutableStateOf(true) }
         val (selectedItem, setSelectedItem) = remember {
@@ -53,7 +69,6 @@ fun App() {
             }
         ) {
             navs.forEach { navItem ->
-
                 NavigationItem(selectedItem, setSelectedItem, navItem)
                 if (navItem.label == "All samples") {
                     NavigationItemSeparator(modifier = Modifier.padding(vertical = 2.dp))
@@ -61,17 +76,37 @@ fun App() {
             }
         }
 
-        AnimatedContent(selectedItemWithContent, Modifier.fillMaxHeight().weight(1f), transitionSpec = {
-            fadeIn(tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)) +
-                    slideInVertically(
-                        tween(
-                            FluentDuration.ShortDuration,
-                            easing = FluentEasing.FastInvokeEasing
-                        )
-                    ) { it / 6 } with
-                    fadeOut(tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing))
-        }) {
-            it.content?.invoke()
+        Card(
+            modifier = Modifier.fillMaxHeight().weight(1f),
+            shape = FluentRoundedCornerShape(
+                topStart = 8.dp,
+                topEnd = 0.dp,
+                bottomStart = 0.dp,
+                bottomEnd = 0.dp
+            )
+        ) {
+            AnimatedContent(selectedItemWithContent, Modifier.fillMaxSize(), transitionSpec = {
+                (fadeIn(
+                    tween(
+                        FluentDuration.ShortDuration,
+                        easing = FluentEasing.FastInvokeEasing,
+                        delayMillis = FluentDuration.ShortDuration
+                    )
+                ) + slideInVertically(
+                    tween(
+                        FluentDuration.ShortDuration,
+                        easing = FluentEasing.FastInvokeEasing,
+                        delayMillis = FluentDuration.ShortDuration
+                    )
+                ) { it / 6 }) togetherWith fadeOut(
+                    tween(
+                        FluentDuration.QuickDuration,
+                        easing = FluentEasing.FastDismissEasing
+                    )
+                )
+            }) {
+                it.content?.invoke()
+            }
         }
     }
 }
@@ -151,19 +186,19 @@ private val navs = listOf(
         icon = Icons.Default.CheckboxChecked,
         nestedItems = listOf(
             NavItem("InputValidation") { TodoScreen() },
-            NavItem("Button") { TodoScreen() },
-            NavItem("DropDownButton") { TodoScreen() },
-            NavItem("HyperlinkButton") { TodoScreen() },
-            NavItem("RepeatButton") { TodoScreen() },
-            NavItem("ToggleButton") { TodoScreen() },
-            NavItem("SplitButton") { TodoScreen() },
-            NavItem("CheckBox") { TodoScreen() },
-            NavItem("ColorPicker") { TodoScreen() },
-            NavItem("ComboBox") { TodoScreen() },
-            NavItem("RadioButton") { TodoScreen() },
-            NavItem("RatingControl") { TodoScreen() },
-            NavItem("Slider") { TodoScreen() },
-            NavItem("ToggleSwitch") { TodoScreen() }
+            NavItem("Button") { ButtonScreen() },
+            NavItem("DropDownButton") { DropDownButtonScreen() },
+            NavItem("HyperlinkButton") { HyperlinkButtonScreen() },
+            NavItem("RepeatButton") { RepeatButtonScreen() },
+            NavItem("ToggleButton") { ToggleButtonScreen() },
+            NavItem("SplitButton") { SplitButtonScreen() },
+            NavItem("CheckBox") { CheckBoxScreen() },
+            NavItem("ColorPicker") { ColorPickerScreen() },
+            NavItem("ComboBox") { ComboBoxScreen() },
+            NavItem("RadioButton") { RadioButtonScreen() },
+            NavItem("RatingControl") { RatingControlScreen() },
+            NavItem("Slider") { SliderScreen() },
+            NavItem("ToggleSwitch") { ToggleSwitchScreen() }
         )
     ) { TodoScreen() },
     NavItem(
@@ -193,7 +228,7 @@ private val navs = listOf(
         label = "Dialogs & flyouts",
         icon = Icons.Default.Chat,
         nestedItems = listOf(
-            NavItem("ContentDialog") { TodoScreen() },
+            NavItem("ContentDialog") { ContentDialogScreen() },
             NavItem("Flyout") { TodoScreen() },
             NavItem("TeachingTip") { TodoScreen() }
         )

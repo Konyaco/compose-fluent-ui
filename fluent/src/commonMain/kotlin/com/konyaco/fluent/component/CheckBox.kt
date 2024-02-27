@@ -2,13 +2,21 @@ package com.konyaco.fluent.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -23,6 +31,7 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Checkmark
+import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 @Composable
 fun CheckBox(
@@ -61,11 +70,11 @@ fun CheckBox(
                 hovered -> colors.controlAlt.tertiary
                 else -> colors.controlAlt.secondary
             },
-            tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
+            tween(FluentDuration.QuickDuration, easing = FluentEasing.FadeInFadeOutEasing)
         )
         Layer(
             modifier = Modifier.size(20.dp),
-            shape = RoundedCornerShape(4.dp),
+            shape = FluentRoundedCornerShape(4.dp),
             border = BorderStroke(
                 1.dp, if (checked) when {
                     !enabled -> colors.fillAccent.disabled
@@ -81,16 +90,25 @@ fun CheckBox(
                 pressed -> colors.text.onAccent.secondary
                 else -> colors.text.onAccent.primary
             },
-            outsideBorder = !checked,
-            cornerRadius = 4.dp
+            outsideBorder = !checked
         ) {
-            // TODO: Animation
-            Box(contentAlignment = Alignment.Center) {
-                if (checked) Icon(
-                    modifier = Modifier.size(16.dp),
-                    imageVector = Icons.Default.Checkmark,
-                    contentDescription = null
-                )
+            Box(contentAlignment = Alignment.CenterStart) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = checked,
+                    enter = expandHorizontally(
+                        expandFrom = Alignment.Start
+                    ), exit = fadeOut(
+                        tween(durationMillis = FluentDuration.QuickDuration, easing = FluentEasing.FadeInFadeOutEasing)
+                    )
+                ) {
+                    Box(Modifier.fillMaxSize(), Alignment.Center) {
+                        Icon(
+                            modifier = Modifier.size(16.dp),
+                            imageVector = Icons.Default.Checkmark,
+                            contentDescription = null
+                        )
+                    }
+                }
             }
         }
 

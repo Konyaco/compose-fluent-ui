@@ -27,7 +27,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -50,6 +58,7 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
+import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlinx.coroutines.delay
 
 @Composable
@@ -172,12 +181,11 @@ fun MenuFlyoutScope.MenuFlyoutItem(
                 minWidth = 108.dp,
                 minHeight = 28.dp
             ).fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = FluentRoundedCornerShape(4.dp),
         border = BorderStroke(1.dp, menuColor.borderBrush),
         color = fillColor,
         contentColor = contentColor,
-        outsideBorder = true,
-        cornerRadius = 4.dp
+        outsideBorder = true
     ) {
         Row(
             modifier = Modifier
