@@ -27,6 +27,7 @@ import com.konyaco.fluent.gallery.screen.basicinput.SliderScreen
 import com.konyaco.fluent.gallery.screen.basicinput.SplitButtonScreen
 import com.konyaco.fluent.gallery.screen.basicinput.ToggleButtonScreen
 import com.konyaco.fluent.gallery.screen.basicinput.ToggleSwitchScreen
+import com.konyaco.fluent.gallery.screen.dialogs.ContentDialogScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.*
 import com.konyaco.fluent.shape.FluentRoundedCornerShape
@@ -227,7 +228,7 @@ private val navs = listOf(
         label = "Dialogs & flyouts",
         icon = Icons.Default.Chat,
         nestedItems = listOf(
-            NavItem("ContentDialog") { TodoScreen() },
+            NavItem("ContentDialog") { ContentDialogScreen() },
             NavItem("Flyout") { TodoScreen() },
             NavItem("TeachingTip") { TodoScreen() }
         )

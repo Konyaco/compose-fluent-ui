@@ -43,8 +43,8 @@ import com.konyaco.fluent.surface.Card
 fun GallerySection(
     modifier: Modifier,
     title: String,
-    content: @Composable BoxScope.() -> Unit,
     sourceCode: String,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Column(modifier) {
         Text(title, style = FluentTheme.typography.bodyStrong)
