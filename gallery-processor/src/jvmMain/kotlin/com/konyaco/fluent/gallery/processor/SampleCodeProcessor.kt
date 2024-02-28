@@ -46,6 +46,18 @@ class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerat
                     func.containingFile?.let { sourceFileList.add(it) }
                     if (func is KSFunctionDeclarationImpl) {
                         val funcName = func.simpleName.asString()
+                        val bodyText = func.ktFunction.let {
+                            it.bodyExpression
+                                ?.text
+                                ?.removePrefix("{")
+                                ?.removeSuffix("}")
+                                ?.trimIndent() ?:
+                                it.bodyBlockExpression
+                                    ?.statements
+                                    ?.joinToString(System.lineSeparator()) { statement -> statement.text }
+                                    ?.trimIndent() ?:
+                                    it.text
+                        }
                         sourceFile.addProperty(
                             PropertySpec.builder(
                                 "sourceCodeOf${funcName.first().uppercase()}${funcName.substring(1)}",
@@ -54,7 +66,7 @@ class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerat
                                 .addModifiers(KModifier.INTERNAL)
                                 .getter(
                                     FunSpec.getterBuilder()
-                                        .addStatement("return %S", func.ktFunction.text)
+                                        .addStatement("return %S", bodyText)
                                     .build()
                                 )
                                 .build()
