@@ -17,10 +17,12 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Dialog
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 
+@Component
 @Composable
 fun ContentDialogScreen() {
     Column(Modifier.fillMaxSize()) {

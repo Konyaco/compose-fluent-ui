@@ -10,33 +10,32 @@ import com.squareup.kotlinpoet.PropertySpec
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
-class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerator: CodeGenerator) : SymbolProcessor {
+class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerator: CodeGenerator) : IProcessor {
 
-    private val annotationPackage = "com.konyaco.fluent.gallery.annotation"
     private val sampleAnnotation = "Sample"
 
     private val sampleCodeFunctions = mutableMapOf<String, MutableList<KSFunctionDeclaration>>()
 
-    private val visitor = FindFunctionVisitor {
-        if (it.annotations.any { annotation ->
-                annotation.shortName.asString() == sampleAnnotation &&
-                        annotation.annotationType.resolve().declaration.packageName.asString() == annotationPackage
+    override fun onFunctionVisit(function: KSFunctionDeclaration) {
+        super.onFunctionVisit(function)
+        function.annotations.forEach {
+            if (it.isTargetAnnotation(sampleAnnotation)) {
+                val list = sampleCodeFunctions[function.packageName.asString()]
+                    ?: mutableListOf<KSFunctionDeclaration>().apply {
+                        sampleCodeFunctions[function.packageName.asString()] = this
+                    }
+                list.add(function)
             }
-        ) {
-            val list = sampleCodeFunctions[it.packageName.asString()] ?: mutableListOf<KSFunctionDeclaration>().apply {
-                sampleCodeFunctions[it.packageName.asString()] = this
-            }
-            list.add(it)
+            return
         }
-    }
-
-    override fun process(resolver: Resolver): List<KSAnnotated> {
-        resolver.getAllFiles().forEach { it.accept(visitor, Unit) }
-        return emptyList()
     }
 
     override fun finish() {
         super.finish()
+        generateSampleCode()
+    }
+
+    private fun generateSampleCode() {
         val fileName = "_SampleCodeString"
         sampleCodeFunctions.forEach { (packageName, functions) ->
             if (functions.isNotEmpty()) {
@@ -51,12 +50,10 @@ class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerat
                                 ?.text
                                 ?.removePrefix("{")
                                 ?.removeSuffix("}")
-                                ?.trimIndent() ?:
-                                it.bodyBlockExpression
-                                    ?.statements
-                                    ?.joinToString(System.lineSeparator()) { statement -> statement.text }
-                                    ?.trimIndent() ?:
-                                    it.text
+                                ?.trimIndent() ?: it.bodyBlockExpression
+                                ?.statements
+                                ?.joinToString(System.lineSeparator()) { statement -> statement.text }
+                                ?.trimIndent() ?: it.text
                         }
                         sourceFile.addProperty(
                             PropertySpec.builder(
@@ -67,7 +64,7 @@ class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerat
                                 .getter(
                                     FunSpec.getterBuilder()
                                         .addStatement("return %S", bodyText)
-                                    .build()
+                                        .build()
                                 )
                                 .build()
                         )
@@ -83,10 +80,6 @@ class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerat
             }
         }
     }
+
 }
 
-class SampleCodeProcessorProvider : SymbolProcessorProvider {
-    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return SampleCodeProcessor(environment.logger, environment.codeGenerator)
-    }
-}

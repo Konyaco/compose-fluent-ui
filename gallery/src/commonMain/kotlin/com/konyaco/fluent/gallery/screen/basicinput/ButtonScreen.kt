@@ -18,12 +18,17 @@ import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.SubtleButton
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Home
 
+@Component(
+    index = 0,
+    description = "A control that responds to user input and raises a Click event."
+)
 @Composable
 @Preview
 fun ButtonScreen() {
