@@ -290,7 +290,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
     ) = """
         ComponentItem(
             name = "$name",
-            group = "$group",
+            group = "${if (group.isNotBlank()) group.prefixIfNot("/") else "" }",
             description = "$description",
             content = $content,
             icon = $icon,

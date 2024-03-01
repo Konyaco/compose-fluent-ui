@@ -106,6 +106,13 @@ private fun NavigationItem(
     val expandedItems = remember {
         mutableStateOf(false)
     }
+    LaunchedEffect(selectedItem) {
+        if (navItem != selectedItem) {
+            val navItemAsGroup = "${navItem.group}/${navItem.name}/"
+            if ((selectedItem.group + "/").startsWith(navItemAsGroup))
+                expandedItems.value = true
+        }
+    }
     SideNavItem(
         selectedItem == navItem,
         onClick = {
