@@ -16,11 +16,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.Switcher
+import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryHeader
 import com.konyaco.fluent.gallery.component.GallerySection
 import com.konyaco.fluent.gallery.component.TodoComponent
 
+@Component(index = 13)
 @Composable
 fun ToggleSwitchScreen() {
     Column(Modifier.fillMaxSize()) {

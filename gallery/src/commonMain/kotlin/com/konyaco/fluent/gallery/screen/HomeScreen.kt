@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,6 +50,7 @@ import com.konyaco.fluent.component.Switcher
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.gallery.LocalStore
+import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Add
 import com.konyaco.fluent.icons.regular.ArrowLeft
@@ -62,6 +62,7 @@ import com.konyaco.fluent.icons.regular.List
 import com.konyaco.fluent.icons.regular.Navigation
 
 
+@Component(icon = "Home")
 @Composable
 fun HomeScreen() {
     var displayDialog by remember { mutableStateOf(false) }
