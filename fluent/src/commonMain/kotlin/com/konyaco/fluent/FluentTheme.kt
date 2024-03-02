@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import com.konyaco.fluent.component.ProvideFontIcon
 
 @Composable
 fun FluentTheme(
@@ -14,9 +15,12 @@ fun FluentTheme(
 ) {
     CompositionLocalProvider(
         LocalColors provides colors,
-        LocalTypography provides typography,
-        content = content
-    )
+        LocalTypography provides typography
+    ) {
+        ProvideFontIcon {
+            PlatformCompositionLocalProvider(content)
+        }
+    }
 }
 
 object FluentTheme {
