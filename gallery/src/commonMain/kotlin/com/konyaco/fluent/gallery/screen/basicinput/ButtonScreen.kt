@@ -1,6 +1,5 @@
 package com.konyaco.fluent.gallery.screen.basicinput
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +29,6 @@ import com.konyaco.fluent.icons.regular.Home
     description = "A control that responds to user input and raises a Click event."
 )
 @Composable
-@Preview
 fun ButtonScreen() {
     Column(Modifier.fillMaxSize()) {
         GalleryHeader(

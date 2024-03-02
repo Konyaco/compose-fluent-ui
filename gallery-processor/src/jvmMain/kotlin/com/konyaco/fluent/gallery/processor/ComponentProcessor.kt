@@ -355,7 +355,14 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
         return if (propertyNameRegex.matches(this)) {
             this
         } else {
-            "`$this`"
+            buildString(length) {
+                this@asPropertyName.forEach {
+                    append(when(it) {
+                        ' ', '&', '/' -> '_'
+                        else -> it
+                    })
+                }
+            }
         }
     }
 
