@@ -5,29 +5,16 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 
 @Composable
 fun FluentTheme(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
-//    defaultFontFamily: FontFamily? = defaultFontFamily(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
         LocalColors provides colors,
-        LocalTypography provides typography/*(defaultFontFamily?.let {
-            Typography(
-                caption = typography.caption.copy(fontFamily = defaultFontFamily),
-                body = typography.body.copy(fontFamily = defaultFontFamily),
-                bodyStrong = typography.bodyStrong.copy(fontFamily = defaultFontFamily),
-                bodyLarge = typography.bodyLarge.copy(fontFamily = defaultFontFamily),
-                subtitle = typography.subtitle.copy(fontFamily = defaultFontFamily),
-                title = typography.title.copy(fontFamily = defaultFontFamily),
-                titleLarge = typography.titleLarge.copy(fontFamily = defaultFontFamily),
-                display = typography.display.copy(fontFamily = defaultFontFamily),
-            )
-        } ?: typography)*/,
+        LocalTypography provides typography,
         content = content
     )
 }
