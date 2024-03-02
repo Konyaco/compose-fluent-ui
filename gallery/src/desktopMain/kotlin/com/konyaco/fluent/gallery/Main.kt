@@ -9,7 +9,6 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowStyle
-import org.jetbrains.skiko.hostOs
 
 fun main() = application {
     Window(
@@ -17,7 +16,8 @@ fun main() = application {
         state = rememberWindowState(position = WindowPosition(Alignment.Center), size = DpSize(1280.dp, 720.dp)),
         title = "Compose Fluent Design Gallery"
     ) {
-        GalleryTheme(displayMicaLayer = !hostOs.isWindows) {
+        GalleryTheme {
+            //TODO Make Window transparent.
             WindowStyle(
                 isDarkTheme = LocalStore.current.darkMode,
                 backdropType = WindowBackdrop.Mica
