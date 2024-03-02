@@ -1,15 +1,33 @@
 package com.konyaco.fluent.gallery
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.component.*
+import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.component.NavigationItemSeparator
+import com.konyaco.fluent.component.SideNav
+import com.konyaco.fluent.component.SideNavItem
+import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.gallery.component.ComponentItem
 import com.konyaco.fluent.gallery.component.ComponentNavigator
 import com.konyaco.fluent.gallery.component.components
@@ -77,19 +95,20 @@ fun App() {
                 (fadeIn(
                     tween(
                         FluentDuration.ShortDuration,
-                        easing = FluentEasing.FastInvokeEasing,
-                        delayMillis = FluentDuration.ShortDuration
+                        easing = FluentEasing.FadeInFadeOutEasing,
+                        delayMillis = FluentDuration.QuickDuration
                     )
                 ) + slideInVertically(
                     tween(
-                        FluentDuration.ShortDuration,
+                        FluentDuration.MediumDuration,
                         easing = FluentEasing.FastInvokeEasing,
-                        delayMillis = FluentDuration.ShortDuration
+                        delayMillis = FluentDuration.QuickDuration
                     )
-                ) { it / 6 }) togetherWith fadeOut(
+                ) { it / 5 }) togetherWith fadeOut(
                     tween(
                         FluentDuration.QuickDuration,
-                        easing = FluentEasing.FastDismissEasing
+                        easing = FluentEasing.FadeInFadeOutEasing,
+                        delayMillis = FluentDuration.QuickDuration
                     )
                 )
             }) {
