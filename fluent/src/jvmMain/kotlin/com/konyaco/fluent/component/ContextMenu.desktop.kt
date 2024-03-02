@@ -1,19 +1,20 @@
 package com.konyaco.fluent.component
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.TextContextMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalLocalization
 import androidx.compose.ui.unit.dp
-import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.animation.FluentDuration
+import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Copy
 import com.konyaco.fluent.icons.regular.Cut
@@ -22,13 +23,9 @@ import com.konyaco.fluent.icons.regular.ClipboardPaste
 internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
     @Composable
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
-        val isOpen = state.status is ContextMenuState.Status.Open
-        DropdownMenu(
-            focusable = true,
-            expanded = isOpen,
-            onDismissRequest = {
-                state.status = ContextMenuState.Status.Closed
-            },
+        MenuFlyout(
+            visible = state.status is ContextMenuState.Status.Open,
+            onDismissRequest = { state.status = ContextMenuState.Status.Closed },
             onKeyEvent = { keyEvent ->
                 items().firstOrNull {
                     val result = it is FluentContextMenuItem &&
@@ -44,28 +41,26 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                     }
                     result
                 } != null
-            }
+            },
+            positionProvider = rememberFlyoutPositionProvider(placeBottomFirst = true),
+            enterPlacementAnimation = ::enterAnimation
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                items().forEach {
-                    if (it is FluentContextMenuItem) {
-                        DropdownMenuItem(
-                            onClick = {
-                                it.onClick()
-                                state.status = ContextMenuState.Status.Closed
+            val menuItems = items()
+            val shouldPaddingIcon = menuItems.any { it is FluentContextMenuItem && (it.glyph != null || it.vector != null) }
+            menuItems.forEach {
+                if (it is FluentContextMenuItem) {
+                    MenuFlyoutItem(
+                        text = {
+                            Text(it.label, modifier = Modifier)
+                        },
+                        icon = {
+                            if (it.glyph != null && LocalFontIconFontFamily.current != null) {
+                                FontIcon(it.glyph, modifier = Modifier)
+                            } else if (it.vector != null) {
+                                Icon(it.vector, it.label, modifier = Modifier.size(20.dp))
                             }
-                        ) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.width(24.dp).fillMaxHeight()
-                            ) {
-                                if (it.glyph != null && LocalFontIconFontFamily.current != null) {
-                                    FontIcon(it.glyph)
-                                } else if (it.vector != null) {
-                                    Icon(it.vector, it.label, modifier = Modifier.size(20.dp))
-                                }
-                            }
-                            Text(it.label, modifier = Modifier.weight(1f))
+                        },
+                        training = {
                             it.keyData?.let { keyData ->
                                 val keyString = remember(keyData) {
                                     buildString {
@@ -83,33 +78,44 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                                 }
                                 Text(
                                     text = keyString,
-                                    color = LocalContentColor.current.copy(0.6f),
-                                    style = FluentTheme.typography.caption,
-                                    modifier = Modifier.padding(start = 24.dp, end = 8.dp)
+                                    modifier = Modifier.padding(start = 16.dp, end = 8.dp)
                                 )
                             }
-                        }
-                    } else {
-                        DropdownMenuItem(
-                            onClick = {
-                                it.onClick()
-                                state.status = ContextMenuState.Status.Closed
-                            },
-                        ) {
-                            Spacer(Modifier.width(28.dp))
-                            Text(it.label)
-                        }
-                    }
+                        },
+                        onClick = {
+                            it.onClick()
+                            state.status = ContextMenuState.Status.Closed
+                        },
+                        paddingIcon = shouldPaddingIcon
+                    )
+                } else {
+                    MenuFlyoutItem(
+                        onClick = {
+                            it.onClick()
+                            state.status = ContextMenuState.Status.Closed
+                        },
+                        icon = {
+
+                        },
+                        text = { Text(it.label) },
+                        paddingIcon = true
+                    )
                 }
             }
         }
     }
+
+
+    private fun enterAnimation(placement: FlyoutPlacement): EnterTransition {
+        return fadeIn(defaultAnimationSpec())
+    }
+
+    private fun <T> defaultAnimationSpec() = tween<T>(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 internal object FluentTextContextMenu : TextContextMenu {
 
-    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Area(
         textManager: TextContextMenu.TextManager,

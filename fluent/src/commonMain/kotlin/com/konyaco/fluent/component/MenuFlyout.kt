@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -54,6 +55,7 @@ import com.benasher44.uuid.uuid4
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
@@ -116,7 +118,7 @@ fun MenuFlyout(
 }
 
 @Composable
-private fun MenuFlyout(
+internal fun MenuFlyout(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
@@ -194,7 +196,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
         modifier = modifier
             .padding(horizontal = 4.dp, vertical = 2.dp).defaultMinSize(
                 minWidth = 108.dp,
-                minHeight = 28.dp
+                minHeight = 30.dp
             ).fillMaxWidth(),
         shape = FluentRoundedCornerShape(4.dp),
         border = BorderStroke(1.dp, menuColor.borderBrush),
@@ -226,10 +228,13 @@ fun MenuFlyoutScope.MenuFlyoutItem(
             ) {
                 icon()
             }
-            text()
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                text()
+            }
             CompositionLocalProvider(
                 LocalContentColor provides menuColor.trainingColor,
-                LocalContentAlpha provides menuColor.trainingColor.alpha
+                LocalContentAlpha provides menuColor.trainingColor.alpha,
+                LocalTextStyle provides FluentTheme.typography.caption.copy(fontWeight = FontWeight.Normal)
             ) {
                 training?.invoke()
             }
