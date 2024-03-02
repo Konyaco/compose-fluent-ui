@@ -44,7 +44,7 @@ object ComponentGroupInfo {
     @ComponentGroup("ArrowSort", index = 11)
     const val Scrolling = "Scrolling"
 
-    @ComponentGroup("ChatMultiple", index = 12)
+    @ComponentGroup("ChatMultiple", index = 12, packageMap = "$screenPackage.status")
     const val StatusAndInfo = "Status & info"
 
     @ComponentGroup("Color", index = 13)
