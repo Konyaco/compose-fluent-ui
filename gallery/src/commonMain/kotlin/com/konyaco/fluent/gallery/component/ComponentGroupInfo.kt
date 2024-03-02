@@ -53,7 +53,7 @@ object ComponentGroupInfo {
     @ComponentGroup("System", index = 14)
     const val System = "System"
 
-    @ComponentGroup("TextFont", index = 15)
+    @ComponentGroup("TextFont", index = 15, packageMap = "$screenPackage.text")
     const val Text = "Text"
 
     @ComponentGroup("Window", index = 16)
