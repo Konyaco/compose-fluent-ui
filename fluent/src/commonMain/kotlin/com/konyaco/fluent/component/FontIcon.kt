@@ -9,8 +9,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
+//TODO Public
 @Composable
-fun FontIcon(
+internal fun FontIcon(
     glyph: Char,
     modifier: Modifier = Modifier,
     iconSize: TextUnit = FontIconDefaults.fontSizeStandard,
@@ -22,22 +23,24 @@ fun FontIcon(
             fontFamily = LocalFontIconFontFamily.current,
             fontSize = iconSize,
             modifier = Modifier.then(modifier)
-                .height(with(LocalDensity.current) { iconSize.toDp() })
+                .height(with(LocalDensity.current) { iconSize.toDp() }),
+            onTextLayout = {
+            }
         )
     } else {
         fallback()
     }
 }
 
-object FontIconDefaults {
+internal object FontIconDefaults {
     val fontSizeStandard = 16.sp
     val fontSizeSmall = 12.sp
 }
 
 @Composable
-expect fun ProvideFontIcon(
+internal expect fun ProvideFontIcon(
     content: @Composable () -> Unit
 )
 
-val LocalFontIconFontFamily =
+internal val LocalFontIconFontFamily =
     staticCompositionLocalOf<FontFamily?> { error("No Font provide for load font icon") }

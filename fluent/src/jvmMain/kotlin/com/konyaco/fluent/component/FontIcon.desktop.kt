@@ -1,20 +1,32 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalFontFamilyResolver
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.toFontFamily
-import androidx.compose.ui.text.platform.Font
-import org.jetbrains.skiko.AwtFontManager
+import androidx.compose.ui.text.platform.FontLoadResult
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
-actual fun ProvideFontIcon(content: @Composable () -> Unit) {
-    var fontFamily: FontFamily? by remember { mutableStateOf(null) }
-    LaunchedEffect(Unit) {
-        fontFamily = AwtFontManager.DEFAULT.findFontFamilyFile("Segoe Fluent Icons")?.let { Font(it).toFontFamily() }
+internal actual fun ProvideFontIcon(content: @Composable () -> Unit) {
+    val fontFamilyResolver = LocalFontFamilyResolver.current
+    var fontIconFamily by remember {
+        mutableStateOf<FontFamily?>(null)
     }
-
+    LaunchedEffect(fontFamilyResolver) {
+        val fontName = "Segoe Fluent Icons"
+        val fontFamily = FontFamily(fontName)
+        fontIconFamily = kotlin.runCatching {
+            val result = fontFamilyResolver.resolve(fontFamily).value as FontLoadResult
+            if (result.typeface == null || result.typeface?.familyName != fontName) {
+                null
+            } else {
+                fontFamily
+            }
+        }.getOrNull()
+    }
     CompositionLocalProvider(
-        LocalFontIconFontFamily provides fontFamily,
+        LocalFontIconFontFamily provides fontIconFamily,
         content = content
     )
 }
