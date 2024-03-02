@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpOffset
@@ -35,8 +36,8 @@ import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
@@ -49,6 +50,9 @@ fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    focusable: Boolean = false,
+    onPreviewKeyEvent: ((KeyEvent) -> Boolean) = { false },
+    onKeyEvent: ((KeyEvent) -> Boolean) = { false },
     offset: DpOffset = DpOffset(0.dp, 0.dp), // TODO: Offset
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -62,7 +66,10 @@ fun DropdownMenu(
         val popupPositionProvider = DropdownMenuPositionProvider(density)
 
         Popup(
+            properties = PopupProperties(focusable = focusable),
             onDismissRequest = onDismissRequest,
+            onKeyEvent = onKeyEvent,
+            onPreviewKeyEvent = onPreviewKeyEvent,
             popupPositionProvider = popupPositionProvider,
         ) {
             DropdownMenuContent(

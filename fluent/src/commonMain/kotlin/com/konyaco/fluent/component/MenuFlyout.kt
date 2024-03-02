@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntRect
@@ -67,6 +68,8 @@ fun MenuFlyoutContainer(
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable FlyoutScope.() -> Unit
 ) {
     BasicFlyoutContainer(
@@ -76,8 +79,9 @@ fun MenuFlyoutContainer(
                 onDismissRequest = { isFlyoutVisible = false },
                 placement = placement,
                 content = flyout,
-
-                )
+                onKeyEvent = onKeyEvent,
+                onPreviewKeyEvent = onPreviewKeyEvent
+            )
         },
         content = content,
         modifier = modifier,
@@ -92,6 +96,8 @@ fun MenuFlyout(
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     shape: Shape = RoundedCornerShape(8.dp),
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable MenuFlyoutScope.() -> Unit
 ) {
     MenuFlyout(
@@ -100,7 +106,9 @@ fun MenuFlyout(
         modifier = modifier,
         shape = shape,
         positionProvider = rememberFlyoutPositionProvider(placement),
-        content = content
+        content = content,
+        onKeyEvent = onKeyEvent,
+        onPreviewKeyEvent = onPreviewKeyEvent
     )
 }
 
@@ -112,6 +120,8 @@ private fun MenuFlyout(
     shape: Shape = RoundedCornerShape(8.dp),
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     enterPlacementAnimation: (FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable MenuFlyoutScope.() -> Unit
 ) {
     BasicFlyout(
@@ -121,7 +131,9 @@ private fun MenuFlyout(
         enterPlacementAnimation = enterPlacementAnimation,
         shape = shape,
         positionProvider = positionProvider,
-        contentPadding = PaddingValues(vertical = 2.dp)
+        contentPadding = PaddingValues(vertical = 2.dp),
+        onKeyEvent = onKeyEvent,
+        onPreviewKeyEvent = onPreviewKeyEvent
     ) {
         Column(
             modifier = Modifier.width(IntrinsicSize.Max)

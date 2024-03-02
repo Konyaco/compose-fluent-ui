@@ -27,6 +27,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
@@ -35,7 +36,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.konyaco.fluent.animation.FluentDuration
@@ -49,6 +49,8 @@ fun FlyoutContainer(
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable FlyoutScope.() -> Unit
 ) {
     BasicFlyoutContainer(
@@ -57,6 +59,8 @@ fun FlyoutContainer(
                 visible = isFlyoutVisible,
                 onDismissRequest = { isFlyoutVisible = false },
                 placement = placement,
+                onKeyEvent = onKeyEvent,
+                onPreviewKeyEvent = onPreviewKeyEvent,
                 content = flyout
             )
         },
@@ -109,6 +113,8 @@ fun Flyout(
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     shape: Shape = RoundedCornerShape(8.dp),
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable () -> Unit
 ) {
     BasicFlyout(
@@ -117,6 +123,8 @@ fun Flyout(
         modifier = modifier,
         positionProvider = rememberFlyoutPositionProvider(initialPlacement = placement),
         shape = shape,
+        onKeyEvent = onKeyEvent,
+        onPreviewKeyEvent = onPreviewKeyEvent,
         content = content
     )
 }
@@ -130,6 +138,8 @@ internal fun BasicFlyout(
     shape: Shape = RoundedCornerShape(8.dp),
     contentPadding: PaddingValues = PaddingValues(12.dp),
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable () -> Unit
 ) {
     val visibleState = remember {
@@ -137,10 +147,12 @@ internal fun BasicFlyout(
     }
     visibleState.targetState = visible
     if (visibleState.currentState || visibleState.targetState) {
-        Popup(
+        com.konyaco.fluent.component.Popup(
             onDismissRequest = onDismissRequest,
-            properties = PopupProperties(clippingEnabled = false),
+            properties = PopupProperties(clippingEnabled = false, focusable = onKeyEvent != null || onPreviewKeyEvent != null),
             popupPositionProvider = positionProvider,
+            onKeyEvent = onKeyEvent,
+            onPreviewKeyEvent = onPreviewKeyEvent
         ) {
             if (positionProvider.applyAnimation) {
                 FlyoutContent(
