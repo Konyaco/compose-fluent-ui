@@ -28,6 +28,8 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
 
     private val componentNameList = mutableListOf<String>()
 
+    private val propertyNameRegex = Regex("^[a-zA-Z_]*\\w")
+
     override fun finish() {
         super.finish()
         arrangeComponentGroup()
@@ -115,12 +117,11 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             val actualItems = items.filter { (it.isNotBlank() && it != "/") }
             val key = group.ifEmpty { "/" }
             if (group == "") {
+
                 fileSpecBuilder.addProperty(
-                    rootComponent.delegate(
-                        """
-                            lazy { 
-                                ${
-                            createItemsString(
+                    rootComponent
+                        .lazy {
+                            val itemNames = createItemsString(
                                 group = "",
                                 fileSpec = fileSpecBuilder,
                                 functions = componentFunctions[key],
@@ -128,10 +129,12 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                                     componentGroups[it]?.first to generateComponentsFullName(it)
                                 }
                             )
-                        }
+                            if (itemNames == null) {
+                                addStatement("emptyList()")
+                            } else {
+                                createList("", itemNames) { (_, name) -> name }
                             }
-                        """.trimIndent()
-                    ).build()
+                        }.build()
                 )
 
             }
@@ -158,9 +161,14 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                                     "$iconPrefix.$this"
                                 },
                                 content = componentGroupConfig.contentData,
-                                items = createItemsString(itemName, fileSpecBuilder, functionItems, childNodeItems?.map {
-                                    componentGroups[it]?.first to generateComponentsFullName(it)
-                                })
+                                items = createItemsString(
+                                    itemName,
+                                    fileSpecBuilder,
+                                    functionItems,
+                                    childNodeItems?.map {
+                                        componentGroups[it]?.first to generateComponentsFullName(it)
+                                    }),
+                                getItem = { (_, name) -> name }
                             )
                         )
                         .build()
@@ -173,13 +181,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                 name = "flatMapComponents",
                 type = listComponentsType
             ).addModifiers(KModifier.INTERNAL)
-                .delegate(
-                    """
-                        lazy {
-                            ${componentNameList.joinToString(",\n", "listOf(\n", ")")}
-                        }
-                    """.trimIndent()
-                )
+                .lazy { createList("", componentNameList) { it } }
                 .build()
         )
         val file = codeGenerator.createNewFile(
@@ -195,7 +197,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
         fileSpec: FileSpec.Builder,
         functions: List<Pair<KSAnnotation, KSFunctionDeclaration>>?,
         childNodes: List<Pair<KSAnnotation?, String>>?
-    ): String? {
+    ): List<Pair<KSAnnotation?, String>>? {
         val functionItems = functions ?: emptyList()
         val childNodeItems = childNodes ?: emptyList()
         return if (functions.isNullOrEmpty() && childNodes.isNullOrEmpty()) {
@@ -203,23 +205,35 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
         } else {
             (functionItems.map { (annotation, function) ->
                 annotation to generateComponentItemProperty(group, fileSpec, function, annotation)
-                    .removePrefix("`")
-                    .removeSuffix("`")
             } + childNodeItems).sortedBy { (annotation, _) ->
-                (annotation?.arguments?.first { arg -> arg.name?.asString() == "index" }?.value as? Int) ?: Int.MAX_VALUE
-            }.joinToString(
-                ",\n",
-                "listOf(\n",
-                ")\n"
-            ) { "`${it.second}`" }
+                (annotation?.arguments?.first { arg -> arg.name?.asString() == "index" }?.value as? Int)
+                    ?: Int.MAX_VALUE
+            }
         }
     }
 
+    private fun <T> CodeBlock.Builder.createList(
+        prefix: String,
+        items: List<T>,
+        item: (T) -> String
+    ): CodeBlock.Builder = addStatement("${prefix}listOf(")
+        .withTwoIndent {
+            items.forEachIndexed { index, t ->
+                val string = item(t)
+                if (index != items.lastIndex) {
+                    addStatement("$string,")
+                } else {
+                    addStatement(string)
+                }
+            }
+        }
+        .addStatement(")")
+
     private fun generateComponentsFullName(group: String): String {
-        return group.replace(
+        return (group.replace(
             "/",
             "_"
-        ) + "Components"
+        ) + "Components").asPropertyName()
     }
 
     private fun generateComponentItemProperty(
@@ -248,10 +262,11 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                 packageNameString.substringAfterLast(".")
             ), simpleNameString
         )
+        val propertyName = functionName.asPropertyName()
         val componentName =
             (nameArg?.value as? String)?.ifBlank { null } ?: functionDeclaration.simpleName.asString()
                 .removeSuffix("Screen")
-        componentNameList.add("`$functionName`")
+        componentNameList.add(propertyName)
         var arg = ""
         functionDeclaration.parameters.forEach {
             val type = it.type.resolve().declaration
@@ -260,10 +275,10 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             }
         }
         fileSpec.addProperty(
-            PropertySpec.builder("`$functionName`", componentItemClass)
+            PropertySpec.builder(propertyName, componentItemClass)
                 .addModifiers(KModifier.INTERNAL)
                 .initializer(
-                    componentItemInitializerString(
+                    componentItemInitializerString<String>(
                         name = componentName,
                         group = group,
                         description = description,
@@ -272,31 +287,39 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                             fileSpec.addImport(iconImportPrefix, this)
                             "$iconPrefix.$this"
                         },
-                        items = null
+                        items = null,
+                        getItem = { it }
                     )
                 )
                 .build()
         )
-        return "`$functionName`"
+        return propertyName
     }
 
-    private fun componentItemInitializerString(
+    private fun <T> componentItemInitializerString(
         name: String,
         group: String,
         description: String,
         content: String?,
         icon: String?,
-        items: String?
-    ) = """
-        ComponentItem(
-            name = "$name",
-            group = "${if (group.isNotBlank()) group.prefixIfNot("/") else "" }",
-            description = "$description",
-            content = $content,
-            icon = $icon,
-            items = $items
-        )
-    """.trimIndent()
+        items: List<T>?,
+        getItem: (T) -> String,
+    ) = CodeBlock.builder()
+        .addStatement("ComponentItem(")
+        .withTwoIndent {
+            addStatement("name = %S,", name)
+            addStatement("group = %S,", if (group.isNotBlank()) group.prefixIfNot("/") else "")
+            addStatement("description = %S,", description)
+            addStatement("content = $content,")
+            addStatement("icon = $icon,")
+            if (items != null) {
+                createList("items = ", items, getItem)
+            } else {
+                addStatement("items = null")
+            }
+        }
+        .addStatement(")")
+        .build()
 
     private fun generateComponentGroupConfig(group: String): ComponentGroupConfig {
         var icon: String? = null
@@ -312,6 +335,28 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             }
         }
         return ComponentGroupConfig(icon, contentData)
+    }
+
+    private fun PropertySpec.Builder.lazy(buildAction: CodeBlock.Builder.() -> Unit) = delegate(
+        CodeBlock.builder()
+            .addStatement("lazy {")
+            .withTwoIndent { buildAction() }
+            .addStatement("}")
+            .build()
+    )
+
+    private fun CodeBlock.Builder.withTwoIndent(buildAction: CodeBlock.Builder.() -> Unit): CodeBlock.Builder {
+        return withIndent {
+            withIndent(buildAction)
+        }
+    }
+
+    private fun String.asPropertyName(): String {
+        return if (propertyNameRegex.matches(this)) {
+            this
+        } else {
+            "`$this`"
+        }
     }
 
     data class ComponentGroupConfig(
