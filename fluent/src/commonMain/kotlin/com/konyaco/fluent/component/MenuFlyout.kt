@@ -68,6 +68,7 @@ fun MenuFlyoutContainer(
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
+    adaptivePlacement: Boolean = false,
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable FlyoutScope.() -> Unit
@@ -78,6 +79,7 @@ fun MenuFlyoutContainer(
                 visible = isFlyoutVisible,
                 onDismissRequest = { isFlyoutVisible = false },
                 placement = placement,
+                adaptivePlacement = adaptivePlacement,
                 content = flyout,
                 onKeyEvent = onKeyEvent,
                 onPreviewKeyEvent = onPreviewKeyEvent
@@ -95,6 +97,7 @@ fun MenuFlyout(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
+    adaptivePlacement: Boolean = false,
     shape: Shape = RoundedCornerShape(8.dp),
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
@@ -105,7 +108,7 @@ fun MenuFlyout(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         shape = shape,
-        positionProvider = rememberFlyoutPositionProvider(placement),
+        positionProvider = rememberFlyoutPositionProvider(placement, adaptivePlacement = adaptivePlacement),
         content = content,
         onKeyEvent = onKeyEvent,
         onPreviewKeyEvent = onPreviewKeyEvent
@@ -430,7 +433,7 @@ private class SubMenuFlyoutPositionProvider(
         layoutDirection: LayoutDirection,
         popupContentSize: Size
     ): Pair<HorizontalPlacement, VerticalPlacement> {
-        return calculateHorizontalPlacement(
+        return calculatePlacementByHorizontal(
             anchorBounds,
             windowSize,
             layoutDirection,
