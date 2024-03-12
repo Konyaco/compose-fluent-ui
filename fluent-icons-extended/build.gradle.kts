@@ -1,4 +1,5 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.applyTargets
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -12,10 +13,7 @@ group = BuildConfig.group
 version = BuildConfig.libraryVersion
 
 kotlin {
-    jvm()
-    androidTarget {
-        publishLibraryVariants("release")
-    }
+    applyTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -24,14 +22,13 @@ kotlin {
                 implementation(project(":fluent-icons-core"))
             }
         }
-        val jvmMain by getting {
+        val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
             }
         }
-        val jvmTest by getting
+        val desktopTest by getting
     }
-    jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
 }
 
 android {
