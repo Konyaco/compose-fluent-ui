@@ -6,13 +6,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.TextContextMenu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLocalization
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.icons.Icons
@@ -23,8 +24,24 @@ import com.konyaco.fluent.icons.regular.ClipboardPaste
 internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
     @Composable
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
+        var rect by remember {
+            mutableStateOf(Rect.Zero)
+        }
+        var visible by remember {
+            mutableStateOf(false)
+        }
+        val status = state.status
+        LaunchedEffect(status) {
+            if (status is ContextMenuState.Status.Open) {
+                rect = status.rect
+                visible = true
+            } else {
+                visible = false
+            }
+        }
+        val density = LocalDensity.current
         MenuFlyout(
-            visible = state.status is ContextMenuState.Status.Open,
+            visible = visible,
             onDismissRequest = { state.status = ContextMenuState.Status.Closed },
             onKeyEvent = { keyEvent ->
                 items().firstOrNull {
@@ -42,11 +59,14 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                     result
                 } != null
             },
-            positionProvider = rememberFlyoutPositionProvider(placeBottomFirst = true),
-            enterPlacementAnimation = ::enterAnimation
+            positionProvider = remember(rect, density) {
+                ContextMenuFlyoutPositionProvider(rect, density)
+            },
+            enterPlacementAnimation = { enterAnimation() }
         ) {
             val menuItems = items()
-            val shouldPaddingIcon = menuItems.any { it is FluentContextMenuItem && (it.glyph != null || it.vector != null) }
+            val shouldPaddingIcon =
+                menuItems.any { it is FluentContextMenuItem && (it.glyph != null || it.vector != null) }
             menuItems.forEach {
                 if (it is FluentContextMenuItem) {
                     MenuFlyoutItem(
@@ -106,11 +126,12 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
     }
 
 
-    private fun enterAnimation(placement: FlyoutPlacement): EnterTransition {
+    private fun enterAnimation(): EnterTransition {
         return fadeIn(defaultAnimationSpec())
     }
 
-    private fun <T> defaultAnimationSpec() = tween<T>(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+    private fun <T> defaultAnimationSpec() =
+        tween<T>(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -178,4 +199,23 @@ class FluentContextMenuItem(
         val isCtrlPressed: Boolean = false,
         val isShiftPressed: Boolean = false
     )
+}
+
+private class ContextMenuFlyoutPositionProvider(
+    val rect: Rect,
+    density: Density,
+) : FlyoutPositionProvider(density = density, adaptivePlacement = true, initialPlacement = FlyoutPlacement.BottomAlignedStart) {
+
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize
+    ): IntOffset {
+        val targetAnchor = IntRect(
+            offset = rect.center.round() + anchorBounds.topLeft,
+            size = IntSize.Zero
+        )
+        return super.calculatePosition(targetAnchor, windowSize, layoutDirection, popupContentSize)
+    }
 }
