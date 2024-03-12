@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
-    implementation(kotlin("gradle-plugin"))
+    implementation(kotlin("gradle-plugin", libs.versions.kotlin.get()))
 }
 
 kotlin {

@@ -1,4 +1,5 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
@@ -10,8 +11,7 @@ plugins {
 }
 
 kotlin {
-    jvm("desktop")
-    androidTarget()
+    applyTargets(publish = false)
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -46,7 +46,6 @@ kotlin {
         }
         val desktopTest by getting
     }
-    jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
 }
 
 android {
