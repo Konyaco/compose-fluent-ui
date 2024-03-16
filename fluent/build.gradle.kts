@@ -20,7 +20,7 @@ kotlin {
             dependencies {
                 api(compose.foundation)
                 api(project(":fluent-icons-core"))
-                implementation(compose("org.jetbrains.compose.ui:ui-util"))
+                implementation(compose.uiUtil)
                 implementation(libs.uuid)
                 implementation(libs.haze)
             }
