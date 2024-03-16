@@ -1,14 +1,10 @@
 package com.konyaco.fluent.component
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -21,13 +17,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import com.konyaco.fluent.*
+import com.konyaco.fluent.LocalAcrylicPopupEnabled
+import com.konyaco.fluent.LocalWindowAcrylicContainer
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.AcrylicDefaults
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 
@@ -143,7 +145,10 @@ internal fun BasicFlyout(
     if (visibleState.currentState || visibleState.targetState) {
         Popup(
             onDismissRequest = onDismissRequest,
-            properties = PopupProperties(clippingEnabled = false, focusable = onKeyEvent != null || onPreviewKeyEvent != null),
+            properties = PopupProperties(
+                clippingEnabled = false,
+                focusable = onKeyEvent != null || onPreviewKeyEvent != null
+            ),
             popupPositionProvider = positionProvider,
             onKeyEvent = onKeyEvent,
             onPreviewKeyEvent = onPreviewKeyEvent
@@ -182,21 +187,68 @@ internal fun FlyoutContent(
     contentPadding: PaddingValues = PaddingValues(12.dp),
     content: @Composable () -> Unit
 ) {
-
-    AnimatedVisibility(
+    AcrylicPopupContent(
         visibleState = visibleState,
-        enter = enterPlacementAnimation(placement),
-        exit = fadeOut(flyoutExitSpec())
-    ) {
-        Mica(
-            modifier = modifier.padding(flyoutPopPaddingFixShadowRender).graphicsLayer {
-                shadowElevation = 8.dp.toPx()
-                this.shape = shape
-                clip = true
-            }
+        enterTransition = enterPlacementAnimation(placement),
+        exitTransition = fadeOut(flyoutExitSpec()),
+        content = content,
+        contentPadding = contentPadding,
+        elevation = 8.dp,
+        shape = shape,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalFluentApi::class)
+@Composable
+internal fun AcrylicPopupContent(
+    visibleState: MutableTransitionState<Boolean>,
+    enterTransition: EnterTransition,
+    exitTransition: ExitTransition,
+    modifier: Modifier = Modifier,
+    elevation: Dp,
+    shape: Shape,
+    contentPadding: PaddingValues,
+    content: @Composable () -> Unit
+) {
+    with(LocalWindowAcrylicContainer.current) {
+        val userAcrylic = LocalAcrylicPopupEnabled.current
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = enterTransition,
+            exit = exitTransition,
+            modifier = Modifier.then(
+                if (userAcrylic) {
+                    Modifier.padding(flyoutPopPaddingFixShadowRender)
+                } else {
+                    Modifier
+                }
+            )
         ) {
-            Layer(shape = shape) {
-                Box(modifier = Modifier.padding(contentPadding)) {
+            if (!userAcrylic) {
+                Mica(modifier = modifier.padding(flyoutPopPaddingFixShadowRender).graphicsLayer {
+                    this.shape = shape
+                    shadowElevation = elevation.toPx()
+                    clip = true
+                }) {
+                    Layer(shape = shape) {
+                        Box(modifier = modifier.padding(contentPadding)) {
+                            content()
+                        }
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .border(BorderStroke(1.dp, FluentTheme.colors.stroke.card.default), shape = shape)
+                        .acrylicOverlay(
+                            tint = AcrylicDefaults.tintColor,
+                            enabled = { visibleState.targetState || (visibleState.currentState && visibleState.isIdle) },
+                            shape = shape
+                        )
+                        .padding(contentPadding)
+                        .clip(shape)
+                ) {
                     content()
                 }
             }

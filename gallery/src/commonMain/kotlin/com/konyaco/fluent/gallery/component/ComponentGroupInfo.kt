@@ -47,7 +47,7 @@ object ComponentGroupInfo {
     @ComponentGroup("ChatMultiple", index = 12, packageMap = "$screenPackage.status")
     const val StatusAndInfo = "Status & info"
 
-    @ComponentGroup("Color", index = 13)
+    @ComponentGroup("Color", index = 13, packageMap = "$screenPackage.styles")
     const val Styles = "Styles"
 
     @ComponentGroup("System", index = 14)
