@@ -1,6 +1,8 @@
 package com.konyaco.fluent
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
@@ -26,7 +28,11 @@ fun FluentTheme(
             LocalAcrylicPopupEnabled provides useAcrylicPopup,
             LocalColors provides colors,
             LocalTypography provides typography,
-            LocalWindowAcrylicContainer provides this
+            LocalWindowAcrylicContainer provides this,
+            LocalTextSelectionColors provides TextSelectionColors(
+                colors.text.onAccent.primary,
+                colors.fillAccent.selectedTextBackground.copy(0.4f)
+            )
         ) {
             Box(modifier = Modifier.behindAcrylic()) {
                 ProvideFontIcon {
