@@ -4,11 +4,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.*
 import com.konyaco.fluent.background.Mica
-import com.konyaco.fluent.darkColors
-import com.konyaco.fluent.lightColors
 
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
@@ -18,6 +15,7 @@ class Store(
     var darkMode by mutableStateOf(systemDarkMode)
 }
 
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 fun GalleryTheme(
     displayMicaLayer: Boolean = true,
@@ -33,7 +31,7 @@ fun GalleryTheme(
     CompositionLocalProvider(
         LocalStore provides store
     ) {
-        FluentTheme(colors = if (store.darkMode) darkColors() else lightColors()) {
+        FluentTheme(colors = if (store.darkMode) darkColors() else lightColors(), useAcrylicPopup = true) {
             if (displayMicaLayer) {
                 Mica(modifier = Modifier.fillMaxSize()) {
                     content()
