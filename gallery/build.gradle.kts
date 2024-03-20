@@ -1,6 +1,8 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -10,9 +12,26 @@ plugins {
 }
 
 kotlin {
-    applyTargets(publish = false)
+    applyTargets {
+        publish = false
+        fun KotlinJsTargetDsl.setup() {
+            browser {
+                commonWebpackConfig {
+                    outputFileName = "gallery.js"
+                    devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                        static = (static ?: mutableListOf()).apply {
+                            add(project.projectDir.path)
+                        }
+                    }
+                }
+            }
+            nodejs()
+            binaries.executable()
+        }
+        configWasmJs { setup() }
+    }
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(compose.foundation)
                 implementation(compose.components.resources)
@@ -24,29 +43,21 @@ kotlin {
             }
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.androidx.activity.compose)
-            }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
         }
-        val androidUnitTest by getting
-        val androidInstrumentedTest by getting {
-            dependencies {
-                implementation(libs.androidx.test.junit)
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.androidx.test.junit)
         }
-        val desktopMain by getting {
+        desktopMain {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.window.styler)
             }
         }
-        val desktopTest by getting
     }
 }
 
@@ -84,24 +95,26 @@ android {
     }
 }
 
-compose.desktop {
-    application {
-        mainClass = "${BuildConfig.packageName}.gallery.MainKt"
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Compose Fluent Design Gallery"
-            packageVersion = "1.0.0"
-            macOS {
-                iconFile.set(project.file("icons/icon.icns"))
-                jvmArgs(
-                    "-Dapple.awt.application.appearance=system"
-                )
-            }
-            windows {
-                iconFile.set(project.file("icons/icon.ico"))
-            }
-            linux {
-                iconFile.set(project.file("icons/icon.png"))
+compose {
+    desktop {
+        application {
+            mainClass = "${BuildConfig.packageName}.gallery.MainKt"
+            nativeDistributions {
+                targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+                packageName = "Compose Fluent Design Gallery"
+                packageVersion = "1.0.0"
+                macOS {
+                    iconFile.set(project.file("icons/icon.icns"))
+                    jvmArgs(
+                        "-Dapple.awt.application.appearance=system"
+                    )
+                }
+                windows {
+                    iconFile.set(project.file("icons/icon.ico"))
+                }
+                linux {
+                    iconFile.set(project.file("icons/icon.png"))
+                }
             }
         }
     }
