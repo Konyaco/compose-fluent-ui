@@ -135,7 +135,8 @@ private fun Button(
                 .clickable(
                     onClick = onClick,
                     interactionSource = interaction,
-                    indication = null
+                    indication = null,
+                    enabled = !disabled
                 )
                 .then(if (iconOnly) Modifier else Modifier.padding(horizontal = 12.dp)),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
