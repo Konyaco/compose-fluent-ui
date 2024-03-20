@@ -1,7 +1,7 @@
 [versions]
 haze = "0.6.2"
-kotlin = "1.9.0"
-ksp = "1.9.0-1.0.13"
+kotlin = "1.9.23"
+ksp = "1.9.23-1.0.19"
 compose = "1.6.1"
 androidGradlePlugin = "7.4.2"
 androidBuildTools = "27.2.0-alpha16"
