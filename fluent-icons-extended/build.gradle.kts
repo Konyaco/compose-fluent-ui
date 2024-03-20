@@ -1,5 +1,6 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
+import com.konyaco.fluent.plugin.build.desktopMain
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -15,19 +16,14 @@ version = BuildConfig.libraryVersion
 kotlin {
     applyTargets()
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(compose.foundation)
-                implementation(project(":fluent"))
-                implementation(project(":fluent-icons-core"))
-            }
+        commonMain.dependencies {
+            implementation(compose.foundation)
+            implementation(project(":fluent"))
+            implementation(project(":fluent-icons-core"))
         }
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.currentOs)
-            }
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
         }
-        val desktopTest by getting
     }
 }
 
