@@ -1,7 +1,11 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.androidInstrumentedTest
 import com.konyaco.fluent.plugin.build.applyTargets
+import com.konyaco.fluent.plugin.build.desktopMain
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -11,9 +15,26 @@ plugins {
 }
 
 kotlin {
-    applyTargets(publish = false)
+    applyTargets {
+        publish = false
+        fun KotlinJsTargetDsl.setup() {
+            browser {
+                commonWebpackConfig {
+                    outputFileName = "gallery.js"
+                    devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                        static = (static ?: mutableListOf()).apply {
+                            add(project.projectDir.path)
+                        }
+                    }
+                }
+            }
+            nodejs()
+            binaries.executable()
+        }
+        configWasmJs { setup() }
+    }
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(compose.foundation)
                 implementation(project(":fluent"))
@@ -22,29 +43,21 @@ kotlin {
             }
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
-        val androidMain by getting {
-            dependencies {
-                implementation("androidx.activity:activity-compose:1.6.1")
-            }
+        androidMain.dependencies {
+            implementation("androidx.activity:activity-compose:1.6.1")
         }
-        val androidUnitTest by getting
-        val androidInstrumentedTest by getting {
-            dependencies {
-                implementation(libs.androidx.test.junit)
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.androidx.test.junit)
         }
-        val desktopMain by getting {
+        desktopMain {
             dependencies {
                 implementation(compose.preview)
                 implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
             }
         }
-        val desktopTest by getting
     }
 }
 
@@ -82,15 +95,18 @@ android {
     }
 }
 
-compose.desktop {
-    application {
-        mainClass = "${BuildConfig.packageName}.gallery.MainKt"
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Compose Fluent Design Gallery"
-            packageVersion = "1.0.0"
+compose {
+    desktop {
+        application {
+            mainClass = "${BuildConfig.packageName}.gallery.MainKt"
+            nativeDistributions {
+                targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+                packageName = "Compose Fluent Design Gallery"
+                packageVersion = "1.0.0"
+            }
         }
     }
+    experimental.web.application {}
 }
 
 dependencies {

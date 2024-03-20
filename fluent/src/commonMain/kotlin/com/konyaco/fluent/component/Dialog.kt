@@ -1,7 +1,6 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -44,7 +43,6 @@ import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 internal expect val DialogPopupPositionProvider : PopupPositionProvider
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Dialog(
     title: String,
