@@ -21,6 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
@@ -80,6 +83,50 @@ fun SubtleButton(
     content: @Composable RowScope.() -> Unit
 ) {
     Button(modifier, interaction, disabled, buttonColors, true, onClick, iconOnly, content)
+}
+
+@Composable
+fun HyperlinkButton(
+    navigateUri: String,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = hyperlinkButtonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    val uriHandler = LocalUriHandler.current
+    HyperlinkButton(
+        modifier = modifier,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        interaction = interaction,
+        iconOnly = iconOnly,
+        content = content,
+        onClick = { uriHandler.openUri(navigateUri) }
+    )
+}
+
+@Composable
+fun HyperlinkButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = hyperlinkButtonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(
+        modifier = modifier.pointerHoverIcon(if (!disabled) PointerIcon.Hand else PointerIcon.Default),
+        interaction = interaction,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        true,
+        onClick = onClick,
+        iconOnly = iconOnly,
+        content = content
+    )
 }
 
 @Composable
@@ -228,6 +275,35 @@ private fun subtleButtonColors(): ButtonColors {
             disabled = ButtonColor(
                 colors.subtleFill.disabled,
                 colors.text.text.disabled,
+                SolidColor(Color.Transparent)
+            ),
+        )
+    }
+}
+
+@Composable
+private fun hyperlinkButtonColors(): ButtonColors {
+    val colors = FluentTheme.colors
+    return remember(colors) {
+        ButtonColors(
+            default = ButtonColor(
+                colors.subtleFill.transparent,
+                colors.text.accent.primary,
+                SolidColor(Color.Transparent)
+            ),
+            hovered = ButtonColor(
+                colors.subtleFill.secondary,
+                colors.text.accent.primary,
+                SolidColor(Color.Transparent)
+            ),
+            pressed = ButtonColor(
+                colors.subtleFill.tertiary,
+                colors.text.accent.secondary,
+                SolidColor(Color.Transparent)
+            ),
+            disabled = ButtonColor(
+                colors.subtleFill.disabled,
+                colors.text.accent.disabled,
                 SolidColor(Color.Transparent)
             ),
         )
