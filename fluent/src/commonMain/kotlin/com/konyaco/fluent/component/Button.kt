@@ -3,19 +3,16 @@ package com.konyaco.fluent.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -30,6 +27,8 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.shape.FluentRoundedCornerShape
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Immutable
 data class ButtonColors(
@@ -129,6 +128,53 @@ fun HyperlinkButton(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun RepeatButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    delay: Long = 200,
+    interval: Long = 50,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = buttonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    val pressed = interaction.collectIsPressedAsState()
+    val scope = rememberCoroutineScope()
+
+    Button(
+        modifier = modifier.combinedClickable(
+            interactionSource = interaction,
+            indication = null,
+            enabled = !disabled,
+            onClick = onClick,
+            onLongClick = {
+                onClick()
+                scope.launch {
+                    delay(delay)
+                    do {
+                        onClick()
+                        delay(interval)
+                    } while (pressed.value)
+                }
+            },
+            onDoubleClick = {
+                onClick()
+                onClick()
+            }
+        ),
+        interaction = interaction,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        accentButton = true,
+        onClick = null,
+        iconOnly = iconOnly,
+        content = content
+    )
+}
+
 @Composable
 private fun Button(
     modifier: Modifier,
@@ -136,7 +182,7 @@ private fun Button(
     disabled: Boolean,
     buttonColors: ButtonColors,
     accentButton: Boolean,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
     iconOnly: Boolean,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -179,11 +225,17 @@ private fun Button(
     ) {
         Row(
             Modifier
-                .clickable(
-                    onClick = onClick,
-                    interactionSource = interaction,
-                    indication = null,
-                    enabled = !disabled
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(
+                            onClick = onClick,
+                            interactionSource = interaction,
+                            indication = null,
+                            enabled = !disabled
+                        )
+                    } else {
+                        Modifier
+                    }
                 )
                 .then(if (iconOnly) Modifier else Modifier.padding(horizontal = 12.dp)),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
