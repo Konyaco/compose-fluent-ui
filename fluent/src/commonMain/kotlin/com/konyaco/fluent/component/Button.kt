@@ -212,7 +212,6 @@ private fun Button(
                 it.defaultMinSize(32.dp, 32.dp)
             } else {
                 it.defaultMinSize(
-                    minWidth = 120.dp,
                     minHeight = 32.dp
                 )
             }
