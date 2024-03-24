@@ -66,14 +66,14 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun MenuFlyoutContainer(
-    flyout: @Composable MenuFlyoutScope.() -> Unit,
+    flyout: @Composable MenuFlyoutContainerScope.() -> Unit,
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     adaptivePlacement: Boolean = false,
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
-    content: @Composable FlyoutScope.() -> Unit
+    content: @Composable FlyoutContainerScope.() -> Unit
 ) {
     BasicFlyoutContainer(
         flyout = {
@@ -82,7 +82,12 @@ fun MenuFlyoutContainer(
                 onDismissRequest = { isFlyoutVisible = false },
                 placement = placement,
                 adaptivePlacement = adaptivePlacement,
-                content = flyout,
+                content = {
+                    val containerScope = remember(this@BasicFlyoutContainer, this) {
+                        MenuFlyoutContainerScopeImpl(this@BasicFlyoutContainer, this)
+                    }
+                    containerScope.flyout()
+                },
                 onKeyEvent = onKeyEvent,
                 onPreviewKeyEvent = onPreviewKeyEvent
             )
@@ -380,6 +385,13 @@ interface MenuFlyoutScope {
         onDelayedHoveredChanged: (hovered: Boolean) -> Unit
     )
 }
+
+interface MenuFlyoutContainerScope : MenuFlyoutScope, FlyoutContainerScope
+
+private class MenuFlyoutContainerScopeImpl(
+    flyoutScope: FlyoutContainerScope,
+    menuFlyoutScope: MenuFlyoutScope
+) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope, MenuFlyoutScope by menuFlyoutScope
 
 private fun defaultMenuFlyoutEnterPlacementAnimation(
     placement: FlyoutPlacement,
