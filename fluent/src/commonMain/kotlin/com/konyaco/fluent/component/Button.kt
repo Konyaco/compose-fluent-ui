@@ -1,23 +1,21 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.LocalUriHandler
@@ -26,6 +24,8 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.icons.Icons
+import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -173,6 +173,29 @@ fun RepeatButton(
         iconOnly = iconOnly,
         content = content
     )
+}
+
+@Composable
+fun DropDownButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = buttonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(
+        onClick = onClick,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        interaction = interaction,
+        iconOnly = iconOnly,
+        modifier = modifier
+    ) {
+        content()
+        AnimatedDropDownIcon(interaction)
+    }
 }
 
 @Composable
@@ -359,4 +382,18 @@ private fun hyperlinkButtonColors(): ButtonColors {
             ),
         )
     }
+}
+
+@Composable
+private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
+    val isPressed by interaction.collectIsPressedAsState()
+    val animatedOffset = animateDpAsState(
+        targetValue = if (isPressed) 2.dp else 0.dp,
+        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+    )
+    Icon(
+        imageVector = Icons.Default.ChevronDown,
+        contentDescription = null,
+        modifier = Modifier.graphicsLayer { translationY = animatedOffset.value.toPx() }.size(12.dp)
+    )
 }
