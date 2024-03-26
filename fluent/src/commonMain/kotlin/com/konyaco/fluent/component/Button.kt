@@ -168,7 +168,7 @@ fun RepeatButton(
         interaction = interaction,
         disabled = disabled,
         buttonColors = buttonColors,
-        accentButton = true,
+        accentButton = false,
         onClick = null,
         iconOnly = iconOnly,
         content = content
