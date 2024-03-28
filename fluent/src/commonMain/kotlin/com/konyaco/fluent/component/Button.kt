@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
@@ -196,6 +198,37 @@ fun DropDownButton(
         content()
         AnimatedDropDownIcon(interaction)
     }
+}
+
+@Composable
+fun ToggleButton(
+    checked: Boolean,
+    onCheckedChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    colors: ButtonColors = buttonColors(),
+    selectedColors: ButtonColors = accentButtonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    outsideBorder: Boolean = !checked,
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(
+        onClick = null,
+        modifier = modifier.selectable(
+            selected = checked,
+            interactionSource = interaction,
+            indication = null,
+            onClick = { onCheckedChanged(!checked) },
+            role = Role.Checkbox
+        ),
+        iconOnly = iconOnly,
+        buttonColors = if (checked) selectedColors else colors,
+        interaction = interaction,
+        disabled = disabled,
+        accentButton = !outsideBorder,
+        content = content
+    )
 }
 
 @Composable
