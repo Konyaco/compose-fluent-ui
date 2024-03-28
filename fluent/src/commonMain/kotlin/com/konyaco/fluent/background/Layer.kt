@@ -85,13 +85,25 @@ private fun Modifier.layer(
     innerShape: Shape
 ) = this.shadow(elevation, shape, clip = false)
     .then(if (border != null) Modifier.border(border, shape) else Modifier)
-    .layout { measurable, constraints ->
+    .then(
+        if (outsideBorder) {
+            Modifier.paddingToBorder(shape)
+                .background(color = color, shape = innerShape)
+        } else {
+            /* Never draw content in the border. */
+            Modifier.background(color = color, shape = shape)
+                .paddingToBorder(shape)
+        }
+    )
+    .clip(shape = innerShape)
+
+private fun Modifier.paddingToBorder(shape: Shape) = then(
+    layout { measurable, constraints ->
         val circular = shape == FluentCircleShape
         // TODO: A better way to implement outside border
         val paddingValue = when {
-            outsideBorder && circular -> calcCircularPadding(this)
-            outsideBorder -> calcPadding(this)
-            else -> 0.dp
+            circular -> calcCircularPadding(this)
+            else -> calcPadding(this)
         }.roundToPx()
         val placeable = measurable.measure(constraints.offset(-paddingValue * 2, -paddingValue * 2))
         val width = constraints.constrainWidth(placeable.width + paddingValue * 2)
@@ -100,8 +112,7 @@ private fun Modifier.layer(
             placeable.place(paddingValue, paddingValue)
         }
     }
-    .background(color = color, shape = innerShape)
-    .clip(shape = innerShape)
+)
 
 /**
  * This is a workaround solution to eliminate 1 pixel gap

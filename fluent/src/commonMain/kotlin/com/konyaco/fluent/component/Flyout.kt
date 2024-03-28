@@ -35,14 +35,14 @@ import com.konyaco.fluent.background.Mica
 
 @Composable
 fun FlyoutContainer(
-    flyout: @Composable () -> Unit,
+    flyout: @Composable FlyoutContainerScope.() -> Unit,
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     adaptivePlacement: Boolean = false,
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
-    content: @Composable FlyoutScope.() -> Unit
+    content: @Composable FlyoutContainerScope.() -> Unit
 ) {
     BasicFlyoutContainer(
         flyout = {
@@ -53,7 +53,7 @@ fun FlyoutContainer(
                 adaptivePlacement = adaptivePlacement,
                 onKeyEvent = onKeyEvent,
                 onPreviewKeyEvent = onPreviewKeyEvent,
-                content = flyout
+                content = { flyout() }
             )
         },
         content = content,
@@ -64,16 +64,16 @@ fun FlyoutContainer(
 
 @Composable
 internal fun BasicFlyoutContainer(
-    flyout: @Composable FlyoutScope.() -> Unit,
+    flyout: @Composable FlyoutContainerScope.() -> Unit,
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
-    content: @Composable FlyoutScope.() -> Unit
+    content: @Composable FlyoutContainerScope.() -> Unit
 ) {
     val flyoutState = remember(initialVisible) {
         mutableStateOf(initialVisible)
     }
     val flyoutScope = remember(flyoutState) {
-        FlyoutScopeImpl(flyoutState)
+        FlyoutContainerScopeImpl(flyoutState)
     }
     Box(modifier = modifier) {
         flyoutScope.content()
@@ -256,12 +256,12 @@ internal fun AcrylicPopupContent(
     }
 }
 
-private class FlyoutScopeImpl(visibleState: MutableState<Boolean>) : FlyoutScope {
+private class FlyoutContainerScopeImpl(visibleState: MutableState<Boolean>) : FlyoutContainerScope {
 
     override var isFlyoutVisible: Boolean by visibleState
 }
 
-interface FlyoutScope {
+interface FlyoutContainerScope {
 
     var isFlyoutVisible: Boolean
 

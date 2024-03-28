@@ -1,32 +1,36 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.icons.Icons
+import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.shape.FluentRoundedCornerShape
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Immutable
 data class ButtonColors(
@@ -83,13 +87,158 @@ fun SubtleButton(
 }
 
 @Composable
+fun HyperlinkButton(
+    navigateUri: String,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = hyperlinkButtonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    val uriHandler = LocalUriHandler.current
+    HyperlinkButton(
+        modifier = modifier,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        interaction = interaction,
+        iconOnly = iconOnly,
+        content = content,
+        onClick = { uriHandler.openUri(navigateUri) }
+    )
+}
+
+@Composable
+fun HyperlinkButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = hyperlinkButtonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(
+        modifier = modifier.pointerHoverIcon(if (!disabled) PointerIcon.Hand else PointerIcon.Default),
+        interaction = interaction,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        true,
+        onClick = onClick,
+        iconOnly = iconOnly,
+        content = content
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun RepeatButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    delay: Long = 200,
+    interval: Long = 50,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = buttonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    val pressed = interaction.collectIsPressedAsState()
+    val scope = rememberCoroutineScope()
+
+    Button(
+        modifier = modifier.combinedClickable(
+            interactionSource = interaction,
+            indication = null,
+            enabled = !disabled,
+            onClick = onClick,
+            onLongClick = {
+                onClick()
+                scope.launch {
+                    delay(delay)
+                    do {
+                        onClick()
+                        delay(interval)
+                    } while (pressed.value)
+                }
+            },
+            onDoubleClick = {
+                onClick()
+                onClick()
+            }
+        ),
+        interaction = interaction,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        accentButton = false,
+        onClick = null,
+        iconOnly = iconOnly,
+        content = content
+    )
+}
+
+@Composable
+fun DropDownButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    buttonColors: ButtonColors = buttonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(
+        onClick = onClick,
+        disabled = disabled,
+        buttonColors = buttonColors,
+        interaction = interaction,
+        iconOnly = iconOnly,
+        modifier = modifier
+    ) {
+        content()
+        AnimatedDropDownIcon(interaction)
+    }
+}
+
+@Composable
+fun ToggleButton(
+    checked: Boolean,
+    onCheckedChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    disabled: Boolean = false,
+    colors: ButtonColors = buttonColors(),
+    selectedColors: ButtonColors = accentButtonColors(),
+    interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+    iconOnly: Boolean = false,
+    outsideBorder: Boolean = !checked,
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(
+        onClick = null,
+        modifier = modifier.selectable(
+            selected = checked,
+            interactionSource = interaction,
+            indication = null,
+            onClick = { onCheckedChanged(!checked) },
+            role = Role.Checkbox
+        ),
+        iconOnly = iconOnly,
+        buttonColors = if (checked) selectedColors else colors,
+        interaction = interaction,
+        disabled = disabled,
+        accentButton = !outsideBorder,
+        content = content
+    )
+}
+
+@Composable
 private fun Button(
     modifier: Modifier,
     interaction: MutableInteractionSource,
     disabled: Boolean,
     buttonColors: ButtonColors,
     accentButton: Boolean,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
     iconOnly: Boolean,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -119,7 +268,6 @@ private fun Button(
                 it.defaultMinSize(32.dp, 32.dp)
             } else {
                 it.defaultMinSize(
-                    minWidth = 120.dp,
                     minHeight = 32.dp
                 )
             }
@@ -132,10 +280,17 @@ private fun Button(
     ) {
         Row(
             Modifier
-                .clickable(
-                    onClick = onClick,
-                    interactionSource = interaction,
-                    indication = null
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(
+                            onClick = onClick,
+                            interactionSource = interaction,
+                            indication = null,
+                            enabled = !disabled
+                        )
+                    } else {
+                        Modifier
+                    }
                 )
                 .then(if (iconOnly) Modifier else Modifier.padding(horizontal = 12.dp)),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
@@ -231,4 +386,47 @@ private fun subtleButtonColors(): ButtonColors {
             ),
         )
     }
+}
+
+@Composable
+private fun hyperlinkButtonColors(): ButtonColors {
+    val colors = FluentTheme.colors
+    return remember(colors) {
+        ButtonColors(
+            default = ButtonColor(
+                colors.subtleFill.transparent,
+                colors.text.accent.primary,
+                SolidColor(Color.Transparent)
+            ),
+            hovered = ButtonColor(
+                colors.subtleFill.secondary,
+                colors.text.accent.primary,
+                SolidColor(Color.Transparent)
+            ),
+            pressed = ButtonColor(
+                colors.subtleFill.tertiary,
+                colors.text.accent.secondary,
+                SolidColor(Color.Transparent)
+            ),
+            disabled = ButtonColor(
+                colors.subtleFill.disabled,
+                colors.text.accent.disabled,
+                SolidColor(Color.Transparent)
+            ),
+        )
+    }
+}
+
+@Composable
+private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
+    val isPressed by interaction.collectIsPressedAsState()
+    val animatedOffset = animateDpAsState(
+        targetValue = if (isPressed) 2.dp else 0.dp,
+        animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+    )
+    Icon(
+        imageVector = Icons.Default.ChevronDown,
+        contentDescription = null,
+        modifier = Modifier.graphicsLayer { translationY = animatedOffset.value.toPx() }.size(12.dp)
+    )
 }
