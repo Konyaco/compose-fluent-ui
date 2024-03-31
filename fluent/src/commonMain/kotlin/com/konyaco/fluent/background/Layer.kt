@@ -84,18 +84,23 @@ private fun Modifier.layer(
     color: Color,
     innerShape: Shape
 ) = this.shadow(elevation, shape, clip = false)
-    .then(if (border != null) Modifier.border(border, shape) else Modifier)
     .then(
-        if (outsideBorder) {
-            Modifier.paddingToBorder(shape)
-                .background(color = color, shape = innerShape)
+        if (border != null) {
+            Modifier.border(border, shape)
+                .then(
+                    if (outsideBorder) {
+                        Modifier.paddingToBorder(shape)
+                            .background(color = color, shape = innerShape)
+                    } else {
+                        /* Never draw content in the border. */
+                        Modifier.background(color = color, shape = shape)
+                            .paddingToBorder(shape)
+                    }
+                ).clip(innerShape)
         } else {
-            /* Never draw content in the border. */
-            Modifier.background(color = color, shape = shape)
-                .paddingToBorder(shape)
+            Modifier.background(color = color, shape = shape).clip(shape)
         }
     )
-    .clip(shape = innerShape)
 
 private fun Modifier.paddingToBorder(shape: Shape) = then(
     layout { measurable, constraints ->
