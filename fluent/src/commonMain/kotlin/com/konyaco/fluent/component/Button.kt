@@ -3,22 +3,20 @@ package com.konyaco.fluent.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -232,6 +230,118 @@ fun ToggleButton(
 }
 
 @Composable
+fun SplitButton(
+    flyoutClick: () -> Unit,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    buttonColors: ButtonColors = buttonColors(),
+    accentButton: Boolean = false,
+    disabled: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    val currentColor = if (!disabled) {
+        buttonColors.default
+    } else {
+        buttonColors.disabled
+    }
+    val borderBrush = currentColor.borderBrush
+    val endContentOffset = remember { mutableStateOf(0f) }
+    Layer(
+        color = Color.Transparent,
+        contentColor = currentColor.contentColor,
+        /* workaround for outside border padding */
+        modifier = modifier.border(BorderStroke(buttonBorderStrokeWidth, currentColor.borderBrush), buttonShape)
+            .drawWithCache {
+                /* draw split broder */
+                val path = Path()
+                val strokeWidth = buttonBorderStrokeWidth.toPx()
+                path.moveTo(endContentOffset.value, strokeWidth)
+                path.lineTo(endContentOffset.value, size.height - 2 * strokeWidth)
+                path.close()
+                onDrawWithContent {
+                    drawContent()
+                    drawPath(path, borderBrush, style = Stroke(strokeWidth))
+                }
+            },
+        border = null,
+        shape = buttonShape,
+        outsideBorder = !accentButton
+    ) {
+        Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+            val contentInteraction = remember { MutableInteractionSource() }
+            ButtonLayer(
+                shape = RectangleShape,
+                buttonColors = buttonColors,
+                interaction = contentInteraction,
+                disabled = disabled,
+                accentButton = false,
+                displayBorder = false,
+                modifier = Modifier.clickable(
+                    interactionSource = contentInteraction,
+                    indication = null,
+                    onClick = onClick,
+                    enabled = !disabled
+                ).heightIn(buttonMinHeight)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    content()
+                }
+            }
+            val dropDownInteraction = remember { MutableInteractionSource() }
+            ButtonLayer(
+                shape = RectangleShape,
+                buttonColors = buttonColors,
+                interaction = dropDownInteraction,
+                disabled = disabled,
+                accentButton = false,
+                displayBorder = false,
+                modifier = Modifier.clickable(
+                    interactionSource = dropDownInteraction,
+                    indication = null,
+                    onClick = flyoutClick,
+                    enabled = !disabled
+                ).fillMaxHeight().onGloballyPositioned {
+                    endContentOffset.value = it.positionInParent().x.toInt().toFloat()
+                },
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxHeight().padding(start = 1.dp).size(32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnimatedDropDownIcon(dropDownInteraction)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ToggleSplitButton(
+    flyoutClick: () -> Unit,
+    onClick: () -> Unit,
+    checked: Boolean,
+    modifier: Modifier = Modifier,
+    colors: ButtonColors = buttonColors(),
+    selectedColors: ButtonColors = accentButtonColors(),
+    accentButton: Boolean = checked,
+    disabled: Boolean = false,
+    content: @Composable RowScope.() -> Unit
+) {
+    SplitButton(
+        flyoutClick = flyoutClick,
+        onClick = onClick,
+        modifier = modifier,
+        buttonColors = if (checked) selectedColors else colors,
+        accentButton = accentButton,
+        disabled = disabled,
+        content = content
+    )
+}
+
+@Composable
 private fun Button(
     modifier: Modifier,
     interaction: MutableInteractionSource,
@@ -242,41 +352,22 @@ private fun Button(
     iconOnly: Boolean,
     content: @Composable RowScope.() -> Unit
 ) {
-    val hovered by interaction.collectIsHoveredAsState()
-    val pressed by interaction.collectIsPressedAsState()
-
-    val buttonColor = when {
-        disabled -> buttonColors.disabled
-        pressed -> buttonColors.pressed
-        hovered -> buttonColors.hovered
-        else -> buttonColors.default
-    }
-
-    val fillColor by animateColorAsState(
-        buttonColor.fillColor,
-        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-    )
-
-    val contentColor by animateColorAsState(
-        buttonColor.contentColor,
-        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-    )
-
-    Layer(
+    ButtonLayer(
+        shape = buttonShape,
+        displayBorder = true,
+        buttonColors = buttonColors,
+        interaction = interaction,
+        disabled = disabled,
+        accentButton = accentButton,
         modifier = modifier.let {
             if (iconOnly) {
-                it.defaultMinSize(32.dp, 32.dp)
+                it.defaultMinSize(32.dp, buttonMinHeight)
             } else {
                 it.defaultMinSize(
-                    minHeight = 32.dp
+                    minHeight = buttonMinHeight
                 )
             }
-        },
-        shape = FluentRoundedCornerShape(4.dp),
-        border = BorderStroke(1.dp, buttonColor.borderBrush),
-        color = fillColor,
-        contentColor = contentColor,
-        outsideBorder = !accentButton
+        }
     ) {
         Row(
             Modifier
@@ -298,6 +389,50 @@ private fun Button(
             content = content
         )
     }
+}
+
+/*
+common interaction layer for button and split button.
+*/
+@Composable
+private fun ButtonLayer(
+    shape: Shape,
+    buttonColors: ButtonColors,
+    interaction: MutableInteractionSource,
+    disabled: Boolean,
+    accentButton: Boolean,
+    displayBorder: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    val hovered by interaction.collectIsHoveredAsState()
+    val pressed by interaction.collectIsPressedAsState()
+
+    val buttonColor = when {
+        disabled -> buttonColors.disabled
+        pressed -> buttonColors.pressed
+        hovered -> buttonColors.hovered
+        else -> buttonColors.default
+    }
+
+    val fillColor by animateColorAsState(
+        buttonColor.fillColor,
+        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
+    )
+
+    val contentColor by animateColorAsState(
+        buttonColor.contentColor,
+        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
+    )
+    Layer(
+        modifier = modifier,
+        color = fillColor,
+        contentColor = contentColor,
+        outsideBorder = !accentButton,
+        shape = shape,
+        border = if (displayBorder) BorderStroke(buttonBorderStrokeWidth, buttonColor.borderBrush) else null,
+        content = content
+    )
 }
 
 @Composable
@@ -430,3 +565,7 @@ private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
         modifier = Modifier.graphicsLayer { translationY = animatedOffset.value.toPx() }.size(12.dp)
     )
 }
+
+private val buttonMinHeight = 32.dp
+private val buttonShape = FluentRoundedCornerShape(4.dp)
+private val buttonBorderStrokeWidth = 1.dp
