@@ -1,4 +1,4 @@
-# Compose Fluent
+<h1><img src="assets/icon.png" alt="Compose Fluent logo" height="48" valign="middle"> Compose Fluent</h1>
 
 [![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/Konyaco/compose-fluent-ui?include_prereleases)](https://github.com/Konyaco/compose-fluent-ui/releases)
