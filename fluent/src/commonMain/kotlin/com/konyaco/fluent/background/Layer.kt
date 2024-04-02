@@ -103,7 +103,7 @@ private fun Modifier.layer(
     )
 
 private fun Modifier.paddingToBorder(shape: Shape) = then(
-    layout { measurable, constraints ->
+    Modifier.layout { measurable, constraints ->
         val circular = shape == FluentCircleShape
         // TODO: A better way to implement outside border
         val paddingValue = when {
