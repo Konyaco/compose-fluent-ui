@@ -1,6 +1,7 @@
 package com.konyaco.fluent.gallery.screen
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.AccentButton
 import com.konyaco.fluent.component.Button
@@ -60,6 +62,7 @@ import com.konyaco.fluent.icons.regular.Delete
 import com.konyaco.fluent.icons.regular.Dismiss
 import com.konyaco.fluent.icons.regular.List
 import com.konyaco.fluent.icons.regular.Navigation
+import com.konyaco.fluent.surface.Card
 
 
 @Component(icon = "Home")
@@ -276,22 +279,51 @@ private fun Content() {
     Controls()
 
     Row {
+        Box {
+            Box(Modifier.size(32.dp).background(FluentTheme.colors.fillAccent.default))
+        }
+
         Layer(
-            modifier = Modifier.size(32.dp),
             shape = RoundedCornerShape(4.dp),
             color = FluentTheme.colors.fillAccent.default,
             border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {},
+            content = {
+                Box(Modifier.size(32.dp))
+            },
             outsideBorder = false
         )
         Layer(
-            modifier = Modifier.size(32.dp),
             shape = RoundedCornerShape(4.dp),
             color = FluentTheme.colors.fillAccent.default,
             border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {},
+            content = {
+                Box(Modifier.size(32.dp))
+            },
             outsideBorder = true
         )
+
+        Layer(
+            shape = RoundedCornerShape(4.dp),
+            color = FluentTheme.colors.fillAccent.default,
+            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+            content = {
+                Box(Modifier.size(32.dp))
+            },
+            backgroundSizing = BackgroundSizing.InnerBorderEdge
+        )
+        Layer(
+            shape = RoundedCornerShape(4.dp),
+            color = FluentTheme.colors.fillAccent.default,
+            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+            content = {
+                Box(Modifier.size(32.dp))
+            },
+            backgroundSizing = BackgroundSizing.OuterBorderEdge
+        )
+
+        Card(Modifier) {
+            Box(Modifier.size(32.dp))
+        }
     }
 
     var value by remember { mutableStateOf(TextFieldValue("Hello Fluent!")) }

@@ -30,6 +30,27 @@ import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlin.math.ceil
 import kotlin.math.floor
 
+/**
+ * Defines constants that specify how far an element's background extends in relation to the element's border.
+ */
+enum class BackgroundSizing {
+    /**
+     * The element's background extends to the inner edge of the border, but does not extend under the border.
+     */
+    InnerBorderEdge,
+
+    /**
+     * The element's background extends under the border to its outer edge, and is visible if the border is transparent.
+     */
+    OuterBorderEdge
+}
+@Deprecated(
+    message = "Use backgroundSizing",
+    replaceWith = ReplaceWith(
+        expression = "Layer(modifier=modifier,shape=shape,color=color,contentColor=contentColor,border=border,backgroundSizing=if (outsideBorder) BackgroundSizing.InnerBorderEdge else BackgroundSizing.OuterBorderEdge,elevation=elevation,content=content)",
+        imports = arrayOf("com.konyaco.fluent.background.BackgroundSizing")
+    )
+)
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
@@ -60,11 +81,84 @@ fun Layer(
                 }
             }
             Box(
-                modifier.layer(
+                modifier.layerLegacy(
                     elevation,
                     shape,
                     border,
                     outsideBorder,
+                    color,
+                    innerShape
+                ),
+                propagateMinConstraints = true
+            ) {
+                content()
+            }
+        }
+    }
+}
+
+private fun Modifier.layerLegacy(
+    elevation: Dp,
+    shape: Shape,
+    border: BorderStroke?,
+    outsideBorder: Boolean,
+    color: Color,
+    innerShape: Shape
+) = this.shadow(elevation, shape, clip = false)
+    .then(if (border != null) Modifier.border(border, shape) else Modifier)
+    .layout { measurable, constraints ->
+        val circular = shape == FluentCircleShape
+        // TODO: A better way to implement outside border
+        val paddingValue = when {
+            outsideBorder && circular -> calcCircularPadding(this)
+            outsideBorder -> calcPadding(this)
+            else -> 0.dp
+        }.roundToPx()
+        val placeable = measurable.measure(constraints.offset(-paddingValue * 2, -paddingValue * 2))
+        val width = constraints.constrainWidth(placeable.width + paddingValue * 2)
+        val height = constraints.constrainHeight(placeable.height + paddingValue * 2)
+        layout(width, height) {
+            placeable.place(paddingValue, paddingValue)
+        }
+    }
+    .background(color = color, shape = innerShape)
+    .clip(shape = innerShape)
+
+@Composable
+fun Layer(
+    modifier: Modifier = Modifier,
+    shape: Shape = FluentRoundedCornerShape(4.dp),
+    color: Color = FluentTheme.colors.background.layer.default,
+    contentColor: Color = FluentTheme.colors.text.text.primary,
+    border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
+    backgroundSizing: BackgroundSizing,
+    elevation: Dp = 0.dp,
+    content: @Composable () -> Unit
+) {
+    ProvideTextStyle(FluentTheme.typography.body.copy(color = contentColor)) {
+        CompositionLocalProvider(LocalContentColor provides contentColor) {
+            val innerShape = remember(shape, backgroundSizing) {
+                if (shape is FluentRoundedCornerShape && shape != FluentCircleShape && backgroundSizing == BackgroundSizing.InnerBorderEdge) {
+                    if (shape.fluentTopStart is FluentDpCornerSize) {
+                        RoundedCornerShape(
+                            topStart = (shape.fluentTopStart.size - 1.dp).coerceIn(0.dp, Dp.Infinity),
+                            topEnd = ((shape.fluentTopEnd as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity),
+                            bottomStart = ((shape.fluentBottomStart as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity),
+                            bottomEnd = ((shape.fluentBottomEnd as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity)
+                        )
+                    } else {
+                        shape
+                    }
+                } else {
+                    shape
+                }
+            }
+            Box(
+                modifier.layer(
+                    elevation,
+                    shape,
+                    border,
+                    backgroundSizing,
                     color,
                     innerShape
                 ), // TODO: A better way to set content corner
@@ -80,7 +174,7 @@ private fun Modifier.layer(
     elevation: Dp,
     shape: Shape,
     border: BorderStroke?,
-    outsideBorder: Boolean,
+    backgroundSizing: BackgroundSizing,
     color: Color,
     innerShape: Shape
 ) = this.shadow(elevation, shape, clip = false)
@@ -88,7 +182,7 @@ private fun Modifier.layer(
         if (border != null) {
             Modifier.border(border, shape)
                 .then(
-                    if (outsideBorder) {
+                    if (backgroundSizing == BackgroundSizing.InnerBorderEdge) {
                         Modifier.paddingToBorder(shape)
                             .background(color = color, shape = innerShape)
                     } else {
