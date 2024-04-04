@@ -16,6 +16,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(compose.foundation)
+                implementation(compose.components.resources)
                 implementation(project(":fluent"))
                 implementation(project(":fluent-icons-extended"))
                 implementation(compose("org.jetbrains.compose.ui:ui-util"))

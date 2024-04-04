@@ -9,12 +9,18 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowStyle
+import fluentdesign.gallery.generated.resources.Res
+import fluentdesign.gallery.generated.resources.icon
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalResourceApi::class)
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         state = rememberWindowState(position = WindowPosition(Alignment.Center), size = DpSize(1280.dp, 720.dp)),
-        title = "Compose Fluent Design Gallery"
+        title = "Compose Fluent Design Gallery",
+        icon = painterResource(Res.drawable.icon)
     ) {
         GalleryTheme {
             //TODO Make Window transparent.
