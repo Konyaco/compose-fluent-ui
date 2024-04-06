@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,6 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import com.konyaco.fluent.background.AcrylicContainer
 import com.konyaco.fluent.background.AcrylicContainerScope
+import com.konyaco.fluent.component.ContentDialogHost
+import com.konyaco.fluent.component.ContentDialogHostState
+import com.konyaco.fluent.component.LocalContentDialog
 import com.konyaco.fluent.component.ProvideFontIcon
 
 @ExperimentalFluentApi
@@ -23,6 +27,7 @@ fun FluentTheme(
     useAcrylicPopup: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    val contentDialogHostState = remember { ContentDialogHostState() }
     AcrylicContainer {
         CompositionLocalProvider(
             LocalAcrylicPopupEnabled provides useAcrylicPopup,
@@ -32,8 +37,10 @@ fun FluentTheme(
             LocalTextSelectionColors provides TextSelectionColors(
                 colors.text.onAccent.primary,
                 colors.fillAccent.selectedTextBackground.copy(0.4f)
-            )
+            ),
+            LocalContentDialog provides contentDialogHostState
         ) {
+            ContentDialogHost(contentDialogHostState)
             Box(modifier = Modifier.behindAcrylic()) {
                 ProvideFontIcon {
                     PlatformCompositionLocalProvider(content)

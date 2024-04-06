@@ -15,3 +15,13 @@ fun Card(
 ) {
     Layer(modifier = modifier, shape = shape, outsideBorder = true, content = content)
 }
+
+@Composable
+fun Card(
+    modifier: Modifier,
+    shape: Shape = FluentRoundedCornerShape(8.dp),
+    clickable: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Layer(shape = shape, outsideBorder = true, content = content)
+}
