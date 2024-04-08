@@ -1,24 +1,11 @@
 package com.konyaco.fluent.gallery.screen
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,38 +17,12 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.component.AccentButton
-import com.konyaco.fluent.component.Button
-import com.konyaco.fluent.component.CheckBox
-import com.konyaco.fluent.component.Dialog
-import com.konyaco.fluent.component.DropdownMenu
-import com.konyaco.fluent.component.DropdownMenuItem
-import com.konyaco.fluent.component.FlyoutContainer
-import com.konyaco.fluent.component.FlyoutPlacement
-import com.konyaco.fluent.component.Icon
-import com.konyaco.fluent.component.MenuFlyoutContainer
-import com.konyaco.fluent.component.MenuFlyoutItem
-import com.konyaco.fluent.component.MenuFlyoutSeparator
-import com.konyaco.fluent.component.ProgressBar
-import com.konyaco.fluent.component.ProgressRing
-import com.konyaco.fluent.component.ProgressRingSize
-import com.konyaco.fluent.component.RadioButton
-import com.konyaco.fluent.component.Slider
-import com.konyaco.fluent.component.SubtleButton
-import com.konyaco.fluent.component.Switcher
-import com.konyaco.fluent.component.Text
-import com.konyaco.fluent.component.TextField
+import com.konyaco.fluent.component.*
+import com.konyaco.fluent.component.rememberScrollbarAdapter
 import com.konyaco.fluent.gallery.LocalStore
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Add
-import com.konyaco.fluent.icons.regular.ArrowLeft
-import com.konyaco.fluent.icons.regular.Checkmark
-import com.konyaco.fluent.icons.regular.ClipboardMore
-import com.konyaco.fluent.icons.regular.Delete
-import com.konyaco.fluent.icons.regular.Dismiss
-import com.konyaco.fluent.icons.regular.List
-import com.konyaco.fluent.icons.regular.Navigation
+import com.konyaco.fluent.icons.regular.*
 import com.konyaco.fluent.surface.Card
 
 
@@ -278,54 +239,97 @@ private fun Content() {
 
     Controls()
 
-    Row {
-        Box {
-            Box(Modifier.size(32.dp).background(FluentTheme.colors.fillAccent.default))
-        }
+    val layerScrollState = rememberScrollState()
+    ScrollbarContainer(
+        adapter = rememberScrollbarAdapter(layerScrollState),
+        isVertical = false
+    ) {
+        Row(modifier = Modifier.padding(bottom = 8.dp).horizontalScroll(layerScrollState)) {
+            Box {
+                Box(Modifier.size(32.dp).background(FluentTheme.colors.fillAccent.default))
+            }
 
-        Layer(
-            shape = RoundedCornerShape(4.dp),
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {
-                Box(Modifier.size(32.dp))
-            },
-            outsideBorder = false
-        )
-        Layer(
-            shape = RoundedCornerShape(4.dp),
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {
-                Box(Modifier.size(32.dp))
-            },
-            outsideBorder = true
-        )
+            Layer(
+                shape = RoundedCornerShape(4.dp),
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                outsideBorder = false
+            )
+            Layer(
+                shape = RoundedCornerShape(4.dp),
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                outsideBorder = true
+            )
 
-        Layer(
-            shape = RoundedCornerShape(4.dp),
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {
-                Box(Modifier.size(32.dp))
-            },
-            backgroundSizing = BackgroundSizing.InnerBorderEdge
-        )
-        Layer(
-            shape = RoundedCornerShape(4.dp),
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {
-                Box(Modifier.size(32.dp))
-            },
-            backgroundSizing = BackgroundSizing.OuterBorderEdge
-        )
+            Layer(
+                shape = RoundedCornerShape(4.dp),
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
+            )
+            Layer(
+                shape = RoundedCornerShape(4.dp),
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                backgroundSizing = BackgroundSizing.OuterBorderEdge
+            )
 
-        Card(Modifier) {
-            Box(Modifier.size(32.dp))
+            Layer(
+                shape = CutCornerShape(4.dp),
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default.copy(0.5f)),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
+            )
+            Layer(
+                shape = CutCornerShape(4.dp),
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default.copy(0.5f)),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                backgroundSizing = BackgroundSizing.OuterBorderEdge
+            )
+
+            Layer(
+                shape = CircleShape,
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
+            )
+            Layer(
+                shape = CircleShape,
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
+                content = {
+                    Box(Modifier.size(32.dp))
+                },
+                backgroundSizing = BackgroundSizing.OuterBorderEdge
+            )
+
+            Card(Modifier) {
+                Box(Modifier.size(32.dp))
+            }
         }
     }
-
     var value by remember { mutableStateOf(TextFieldValue("Hello Fluent!")) }
     TextField(value, onValueChange = { value = it })
     TextField(

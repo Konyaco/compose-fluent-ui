@@ -4,23 +4,19 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.shape.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.translate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.constrainHeight
-import androidx.compose.ui.unit.constrainWidth
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.offset
+import androidx.compose.ui.unit.*
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
@@ -29,6 +25,8 @@ import com.konyaco.fluent.shape.FluentDpCornerSize
 import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.sqrt
+import kotlin.ranges.coerceIn
 
 /**
  * Defines constants that specify how far an element's background extends in relation to the element's border.
@@ -137,31 +135,14 @@ fun Layer(
 ) {
     ProvideTextStyle(FluentTheme.typography.body.copy(color = contentColor)) {
         CompositionLocalProvider(LocalContentColor provides contentColor) {
-            val innerShape = remember(shape, backgroundSizing) {
-                if (shape is FluentRoundedCornerShape && shape != FluentCircleShape && backgroundSizing == BackgroundSizing.InnerBorderEdge) {
-                    if (shape.fluentTopStart is FluentDpCornerSize) {
-                        RoundedCornerShape(
-                            topStart = (shape.fluentTopStart.size - 1.dp).coerceIn(0.dp, Dp.Infinity),
-                            topEnd = ((shape.fluentTopEnd as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity),
-                            bottomStart = ((shape.fluentBottomStart as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity),
-                            bottomEnd = ((shape.fluentBottomEnd as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity)
-                        )
-                    } else {
-                        shape
-                    }
-                } else {
-                    shape
-                }
-            }
             Box(
-                modifier.layer(
+                modifier = modifier.layer(
                     elevation,
                     shape,
                     border,
                     backgroundSizing,
-                    color,
-                    innerShape
-                ), // TODO: A better way to set content corner
+                    color
+                ),
                 propagateMinConstraints = true
             ) {
                 content()
@@ -175,43 +156,94 @@ private fun Modifier.layer(
     shape: Shape,
     border: BorderStroke?,
     backgroundSizing: BackgroundSizing,
-    color: Color,
-    innerShape: Shape
-) = this.shadow(elevation, shape, clip = false)
-    .then(
-        if (border != null) {
-            Modifier.border(border, shape)
-                .then(
-                    if (backgroundSizing == BackgroundSizing.InnerBorderEdge) {
-                        Modifier.paddingToBorder(shape)
-                            .background(color = color, shape = innerShape)
+    color: Color
+) = then(
+    Modifier
+        .shadow(elevation = elevation, shape = shape, clip = false)
+        .then(
+            if (border != null) {
+                val backgroundShape =
+                    if (backgroundSizing == BackgroundSizing.InnerBorderEdge && shape is CornerBasedShape) {
+                        BackgroundPaddingShape(shape)
                     } else {
-                        /* Never draw content in the border. */
-                        Modifier.background(color = color, shape = shape)
-                            .paddingToBorder(shape)
+                        shape
                     }
-                ).clip(innerShape)
-        } else {
-            Modifier.background(color = color, shape = shape).clip(shape)
-        }
-    )
+                Modifier.border(border, shape)
+                    .background(color, backgroundShape)
+            } else {
+                Modifier.background(color, shape)
+            }
+        )
+        .clip(shape)
+)
 
-private fun Modifier.paddingToBorder(shape: Shape) = then(
-    Modifier.layout { measurable, constraints ->
-        val circular = shape == FluentCircleShape
-        // TODO: A better way to implement outside border
-        val paddingValue = when {
-            circular -> calcCircularPadding(this)
-            else -> calcPadding(this)
-        }.roundToPx()
-        val placeable = measurable.measure(constraints.offset(-paddingValue * 2, -paddingValue * 2))
-        val width = constraints.constrainWidth(placeable.width + paddingValue * 2)
-        val height = constraints.constrainHeight(placeable.height + paddingValue * 2)
-        layout(width, height) {
-            placeable.place(paddingValue, paddingValue)
+/**
+ * keep padding for background
+ */
+@Immutable
+@JvmInline
+private value class BackgroundPaddingShape(private val borderShape: CornerBasedShape) : Shape {
+
+    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+        return with(density) {
+            val circular = borderShape == FluentCircleShape || borderShape == CircleShape
+            val paddingPx = when {
+                circular -> calcCircularPadding(density)
+                else -> calcPadding(density)
+            }.toPx()
+            createInnerOutline(size, density, layoutDirection, paddingPx)
         }
     }
-)
+
+    /**
+     * Fork from [CornerBasedShape.createOutline], add padding to corner size and outline rect size.
+     */
+    private fun createInnerOutline(size: Size, density: Density, layoutDirection: LayoutDirection, paddingPx: Float) =
+        borderShape.run {
+            val cornerPaddingPx = if (this is CutCornerShape) {
+                /** padding for cut corner shape */
+                (paddingPx / sqrt(2f)).toInt().toFloat()
+            } else {
+                paddingPx
+            }
+            val innerSize = Size(size.width - 2 * paddingPx, size.height - 2 * paddingPx)
+            /** add padding to corner size */
+            var topStart = (borderShape.topStart.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            var topEnd = (borderShape.topEnd.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            var bottomEnd = (borderShape.bottomEnd.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            var bottomStart = (borderShape.bottomStart.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            val minDimension = innerSize.minDimension
+            if (topStart + bottomStart > minDimension) {
+                val scale = minDimension / (topStart + bottomStart)
+                topStart *= scale
+                bottomStart *= scale
+            }
+            if (topEnd + bottomEnd > minDimension) {
+                val scale = minDimension / (topEnd + bottomEnd)
+                topEnd *= scale
+                bottomEnd *= scale
+            }
+            require(topStart >= 0.0f && topEnd >= 0.0f && bottomEnd >= 0.0f && bottomStart >= 0.0f) {
+                "Corner size in Px can't be negative(topStart = $topStart, topEnd = $topEnd, " +
+                        "bottomEnd = $bottomEnd, bottomStart = $bottomStart)!"
+            }
+            /** add padding to outline rect size */
+            val oldOutline = createOutline(
+                size = innerSize,
+                topStart = topStart,
+                topEnd = topEnd,
+                bottomEnd = bottomEnd,
+                bottomStart = bottomStart,
+                layoutDirection = layoutDirection
+            )
+            /** translate outline to the actual rect bounds */
+            when (oldOutline) {
+                is Outline.Rectangle -> Outline.Rectangle(oldOutline.rect.translate(Offset(paddingPx, paddingPx)))
+                is Outline.Rounded -> Outline.Rounded(oldOutline.roundRect.translate(Offset(paddingPx, paddingPx)))
+                is Outline.Generic -> Outline.Generic(oldOutline.path.apply { translate(Offset(paddingPx, paddingPx)) })
+            }
+        }
+}
 
 /**
  * This is a workaround solution to eliminate 1 pixel gap
