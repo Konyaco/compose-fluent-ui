@@ -140,7 +140,6 @@ fun ContentDialog(
                 Text(
                     style = FluentTheme.typography.subtitle,
                     text = title,
-//                  color = FluentTheme.colors.text.text.primary
                 )
                 Spacer(Modifier.height(12.dp))
                 CompositionLocalProvider(
@@ -155,21 +154,22 @@ fun ContentDialog(
             // Button Grid
             Box(Modifier.height(80.dp).padding(horizontal = 25.dp), Alignment.CenterEnd) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    AccentButton(modifier = Modifier.weight(1f), onClick = {
-                        onButtonClick(ContentDialogButton.Primary)
-                    }) {
+                    AccentButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = { onButtonClick(ContentDialogButton.Primary) }
+                    ) {
                         Text(primaryButtonText)
                     }
                     if (secondaryButtonText != null) Button(
                         modifier = Modifier.weight(1f),
-                        onClick = {
-                            onButtonClick(ContentDialogButton.Secondary)
-                        }) {
+                        onClick = { onButtonClick(ContentDialogButton.Secondary) }
+                    ) {
                         Text(secondaryButtonText)
                     }
-                    if (closeButtonText != null) Button(modifier = Modifier.weight(1f), onClick = {
-                        onButtonClick(ContentDialogButton.Close)
-                    }) {
+                    if (closeButtonText != null) Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = { onButtonClick(ContentDialogButton.Close) }
+                    ) {
                         Text(closeButtonText)
                     }
                 }
