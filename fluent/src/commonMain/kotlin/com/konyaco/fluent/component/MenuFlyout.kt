@@ -58,6 +58,7 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
@@ -203,10 +204,10 @@ fun MenuFlyoutScope.MenuFlyoutItem(
                 minHeight = 30.dp
             ).fillMaxWidth(),
         shape = RoundedCornerShape(size = 4.dp),
-        border = BorderStroke(1.dp, menuColor.borderBrush),
         color = fillColor,
         contentColor = contentColor,
-        outsideBorder = true
+        border = BorderStroke(1.dp, menuColor.borderBrush),
+        backgroundSizing = BackgroundSizing.InnerBorderEdge
     ) {
         Row(
             modifier = Modifier

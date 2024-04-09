@@ -60,6 +60,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
@@ -221,8 +222,8 @@ fun SideNavItem(
                     color, tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
                 ).value,
                 contentColor = FluentTheme.colors.text.text.primary,
-                outsideBorder = false,
-                border = null
+                border = null,
+                backgroundSizing = BackgroundSizing.OuterBorderEdge
             ) {
                 Box(
                     Modifier.clickable(

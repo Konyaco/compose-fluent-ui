@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.component.Icon
@@ -56,7 +57,8 @@ fun GallerySection(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
             shape = RoundedCornerShape(
                 topStart = 8.dp, topEnd = 8.dp
-            )
+            ),
+            backgroundSizing = BackgroundSizing.OuterBorderEdge
         ) {
             Mica(Modifier) {
                 Box(

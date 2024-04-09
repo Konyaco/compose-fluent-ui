@@ -1,7 +1,6 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -38,6 +37,7 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 
@@ -81,11 +81,11 @@ fun Dialog(
             ) {
                 Mica(Modifier.wrapContentSize().clip(RoundedCornerShape(8.dp))) {
                     Layer(
-                        Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
+                        modifier = Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
                         shape = RoundedCornerShape(size = 8.dp),
-                        border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
-                        outsideBorder = true,
                         contentColor = FluentTheme.colors.text.text.primary,
+                        border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
+                        backgroundSizing = BackgroundSizing.InnerBorderEdge
                     ) {
                         Column(Modifier.background(FluentTheme.colors.background.solid.base)) {
                             Column(Modifier.background(FluentTheme.colors.background.layer.alt).padding(24.dp)) {

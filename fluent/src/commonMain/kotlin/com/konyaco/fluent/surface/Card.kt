@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 
 @Composable
@@ -13,5 +14,10 @@ fun Card(
     shape: Shape = RoundedCornerShape(size = 8.dp),
     content: @Composable () -> Unit
 ) {
-    Layer(modifier = modifier, shape = shape, outsideBorder = true, content = content)
+    Layer(
+        modifier = modifier,
+        shape = shape,
+        backgroundSizing = BackgroundSizing.InnerBorderEdge,
+        content = content
+    )
 }
