@@ -40,11 +40,9 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 internal expect val DialogPopupPositionProvider : PopupPositionProvider
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Dialog(
     title: String,
@@ -84,7 +82,7 @@ fun Dialog(
                 Mica(Modifier.wrapContentSize().clip(RoundedCornerShape(8.dp))) {
                     Layer(
                         Modifier.wrapContentSize().widthIn(200.dp, 600.dp),
-                        shape = FluentRoundedCornerShape(8.dp),
+                        shape = RoundedCornerShape(size = 8.dp),
                         border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
                         outsideBorder = true,
                         contentColor = FluentTheme.colors.text.text.primary,

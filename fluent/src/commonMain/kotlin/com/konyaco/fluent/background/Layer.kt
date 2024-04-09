@@ -4,7 +4,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.shape.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,13 +23,9 @@ import androidx.compose.ui.unit.*
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
-import com.konyaco.fluent.shape.FluentCircleShape
-import com.konyaco.fluent.shape.FluentDpCornerSize
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.sqrt
-import kotlin.ranges.coerceIn
 
 /**
  * Defines constants that specify how far an element's background extends in relation to the element's border.
@@ -42,6 +41,7 @@ enum class BackgroundSizing {
      */
     OuterBorderEdge
 }
+
 @Deprecated(
     message = "Use backgroundSizing",
     replaceWith = ReplaceWith(
@@ -52,7 +52,7 @@ enum class BackgroundSizing {
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
-    shape: Shape = FluentRoundedCornerShape(4.dp),
+    shape: Shape = RoundedCornerShape(size = 4.dp),
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
@@ -63,17 +63,8 @@ fun Layer(
     ProvideTextStyle(FluentTheme.typography.body.copy(color = contentColor)) {
         CompositionLocalProvider(LocalContentColor provides contentColor) {
             val innerShape = remember(shape, outsideBorder) {
-                if (shape is FluentRoundedCornerShape && shape != FluentCircleShape && outsideBorder) {
-                    if (shape.fluentTopStart is FluentDpCornerSize) {
-                        RoundedCornerShape(
-                            topStart = (shape.fluentTopStart.size - 1.dp).coerceIn(0.dp, Dp.Infinity),
-                            topEnd = ((shape.fluentTopEnd as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity),
-                            bottomStart = ((shape.fluentBottomStart as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity),
-                            bottomEnd = ((shape.fluentBottomEnd as FluentDpCornerSize).size - 1.dp).coerceIn(0.dp, Dp.Infinity)
-                        )
-                    } else {
-                        shape
-                    }
+                if (shape is CornerBasedShape && shape != CircleShape && outsideBorder) {
+                    BackgroundPaddingShape(shape)
                 } else {
                     shape
                 }
@@ -105,7 +96,7 @@ private fun Modifier.layerLegacy(
 ) = this.shadow(elevation, shape, clip = false)
     .then(if (border != null) Modifier.border(border, shape) else Modifier)
     .layout { measurable, constraints ->
-        val circular = shape == FluentCircleShape
+        val circular = shape == CircleShape
         // TODO: A better way to implement outside border
         val paddingValue = when {
             outsideBorder && circular -> calcCircularPadding(this)
@@ -125,7 +116,7 @@ private fun Modifier.layerLegacy(
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
-    shape: Shape = FluentRoundedCornerShape(4.dp),
+    shape: Shape = RoundedCornerShape(size = 4.dp),
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
@@ -186,7 +177,7 @@ private value class BackgroundPaddingShape(private val borderShape: CornerBasedS
 
     override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
         return with(density) {
-            val circular = borderShape == FluentCircleShape || borderShape == CircleShape
+            val circular = borderShape == CircleShape
             val paddingPx = when {
                 circular -> calcCircularPadding(density)
                 else -> calcPadding(density)
