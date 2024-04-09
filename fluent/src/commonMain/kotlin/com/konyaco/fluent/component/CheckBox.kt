@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -31,7 +32,6 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Checkmark
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 @Composable
 fun CheckBox(
@@ -74,7 +74,7 @@ fun CheckBox(
         )
         Layer(
             modifier = Modifier.size(20.dp),
-            shape = FluentRoundedCornerShape(4.dp),
+            shape = RoundedCornerShape(4.dp),
             border = BorderStroke(
                 1.dp, if (checked) when {
                     !enabled -> colors.fillAccent.disabled

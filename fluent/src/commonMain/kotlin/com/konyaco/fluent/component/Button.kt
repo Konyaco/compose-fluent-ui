@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -54,7 +55,6 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -596,5 +596,5 @@ private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
 }
 
 private val buttonMinHeight = 32.dp
-private val buttonShape = FluentRoundedCornerShape(4.dp)
+private val buttonShape = RoundedCornerShape(size = 4.dp)
 private val buttonBorderStrokeWidth = 1.dp

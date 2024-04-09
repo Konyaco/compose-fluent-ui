@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +40,6 @@ import com.konyaco.fluent.component.SubtleButton
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import com.konyaco.fluent.surface.Card
 
 @Composable
@@ -54,7 +54,7 @@ fun GallerySection(
         Spacer(Modifier.height(16.dp))
         Layer(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-            shape = FluentRoundedCornerShape(
+            shape = RoundedCornerShape(
                 topStart = 8.dp, topEnd = 8.dp
             )
         ) {
@@ -75,9 +75,9 @@ fun GallerySection(
                 .clickable(interactionSource = interactionSource, indication = null, onClick = {
                     sourceCodeExpanded = !sourceCodeExpanded
                 }),
-            shape = FluentRoundedCornerShape(
-                bottomStart = if (sourceCodeExpanded) 0.dp else 8.dp,
-                bottomEnd = if (sourceCodeExpanded) 0.dp else 8.dp
+            shape = RoundedCornerShape(
+                bottomEnd = if (sourceCodeExpanded) 0.dp else 8.dp,
+                bottomStart = if (sourceCodeExpanded) 0.dp else 8.dp
             )
         ) {
             Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -110,9 +110,9 @@ fun GallerySection(
         ) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = FluentRoundedCornerShape(
-                    bottomStart = 8.dp,
-                    bottomEnd = 8.dp
+                shape = RoundedCornerShape(
+                    bottomEnd = 8.dp,
+                    bottomStart = 8.dp
                 )
             ) {
                 Column(Modifier.padding(16.dp, 12.dp)) {

@@ -43,7 +43,6 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 @Composable
 fun DropdownMenu(
@@ -126,7 +125,7 @@ internal fun DropdownMenuContent(
         Mica(Modifier.shadow(8.dp, RoundedCornerShape(8.dp)).clip(RoundedCornerShape(8.dp))) {
             // TODO: Dropdown should use Acrylic material.
             Layer(
-                shape = FluentRoundedCornerShape(8.dp),
+                shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
                 outsideBorder = true
             ) {

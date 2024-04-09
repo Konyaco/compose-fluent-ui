@@ -2,6 +2,7 @@ package com.konyaco.fluent.gallery.screen.basicinput
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -10,7 +11,6 @@ import com.konyaco.fluent.component.*
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.GalleryPage
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 @Component(index = 5, description = "A two-part button that displays a flyout when its secondary part is clicked.")
 @Composable
@@ -97,7 +97,7 @@ private fun ColorList(
                 },
                 iconOnly = true
             ) {
-                Box(modifier = Modifier.size(32.dp).background(it, FluentRoundedCornerShape(2.dp)))
+                Box(modifier = Modifier.size(32.dp).background(it, RoundedCornerShape(2.dp)))
             }
         }
     }

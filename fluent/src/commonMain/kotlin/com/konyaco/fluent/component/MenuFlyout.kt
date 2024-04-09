@@ -61,7 +61,6 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlinx.coroutines.delay
 
 @Composable
@@ -203,7 +202,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
                 minWidth = 108.dp,
                 minHeight = 30.dp
             ).fillMaxWidth(),
-        shape = FluentRoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(size = 4.dp),
         border = BorderStroke(1.dp, menuColor.borderBrush),
         color = fillColor,
         contentColor = contentColor,

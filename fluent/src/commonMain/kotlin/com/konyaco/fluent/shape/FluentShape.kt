@@ -18,14 +18,7 @@
  */
 package com.konyaco.fluent.shape
 
-import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
-import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.toRect
-import androidx.compose.ui.graphics.Outline
+import androidx.compose.foundation.shape.*
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -42,115 +35,90 @@ import androidx.compose.ui.unit.dp
  * @param bottomEnd a size of the bottom end corner
  * @param bottomStart a size of the bottom start corner
  */
-class FluentRoundedCornerShape(
-    topStart: FluentCornerSize,
-    topEnd: FluentCornerSize,
-    bottomEnd: FluentCornerSize,
-    bottomStart: FluentCornerSize
-) : CornerBasedShape(
-    topStart = topStart,
-    topEnd = topEnd,
-    bottomEnd = bottomEnd,
-    bottomStart = bottomStart
-) {
-    val fluentTopStart = topStart
-    val fluentTopEnd = topEnd
-    val fluentBottomEnd = bottomEnd
-    val fluentBottomStart = bottomStart
-
-    override fun createOutline(
-        size: Size,
-        topStart: Float,
-        topEnd: Float,
-        bottomEnd: Float,
-        bottomStart: Float,
-        layoutDirection: LayoutDirection
-    ) = if (topStart + topEnd + bottomEnd + bottomStart == 0.0f) {
-        Outline.Rectangle(size.toRect())
-    } else {
-        Outline.Rounded(
-            RoundRect(
-                rect = size.toRect(),
-                topLeft = CornerRadius(if (layoutDirection == LayoutDirection.Ltr) topStart else topEnd),
-                topRight = CornerRadius(if (layoutDirection == LayoutDirection.Ltr) topEnd else topStart),
-                bottomRight = CornerRadius(if (layoutDirection == LayoutDirection.Ltr) bottomEnd else bottomStart),
-                bottomLeft = CornerRadius(if (layoutDirection == LayoutDirection.Ltr) bottomStart else bottomEnd)
-            )
-        )
-    }
-
-    override fun copy(
-        topStart: CornerSize,
-        topEnd: CornerSize,
-        bottomEnd: CornerSize,
-        bottomStart: CornerSize
-    ): CornerBasedShape = FluentRoundedCornerShape(
-        topStart = topStart as FluentCornerSize,
-        topEnd = topEnd as FluentCornerSize,
-        bottomEnd = bottomEnd as FluentCornerSize,
-        bottomStart = bottomStart as FluentCornerSize
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(topStart = topStart, topEnd = topEnd, bottomEnd = bottomEnd, bottomStart = bottomStart)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
     )
-
-    override fun toString(): String {
-        return "FluentRoundedCornerShape(topStart = $topStart, topEnd = $topEnd, bottomEnd = " +
-                "$bottomEnd, bottomStart = $bottomStart)"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FluentRoundedCornerShape) return false
-
-        if (topStart != other.topStart) return false
-        if (topEnd != other.topEnd) return false
-        if (bottomEnd != other.bottomEnd) return false
-        if (bottomStart != other.bottomStart) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = topStart.hashCode()
-        result = 31 * result + topEnd.hashCode()
-        result = 31 * result + bottomEnd.hashCode()
-        result = 31 * result + bottomStart.hashCode()
-        return result
-    }
-}
+)
+typealias FluentRoundedCornerShape = RoundedCornerShape
 
 /**
  * Circular [Shape] with all the corners sized as the 50 percent of the shape size.
  */
-val FluentCircleShape = FluentRoundedCornerShape(50)
+@Deprecated(
+    message = "Use CircleShape instead",
+    replaceWith = ReplaceWith(
+        expression = "CircleShape",
+        imports = arrayOf("androidx.compose.foundation.shape.CircleShape")
+    )
+)
+val FluentCircleShape: FluentRoundedCornerShape
+    get() = CircleShape
 
 /**
  * Creates [RoundedCornerShape] with the same size applied for all four corners.
  * @param corner [FluentCornerSize] to apply.
  */
-fun FluentRoundedCornerShape(corner: FluentCornerSize) =
-    FluentRoundedCornerShape(corner, corner, corner, corner)
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(corner = corner)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
+    )
+)
+fun FluentRoundedCornerShape(corner: FluentCornerSize) = RoundedCornerShape(corner, corner, corner, corner)
 
 /**
  * Creates [RoundedCornerShape] with the same size applied for all four corners.
  * @param size Size in [Dp] to apply.
  */
-fun FluentRoundedCornerShape(size: Dp) = FluentRoundedCornerShape(FluentCornerSize(size))
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(size = size)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
+    )
+)
+fun FluentRoundedCornerShape(size: Dp) = RoundedCornerShape(CornerSize(size))
 
 /**
  * Creates [RoundedCornerShape] with the same size applied for all four corners.
  * @param size Size in pixels to apply.
  */
-fun FluentRoundedCornerShape(size: Float) = FluentRoundedCornerShape(FluentCornerSize(size))
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(size = size)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
+    )
+)
+fun FluentRoundedCornerShape(size: Float) = RoundedCornerShape(CornerSize(size))
 
 /**
  * Creates [RoundedCornerShape] with the same size applied for all four corners.
  * @param percent Size in percents to apply.
  */
-fun FluentRoundedCornerShape(percent: Int) =
-    FluentRoundedCornerShape(FluentCornerSize(percent))
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(percent = percent)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
+    )
+)
+fun FluentRoundedCornerShape(percent: Int) = RoundedCornerShape(CornerSize(percent))
 
 /**
  * Creates [RoundedCornerShape] with sizes defined in [Dp].
  */
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(topStart = topStart, topEnd = topEnd, bottomEnd = bottomEnd, bottomStart = bottomStart)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
+    )
+)
 fun FluentRoundedCornerShape(
     topStart: Dp = 0.dp,
     topEnd: Dp = 0.dp,
@@ -166,6 +134,13 @@ fun FluentRoundedCornerShape(
 /**
  * Creates [RoundedCornerShape] with sizes defined in pixels.
  */
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(topStart = topStart, topEnd = topEnd, bottomEnd = bottomEnd, bottomStart = bottomStart)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
+    )
+)
 fun FluentRoundedCornerShape(
     topStart: Float = 0.0f,
     topEnd: Float = 0.0f,
@@ -190,6 +165,13 @@ fun FluentRoundedCornerShape(
  * @param bottomStartPercent The bottom start corner radius as a percentage of the smaller side,
  * with a range of 0 - 100.
  */
+@Deprecated(
+    message = "Use RoundedCornerShape instead",
+    replaceWith = ReplaceWith(
+        expression = "RoundedCornerShape(topStartPercent = topStartPercent, topEndPercent = topEndPercent, bottomEndPercent = bottomEndPercent, bottomStartPercent = bottomStartPercent)",
+        imports = arrayOf("androidx.compose.foundation.shape.RoundedCornerShape")
+    )
+)
 fun FluentRoundedCornerShape(
     /*@IntRange(from = 0, to = 100)*/
     topStartPercent: Int = 0,

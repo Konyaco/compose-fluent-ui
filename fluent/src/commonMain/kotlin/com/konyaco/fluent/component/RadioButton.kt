@@ -26,7 +26,6 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.shape.FluentCircleShape
 
 @Composable
 fun RadioButton(
@@ -63,7 +62,7 @@ fun RadioButton(
         )
         Layer(
             modifier = Modifier.size(20.dp),
-            shape = FluentCircleShape,
+            shape = CircleShape,
             color = fillColor,
             outsideBorder = true,
             border = BorderStroke(
