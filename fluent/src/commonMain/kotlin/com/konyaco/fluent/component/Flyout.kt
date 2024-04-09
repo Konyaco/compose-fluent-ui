@@ -30,6 +30,7 @@ import com.konyaco.fluent.LocalWindowAcrylicContainer
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.AcrylicDefaults
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 
@@ -231,7 +232,10 @@ internal fun AcrylicPopupContent(
                     shadowElevation = elevation.toPx()
                     clip = true
                 }) {
-                    Layer(shape = shape) {
+                    Layer(
+                        shape = shape,
+                        backgroundSizing = BackgroundSizing.OuterBorderEdge
+                    ) {
                         Box(modifier = modifier.padding(contentPadding)) {
                             content()
                         }

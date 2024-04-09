@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.times
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 
 @Composable
@@ -148,14 +149,15 @@ private fun calcThumbOffset(
 @Composable
 private fun Rail() {
     // Rail
-    Layer(modifier = Modifier.fillMaxWidth().requiredHeight(4.dp),
+    Layer(
+        modifier = Modifier.fillMaxWidth().requiredHeight(4.dp),
         shape = CircleShape,
         color = FluentTheme.colors.controlStrong.default,
         border = BorderStroke(
             1.dp, if (FluentTheme.colors.darkMode) FluentTheme.colors.stroke.controlStrong.default
             else FluentTheme.colors.controlStrong.default
         ),
-        outsideBorder = true,
+        backgroundSizing = BackgroundSizing.InnerBorderEdge,
         content = {}
     )
 }
@@ -190,9 +192,9 @@ private fun Thumb(
             .size(ThumbSizeWithBorder)
             .clickable(interactionSource, null, onClick = {}),
         shape = CircleShape,
-        border = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
         color = FluentTheme.colors.controlSolid.default,
-        outsideBorder = true
+        border = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
+        backgroundSizing = BackgroundSizing.InnerBorderEdge
     ) {
         Box(contentAlignment = Alignment.Center) {
             // Inner Thumb

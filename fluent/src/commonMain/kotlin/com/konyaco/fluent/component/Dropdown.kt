@@ -41,6 +41,7 @@ import androidx.compose.ui.window.PopupProperties
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 
@@ -127,7 +128,7 @@ internal fun DropdownMenuContent(
             Layer(
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
-                outsideBorder = true
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
             ) {
                 Column(
                     modifier = modifier

@@ -18,7 +18,6 @@ import androidx.compose.ui.geometry.translate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.*
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
@@ -60,58 +59,21 @@ fun Layer(
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
-    ProvideTextStyle(FluentTheme.typography.body.copy(color = contentColor)) {
-        CompositionLocalProvider(LocalContentColor provides contentColor) {
-            val innerShape = remember(shape, outsideBorder) {
-                if (shape is CornerBasedShape && shape != CircleShape && outsideBorder) {
-                    BackgroundPaddingShape(shape)
-                } else {
-                    shape
-                }
-            }
-            Box(
-                modifier.layerLegacy(
-                    elevation,
-                    shape,
-                    border,
-                    outsideBorder,
-                    color,
-                    innerShape
-                ),
-                propagateMinConstraints = true
-            ) {
-                content()
-            }
-        }
-    }
+    Layer(
+        modifier = modifier,
+        shape = shape,
+        color = color,
+        contentColor = contentColor,
+        border = border,
+        elevation = elevation,
+        backgroundSizing = if (outsideBorder) {
+            BackgroundSizing.InnerBorderEdge
+        } else {
+            BackgroundSizing.OuterBorderEdge
+        },
+        content = content
+    )
 }
-
-private fun Modifier.layerLegacy(
-    elevation: Dp,
-    shape: Shape,
-    border: BorderStroke?,
-    outsideBorder: Boolean,
-    color: Color,
-    innerShape: Shape
-) = this.shadow(elevation, shape, clip = false)
-    .then(if (border != null) Modifier.border(border, shape) else Modifier)
-    .layout { measurable, constraints ->
-        val circular = shape == CircleShape
-        // TODO: A better way to implement outside border
-        val paddingValue = when {
-            outsideBorder && circular -> calcCircularPadding(this)
-            outsideBorder -> calcPadding(this)
-            else -> 0.dp
-        }.roundToPx()
-        val placeable = measurable.measure(constraints.offset(-paddingValue * 2, -paddingValue * 2))
-        val width = constraints.constrainWidth(placeable.width + paddingValue * 2)
-        val height = constraints.constrainHeight(placeable.height + paddingValue * 2)
-        layout(width, height) {
-            placeable.place(paddingValue, paddingValue)
-        }
-    }
-    .background(color = color, shape = innerShape)
-    .clip(shape = innerShape)
 
 @Composable
 fun Layer(

@@ -256,25 +256,6 @@ private fun Content() {
                 content = {
                     Box(Modifier.size(32.dp))
                 },
-                outsideBorder = false
-            )
-            Layer(
-                shape = RoundedCornerShape(4.dp),
-                color = FluentTheme.colors.fillAccent.default,
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-                content = {
-                    Box(Modifier.size(32.dp))
-                },
-                outsideBorder = true
-            )
-
-            Layer(
-                shape = RoundedCornerShape(4.dp),
-                color = FluentTheme.colors.fillAccent.default,
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-                content = {
-                    Box(Modifier.size(32.dp))
-                },
                 backgroundSizing = BackgroundSizing.InnerBorderEdge
             )
             Layer(

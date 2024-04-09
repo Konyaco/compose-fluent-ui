@@ -28,11 +28,11 @@ fun AcrylicContainerScope.Acrylic(
     content: @Composable () -> Unit
 ) {
     Layer(
-        outsideBorder = true,
+        modifier = modifier.acrylicOverlay(tint = tint, shape = shape, enabled = enabled),
         shape = shape,
         color = if (enabled()) Color.Transparent else FluentTheme.colors.background.layer.default,
         border = border,
-        modifier = modifier.acrylicOverlay(tint = tint, shape = shape, enabled = enabled)
+        backgroundSizing = BackgroundSizing.InnerBorderEdge
     ) {
         content()
     }

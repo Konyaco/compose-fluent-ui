@@ -455,11 +455,11 @@ private fun ButtonLayer(
     )
     Layer(
         modifier = modifier,
+        shape = shape,
         color = fillColor,
         contentColor = contentColor,
-        outsideBorder = !accentButton,
-        shape = shape,
         border = if (displayBorder) BorderStroke(buttonBorderStrokeWidth, buttonColor.borderBrush) else null,
+        backgroundSizing = if (!accentButton) BackgroundSizing.InnerBorderEdge else BackgroundSizing.OuterBorderEdge,
         content = content
     )
 }

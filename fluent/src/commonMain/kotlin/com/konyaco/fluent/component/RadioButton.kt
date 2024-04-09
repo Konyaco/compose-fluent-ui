@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 
 @Composable
@@ -64,7 +65,6 @@ fun RadioButton(
             modifier = Modifier.size(20.dp),
             shape = CircleShape,
             color = fillColor,
-            outsideBorder = true,
             border = BorderStroke(
                 1.dp,
                 color = if (selected) when {
@@ -74,7 +74,8 @@ fun RadioButton(
                     !enabled || pressed -> FluentTheme.colors.stroke.controlStrong.disabled
                     else -> FluentTheme.colors.stroke.controlStrong.default
                 }
-            )
+            ),
+            backgroundSizing = BackgroundSizing.InnerBorderEdge
         ) {
             Box(contentAlignment = Alignment.Center) {
                 // Bullet, Only displays when selected, or is pressed
@@ -93,13 +94,13 @@ fun RadioButton(
                 // Inner
                 Layer(
                     modifier = Modifier.size(if (size == 0.dp || !selected) size else size + 2.dp), // TODO: Remove this 2dp if outside border is provided
+                    shape = CircleShape,
                     color = FluentTheme.colors.text.onAccent.primary,
                     border = if (selected) BorderStroke(
                         1.dp,
                         FluentTheme.colors.borders.circle
                     ) else null,
-                    shape = CircleShape,
-                    outsideBorder = true,
+                    backgroundSizing = BackgroundSizing.InnerBorderEdge,
                     content = {}
                 )
             }
