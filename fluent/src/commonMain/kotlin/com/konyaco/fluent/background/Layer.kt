@@ -8,7 +8,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -18,12 +21,14 @@ import androidx.compose.ui.geometry.translate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
 import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.math.sqrt
 
 /**
@@ -206,13 +211,12 @@ private value class BackgroundPaddingShape(private val borderShape: CornerBasedS
 private fun calcPadding(density: Density): Dp {
     val remainder = density.density % 1f
 
-    return when {
-        remainder == 0f -> 1.dp
-        remainder < 0.5f -> with(density) {
-//            (1.dp.toPx() + 1).toDp()
-            ceil(1.dp.toPx()).toDp()
+    return with(density) {
+        when {
+            remainder == 0f -> 1.dp
+//            remainder < 0.5f -> ceil(1.dp.toPx()).toDp()
+            else -> ceil(1.dp.toPx()).toDp()
         }
-        else -> 1.dp
     }
 }
 
@@ -221,7 +225,7 @@ private fun calcCircularPadding(density: Density): Dp {
     val remainder = density.density % 1f
 
     return with(density) {
-        if (remainder == 0f) (1.dp.toPx() - 1f).toDp() // floor(1.dp.toPx() - 0.5f).toDp()
-        else floor(1.dp.toPx()).toDp()
+        if (remainder == 0f) 1.dp
+        else ceil(1.dp.toPx()).toDp()
     }
 }
