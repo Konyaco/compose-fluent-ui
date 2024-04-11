@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
-import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /**
@@ -214,8 +213,7 @@ private fun calcPadding(density: Density): Dp {
     return with(density) {
         when {
             remainder == 0f -> 1.dp
-//            remainder < 0.5f -> ceil(1.dp.toPx()).toDp()
-            else -> ceil(1.dp.toPx()).toDp()
+            else -> (1.dp.toPx() - remainder + 1).toDp()
         }
     }
 }
@@ -226,6 +224,6 @@ private fun calcCircularPadding(density: Density): Dp {
 
     return with(density) {
         if (remainder == 0f) 1.dp
-        else ceil(1.dp.toPx()).toDp()
+        else (1.dp.toPx() - remainder + 1).toDp()
     }
 }
