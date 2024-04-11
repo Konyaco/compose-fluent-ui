@@ -225,5 +225,6 @@ private fun calcCircularPadding(density: Density): Dp {
     return with(density) {
         if (remainder == 0f) 1.dp
         else (1.dp.toPx() - remainder + 1).toDp()
+//        else (1.dp.toPx() - remainder).toDp()
     }
 }
