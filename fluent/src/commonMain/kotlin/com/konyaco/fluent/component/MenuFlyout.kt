@@ -58,22 +58,22 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlinx.coroutines.delay
 
 @Composable
 fun MenuFlyoutContainer(
-    flyout: @Composable MenuFlyoutScope.() -> Unit,
+    flyout: @Composable MenuFlyoutContainerScope.() -> Unit,
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     adaptivePlacement: Boolean = false,
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
-    content: @Composable FlyoutScope.() -> Unit
+    content: @Composable FlyoutContainerScope.() -> Unit
 ) {
     BasicFlyoutContainer(
         flyout = {
@@ -82,7 +82,12 @@ fun MenuFlyoutContainer(
                 onDismissRequest = { isFlyoutVisible = false },
                 placement = placement,
                 adaptivePlacement = adaptivePlacement,
-                content = flyout,
+                content = {
+                    val containerScope = remember(this@BasicFlyoutContainer, this) {
+                        MenuFlyoutContainerScopeImpl(this@BasicFlyoutContainer, this)
+                    }
+                    containerScope.flyout()
+                },
                 onKeyEvent = onKeyEvent,
                 onPreviewKeyEvent = onPreviewKeyEvent
             )
@@ -198,11 +203,11 @@ fun MenuFlyoutScope.MenuFlyoutItem(
                 minWidth = 108.dp,
                 minHeight = 30.dp
             ).fillMaxWidth(),
-        shape = FluentRoundedCornerShape(4.dp),
-        border = BorderStroke(1.dp, menuColor.borderBrush),
+        shape = RoundedCornerShape(size = 4.dp),
         color = fillColor,
         contentColor = contentColor,
-        outsideBorder = true
+        border = BorderStroke(1.dp, menuColor.borderBrush),
+        backgroundSizing = BackgroundSizing.InnerBorderEdge
     ) {
         Row(
             modifier = Modifier
@@ -380,6 +385,13 @@ interface MenuFlyoutScope {
         onDelayedHoveredChanged: (hovered: Boolean) -> Unit
     )
 }
+
+interface MenuFlyoutContainerScope : MenuFlyoutScope, FlyoutContainerScope
+
+private class MenuFlyoutContainerScopeImpl(
+    flyoutScope: FlyoutContainerScope,
+    menuFlyoutScope: MenuFlyoutScope
+) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope, MenuFlyoutScope by menuFlyoutScope
 
 private fun defaultMenuFlyoutEnterPlacementAnimation(
     placement: FlyoutPlacement,

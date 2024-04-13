@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -28,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Checkmark
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 
 @Composable
 fun CheckBox(
@@ -74,7 +75,13 @@ fun CheckBox(
         )
         Layer(
             modifier = Modifier.size(20.dp),
-            shape = FluentRoundedCornerShape(4.dp),
+            shape = RoundedCornerShape(4.dp),
+            color = fillColor,
+            contentColor = when {
+                !enabled -> colors.text.onAccent.disabled
+                pressed -> colors.text.onAccent.secondary
+                else -> colors.text.onAccent.primary
+            },
             border = BorderStroke(
                 1.dp, if (checked) when {
                     !enabled -> colors.fillAccent.disabled
@@ -84,13 +91,7 @@ fun CheckBox(
                     else -> colors.controlStrong.default
                 }
             ),
-            color = fillColor,
-            contentColor = when {
-                !enabled -> colors.text.onAccent.disabled
-                pressed -> colors.text.onAccent.secondary
-                else -> colors.text.onAccent.primary
-            },
-            outsideBorder = !checked
+            backgroundSizing = if (!checked) BackgroundSizing.InnerBorderEdge else BackgroundSizing.OuterBorderEdge
         ) {
             Box(contentAlignment = Alignment.CenterStart) {
                 androidx.compose.animation.AnimatedVisibility(

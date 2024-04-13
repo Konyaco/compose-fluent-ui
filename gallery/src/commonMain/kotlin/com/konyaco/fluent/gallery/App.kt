@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,10 +32,9 @@ import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.gallery.component.ComponentItem
 import com.konyaco.fluent.gallery.component.ComponentNavigator
 import com.konyaco.fluent.gallery.component.components
-import com.konyaco.fluent.gallery.screen.TodoScreen
+import com.konyaco.fluent.gallery.screen.settings.SettingsScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Settings
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import com.konyaco.fluent.surface.Card
 
 @Composable
@@ -84,7 +84,7 @@ fun App() {
 
         Card(
             modifier = Modifier.fillMaxHeight().weight(1f),
-            shape = FluentRoundedCornerShape(
+            shape = RoundedCornerShape(
                 topStart = 8.dp,
                 topEnd = 0.dp,
                 bottomStart = 0.dp,
@@ -161,4 +161,4 @@ private fun NavigationItem(
     )
 }
 
-private val settingItem = ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings) { TodoScreen() }
+private val settingItem = ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings) { SettingsScreen() }

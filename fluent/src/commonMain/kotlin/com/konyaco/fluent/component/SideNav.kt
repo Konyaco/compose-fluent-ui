@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -59,12 +60,12 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.icons.regular.Search
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -216,13 +217,13 @@ fun SideNavItem(
             val navigationLevelPadding = 28.dp * LocalNavigationLevel.current
             Layer(
                 modifier = Modifier.fillMaxWidth().height(36.dp),
-                shape = FluentRoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(size = 4.dp),
                 color = animateColorAsState(
                     color, tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
                 ).value,
                 contentColor = FluentTheme.colors.text.text.primary,
-                outsideBorder = false,
-                border = null
+                border = null,
+                backgroundSizing = BackgroundSizing.OuterBorderEdge
             ) {
                 Box(
                     Modifier.clickable(

@@ -44,6 +44,7 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.shape.FluentRoundedCornerShape
@@ -108,7 +109,7 @@ fun FluentDialog(
                         Modifier.wrapContentSize().widthIn(size.min, size.max),
                         shape = FluentRoundedCornerShape(8.dp),
                         border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
-                        outsideBorder = true,
+                        backgroundSizing = BackgroundSizing.InnerBorderEdge,
                         color = FluentTheme.colors.background.solid.base,
                         contentColor = FluentTheme.colors.text.text.primary,
                         content = content
