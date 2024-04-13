@@ -47,7 +47,6 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.Mica
-import com.konyaco.fluent.shape.FluentRoundedCornerShape
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
@@ -107,7 +106,7 @@ fun FluentDialog(
                 Mica(Modifier.wrapContentSize().clip(RoundedCornerShape(8.dp))) {
                     Layer(
                         Modifier.wrapContentSize().widthIn(size.min, size.max),
-                        shape = FluentRoundedCornerShape(8.dp),
+                        shape = RoundedCornerShape(size = 8.dp),
                         border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
                         backgroundSizing = BackgroundSizing.InnerBorderEdge,
                         color = FluentTheme.colors.background.solid.base,
