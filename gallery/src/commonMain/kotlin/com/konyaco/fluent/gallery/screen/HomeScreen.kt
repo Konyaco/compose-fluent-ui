@@ -1,8 +1,21 @@
 package com.konyaco.fluent.gallery.screen
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,21 +24,26 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradient
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.Text
-import com.konyaco.fluent.gallery.LocalStore
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Open
+import fluentdesign.gallery.generated.resources.Res
+import fluentdesign.gallery.generated.resources.banner
+import fluentdesign.gallery.generated.resources.fluent_logo
+import fluentdesign.gallery.generated.resources.github_logo
+import fluentdesign.gallery.generated.resources.jetpack_compose_logo
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import java.awt.Desktop
 import java.net.URI
 
+@OptIn(ExperimentalResourceApi::class)
 @Component(icon = "Home")
 @Composable
 fun HomeScreen() {
@@ -64,7 +82,7 @@ fun HomeScreen() {
                 .background(gradient)
         ) {
             Image(
-                painter = painterResource("drawable/banner.png"),
+                painter = painterResource(Res.drawable.banner),
                 contentDescription = null,
                 modifier = Modifier.scale(2.05f)
             )
@@ -88,7 +106,7 @@ fun HomeScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource("drawable/jetpack_compose_logo.png"),
+                    painter = painterResource(Res.drawable.jetpack_compose_logo),
                     contentDescription = null,
                     modifier = Modifier.size(64.dp)
                 )
@@ -126,7 +144,7 @@ fun HomeScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource("drawable/fluent_logo.svg"),
+                    painter = painterResource(Res.drawable.fluent_logo),
                     contentDescription = null,
                     modifier = Modifier.size(64.dp).padding(8.dp),
                     tint = FluentTheme.colors.text.text.primary
@@ -165,7 +183,7 @@ fun HomeScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource("drawable/github_logo.svg"),
+                    painter = painterResource(Res.drawable.github_logo),
                     contentDescription = null,
                     modifier = Modifier.size(64.dp).padding(12.dp),
                     tint = FluentTheme.colors.text.text.primary
