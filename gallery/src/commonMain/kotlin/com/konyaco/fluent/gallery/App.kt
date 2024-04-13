@@ -32,7 +32,7 @@ import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.gallery.component.ComponentItem
 import com.konyaco.fluent.gallery.component.ComponentNavigator
 import com.konyaco.fluent.gallery.component.components
-import com.konyaco.fluent.gallery.screen.TodoScreen
+import com.konyaco.fluent.gallery.screen.settings.SettingsScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Settings
 import com.konyaco.fluent.surface.Card
@@ -161,4 +161,4 @@ private fun NavigationItem(
     )
 }
 
-private val settingItem = ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings) { TodoScreen() }
+private val settingItem = ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings) { SettingsScreen() }
