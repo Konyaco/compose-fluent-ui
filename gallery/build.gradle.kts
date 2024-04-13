@@ -30,7 +30,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("androidx.activity:activity-compose:1.6.1")
+                implementation(libs.androidx.activity.compose)
             }
         }
         val androidUnitTest by getting
@@ -42,7 +42,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.preview)
-                implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
+                implementation(libs.window.styler)
             }
         }
         val desktopTest by getting
