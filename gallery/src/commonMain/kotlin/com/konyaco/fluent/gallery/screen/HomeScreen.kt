@@ -3,7 +3,6 @@ package com.konyaco.fluent.gallery.screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +29,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.LocalStore
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Open
@@ -53,7 +53,7 @@ fun HomeScreen() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val gradient = if (isSystemInDarkTheme()) {
+        val gradient = if (LocalStore.current.darkMode) {
             Brush.linearGradient(
                 colors = listOf(
                     Color(0xff1A212C),
