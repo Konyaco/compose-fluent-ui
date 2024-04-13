@@ -36,7 +36,7 @@ import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.AccentButton
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.CheckBox
-import com.konyaco.fluent.component.Dialog
+import com.konyaco.fluent.component.ContentDialog
 import com.konyaco.fluent.component.DropdownMenu
 import com.konyaco.fluent.component.DropdownMenuItem
 import com.konyaco.fluent.component.FlyoutContainer
@@ -220,23 +220,17 @@ fun SettingsScreen() {
         )
     }
 
-    Dialog(
+    ContentDialog(
         title = "This is an example dialog",
         visible = displayDialog,
-        cancelButtonText = "Cancel",
-        confirmButtonText = "Confirm",
-        onCancel = {
-            displayDialog = false
-        },
-        onConfirm = {
-            displayDialog = false
-        },
+        primaryButtonText = "Confirm",
+        closeButtonText = "Cancel",
+        onButtonClick = { displayDialog = false },
         content = {
             Text(
                 "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
                         "\n" +
-                        "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                color = LocalContentColor.current
+                        "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n"
             )
         }
     )
