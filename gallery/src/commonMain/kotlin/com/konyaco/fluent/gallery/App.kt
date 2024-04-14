@@ -67,6 +67,7 @@ fun App() {
                 TextField(
                     value = textFieldValue,
                     onValueChange = { textFieldValue = it },
+                    placeholder = { Text("Search") },
                     modifier = Modifier.fillMaxWidth().focusHandle()
                 )
             },
