@@ -180,13 +180,7 @@ fun RatingControl(
     }
 }
 
-@Immutable
-data class RatingControlColorScheme(
-    override val default: RatingControlColor,
-    override val hovered: RatingControlColor,
-    override val pressed: RatingControlColor,
-    override val disabled: RatingControlColor,
-) : ValueVisualStateScheme<RatingControlColor>
+typealias RatingControlColorScheme = ValueVisualStateScheme<RatingControlColor>
 
 @Immutable
 data class RatingControlColor(

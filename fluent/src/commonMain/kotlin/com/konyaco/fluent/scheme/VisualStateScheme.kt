@@ -9,11 +9,13 @@ fun interface VisualStateScheme<Scheme: Any> {
     fun schemeFor(state: VisualState): Scheme
 }
 
-interface ValueVisualStateScheme<Scheme: Any>: VisualStateScheme<Scheme> {
-    val default: Scheme
-    val hovered: Scheme
-    val pressed: Scheme
+@Immutable
+data class ValueVisualStateScheme<Scheme: Any>(
+    val default: Scheme,
+    val hovered: Scheme,
+    val pressed: Scheme,
     val disabled: Scheme
+): VisualStateScheme<Scheme> {
 
     override fun schemeFor(state: VisualState): Scheme = when(state) {
         VisualState.Default -> default
@@ -22,21 +24,6 @@ interface ValueVisualStateScheme<Scheme: Any>: VisualStateScheme<Scheme> {
         VisualState.Disabled -> disabled
     }
 
-}
-
-@Immutable
-class SelectableVisualStateScheme<Scheme: Any>(
-    private val default: VisualStateScheme<Scheme>,
-    private val selected: VisualStateScheme<Scheme>,
-    private val selectedState: () -> Boolean = { false },
-): VisualStateScheme<Scheme> {
-    override fun schemeFor(state: VisualState): Scheme {
-        return if (selectedState()) {
-            selected.schemeFor(state)
-        } else {
-            default.schemeFor(state)
-        }
-    }
 }
 
 fun <T: Any> VisualStateScheme<T>.collectCurrentScheme(isHovered: Boolean = false, isPressed: Boolean = false, disabled: Boolean = false): T {
