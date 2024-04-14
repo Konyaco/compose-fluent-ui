@@ -1,4 +1,5 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.compose
 
 plugins {
@@ -13,17 +14,15 @@ group = BuildConfig.group
 version = BuildConfig.libraryVersion
 
 kotlin {
-    jvm()
-    androidTarget {
-        publishLibraryVariants("release")
-    }
+    applyTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {
                 api(compose.foundation)
                 api(project(":fluent-icons-core"))
-                implementation(compose("org.jetbrains.compose.ui:ui-util"))
+                implementation(compose.uiUtil)
                 implementation(libs.uuid)
+                implementation(libs.haze)
             }
         }
         val commonTest by getting {
@@ -34,14 +33,13 @@ kotlin {
         val androidMain by getting
         val androidUnitTest by getting
         val androidInstrumentedTest by getting
-        val jvmMain by getting {
+        val desktopMain by getting {
             dependencies {
                 api(compose.preview)
             }
         }
-        val jvmTest by getting
+        val desktopTest by getting
     }
-    jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
 }
 
 android {

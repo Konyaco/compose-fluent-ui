@@ -1,4 +1,5 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
@@ -6,19 +7,21 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
+    id("com.google.devtools.ksp") version libs.versions.ksp.get()
 }
 
 kotlin {
-    jvm("desktop")
-    androidTarget()
+    applyTargets(publish = false)
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(compose.foundation)
+                implementation(compose.components.resources)
                 implementation(project(":fluent"))
                 implementation(project(":fluent-icons-extended"))
                 implementation(compose("org.jetbrains.compose.ui:ui-util"))
             }
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
         val commonTest by getting {
             dependencies {
@@ -44,7 +47,6 @@ kotlin {
         }
         val desktopTest by getting
     }
-    jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
 }
 
 android {
@@ -90,6 +92,9 @@ compose.desktop {
             packageVersion = "1.0.0"
             macOS {
                 iconFile.set(project.file("icons/icon.icns"))
+                jvmArgs(
+                    "-Dapple.awt.application.appearance=system"
+                )
             }
             windows {
                 iconFile.set(project.file("icons/icon.ico"))
@@ -98,5 +103,18 @@ compose.desktop {
                 iconFile.set(project.file("icons/icon.png"))
             }
         }
+    }
+}
+
+dependencies {
+    val processor = project(":gallery-processor")
+    add("kspCommonMainMetadata", processor)
+}
+
+// workaround for KSP only in Common Main.
+// https://github.com/google/ksp/issues/567
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
     }
 }

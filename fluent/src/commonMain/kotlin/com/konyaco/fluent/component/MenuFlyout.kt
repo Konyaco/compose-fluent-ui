@@ -27,7 +27,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -35,7 +43,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -45,8 +55,10 @@ import com.benasher44.uuid.uuid4
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
@@ -54,11 +66,14 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun MenuFlyoutContainer(
-    flyout: @Composable MenuFlyoutScope.() -> Unit,
+    flyout: @Composable MenuFlyoutContainerScope.() -> Unit,
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
-    content: @Composable FlyoutScope.() -> Unit
+    adaptivePlacement: Boolean = false,
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    content: @Composable FlyoutContainerScope.() -> Unit
 ) {
     BasicFlyoutContainer(
         flyout = {
@@ -66,9 +81,16 @@ fun MenuFlyoutContainer(
                 visible = isFlyoutVisible,
                 onDismissRequest = { isFlyoutVisible = false },
                 placement = placement,
-                content = flyout,
-
-                )
+                adaptivePlacement = adaptivePlacement,
+                content = {
+                    val containerScope = remember(this@BasicFlyoutContainer, this) {
+                        MenuFlyoutContainerScopeImpl(this@BasicFlyoutContainer, this)
+                    }
+                    containerScope.flyout()
+                },
+                onKeyEvent = onKeyEvent,
+                onPreviewKeyEvent = onPreviewKeyEvent
+            )
         },
         content = content,
         modifier = modifier,
@@ -82,7 +104,10 @@ fun MenuFlyout(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
+    adaptivePlacement: Boolean = false,
     shape: Shape = RoundedCornerShape(8.dp),
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable MenuFlyoutScope.() -> Unit
 ) {
     MenuFlyout(
@@ -90,19 +115,23 @@ fun MenuFlyout(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         shape = shape,
-        positionProvider = rememberFlyoutPositionProvider(placement),
-        content = content
+        positionProvider = rememberFlyoutPositionProvider(placement, adaptivePlacement = adaptivePlacement),
+        content = content,
+        onKeyEvent = onKeyEvent,
+        onPreviewKeyEvent = onPreviewKeyEvent
     )
 }
 
 @Composable
-private fun MenuFlyout(
+internal fun MenuFlyout(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(8.dp),
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     enterPlacementAnimation: (FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable MenuFlyoutScope.() -> Unit
 ) {
     BasicFlyout(
@@ -112,7 +141,9 @@ private fun MenuFlyout(
         enterPlacementAnimation = enterPlacementAnimation,
         shape = shape,
         positionProvider = positionProvider,
-        contentPadding = PaddingValues(vertical = 2.dp)
+        contentPadding = PaddingValues(vertical = 2.dp),
+        onKeyEvent = onKeyEvent,
+        onPreviewKeyEvent = onPreviewKeyEvent
     ) {
         Column(
             modifier = Modifier.width(IntrinsicSize.Max)
@@ -170,14 +201,13 @@ fun MenuFlyoutScope.MenuFlyoutItem(
         modifier = modifier
             .padding(horizontal = 4.dp, vertical = 2.dp).defaultMinSize(
                 minWidth = 108.dp,
-                minHeight = 28.dp
+                minHeight = 30.dp
             ).fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
-        border = BorderStroke(1.dp, menuColor.borderBrush),
+        shape = RoundedCornerShape(size = 4.dp),
         color = fillColor,
         contentColor = contentColor,
-        outsideBorder = true,
-        cornerRadius = 4.dp
+        border = BorderStroke(1.dp, menuColor.borderBrush),
+        backgroundSizing = BackgroundSizing.InnerBorderEdge
     ) {
         Row(
             modifier = Modifier
@@ -203,10 +233,13 @@ fun MenuFlyoutScope.MenuFlyoutItem(
             ) {
                 icon()
             }
-            text()
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                text()
+            }
             CompositionLocalProvider(
                 LocalContentColor provides menuColor.trainingColor,
-                LocalContentAlpha provides menuColor.trainingColor.alpha
+                LocalContentAlpha provides menuColor.trainingColor.alpha,
+                LocalTextStyle provides FluentTheme.typography.caption.copy(fontWeight = FontWeight.Normal)
             ) {
                 training?.invoke()
             }
@@ -353,6 +386,13 @@ interface MenuFlyoutScope {
     )
 }
 
+interface MenuFlyoutContainerScope : MenuFlyoutScope, FlyoutContainerScope
+
+private class MenuFlyoutContainerScopeImpl(
+    flyoutScope: FlyoutContainerScope,
+    menuFlyoutScope: MenuFlyoutScope
+) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope, MenuFlyoutScope by menuFlyoutScope
+
 private fun defaultMenuFlyoutEnterPlacementAnimation(
     placement: FlyoutPlacement,
     paddingTop: Int
@@ -410,7 +450,7 @@ private class SubMenuFlyoutPositionProvider(
         layoutDirection: LayoutDirection,
         popupContentSize: Size
     ): Pair<HorizontalPlacement, VerticalPlacement> {
-        return calculateHorizontalPlacement(
+        return calculatePlacementByHorizontal(
             anchorBounds,
             windowSize,
             layoutDirection,

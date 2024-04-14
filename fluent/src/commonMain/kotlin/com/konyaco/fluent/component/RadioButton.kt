@@ -8,7 +8,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 
 @Composable
@@ -58,7 +65,6 @@ fun RadioButton(
             modifier = Modifier.size(20.dp),
             shape = CircleShape,
             color = fillColor,
-            outsideBorder = true,
             border = BorderStroke(
                 1.dp,
                 color = if (selected) when {
@@ -69,7 +75,7 @@ fun RadioButton(
                     else -> FluentTheme.colors.stroke.controlStrong.default
                 }
             ),
-            circular = true
+            backgroundSizing = BackgroundSizing.InnerBorderEdge
         ) {
             Box(contentAlignment = Alignment.Center) {
                 // Bullet, Only displays when selected, or is pressed
@@ -88,13 +94,13 @@ fun RadioButton(
                 // Inner
                 Layer(
                     modifier = Modifier.size(if (size == 0.dp || !selected) size else size + 2.dp), // TODO: Remove this 2dp if outside border is provided
+                    shape = CircleShape,
                     color = FluentTheme.colors.text.onAccent.primary,
                     border = if (selected) BorderStroke(
                         1.dp,
                         FluentTheme.colors.borders.circle
                     ) else null,
-                    shape = CircleShape,
-                    outsideBorder = true,
+                    backgroundSizing = BackgroundSizing.InnerBorderEdge,
                     content = {}
                 )
             }
