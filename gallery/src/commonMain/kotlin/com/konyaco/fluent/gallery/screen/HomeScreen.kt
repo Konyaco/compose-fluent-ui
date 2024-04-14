@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
@@ -40,13 +41,12 @@ import fluentdesign.gallery.generated.resources.github_logo
 import fluentdesign.gallery.generated.resources.jetpack_compose_logo
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import java.awt.Desktop
-import java.net.URI
 
 @OptIn(ExperimentalResourceApi::class)
 @Component(icon = "Home")
 @Composable
 fun HomeScreen() {
+    val uriHandler = LocalUriHandler.current
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -97,7 +97,7 @@ fun HomeScreen() {
 
         Button(
             onClick = {
-                Desktop.getDesktop().browse(URI.create("https://developer.android.com/develop/ui/compose"))
+                uriHandler.openUri("https://developer.android.com/develop/ui/compose")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -135,7 +135,7 @@ fun HomeScreen() {
 
         Button(
             onClick = {
-                Desktop.getDesktop().browse(URI.create("https://fluent2.microsoft.design/"))
+                uriHandler.openUri("https://fluent2.microsoft.design/")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -174,7 +174,7 @@ fun HomeScreen() {
 
         Button(
             onClick = {
-                Desktop.getDesktop().browse(URI.create("https://github.com/Konyaco/compose-fluent-ui"))
+                uriHandler.openUri("https://github.com/Konyaco/compose-fluent-ui")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
