@@ -61,7 +61,7 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
-import com.konyaco.fluent.scheme.ValueVisualStateScheme
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
@@ -330,7 +330,7 @@ private class MenuFlyoutScopeImpl : MenuFlyoutScope {
     )
 )
 typealias MenuColors = MenuItemColorScheme
-typealias MenuItemColorScheme = ValueVisualStateScheme<MenuItemColor>
+typealias MenuItemColorScheme = PentaVisualScheme<MenuItemColor>
 
 @Deprecated(
     message = "use MenuItemColor instead",

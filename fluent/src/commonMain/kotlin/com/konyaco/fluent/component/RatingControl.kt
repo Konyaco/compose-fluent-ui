@@ -45,7 +45,7 @@ import com.konyaco.fluent.ProvideTextStyle
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.Star
 import com.konyaco.fluent.icons.regular.Star
-import com.konyaco.fluent.scheme.ValueVisualStateScheme
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.currentCoroutineContext
@@ -196,7 +196,7 @@ fun RatingControl(
     }
 }
 
-typealias RatingControlColorScheme = ValueVisualStateScheme<RatingControlColor>
+typealias RatingControlColorScheme = PentaVisualScheme<RatingControlColor>
 
 @Immutable
 data class RatingControlColor(

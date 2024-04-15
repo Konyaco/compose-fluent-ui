@@ -55,7 +55,7 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
-import com.konyaco.fluent.scheme.ValueVisualStateScheme
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualState
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
@@ -68,7 +68,7 @@ import kotlinx.coroutines.launch
 )
 typealias ButtonColors = ButtonColorScheme
 
-typealias ButtonColorScheme = ValueVisualStateScheme<ButtonColor>
+typealias ButtonColorScheme = PentaVisualScheme<ButtonColor>
 
 @Immutable
 data class ButtonColor(

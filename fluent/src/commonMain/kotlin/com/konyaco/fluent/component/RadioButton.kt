@@ -31,7 +31,7 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.scheme.ValueVisualStateScheme
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
 import kotlin.math.roundToInt
@@ -106,7 +106,7 @@ fun RadioButton(
     }
 }
 
-typealias RadioButtonStyleScheme = ValueVisualStateScheme<RadioButtonStyle>
+typealias RadioButtonStyleScheme = PentaVisualScheme<RadioButtonStyle>
 
 @Immutable
 data class RadioButtonStyle(

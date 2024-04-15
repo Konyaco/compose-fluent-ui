@@ -58,30 +58,13 @@ fun interface VisualStateScheme<T> {
 }
 
 @Immutable
-data class ValueVisualStateScheme<T>(
-    val default: T,
-    val hovered: T,
-    val pressed: T,
-    val disabled: T
-) : VisualStateScheme<T> {
-    override fun schemeFor(state: VisualState): T = when (state) {
-        VisualState.Hovered -> hovered
-        VisualState.Pressed -> pressed
-        VisualState.Disabled -> disabled
-        else -> default
-    }
-}
-
-interface FocusableVisualStateScheme<T> : VisualStateScheme<T>
-
-@Immutable
-data class FocusableValueVisualStateScheme<T>(
+data class PentaVisualScheme<T>(
     val default: T,
     val hovered: T,
     val pressed: T,
     val disabled: T,
-    val focused: T
-) : FocusableVisualStateScheme<T> {
+    val focused: T = default
+) : VisualStateScheme<T> {
     override fun schemeFor(state: VisualState): T = when (state) {
         VisualState.Default -> default
         VisualState.Hovered -> hovered

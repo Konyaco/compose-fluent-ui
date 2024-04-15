@@ -40,7 +40,7 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.scheme.FocusableValueVisualStateScheme
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.collectVisualState
 
 @Composable
@@ -168,7 +168,7 @@ object TextFieldDefaults {
     }
 }
 
-typealias TextFieldColorScheme = FocusableValueVisualStateScheme<TextFieldColor>
+typealias TextFieldColorScheme = PentaVisualScheme<TextFieldColor>
 
 @Immutable
 data class TextFieldColor(

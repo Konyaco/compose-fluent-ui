@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.scheme.ValueVisualStateScheme
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.collectVisualState
 
 @Composable
@@ -217,7 +217,7 @@ object SwitcherDefaults {
     )
 }
 
-typealias SwitcherStyleScheme = ValueVisualStateScheme<SwitcherStyle>
+typealias SwitcherStyleScheme = PentaVisualScheme<SwitcherStyle>
 
 data class SwitcherStyle(
     val fillColor: Color,

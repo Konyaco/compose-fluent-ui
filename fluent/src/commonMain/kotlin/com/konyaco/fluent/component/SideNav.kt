@@ -69,7 +69,7 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.icons.regular.Search
-import com.konyaco.fluent.scheme.ValueVisualStateScheme
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -315,7 +315,7 @@ fun SideNavItem(
     }
 }
 
-typealias NavigationItemColorScheme = ValueVisualStateScheme<NavigationItemColor>
+typealias NavigationItemColorScheme = PentaVisualScheme<NavigationItemColor>
 
 @Immutable
 data class NavigationItemColor(
