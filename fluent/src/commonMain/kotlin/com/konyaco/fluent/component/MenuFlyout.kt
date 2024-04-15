@@ -63,7 +63,7 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
 import com.konyaco.fluent.scheme.ValueVisualStateScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
-import com.konyaco.fluent.scheme.collectCurrentScheme
+import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 
 @Composable
@@ -179,7 +179,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
     paddingIcon: Boolean = false,
 ) {
     val actualInteraction = interaction ?: remember { MutableInteractionSource() }
-    val color = colors.collectCurrentScheme(actualInteraction, !enabled)
+    val color = colors.schemeFor(actualInteraction.collectVisualState(!enabled))
 
     val fillColor by animateColorAsState(
         color.fillColor,

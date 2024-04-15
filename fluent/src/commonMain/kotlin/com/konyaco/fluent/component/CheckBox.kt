@@ -35,7 +35,7 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Checkmark
 import com.konyaco.fluent.scheme.ValueVisualStateScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
-import com.konyaco.fluent.scheme.collectCurrentScheme
+import com.konyaco.fluent.scheme.collectVisualState
 
 @Composable
 fun CheckBox(
@@ -52,7 +52,7 @@ fun CheckBox(
 ) {
     // TODO: Animation, TripleStateCheckbox
     val interactionSource = remember { MutableInteractionSource() }
-    val color = colors.collectCurrentScheme(interactionSource, !enabled)
+    val color = colors.schemeFor(interactionSource.collectVisualState(!enabled))
     Row(
         modifier = modifier.then(
             if (label != null) Modifier.defaultMinSize(minWidth = 120.dp)

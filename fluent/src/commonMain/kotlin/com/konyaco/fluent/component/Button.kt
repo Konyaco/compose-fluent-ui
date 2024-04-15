@@ -58,7 +58,7 @@ import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.scheme.ValueVisualStateScheme
 import com.konyaco.fluent.scheme.VisualState
 import com.konyaco.fluent.scheme.VisualStateScheme
-import com.konyaco.fluent.scheme.collectCurrentScheme
+import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -444,7 +444,7 @@ private fun ButtonLayer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val buttonColor = buttonColors.collectCurrentScheme(interaction, disabled)
+    val buttonColor = buttonColors.schemeFor(interaction.collectVisualState(disabled))
 
     val fillColor by animateColorAsState(
         buttonColor.fillColor,

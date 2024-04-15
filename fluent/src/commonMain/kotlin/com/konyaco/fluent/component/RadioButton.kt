@@ -33,7 +33,7 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.scheme.ValueVisualStateScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
-import com.konyaco.fluent.scheme.collectCurrentScheme
+import com.konyaco.fluent.scheme.collectVisualState
 import kotlin.math.roundToInt
 
 @Composable
@@ -51,7 +51,7 @@ fun RadioButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     // TODO: Extract same logic
-    val style = styles.collectCurrentScheme(interactionSource, !enabled)
+    val style = styles.schemeFor(interactionSource.collectVisualState( !enabled))
     Row(modifier.then(
         if (label != null) Modifier.defaultMinSize(minWidth = 120.dp)
         else Modifier

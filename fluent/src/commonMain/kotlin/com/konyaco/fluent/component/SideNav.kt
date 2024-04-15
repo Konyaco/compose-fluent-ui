@@ -70,7 +70,7 @@ import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.icons.regular.Search
 import com.konyaco.fluent.scheme.ValueVisualStateScheme
-import com.konyaco.fluent.scheme.collectCurrentScheme
+import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -203,7 +203,7 @@ fun SideNavItem(
 ) {
     val interaction = remember { MutableInteractionSource() }
     //TODO Enabled
-    val color = colors.collectCurrentScheme(interaction)
+    val color = colors.schemeFor(interaction.collectVisualState(false))
     var currentPosition by remember {
         mutableStateOf(0f)
     }

@@ -9,7 +9,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -32,7 +38,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.scheme.ValueVisualStateScheme
-import com.konyaco.fluent.scheme.collectCurrentScheme
+import com.konyaco.fluent.scheme.collectVisualState
 
 @Composable
 fun Switcher(
@@ -51,7 +57,7 @@ fun Switcher(
     // TODO: Draggable
     // TODO: Extract same logic
     val transition = updateTransition(checked)
-    val style = styles.collectCurrentScheme(interactionSource, !enabled)
+    val style = styles.schemeFor(interactionSource.collectVisualState(!enabled))
     Row(
         modifier = Modifier.clickable(
             indication = null,

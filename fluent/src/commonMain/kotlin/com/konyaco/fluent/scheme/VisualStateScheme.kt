@@ -4,97 +4,73 @@ import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
 
-fun interface VisualStateScheme<Scheme: Any> {
-    fun schemeFor(state: VisualState): Scheme
+@Composable
+fun InteractionSource.collectVisualState(disabled: Boolean, focusable: Boolean = false): VisualState {
+    val pressed by collectIsPressedAsState()
+    val hovered by collectIsHoveredAsState()
+    val focused by collectIsFocusedAsState()
+    return VisualState.fromInteraction(pressed, hovered, disabled, if (focusable) focused else false)
+}
+
+enum class VisualState {
+    Default, Hovered, Pressed, Disabled, Focused;
+
+    companion object {
+        fun fromInteraction(
+            pressed: Boolean,
+            hovered: Boolean,
+            disabled: Boolean,
+            focused: Boolean
+        ): VisualState {
+            return when {
+                disabled -> Disabled
+                focused -> Focused
+                pressed -> Pressed
+                hovered -> Hovered
+                else -> Default
+            }
+        }
+    }
+}
+
+fun interface VisualStateScheme<T> {
+    fun schemeFor(state: VisualState): T
 }
 
 @Immutable
-data class ValueVisualStateScheme<Scheme: Any>(
-    val default: Scheme,
-    val hovered: Scheme,
-    val pressed: Scheme,
-    val disabled: Scheme
-): VisualStateScheme<Scheme> {
-
-    override fun schemeFor(state: VisualState): Scheme = when(state) {
+data class ValueVisualStateScheme<T>(
+    val default: T,
+    val hovered: T,
+    val pressed: T,
+    val disabled: T
+) : VisualStateScheme<T> {
+    override fun schemeFor(state: VisualState): T = when (state) {
         VisualState.Hovered -> hovered
         VisualState.Pressed -> pressed
         VisualState.Disabled -> disabled
         else -> default
     }
-
 }
 
-interface FocusableVisualStateScheme<Scheme: Any>: VisualStateScheme<Scheme>
+interface FocusableVisualStateScheme<T> : VisualStateScheme<T>
 
 @Immutable
-data class FocusableValueVisualStateScheme<Scheme: Any>(
-    val default: Scheme,
-    val hovered: Scheme,
-    val pressed: Scheme,
-    val disabled: Scheme,
-    val focused: Scheme
-): FocusableVisualStateScheme<Scheme> {
-
-    override fun schemeFor(state: VisualState): Scheme = when(state) {
+data class FocusableValueVisualStateScheme<T>(
+    val default: T,
+    val hovered: T,
+    val pressed: T,
+    val disabled: T,
+    val focused: T
+) : FocusableVisualStateScheme<T> {
+    override fun schemeFor(state: VisualState): T = when (state) {
         VisualState.Default -> default
         VisualState.Hovered -> hovered
         VisualState.Pressed -> pressed
         VisualState.Disabled -> disabled
         VisualState.Focused -> focused
     }
-
-}
-
-fun <T: Any> VisualStateScheme<T>.collectCurrentScheme(isHovered: Boolean = false, isPressed: Boolean = false, disabled: Boolean = false): T {
-    return when {
-        disabled -> schemeFor(VisualState.Disabled)
-        isPressed -> schemeFor(VisualState.Pressed)
-        isHovered -> schemeFor(VisualState.Hovered)
-        else -> schemeFor(VisualState.Default)
-    }
-}
-
-@Composable
-fun <T: Any> VisualStateScheme<T>.collectCurrentScheme(interactionSource: InteractionSource, disabled: Boolean = false): T {
-    val isHovered by interactionSource.collectIsHoveredAsState()
-    val isPressed by interactionSource.collectIsPressedAsState()
-    return collectCurrentScheme(isHovered, isPressed, disabled)
-}
-
-fun <T: Any> FocusableVisualStateScheme<T>.collectCurrentScheme(
-    isHovered: Boolean = false,
-    isPressed: Boolean = false,
-    disabled: Boolean = false,
-    focused: Boolean = false
-): T {
-    return when {
-        disabled -> schemeFor(VisualState.Disabled)
-        focused -> schemeFor(VisualState.Focused)
-        isPressed -> schemeFor(VisualState.Pressed)
-        isHovered -> schemeFor(VisualState.Hovered)
-        else -> schemeFor(VisualState.Default)
-    }
-}
-
-@Composable
-fun <T: Any> FocusableVisualStateScheme<T>.collectCurrentScheme(interactionSource: InteractionSource, disabled: Boolean = false): T {
-    val isHovered by interactionSource.collectIsHoveredAsState()
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val isFocused by interactionSource.collectIsFocusedAsState()
-    return collectCurrentScheme(isHovered, isPressed, disabled, isFocused)
-}
-
-sealed interface VisualState {
-    data object Default: VisualState
-
-    data object Hovered: VisualState
-
-    data object Pressed: VisualState
-
-    data object Disabled: VisualState
-
-    data object Focused: VisualState
 }
