@@ -60,7 +60,7 @@ fun TextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: TextFieldColorScheme = TextFieldDefaults.defaultTextFieldColors()
 ) {
-    val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, true))
+    val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
     Column(modifier) {
         if (header != null) {
             header()

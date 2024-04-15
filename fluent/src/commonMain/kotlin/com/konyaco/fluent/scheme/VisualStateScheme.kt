@@ -9,11 +9,12 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 
 @Composable
-fun InteractionSource.collectVisualState(disabled: Boolean, focusable: Boolean = false): VisualState {
+fun InteractionSource.collectVisualState(disabled: Boolean, focusFirst: Boolean = false): VisualState {
     val pressed by collectIsPressedAsState()
     val hovered by collectIsHoveredAsState()
     val focused by collectIsFocusedAsState()
-    return VisualState.fromInteraction(pressed, hovered, disabled, if (focusable) focused else false)
+    return if (focusFirst) VisualState.fromInteractionFocusFirst(pressed, hovered, disabled, focused)
+    else VisualState.fromInteraction(pressed, hovered, disabled, focused)
 }
 
 enum class VisualState {
@@ -21,6 +22,21 @@ enum class VisualState {
 
     companion object {
         fun fromInteraction(
+            pressed: Boolean,
+            hovered: Boolean,
+            disabled: Boolean,
+            focused: Boolean
+        ): VisualState {
+            return when {
+                disabled -> Disabled
+                pressed -> Pressed
+                hovered -> Hovered
+                focused -> Focused
+                else -> Default
+            }
+        }
+
+        fun fromInteractionFocusFirst(
             pressed: Boolean,
             hovered: Boolean,
             disabled: Boolean,
