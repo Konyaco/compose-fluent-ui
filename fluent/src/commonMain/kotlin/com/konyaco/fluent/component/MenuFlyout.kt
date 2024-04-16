@@ -12,7 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,6 +61,9 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronRight
+import com.konyaco.fluent.scheme.PentaVisualScheme
+import com.konyaco.fluent.scheme.VisualStateScheme
+import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 
 @Composable
@@ -173,27 +175,19 @@ fun MenuFlyoutScope.MenuFlyoutItem(
     training: (@Composable () -> Unit)? = null,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
-    colors: MenuColors = menuColors(),
+    colors: VisualStateScheme<MenuItemColor> = MenuFlyoutDefaults.defaultMenuItemColors(),
     paddingIcon: Boolean = false,
 ) {
     val actualInteraction = interaction ?: remember { MutableInteractionSource() }
-    val hovered by actualInteraction.collectIsHoveredAsState()
-    val pressed by actualInteraction.collectIsPressedAsState()
-
-    val menuColor = when {
-        !enabled -> colors.disabled
-        pressed -> colors.pressed
-        hovered -> colors.hovered
-        else -> colors.default
-    }
+    val color = colors.schemeFor(actualInteraction.collectVisualState(!enabled))
 
     val fillColor by animateColorAsState(
-        menuColor.fillColor,
+        color.fillColor,
         animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
     )
 
     val contentColor by animateColorAsState(
-        menuColor.contentColor,
+        color.contentColor,
         animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
     )
     registerHoveredMenuItem(actualInteraction) {}
@@ -206,7 +200,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
         shape = RoundedCornerShape(size = 4.dp),
         color = fillColor,
         contentColor = contentColor,
-        border = BorderStroke(1.dp, menuColor.borderBrush),
+        border = BorderStroke(1.dp, color.borderBrush),
         backgroundSizing = BackgroundSizing.InnerBorderEdge
     ) {
         Row(
@@ -237,8 +231,8 @@ fun MenuFlyoutScope.MenuFlyoutItem(
                 text()
             }
             CompositionLocalProvider(
-                LocalContentColor provides menuColor.trainingColor,
-                LocalContentAlpha provides menuColor.trainingColor.alpha,
+                LocalContentColor provides color.trainingColor,
+                LocalContentAlpha provides color.trainingColor.alpha,
                 LocalTextStyle provides FluentTheme.typography.caption.copy(fontWeight = FontWeight.Normal)
             ) {
                 training?.invoke()
@@ -255,7 +249,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
     modifier: Modifier = Modifier,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
-    colors: MenuColors = menuColors(),
+    colors: VisualStateScheme<MenuItemColor> = MenuFlyoutDefaults.defaultMenuItemColors(),
 ) {
     val paddingTop = with(LocalDensity.current) { flyoutPopPaddingFixShadowRender.roundToPx() }
     BasicFlyoutContainer(
@@ -328,53 +322,61 @@ private class MenuFlyoutScopeImpl : MenuFlyoutScope {
     }
 }
 
-@Immutable
-data class MenuColors(
-    val default: MenuColor,
-    val hovered: MenuColor,
-    val pressed: MenuColor,
-    val disabled: MenuColor
+@Deprecated(
+    message = "use MenuItemColorScheme instead",
+    replaceWith = ReplaceWith(
+        expression = "MenuItemColorScheme",
+        imports = arrayOf("com.konyaco.fluent.component.MenuItemColorScheme")
+    )
 )
+typealias MenuColors = MenuItemColorScheme
+typealias MenuItemColorScheme = PentaVisualScheme<MenuItemColor>
+
+@Deprecated(
+    message = "use MenuItemColor instead",
+    replaceWith = ReplaceWith("MenuItemColor", imports = arrayOf("com.konyaco.fluent.component.MenuItemColor"))
+)
+typealias MenuColor = MenuItemColor
 
 @Immutable
-data class MenuColor(
+data class MenuItemColor(
     val fillColor: Color,
     val contentColor: Color,
     val trainingColor: Color,
     val borderBrush: Brush
 )
 
-@Composable
-private fun menuColors(): MenuColors {
-    val colors = FluentTheme.colors
-    return remember(colors) {
-        MenuColors(
-            default = MenuColor(
-                colors.subtleFill.transparent,
-                colors.text.text.primary,
-                colors.text.text.primary.copy(0.6f),
-                SolidColor(Color.Transparent)
-            ),
-            hovered = MenuColor(
-                colors.subtleFill.secondary,
-                colors.text.text.primary,
-                colors.text.text.primary.copy(0.6f),
-                SolidColor(Color.Transparent)
-            ),
-            pressed = MenuColor(
-                colors.subtleFill.tertiary,
-                colors.text.text.secondary,
-                colors.text.text.secondary.copy(0.6f),
-                SolidColor(Color.Transparent)
-            ),
-            disabled = MenuColor(
-                colors.subtleFill.disabled,
-                colors.text.text.disabled,
-                colors.text.text.disabled,
-                SolidColor(Color.Transparent)
-            ),
+object MenuFlyoutDefaults {
+
+    @Composable
+    @Stable
+    fun defaultMenuItemColors(
+        default: MenuItemColor = MenuItemColor(
+            fillColor = FluentTheme.colors.subtleFill.transparent,
+            contentColor = FluentTheme.colors.text.text.primary,
+            trainingColor = FluentTheme.colors.text.text.primary.copy(0.6f),
+            borderBrush = SolidColor(Color.Transparent)
+        ),
+        hovered: MenuItemColor = default.copy(
+            fillColor = FluentTheme.colors.subtleFill.secondary
+        ),
+        pressed: MenuItemColor = default.copy(
+            fillColor = FluentTheme.colors.subtleFill.tertiary,
+            contentColor = FluentTheme.colors.text.text.secondary
+        ),
+        disabled: MenuItemColor = default.copy(
+            fillColor = FluentTheme.colors.subtleFill.disabled,
+            contentColor = FluentTheme.colors.text.text.disabled,
+            trainingColor = FluentTheme.colors.text.text.disabled,
         )
-    }
+    ) = MenuItemColorScheme(
+        default = default,
+        hovered = hovered,
+        pressed = pressed,
+        disabled = disabled
+    )
+
+    //TODO Selected MenuItemColor
 }
 
 interface MenuFlyoutScope {

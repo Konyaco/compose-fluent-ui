@@ -16,8 +16,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,17 +36,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -66,6 +69,8 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.icons.regular.Search
+import com.konyaco.fluent.scheme.PentaVisualScheme
+import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -184,21 +189,21 @@ fun SideNavItem(
     onClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     expandItems: Boolean = false,
+    colors: NavigationItemColorScheme = if (selected) {
+        NavigationDefaults.selectedSideNavigationItemColors()
+    } else {
+        NavigationDefaults.defaultSideNavigationItemColors()
+    },
     icon: @Composable (() -> Unit)? = null,
     items: @Composable (ColumnScope.() -> Unit)? = null,
+    indicator: @Composable IndicatorScope.() -> Unit = {
+        NavigationDefaults.VerticalIndicator(modifier = Modifier.indicatorOffset { selected })
+    },
     content: @Composable RowScope.() -> Unit
 ) {
     val interaction = remember { MutableInteractionSource() }
-    val hovered by interaction.collectIsHoveredAsState()
-    val pressed by interaction.collectIsPressedAsState()
-
-    val color = when {
-        selected && hovered -> FluentTheme.colors.subtleFill.tertiary
-        selected -> FluentTheme.colors.subtleFill.secondary
-        pressed -> FluentTheme.colors.subtleFill.tertiary
-        hovered -> FluentTheme.colors.subtleFill.secondary
-        else -> FluentTheme.colors.subtleFill.transparent
-    }
+    //TODO Enabled
+    val color = colors.schemeFor(interaction.collectVisualState(false))
     var currentPosition by remember {
         mutableStateOf(0f)
     }
@@ -219,9 +224,9 @@ fun SideNavItem(
                 modifier = Modifier.fillMaxWidth().height(36.dp),
                 shape = RoundedCornerShape(size = 4.dp),
                 color = animateColorAsState(
-                    color, tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
+                    color.fillColor, tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
                 ).value,
-                contentColor = FluentTheme.colors.text.text.primary,
+                contentColor = color.contentColor,
                 border = null,
                 backgroundSizing = BackgroundSizing.OuterBorderEdge
             ) {
@@ -278,7 +283,9 @@ fun SideNavItem(
                     }
                 }
             }
-            Indicator(Modifier.align(Alignment.CenterStart).padding(start = navigationLevelPadding), selected)
+            Box(modifier = Modifier.align(Alignment.CenterStart).padding(start = navigationLevelPadding)) {
+                SideNavigationIndicatorScope.indicator()
+            }
         }
 
         if (items != null) {
@@ -308,9 +315,117 @@ fun SideNavItem(
     }
 }
 
+typealias NavigationItemColorScheme = PentaVisualScheme<NavigationItemColor>
+
+@Immutable
+data class NavigationItemColor(
+    val fillColor: Color,
+    val contentColor: Color
+)
+
+//TODO Common Defaults for SideNavigation and TopNavigation
+object NavigationDefaults {
+
+    @Composable
+    @Stable
+    fun defaultSideNavigationItemColors(
+        default: NavigationItemColor = NavigationItemColor(
+            fillColor = FluentTheme.colors.subtleFill.transparent,
+            contentColor = FluentTheme.colors.text.text.primary
+        ),
+        hovered: NavigationItemColor = default.copy(
+            fillColor = FluentTheme.colors.subtleFill.secondary
+        ),
+        pressed: NavigationItemColor = default.copy(
+            fillColor = FluentTheme.colors.subtleFill.tertiary
+        ),
+        //TODO Disabled style
+        disabled: NavigationItemColor = default
+    ) = NavigationItemColorScheme(
+        default = default,
+        hovered = hovered,
+        pressed = pressed,
+        disabled = disabled
+    )
+
+    @Composable
+    @Stable
+    fun selectedSideNavigationItemColors(
+        default: NavigationItemColor = NavigationItemColor(
+            fillColor = FluentTheme.colors.subtleFill.secondary,
+            contentColor = FluentTheme.colors.text.text.primary
+        ),
+        hovered: NavigationItemColor = default.copy(
+            fillColor = FluentTheme.colors.subtleFill.tertiary
+        ),
+        pressed: NavigationItemColor = default.copy(
+            fillColor = FluentTheme.colors.subtleFill.tertiary
+        ),
+        //TODO Disabled style
+        disabled: NavigationItemColor = default
+    ) = NavigationItemColorScheme(
+        default = default,
+        hovered = hovered,
+        pressed = pressed,
+        disabled = disabled
+    )
+
+    @Composable
+    fun VerticalIndicator(
+        modifier: Modifier = Modifier,
+        color: Color = FluentTheme.colors.fillAccent.default,
+        shape: Shape = CircleShape,
+        thickness: Dp = 3.dp
+    ) {
+        Box(modifier.width(thickness).background(color, shape))
+    }
+
+    //TODO TopNavigation
+    @Composable
+    fun HorizontalIndicator(
+        modifier: Modifier = Modifier,
+        color: Color = FluentTheme.colors.fillAccent.default,
+        shape: Shape = CircleShape,
+        thickness: Dp = 3.dp
+    ) {
+        Box(modifier.height(thickness).background(color, shape))
+    }
+
+}
+
+interface IndicatorScope {
+
+    @Composable
+    fun Modifier.indicatorOffset(visible: () -> Boolean): Modifier
+}
+
 interface AutoSuggestionBoxScope {
     fun Modifier.focusHandle(): Modifier
 }
+
+private object SideNavigationIndicatorScope: IndicatorScope {
+
+    @Composable
+    override fun Modifier.indicatorOffset(visible: () -> Boolean): Modifier {
+        val display by rememberUpdatedState(visible)
+        val selectionState = LocalSelectedItemPosition.current
+        val indicatorState = remember {
+            MutableTransitionState(display())
+        }
+        indicatorState.targetState = display()
+        val animationModifier = if (selectionState != null) {
+            Modifier.indicatorOffsetAnimation(16.dp, indicatorState, selectionState)
+        } else {
+            val height by updateTransition(display()).animateDp(transitionSpec = {
+                if (targetState) tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+                else tween(FluentDuration.QuickDuration, easing = FluentEasing.SoftDismissEasing)
+            }, targetValueByState = { if (it) 16.dp else 0.dp })
+            Modifier.height(height)
+        }
+        return then(animationModifier)
+    }
+}
+//TODO TopNavigationIndicatorScope
 
 internal class AutoSuggestionBoxScopeImpl(
     private val focusRequest: FocusRequester
@@ -321,7 +436,8 @@ internal class AutoSuggestionBoxScopeImpl(
 @Composable
 fun NavigationItemSeparator(
     isVertical: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    color: Color = FluentTheme.colors.stroke.surface.default.copy(0.2f)
 ) {
     val sizeModifier = if (!isVertical) {
         Modifier.fillMaxWidth().height(1.dp)
@@ -332,27 +448,8 @@ fun NavigationItemSeparator(
         Modifier
             .then(modifier)
             .then(sizeModifier)
-            .background(FluentTheme.colors.stroke.surface.default.copy(0.2f))
+            .background(color)
     )
-}
-
-@Composable
-private fun Indicator(modifier: Modifier, display: Boolean) {
-    val selectionState = LocalSelectedItemPosition.current
-    val indicatorState = remember {
-        MutableTransitionState(display)
-    }
-    indicatorState.targetState = display
-    val animationModifier = if (selectionState != null) {
-        Modifier.indicatorOffsetAnimation(16.dp, indicatorState, selectionState)
-    } else {
-        val height by updateTransition(display).animateDp(transitionSpec = {
-            if (targetState) tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
-            else tween(FluentDuration.QuickDuration, easing = FluentEasing.SoftDismissEasing)
-        }, targetValueByState = { if (it) 16.dp else 0.dp })
-        Modifier.height(height)
-    }
-    Box(modifier.width(3.dp).then(animationModifier).background(FluentTheme.colors.fillAccent.default, CircleShape))
 }
 
 @Composable
@@ -416,9 +513,9 @@ private fun Modifier.indicatorOffsetAnimation(
             }
         }
         val placeable = if (isVertical) {
-            measurable.measure(Constraints.fixed(constraints.maxWidth, currentSize.roundToInt().coerceAtLeast(0)))
+            measurable.measure(Constraints.fixedHeight(currentSize.roundToInt().coerceAtLeast(0)))
         } else {
-            measurable.measure(Constraints.fixed(currentSize.roundToInt().coerceAtLeast(0), constraints.maxHeight))
+            measurable.measure(Constraints.fixedWidth(currentSize.roundToInt().coerceAtLeast(0)))
         }
 
         layout(

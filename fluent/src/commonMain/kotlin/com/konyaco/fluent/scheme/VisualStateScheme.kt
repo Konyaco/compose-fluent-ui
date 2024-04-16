@@ -1,66 +1,75 @@
 package com.konyaco.fluent.scheme
 
 import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
 
-fun interface VisualStateScheme<Scheme: Any> {
-    fun schemeFor(state: VisualState): Scheme
+@Composable
+fun InteractionSource.collectVisualState(disabled: Boolean, focusFirst: Boolean = false): VisualState {
+    val pressed by collectIsPressedAsState()
+    val hovered by collectIsHoveredAsState()
+    val focused by collectIsFocusedAsState()
+    return if (focusFirst) VisualState.fromInteractionFocusFirst(pressed, hovered, disabled, focused)
+    else VisualState.fromInteraction(pressed, hovered, disabled, focused)
 }
 
-interface ValueVisualStateScheme<Scheme: Any>: VisualStateScheme<Scheme> {
-    val default: Scheme
-    val hovered: Scheme
-    val pressed: Scheme
-    val disabled: Scheme
+enum class VisualState {
+    Default, Hovered, Pressed, Disabled, Focused;
 
-    override fun schemeFor(state: VisualState): Scheme = when(state) {
-        VisualState.Default -> default
-        VisualState.Hovered -> hovered
-        VisualState.Pressed -> pressed
-        VisualState.Disabled -> disabled
-    }
+    companion object {
+        fun fromInteraction(
+            pressed: Boolean,
+            hovered: Boolean,
+            disabled: Boolean,
+            focused: Boolean
+        ): VisualState {
+            return when {
+                disabled -> Disabled
+                pressed -> Pressed
+                hovered -> Hovered
+                focused -> Focused
+                else -> Default
+            }
+        }
 
-}
-
-@Immutable
-class SelectableVisualStateScheme<Scheme: Any>(
-    private val default: VisualStateScheme<Scheme>,
-    private val selected: VisualStateScheme<Scheme>,
-    private val selectedState: () -> Boolean = { false },
-): VisualStateScheme<Scheme> {
-    override fun schemeFor(state: VisualState): Scheme {
-        return if (selectedState()) {
-            selected.schemeFor(state)
-        } else {
-            default.schemeFor(state)
+        fun fromInteractionFocusFirst(
+            pressed: Boolean,
+            hovered: Boolean,
+            disabled: Boolean,
+            focused: Boolean
+        ): VisualState {
+            return when {
+                disabled -> Disabled
+                focused -> Focused
+                pressed -> Pressed
+                hovered -> Hovered
+                else -> Default
+            }
         }
     }
 }
 
-fun <T: Any> VisualStateScheme<T>.collectCurrentScheme(isHovered: Boolean = false, isPressed: Boolean = false, disabled: Boolean = false): T {
-    return when {
-        disabled -> schemeFor(VisualState.Disabled)
-        isPressed -> schemeFor(VisualState.Pressed)
-        isHovered -> schemeFor(VisualState.Hovered)
-        else -> schemeFor(VisualState.Default)
+fun interface VisualStateScheme<T> {
+    fun schemeFor(state: VisualState): T
+}
+
+@Immutable
+data class PentaVisualScheme<T>(
+    val default: T,
+    val hovered: T,
+    val pressed: T,
+    val disabled: T,
+    val focused: T = default
+) : VisualStateScheme<T> {
+    override fun schemeFor(state: VisualState): T = when (state) {
+        VisualState.Default -> default
+        VisualState.Hovered -> hovered
+        VisualState.Pressed -> pressed
+        VisualState.Disabled -> disabled
+        VisualState.Focused -> focused
     }
-}
-
-@Composable
-fun <T: Any> VisualStateScheme<T>.collectCurrentScheme(interactionSource: InteractionSource, disabled: Boolean = false): T {
-    val isHovered by interactionSource.collectIsHoveredAsState()
-    val isPressed by interactionSource.collectIsPressedAsState()
-    return collectCurrentScheme(isHovered, isPressed, disabled)
-}
-
-sealed interface VisualState {
-    data object Default: VisualState
-
-    data object Hovered: VisualState
-
-    data object Pressed: VisualState
-
-    data object Disabled: VisualState
 }
