@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
+import kotlin.math.floor
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 /**
@@ -143,12 +145,12 @@ private value class BackgroundPaddingShape(private val borderShape: CornerBasedS
 
     override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
         return with(density) {
-            val circular = borderShape == CircleShape
+            val circular = borderShape == CircleShape && size.height == size.width
             val paddingPx = when {
                 circular -> calcCircularPadding(density)
                 else -> calcPadding(density)
-            }.toPx()
-            createInnerOutline(size, density, layoutDirection, paddingPx)
+            }
+            createInnerOutline(size, density, layoutDirection, paddingPx.roundToInt().toFloat())
         }
     }
 
@@ -207,23 +209,23 @@ private value class BackgroundPaddingShape(private val borderShape: CornerBasedS
  * when density is not integer or `(density % 1) < 0.5`
  */
 @Stable
-private fun calcPadding(density: Density): Dp {
+private fun calcPadding(density: Density): Float {
     val remainder = density.density % 1f
 
     return with(density) {
         when {
-            remainder == 0f -> 1.dp
-            else -> (1.dp.toPx() - remainder + 1).toDp()
+            remainder == 0f -> 1.dp.toPx()
+            else -> 1.dp.toPx() - remainder + 1
         }
     }
 }
 
 @Stable
-private fun calcCircularPadding(density: Density): Dp {
+private fun calcCircularPadding(density: Density): Float {
     val remainder = density.density % 1f
 
     return with(density) {
-        if (remainder == 0f) 1.dp
-        else (1.dp.toPx() - remainder + 1).toDp()
+        if (remainder == 0f) (1.dp.toPx() - 1f)
+        else floor(1.dp.toPx())
     }
 }
