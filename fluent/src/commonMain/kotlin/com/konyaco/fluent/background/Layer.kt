@@ -221,7 +221,7 @@ private class BackgroundPaddingShape(
 @Stable
 private fun calcPadding(density: Density, cover: Boolean): Float {
     return with(density) {
-        if (cover) ceil(1.dp.toPx()) // cover
+        if (cover) ceil(1.dp.toPx()) - 0.5f // cover
         else ceil(1.dp.toPx())// do not cover
     }
 }
