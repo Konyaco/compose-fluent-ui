@@ -22,7 +22,7 @@ fun main() = application {
         title = "Compose Fluent Design Gallery",
         icon = painterResource(Res.drawable.icon)
     ) {
-        GalleryTheme {
+        GalleryTheme(false) {
             //TODO Make Window transparent.
             WindowStyle(
                 isDarkTheme = LocalStore.current.darkMode,

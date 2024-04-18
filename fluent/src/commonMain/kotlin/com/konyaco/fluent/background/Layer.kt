@@ -20,7 +20,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.translate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -28,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
+import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 /**
@@ -123,7 +125,17 @@ private fun Modifier.layer(
             if (border != null) {
                 val backgroundShape =
                     if (backgroundSizing == BackgroundSizing.InnerBorderEdge && shape is CornerBasedShape) {
-                        BackgroundPaddingShape(shape)
+                        val brush = border.brush
+                        // FIXME(Workaround): If the border color has alpha channel, shrink padding to not cover the content background
+                        val hasAlpha = if (brush is SolidColor) {
+                            brush.value.alpha < 1f
+                        } else if (brush is ShaderBrush) {
+                            // TODO: Detect if there are transparent colors in gradient.
+                            true
+                        } else {
+                            false
+                        }
+                        BackgroundPaddingShape(shape, cover = !hasAlpha)
                     } else {
                         shape
                     }
@@ -140,17 +152,19 @@ private fun Modifier.layer(
  * keep padding for background
  */
 @Immutable
-@JvmInline
-private value class BackgroundPaddingShape(private val borderShape: CornerBasedShape) : Shape {
+private class BackgroundPaddingShape(
+    private val borderShape: CornerBasedShape,
+    private val cover: Boolean
+) : Shape {
 
     override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
         return with(density) {
             val circular = borderShape == CircleShape && size.height == size.width
             val paddingPx = when {
-                circular -> calcCircularPadding(density)
-                else -> calcPadding(density)
+                circular -> calcCircularPadding(density, cover)
+                else -> calcPadding(density, cover)
             }
-            createInnerOutline(size, density, layoutDirection, paddingPx.roundToInt().toFloat())
+            createInnerOutline(size, density, layoutDirection, paddingPx)
         }
     }
 
@@ -204,28 +218,25 @@ private value class BackgroundPaddingShape(private val borderShape: CornerBasedS
         }
 }
 
-/**
- * This is a workaround solution to eliminate 1 pixel gap
- * when density is not integer or `(density % 1) < 0.5`
- */
 @Stable
-private fun calcPadding(density: Density): Float {
-    val remainder = density.density % 1f
-
+private fun calcPadding(density: Density, cover: Boolean): Float {
     return with(density) {
-        when {
-            remainder == 0f -> 1.dp.toPx()
-            else -> 1.dp.toPx() - remainder + 1
-        }
+        if (cover) ceil(1.dp.toPx()) // cover
+        else ceil(1.dp.toPx())// do not cover
     }
 }
 
 @Stable
-private fun calcCircularPadding(density: Density): Float {
+private fun calcCircularPadding(density: Density, cover: Boolean): Float {
     val remainder = density.density % 1f
 
     return with(density) {
-        if (remainder == 0f) (1.dp.toPx() - 1f)
-        else floor(1.dp.toPx())
+        if (remainder == 0f) {
+            if (cover) floor(1.dp.toPx()) - 0.5f  // cover
+            else floor(1.dp.toPx()) - 0.15f// do not cover
+        } else {
+            if (cover) floor(1.dp.toPx())  // overlap
+            else floor(1.dp.toPx()) + 0.85f// do not cover
+        }
     }
 }
