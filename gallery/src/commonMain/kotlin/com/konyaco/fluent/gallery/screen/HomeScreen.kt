@@ -27,13 +27,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.LocalStore
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Open
+import com.konyaco.fluent.surface.Card
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.banner
 import fluentdesign.gallery.generated.resources.fluent_logo
@@ -95,14 +95,14 @@ fun HomeScreen() {
             )
         }
 
-        Button(
+        Card(
             onClick = {
                 uriHandler.openUri("https://developer.android.com/develop/ui/compose")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
-                Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                Modifier.fillMaxWidth().padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -133,14 +133,14 @@ fun HomeScreen() {
             }
         }
 
-        Button(
+        Card(
             onClick = {
                 uriHandler.openUri("https://fluent2.microsoft.design/")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
-                Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                Modifier.fillMaxWidth().padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -172,14 +172,14 @@ fun HomeScreen() {
             }
         }
 
-        Button(
+        Card(
             onClick = {
                 uriHandler.openUri("https://github.com/Konyaco/compose-fluent-ui")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
-                Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                Modifier.fillMaxWidth().padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
