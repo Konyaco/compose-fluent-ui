@@ -63,9 +63,12 @@ fun Card(
     )
 
     Layer(
-        modifier = modifier.clickable(onClick = {
-            if (!disabled) onClick()
-        }, indication = null, interactionSource = interactionSource),
+        modifier = modifier.clickable(
+            enabled = !disabled,
+            onClick = onClick,
+            indication = null,
+            interactionSource = interactionSource
+        ),
         shape = shape,
         backgroundSizing = BackgroundSizing.InnerBorderEdge,
         color = fillColor,
