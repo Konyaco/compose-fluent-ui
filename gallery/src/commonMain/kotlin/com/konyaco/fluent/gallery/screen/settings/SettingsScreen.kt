@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -260,7 +261,18 @@ private fun Controller(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("Scale: %.2f".format(scale))
+        val scaleText by remember(scale) {
+            derivedStateOf {
+                val scaleString = scale.toString()
+                val index = scaleString.indexOfLast { it == '.' }
+                if (index < 0) {
+                    scaleString
+                } else {
+                    scaleString.subSequence(0, (index + 3).coerceIn(1, scaleString.length))
+                }
+            }
+        }
+        Text("Scale: $scaleText")
         val density = LocalDensity.current
         Button(onClick = { onScaleChange(density.density) }) { Text("Reset") }
         Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })
