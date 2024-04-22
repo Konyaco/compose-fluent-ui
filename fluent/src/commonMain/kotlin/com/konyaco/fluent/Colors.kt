@@ -1,6 +1,11 @@
 package com.konyaco.fluent
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
@@ -142,62 +147,223 @@ data class SubtleFillColors(
 )
 
 data class Background(
+    val card: Card,
+    val smoke: Smoke,
     val mica: Mica,
     val layer: Layer,
+    val layerOnAcrylic: LayerOnAcrylic,
+    val layerOnMicaBaseAlt: LayerOnMicaBaseAlt,
     val solid: Solid,
-    val acrylic: Acrylic
+    val acrylic: Acrylic,
+    val accentAcrylic: AccentAcrylic
 ) {
+    /**
+     * Used to create ‘cards’ - content blocks that live on  page and layer backgrounds.
+     */
     data class Card(
+        /**
+         * Default card color
+         */
         val default: Color,
+        /**
+         * Alternate card color: slightly darker
+         */
         val secondary: Color,
+        /**
+         * Default card hover and pressed color
+         */
         val tertiary: Color
     )
 
+    /**
+     * Used over windows and desktop to block them out as inaccessible.
+     */
     data class Smoke(
+        /**
+         * Dims backgrounds behinds dialogs
+         */
         val default: Color
     )
 
+    /**
+     * Used on background colors of any material to create layering.
+     */
     data class Layer(
+        /**
+         * Content layer color
+         */
         val default: Color,
+        /**
+         * Alternate content layer color
+         */
         val alt: Color
     )
 
+    /**
+     * Used on background colors of any material to create layering.
+     */
     data class LayerOnAcrylic(
+        /**
+         * Content layer color on acrylic surfaces
+         */
         val default: Color
     )
 
+    /**
+     * Used for fills on Tab control.
+     */
     data class LayerOnMicaBaseAlt(
+        /**
+         * Active Tab Rest
+         * Content layer
+         */
         val default: Color,
+        /**
+         * Active Tab Drag
+         */
         val tertiary: Color,
+        /**
+         * Inactive Tab Rest
+         */
         val transparent: Color,
+        /**
+         * Inactive Tab Hover
+         */
         val secondary: Color
     )
 
+    /**
+     * Solid background colors to place layers, cards, or controls on.
+     */
     data class Solid(
+        /**
+         * Used for the bottom most layer of an experience.
+         */
         val base: Color,
+        /**
+         * Used for the bottom most layer of an experience.
+         */
         val baseAlt: Color,
+        /**
+         * Alternate base color for those who need a darker background color.
+         */
         val secondary: Color,
+        /**
+         * Content layer color
+         */
         val tertiary: Color,
+        /**
+         * Alt content layer color
+         */
         val quaternary: Color,
+        /**
+         * Used for solid default card colors
+         */
         val quinary: Color,
+        /**
+         * Used for solid default card color
+         */
         val senary: Color
     )
 
+    /**
+     * Mica background colors to place layers, cards, or controls on.
+     */
     data class Mica(
+        /**
+         * Used for the bottom most layer of an experience.
+         *
+         * Light: #F3F3F3 (FF, 100%), 50% Tint Opacity, 100% Luminosity Opacity
+         *
+         * Dark: #202020, 80% Tint Opacity, 100% Luminosity opacity
+         */
         val base: Color,
-        val baseAlt: Color
+        /**
+         * Used for the bottom most layer of an experience.
+         *
+         * Fallback Light: Solid Background / Base (#F3F3F3, 100%)
+         *
+         * Fallback Dark: Solid Background / Base (#202020, 100%)
+         */
+        val baseFallback: Color,
+        /**
+         * Default tab band background color。
+         *
+         * Light: #DADADA(80, 50%), 100% Luminosity Opacity
+         *
+         * Dark: #0A0A0A (00, 0%), 100% Luminosity Opacity
+         */
+        val baseAlt: Color,
+        /**
+         * Default tab band background color.
+         *
+         * Fallback Light: Solid Background / Base Alt (#DADADA, 100%)
+         *
+         * Fallback Dark: Solid Background / Base Alt (#0A0A0A, 100%)
+         */
+        val baseAltFallback: Color
     )
 
+    /**
+     * Acrylic background colors to place layers, cards, or controls on.
+     */
     data class Acrylic(
+        /**
+         * Used for the bottom most layer of an acrylic surface only when the surface will use layers.
+         *
+         * Light: #F3F3F3 (FF, 100%), 0% Tint Opacity, 90% Luminosity Opacity
+         *
+         * Dark: #202020, 50% TInt Opacity, 96% Luminosity Opacity
+         */
         val base: Color,
+        /**
+         * Used for the bottom most layer of an acrylic surface only when the surface will use layers.
+         *
+         * Light Fallback: #EEEEEE (FF, 100%)
+         *
+         * Dark Fallback: #1C1C1C
+         */
         val baseFallback: Color,
+        /**
+         * Default acrylic recipe used for control flyouts and surfaces that live with in the context of an app.
+         *
+         * Light: #FCFCFC (FF, 100%), 0% Tint Opacity, 85% Luminosity Opacity
+         *
+         * Dark: #2C2C2C, 15% Tint Opacity, 96% Luminosity Opacity
+         */
         val default: Color,
+        /**
+         * Default acrylic recipe used for control flyouts and surfaces that live with in the context of an app.
+         *
+         * Light Fallback: #F9F9F9 (FF, 100%)
+         *
+         * Dark Fallback: #2C2C2C
+         */
         val defaultFallback: Color
     )
 
+    /**
+     * Acrylic background colors to place layers, cards, or controls on.
+     */
     data class AccentAcrylic(
+        /**
+         * Used for the bottom most layer of an acrylic surface only when the surface will use layers.
+         *
+         * Light: Light 3, 80% Tint Opacity, 80% Luminosity Opacity
+         *
+         * Dark: Dark 2, 80% Tint Opacity, 80% Luminosity Opacity
+         */
         val base: Color,
-        val default: Color
+        val baseFallback: Color,
+        /**
+         * Default acrylic recipe used for control flyouts and surfaces that live with in the context of an app.
+         *
+         * Light: Light 3, 80% Tint Opacity, 90% Luminosity Opacity
+         *
+         * Dark: Dark 1, 80% Tint Opacity, 80% Luminosity Opacity
+         */
+        val default: Color,
+        val defaultFallback: Color
     )
 }
 
@@ -357,13 +523,23 @@ internal fun generateFillAccentColors(shades: Shades, darkMode: Boolean): FillAc
 
 internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
     if (darkMode) Background(
-        mica = Background.Mica(base = Color(0xFF202020), baseAlt = Color(0xFF0A0A0A)),
+        card = Background.Card(
+            default = Color(0x0DFFFFFF),
+            secondary = Color(0x08FFFFFF),
+            tertiary = Color(0x12FFFFFF)
+        ),
+        smoke = Background.Smoke(
+            default = Color(0x4D000000)
+        ),
         layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0DFFFFFF)),
-        acrylic = Background.Acrylic(
-            base = Color(0xFF202020),
-            baseFallback = Color(0xFF1C1C1C),
-            default = Color(0xFF2C2C2C),
-            defaultFallback = Color(0xFF2C2C2C)
+        layerOnAcrylic = Background.LayerOnAcrylic(
+            default = Color(0x09FFFFFF)
+        ),
+        layerOnMicaBaseAlt = Background.LayerOnMicaBaseAlt(
+            default = Color(0x733A3A3A),
+            tertiary = Color(0xFFF9F9F9),
+            transparent = Color.Transparent,
+            secondary = Color(0x0FFFFFFF)
         ),
         solid = Background.Solid(
             base = Color(0xFF202020),
@@ -373,16 +549,44 @@ internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
             quaternary = Color(0xFF2C2C2C),
             quinary = Color(0xFF333333),
             senary = Color(0xFF373737)
+        ),
+        mica = Background.Mica(
+            base = Color(0xFF202020),
+            baseFallback = Color(0xFF202020),
+            baseAlt = Color(0x000A0A0A),
+            baseAltFallback = Color(0xFF0A0A0A),
+        ),
+        acrylic = Background.Acrylic(
+            base = Color(0xFF202020),
+            baseFallback = Color(0xFF1C1C1C),
+            default = Color(0xFF2C2C2C),
+            defaultFallback = Color(0xFF2C2C2C)
+        ),
+        accentAcrylic = Background.AccentAcrylic(
+            base = shades.dark2,
+            baseFallback = shades.dark2,
+            default = shades.dark1,
+            defaultFallback = shades.dark1
         )
     )
     else Background(
-        mica = Background.Mica(base = Color(0xFFF3F3F3), baseAlt = Color(0xFFDADADA)),
+        card = Background.Card(
+            default = Color(0xB3FFFFFF),
+            secondary = Color(0x80F6F6F6),
+            tertiary = Color(0xFFFFFFFF)
+        ),
+        smoke = Background.Smoke(
+            default = Color(0x4D000000)
+        ),
         layer = Background.Layer(default = Color(0x80FFFFFF), alt = Color(0xFFFFFFFF)),
-        acrylic = Background.Acrylic(
-            base = Color(0xFFF3F3F3),
-            baseFallback = Color(0xFFEEEEEE),
-            default = Color(0xFFFCFCFC),
-            defaultFallback = Color(0xFFF9F9F9)
+        layerOnAcrylic = Background.LayerOnAcrylic(
+            default = Color(0x40FFFFFF)
+        ),
+        layerOnMicaBaseAlt = Background.LayerOnMicaBaseAlt(
+            default = Color(0xB3FFFFFF),
+            tertiary = Color(0xFFF9F9F9),
+            transparent = Color.Transparent,
+            secondary = Color(0x0A000000)
         ),
         solid = Background.Solid(
             base = Color(0xFFF3F3F3),
@@ -392,6 +596,24 @@ internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
             quaternary = Color(0xFFFFFFFF),
             quinary = Color(0xFFFDFDFD),
             senary = Color(0xFFFFFFFF)
+        ),
+        mica = Background.Mica(
+            base = Color(0xFFF3F3F3),
+            baseFallback = Color(0xFFF3F3F3),
+            baseAlt = Color(0xFFDADADA),
+            baseAltFallback = Color(0xFFDADADA)
+        ),
+        acrylic = Background.Acrylic(
+            base = Color(0xFFF3F3F3),
+            baseFallback = Color(0xFFEEEEEE),
+            default = Color(0xFFFCFCFC),
+            defaultFallback = Color(0xFFF9F9F9)
+        ),
+        accentAcrylic = Background.AccentAcrylic(
+            base = shades.light3,
+            baseFallback = shades.light3,
+            default = shades.light3,
+            defaultFallback = shades.light3
         )
     )
 
