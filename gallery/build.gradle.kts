@@ -1,6 +1,5 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -19,7 +18,8 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(project(":fluent"))
                 implementation(project(":fluent-icons-extended"))
-                implementation(compose("org.jetbrains.compose.ui:ui-util"))
+                implementation(compose.uiUtil)
+                implementation(libs.highlights)
             }
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
