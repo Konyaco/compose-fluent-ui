@@ -67,7 +67,7 @@ fun TextField(
             Spacer(Modifier.height(8.dp))
         }
         BasicTextField(
-            modifier = modifier.defaultMinSize(160.dp, 32.dp)
+            modifier = modifier.defaultMinSize(64.dp, 32.dp)
                 .clip(RoundedCornerShape(4.dp)),
             value = value,
             onValueChange = onValueChange,
