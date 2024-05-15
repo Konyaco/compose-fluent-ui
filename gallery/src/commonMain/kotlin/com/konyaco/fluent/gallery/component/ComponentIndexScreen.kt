@@ -19,19 +19,21 @@ import com.konyaco.fluent.surface.Card
 
 @Composable
 fun ComponentItem.ComponentIndexScreen(navigator: ComponentNavigator) {
-    ComponentIndexScreen(name, description, items, navigator)
+    ComponentIndexScreen(name, items, navigator)
 }
 
 @Composable
 fun ComponentIndexScreen(
     name: String,
-    description: String,
     items: List<ComponentItem>?,
     navigator: ComponentNavigator
 ) {
-    //TODO Fixed Style
     Column {
-        GalleryHeader(name, description)
+        GalleryHeader(
+            title = name,
+            description = "",
+            controlVisible = false
+        )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(300.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

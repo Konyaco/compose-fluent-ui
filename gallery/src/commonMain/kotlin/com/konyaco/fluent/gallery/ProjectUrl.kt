@@ -7,4 +7,23 @@ object ProjectUrl {
     const val FRAMEWORK = "https://developer.android.com/develop/ui/compose"
 
     const val UI_DESIGN = "https://fluent2.microsoft.design/"
+
+    const val FEED_BACK = "$ROOT/issues/new/choose"
+
+    //TODO redirect to master
+    const val BRANCH = "dev"
+
+    fun componentCodeOf(path: String, platform: String = "common"): String {
+        return "$ROOT/tree/$BRANCH/fluent/src/${platform}Main/kotlin/com/konyaco/fluent/$path.kt"
+    }
+
+    fun galleryCodeOf(path: String): String {
+        return "$ROOT/tree/$BRANCH/gallery/src/$path"
+    }
+
+    //TODO documentation redirection
+    fun documentationOf(path: String): String {
+        return ROOT
+    }
+
 }

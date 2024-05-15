@@ -18,7 +18,6 @@ fun AllSamplesScreen(navigator: ComponentNavigator) {
     }
     ComponentIndexScreen(
         name = "All samples",
-        description = "",
         items = allComponents,
         navigator
     )
