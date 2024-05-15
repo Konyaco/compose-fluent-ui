@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.ProjectUrl
 
 @Composable
 fun TodoComponent() {
@@ -17,7 +18,7 @@ fun TodoComponent() {
         Button(
             modifier = Modifier.align(Alignment.CenterEnd),
             onClick = {
-                urlHandle.openUri("https://github.com/Konyaco/compose-fluent-ui")
+                urlHandle.openUri(ProjectUrl.ROOT)
             }) {
             Text("Contribute")
         }
