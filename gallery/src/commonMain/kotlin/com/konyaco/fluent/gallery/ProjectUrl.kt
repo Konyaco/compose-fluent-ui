@@ -11,10 +11,10 @@ object ProjectUrl {
     const val FEED_BACK = "$ROOT/issues/new/choose"
 
     //TODO redirect to master
-    const val BRANCH = "dev"
+    private const val BRANCH = "dev"
 
-    fun componentCodeOf(path: String, platform: String = "common"): String {
-        return "$ROOT/tree/$BRANCH/fluent/src/${platform}Main/kotlin/com/konyaco/fluent/$path.kt"
+    fun componentCodeOf(path: String): String {
+        return "$ROOT/tree/$BRANCH/$path"
     }
 
     fun galleryCodeOf(path: String): String {

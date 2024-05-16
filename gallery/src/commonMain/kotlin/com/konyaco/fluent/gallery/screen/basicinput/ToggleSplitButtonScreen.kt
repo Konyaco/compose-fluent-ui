@@ -8,17 +8,21 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
+import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.List
 import com.konyaco.fluent.icons.regular.TextBulletListLtr
+import com.konyaco.fluent.source.generated.FluentSourceFile
 
 @Component(index = 6, description = "A version of the SplitButton where the activation target toggles on/off.")
 @Composable
 fun ToggleSplitButtonScreen() {
     GalleryPage(
         title = "ToggleSplitButton",
-        description = "A version of the SplitButton where the activation target toggles on/off."
+        description = "A version of the SplitButton where the activation target toggles on/off.",
+        componentPath = FluentSourceFile.Button,
+        galleryPath = ComponentPagePath.ToggleSplitButtonScreen
     ) {
         Section(
             title = "Using ToggleSplitButton to control bulleted list functionality in RichEditBox",

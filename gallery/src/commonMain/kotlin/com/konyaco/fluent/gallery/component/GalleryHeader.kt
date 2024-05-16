@@ -52,7 +52,6 @@ fun GalleryHeader(
     documentationPath: String? = null,
     componentPath: String? = null,
     galleryPath: String? = null,
-    platform: String = "common",
     controlVisible: Boolean = true,
     themeButtonChecked: Boolean = false,
     onThemeButtonChanged: (Boolean) -> Unit = {}
@@ -63,7 +62,6 @@ fun GalleryHeader(
         documentationPath,
         componentPath,
         galleryPath,
-        platform,
         controlVisible,
         themeButtonChecked,
         onThemeButtonChanged
@@ -78,7 +76,6 @@ fun GalleryHeader(
     documentPath: String? = null,
     componentPath: String? = null,
     galleryPath: String? = null,
-    platform: String = "common",
     themeButtonChecked: Boolean = false,
     controlVisible: Boolean = true,
     onThemeButtonChanged: (Boolean) -> Unit = {}
@@ -117,10 +114,7 @@ fun GalleryHeader(
                             HyperlinkButton(
                                 onClick = {
                                     uriHandler.openUri(
-                                        ProjectUrl.componentCodeOf(
-                                            componentPath,
-                                            platform
-                                        )
+                                        ProjectUrl.componentCodeOf(componentPath)
                                     )
                                     isFlyoutVisible = false
                                 },

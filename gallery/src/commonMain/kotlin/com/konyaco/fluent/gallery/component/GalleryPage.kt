@@ -29,10 +29,9 @@ fun GalleryPage(
     documentPath: String? = null,
     componentPath: String? = null,
     galleryPath: String? = null,
-    platform: String = "common",
     content: @Composable GalleryPageScope.() -> Unit
 ) {
-    GalleryPage(AnnotatedString(title), AnnotatedString(description), documentPath, componentPath, galleryPath, platform, content)
+    GalleryPage(AnnotatedString(title), AnnotatedString(description), documentPath, componentPath, galleryPath, content)
 }
 
 @Composable
@@ -42,7 +41,6 @@ fun GalleryPage(
     documentPath: String? = null,
     componentPath: String? = null,
     galleryPath: String? = null,
-    platform: String = "common",
     content: @Composable GalleryPageScope.() -> Unit
 ) {
 
@@ -50,7 +48,7 @@ fun GalleryPage(
         modifier = Modifier.fillMaxSize()
     ) {
         val inverseTheme = remember { mutableStateOf(false) }
-        GalleryHeader(title, AnnotatedString(""), documentPath, componentPath, galleryPath, platform, inverseTheme.value) { inverseTheme.value = !inverseTheme.value }
+        GalleryHeader(title, AnnotatedString(""), documentPath, componentPath, galleryPath, inverseTheme.value) { inverseTheme.value = !inverseTheme.value }
 
         val scrollState = rememberScrollState()
         ScrollbarContainer(

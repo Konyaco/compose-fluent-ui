@@ -76,7 +76,14 @@ fun SettingsScreen() {
     val store = LocalStore.current
 
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), Arrangement.spacedBy(8.dp)) {
-        Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it }, store.enabledAcrylicPopup, { store.enabledAcrylicPopup = it })
+        Controller(
+            scale = scale,
+            onScaleChange = { scale = it },
+            darkMode = store.darkMode,
+            onDarkModeChange = { store.darkMode = it },
+            acrylicPopupEnabled = store.enabledAcrylicPopup,
+            onAcrylicPopupChange = { store.enabledAcrylicPopup = it }
+        )
 
         CompositionLocalProvider(LocalDensity provides Density(scale)) {
             Content()
@@ -185,8 +192,7 @@ fun SettingsScreen() {
                 MenuFlyoutItem(
                     onClick = {},
                     icon = {},
-                    paddingIcon = true,
-                    text = { Text("test") }
+                    text = { Text("Test") }
                 )
                 MenuFlyoutItem(
                     items = {
