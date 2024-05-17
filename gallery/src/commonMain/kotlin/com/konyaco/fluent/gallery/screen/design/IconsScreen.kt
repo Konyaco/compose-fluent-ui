@@ -1,6 +1,7 @@
 package com.konyaco.fluent.gallery.screen.design
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -32,6 +34,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.TextFieldValue
@@ -218,11 +221,21 @@ fun IconsScreen() {
                                     }
                                 }
                             }
-                            Card(
+                            Spacer(
+                                modifier = Modifier.fillMaxHeight()
+                                    .padding(vertical = 1.dp)
+                                    .width(1.dp)
+                                    .background(FluentTheme.colors.stroke.card.default)
+                            )
+                            Layer(
+                                shape = RectangleShape,
+                                color = FluentTheme.colors.background.card.default,
+                                backgroundSizing = BackgroundSizing.OuterBorderEdge,
+                                border = null,
                                 modifier = Modifier.fillMaxHeight()
                                     .width(400.dp)
-                            ) {
-                                val item = selectedItem.value ?: return@Card
+                            ) board@{
+                                val item = selectedItem.value ?: return@board
                                 val isCore = iconCoreSet.value.contains(item)
                                 val packageName = if (isCore) {
                                     "com.konyaco:fluent-icons-core"
