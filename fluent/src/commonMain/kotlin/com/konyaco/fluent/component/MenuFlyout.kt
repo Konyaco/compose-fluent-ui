@@ -233,7 +233,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
             CompositionLocalProvider(
                 LocalContentColor provides color.trainingColor,
                 LocalContentAlpha provides color.trainingColor.alpha,
-                LocalTextStyle provides FluentTheme.typography.caption.copy(fontWeight = FontWeight.Normal)
+                LocalTextStyle provides FluentTheme.typography.caption
             ) {
                 training?.invoke()
             }
