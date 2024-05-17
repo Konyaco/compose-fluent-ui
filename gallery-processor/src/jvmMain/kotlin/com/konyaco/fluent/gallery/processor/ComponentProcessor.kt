@@ -353,9 +353,11 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             annotation.arguments.forEach {
                 when (it.name?.asString()) {
                     "icon" -> icon = (it.value as? String)?.ifBlank { null }
-                    "generateScreen" -> contentData = """
-                        { ComponentIndexScreen(it) }
-                    """.trimIndent()
+                    "generateScreen" -> if (it.value as? Boolean == true) {
+                        contentData = """
+                            { ComponentIndexScreen(it) }
+                        """.trimIndent()
+                    }
                 }
             }
         }
