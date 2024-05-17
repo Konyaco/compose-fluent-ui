@@ -16,7 +16,8 @@ class CommonProcessorProvider: SymbolProcessorProvider {
 class CommonProcessor(environment: SymbolProcessorEnvironment): IProcessor {
 
     private val processors = listOf(
-        SourceFilePathProcessor(environment)
+        SourceFilePathProcessor(environment),
+        IconSourceProcessor(environment)
     )
 
     override fun process(resolver: Resolver): List<KSAnnotated> {

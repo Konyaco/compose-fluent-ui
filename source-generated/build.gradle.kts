@@ -3,12 +3,20 @@ import com.konyaco.fluent.plugin.build.applyTargets
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
 }
 
 kotlin {
     applyTargets(publish = false)
     sourceSets {
+        commonMain {
+            dependencies {
+                implementation(project(":fluent-icons-core"))
+                implementation(project(":fluent-icons-extended"))
+                implementation(compose.ui)
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

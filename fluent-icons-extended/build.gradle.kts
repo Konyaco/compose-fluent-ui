@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
     id("maven-publish")
     signing
 }
@@ -41,4 +42,15 @@ android {
         sourceCompatibility = BuildConfig.Jvm.javaVersion
         targetCompatibility = BuildConfig.Jvm.javaVersion
     }
+}
+
+dependencies {
+    val processor = (project(":source-generated-processor"))
+    add("kspCommonMainMetadata", processor)
+}
+
+ksp {
+    arg("source.generated.module.name", "FluentIconExtended")
+    arg("source.generated.module.enabled", false.toString())
+    arg("source.generated.icon.enabled", true.toString())
 }

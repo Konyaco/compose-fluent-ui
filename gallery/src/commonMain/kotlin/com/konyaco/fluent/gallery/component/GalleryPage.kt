@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.Colors
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.component.ScrollbarContainer
 import com.konyaco.fluent.component.rememberScrollbarAdapter
@@ -31,7 +32,14 @@ fun GalleryPage(
     galleryPath: String? = null,
     content: @Composable GalleryPageScope.() -> Unit
 ) {
-    GalleryPage(AnnotatedString(title), AnnotatedString(description), documentPath, componentPath, galleryPath, content)
+    GalleryPage(
+        AnnotatedString(title),
+        AnnotatedString(description),
+        documentPath,
+        componentPath,
+        galleryPath,
+        content
+    )
 }
 
 @Composable
@@ -48,7 +56,14 @@ fun GalleryPage(
         modifier = Modifier.fillMaxSize()
     ) {
         val inverseTheme = remember { mutableStateOf(false) }
-        GalleryHeader(title, AnnotatedString(""), documentPath, componentPath, galleryPath, inverseTheme.value) { inverseTheme.value = !inverseTheme.value }
+        GalleryHeader(
+            title,
+            AnnotatedString(""),
+            documentPath,
+            componentPath,
+            galleryPath,
+            inverseTheme.value
+        ) { inverseTheme.value = !inverseTheme.value }
 
         val scrollState = rememberScrollState()
         ScrollbarContainer(
@@ -70,8 +85,8 @@ fun GalleryPage(
     }
 }
 
-
-class GalleryPageScope(columnScope: ColumnScope, private val inverseTheme: () -> Boolean) : ColumnScope by columnScope {
+class GalleryPageScope(columnScope: ColumnScope, private val inverseTheme: () -> Boolean) :
+    ColumnScope by columnScope {
 
     @Composable
     fun Section(
@@ -81,16 +96,25 @@ class GalleryPageScope(columnScope: ColumnScope, private val inverseTheme: () ->
         output: (@Composable ColumnScope.() -> Unit)? = null,
         content: @Composable BoxScope.() -> Unit
     ) {
+        Section {
+            GallerySection(
+                modifier = Modifier.fillMaxSize(),
+                title = title,
+                sourceCode = sourceCode,
+                options = options,
+                content = content,
+                output = output,
+                colors = it
+            )
+        }
+    }
+
+    @Composable
+    fun Section(content: @Composable (colors: Colors) -> Unit) {
         val currentThemeMode = LocalStore.current.darkMode
         val inverseThemeMode = inverseTheme()
-        GallerySection(
-            modifier = Modifier.fillMaxSize(),
-            title = title,
-            sourceCode = sourceCode,
-            options = options,
-            content = content,
-            output = output,
-            colors = when {
+        content(
+            when {
                 inverseThemeMode && currentThemeMode -> lightColors()
                 inverseThemeMode && !currentThemeMode -> darkColors()
                 else -> FluentTheme.colors
