@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
-    id("com.google.devtools.ksp") version libs.versions.ksp.get()
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
