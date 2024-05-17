@@ -34,7 +34,7 @@ import com.konyaco.fluent.gallery.component.CopyButton
 import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.source.generated.FluentSourceFile
 
-@Component(index = 1)
+@Component(index = 1, icon = "TextFont")
 @Composable
 fun TypographyScreen() {
     val linkTextColor = FluentTheme.colors.text.accent.primary
