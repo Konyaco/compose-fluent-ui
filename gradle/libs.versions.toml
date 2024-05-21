@@ -7,6 +7,7 @@ compose = "1.6.1"
 androidGradlePlugin = "8.3.2"
 androidBuildTools = "31.3.2"
 windowStyler = "0.3.3-SNAPSHOT"
+highlights = "0.8.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -22,6 +23,7 @@ squareup-kotlinpoet = "com.squareup:kotlinpoet:1.12.0"
 android-tools-common = { module = "com.android.tools:common", version.ref = "androidBuildTools" }
 android-tools-sdk-common = { module = "com.android.tools:sdk-common", version.ref = "androidBuildTools" }
 window-styler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowStyler" }
+highlights = { module = "dev.snipme:highlights", version.ref = "highlights" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
