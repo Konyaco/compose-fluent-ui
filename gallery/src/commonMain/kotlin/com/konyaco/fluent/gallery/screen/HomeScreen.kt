@@ -30,6 +30,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.LocalStore
+import com.konyaco.fluent.gallery.ProjectUrl
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Open
@@ -97,7 +98,7 @@ fun HomeScreen() {
 
         Card(
             onClick = {
-                uriHandler.openUri("https://developer.android.com/develop/ui/compose")
+                uriHandler.openUri(ProjectUrl.FRAMEWORK)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -135,9 +136,10 @@ fun HomeScreen() {
 
         Card(
             onClick = {
-                uriHandler.openUri("https://fluent2.microsoft.design/")
+                uriHandler.openUri(ProjectUrl.UI_DESIGN)
             },
             modifier = Modifier.fillMaxWidth()
+
         ) {
             Row(
                 Modifier.fillMaxWidth().padding(12.dp),
@@ -174,7 +176,7 @@ fun HomeScreen() {
 
         Card(
             onClick = {
-                uriHandler.openUri("https://github.com/Konyaco/compose-fluent-ui")
+                uriHandler.openUri(ProjectUrl.ROOT)
             },
             modifier = Modifier.fillMaxWidth()
         ) {

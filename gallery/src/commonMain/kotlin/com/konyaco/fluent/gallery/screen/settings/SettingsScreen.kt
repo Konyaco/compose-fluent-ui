@@ -76,7 +76,14 @@ fun SettingsScreen() {
     val store = LocalStore.current
 
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), Arrangement.spacedBy(8.dp)) {
-        Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it })
+        Controller(
+            scale = scale,
+            onScaleChange = { scale = it },
+            darkMode = store.darkMode,
+            onDarkModeChange = { store.darkMode = it },
+            acrylicPopupEnabled = store.enabledAcrylicPopup,
+            onAcrylicPopupChange = { store.enabledAcrylicPopup = it }
+        )
 
         CompositionLocalProvider(LocalDensity provides Density(scale)) {
             Content()
@@ -185,8 +192,7 @@ fun SettingsScreen() {
                 MenuFlyoutItem(
                     onClick = {},
                     icon = {},
-                    paddingIcon = true,
-                    text = { Text("test") }
+                    text = { Text("Test") }
                 )
                 MenuFlyoutItem(
                     items = {
@@ -242,7 +248,9 @@ private fun Controller(
     scale: Float,
     onScaleChange: (Float) -> Unit,
     darkMode: Boolean,
-    onDarkModeChange: (Boolean) -> Unit
+    onDarkModeChange: (Boolean) -> Unit,
+    acrylicPopupEnabled: Boolean,
+    onAcrylicPopupChange: (Boolean) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -252,6 +260,7 @@ private fun Controller(
         val density = LocalDensity.current
         Button(onClick = { onScaleChange(density.density) }) { Text("Reset") }
         Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })
+        Switcher(acrylicPopupEnabled, text = "Acrylic Popup", onCheckStateChange = { onAcrylicPopupChange(it) })
     }
     Slider(
         modifier = Modifier.width(200.dp),

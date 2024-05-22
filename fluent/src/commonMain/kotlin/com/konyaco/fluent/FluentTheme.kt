@@ -24,7 +24,7 @@ import com.konyaco.fluent.component.ProvideFontIcon
 fun FluentTheme(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
-    useAcrylicPopup: Boolean = false,
+    useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     val contentDialogHostState = remember { ContentDialogHostState() }
@@ -48,6 +48,31 @@ fun FluentTheme(
             }
         }
     }
+}
+
+/**
+ * Uses for override theme configuration
+ */
+@ExperimentalFluentApi
+@Composable
+fun FluentThemeConfiguration(
+    colors: Colors = FluentTheme.colors,
+    typography: Typography = FluentTheme.typography,
+    useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
+    contentDialogHostState: ContentDialogHostState = LocalContentDialog.current,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalAcrylicPopupEnabled provides useAcrylicPopup,
+        LocalColors provides colors,
+        LocalTypography provides typography,
+        LocalTextSelectionColors provides TextSelectionColors(
+            colors.text.onAccent.primary,
+            colors.fillAccent.selectedTextBackground.copy(0.4f)
+        ),
+        LocalContentDialog provides contentDialogHostState,
+        content = content
+    )
 }
 
 @OptIn(ExperimentalFluentApi::class)

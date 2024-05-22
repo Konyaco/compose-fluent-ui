@@ -1,11 +1,11 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
-import org.jetbrains.compose.compose
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
     id("maven-publish")
     signing
 }
@@ -52,4 +52,13 @@ android {
         sourceCompatibility = BuildConfig.Jvm.javaVersion
         targetCompatibility = BuildConfig.Jvm.javaVersion
     }
+}
+
+dependencies {
+    val processor = (project(":source-generated-processor"))
+    add("kspCommonMainMetadata", processor)
+}
+
+ksp {
+    arg("source.generated.module.name", project.name)
 }

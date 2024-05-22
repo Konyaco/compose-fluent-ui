@@ -8,7 +8,7 @@ object ComponentGroupInfo {
 
     private const val screenPackage: String = "com.konyaco.fluent.gallery.screen"
 
-    @ComponentGroup("Ruler", index = 0)
+    @ComponentGroup("Ruler", index = 0, generateScreen = false, packageMap = "$screenPackage.design")
     const val DesignGuidance = "Design guidance"
 
     @ComponentGroup("Accessibility", generateScreen = false, index = 3)

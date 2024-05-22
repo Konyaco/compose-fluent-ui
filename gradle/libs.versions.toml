@@ -28,6 +28,7 @@ highlights = { module = "dev.snipme:highlights", version.ref = "highlights" }
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 

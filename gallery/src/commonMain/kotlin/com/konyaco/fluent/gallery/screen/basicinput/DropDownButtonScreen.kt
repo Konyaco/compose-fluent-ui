@@ -7,31 +7,33 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
+import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.Send
 import com.konyaco.fluent.icons.regular.Mail
 import com.konyaco.fluent.icons.regular.MailArrowDoubleBack
+import com.konyaco.fluent.source.generated.FluentSourceFile
 
 @Component(index = 1, description = "A button that displays a flyout of choices when clicked.")
 @Composable
 fun DropDownButtonScreen() {
     GalleryPage(
         title = "DropDownButton",
-        description = "A control that drops down a flyout of choices from which one can be chosen."
+        description = "A control that drops down a flyout of choices from which one can be chosen.",
+        componentPath = FluentSourceFile.Button,
+        galleryPath = ComponentPagePath.DropDownButtonScreen
     ) {
         Section(
             title = "Simple DropDownButton",
-            sourceCode = sourceCodeOfBasicDropDownButton
-        ) {
-            BasicDropDownButton()
-        }
+            sourceCode = sourceCodeOfBasicDropDownButton,
+            content = { BasicDropDownButton() }
+        )
         Section(
             title = "DropDownButton with Icons",
-            sourceCode = sourceCodeOfIconDropDownButton
-        ) {
-            IconDropDownButton()
-        }
+            sourceCode = sourceCodeOfIconDropDownButton,
+            content = { IconDropDownButton() }
+        )
     }
 }
 

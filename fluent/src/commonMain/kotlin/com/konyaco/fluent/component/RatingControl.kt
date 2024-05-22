@@ -184,7 +184,7 @@ fun RatingControl(
                 })
         }
         ProvideTextStyle(
-            FluentTheme.typography.caption.copy(color.captionColor, fontWeight = FontWeight.Normal)
+            FluentTheme.typography.caption.copy(color.captionColor)
         ) {
             CompositionLocalProvider(
                 LocalContentColor provides color.captionColor

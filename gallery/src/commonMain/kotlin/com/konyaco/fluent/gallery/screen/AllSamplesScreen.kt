@@ -13,12 +13,16 @@ fun AllSamplesScreen(navigator: ComponentNavigator) {
         mutableStateOf<List<ComponentItem>?>(null)
     }
     LaunchedEffect(flatMapComponents) {
-        val excludeComponents = listOf(_HomeScreenComponent, _AllSamplesScreenComponent)
+        val excludeComponents = listOf(
+            _HomeScreenComponent,
+            _AllSamplesScreenComponent,
+            Design_guidance_TypographyScreenComponent,
+            Design_guidance_IconsScreenComponent
+        )
         allComponents = flatMapComponents.filter { it !in excludeComponents }
     }
     ComponentIndexScreen(
         name = "All samples",
-        description = "",
         items = allComponents,
         navigator
     )

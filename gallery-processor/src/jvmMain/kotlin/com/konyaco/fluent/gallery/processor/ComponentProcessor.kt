@@ -30,6 +30,8 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
 
     private val propertyNameRegex = Regex("^[a-zA-Z_]*\\w")
 
+    private val componentPagePathType = TypeSpec.objectBuilder("ComponentPagePath")
+
     override fun finish() {
         super.finish()
         arrangeComponentGroup()
@@ -189,7 +191,16 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             fileSpecBuilder.packageName,
             fileSpecBuilder.name
         )
+        val pathFileSpec = FileSpec.builder(
+            componentPackage, "ComponentPagePath"
+        ).addType(componentPagePathType.build()).build()
+        val pathFile = codeGenerator.createNewFile(
+            Dependencies(true),
+            componentPackage,
+            pathFileSpec.name
+        )
         OutputStreamWriter(file, StandardCharsets.UTF_8).use(fileSpecBuilder.build()::writeTo)
+        OutputStreamWriter(pathFile, StandardCharsets.UTF_8).use(pathFileSpec::writeTo)
     }
 
     private fun createItemsString(
@@ -263,9 +274,23 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             ), simpleNameString
         )
         val propertyName = functionName.asPropertyName()
-        val componentName =
-            (nameArg?.value as? String)?.ifBlank { null } ?: functionDeclaration.simpleName.asString()
-                .removeSuffix("Screen")
+        val componentName = (nameArg?.value as? String)?.ifBlank { null }
+                ?: functionDeclaration.simpleName.asString().removeSuffix("Screen")
+        val sourceFile = functionDeclaration.containingFile
+        if (sourceFile != null) {
+            val relativePath = sourceFile.filePath.substringAfterLast("gallery/src/")
+            componentPagePathType
+                .addModifiers(KModifier.INTERNAL)
+                .addProperty(
+                    PropertySpec.builder(
+                        "${componentName}Screen".replace(" ", "_"),
+                        String::class
+                    )
+                        .addModifiers(KModifier.CONST)
+                        .initializer("\"$relativePath\"")
+                        .build()
+                )
+        }
         componentNameList.add(propertyName)
         var arg = ""
         functionDeclaration.parameters.forEach {
@@ -328,9 +353,11 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             annotation.arguments.forEach {
                 when (it.name?.asString()) {
                     "icon" -> icon = (it.value as? String)?.ifBlank { null }
-                    "generateScreen" -> contentData = """
-                        { ComponentIndexScreen(it) }
-                    """.trimIndent()
+                    "generateScreen" -> if (it.value as? Boolean == true) {
+                        contentData = """
+                            { ComponentIndexScreen(it) }
+                        """.trimIndent()
+                    }
                 }
             }
         }

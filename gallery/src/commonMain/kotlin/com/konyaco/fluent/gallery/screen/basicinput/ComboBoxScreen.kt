@@ -1,20 +1,18 @@
 package com.konyaco.fluent.gallery.screen.basicinput
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import com.konyaco.fluent.gallery.annotation.Component
-import com.konyaco.fluent.gallery.component.GalleryHeader
+import com.konyaco.fluent.gallery.component.ComponentPagePath
+import com.konyaco.fluent.gallery.component.GalleryPage
 
-@Component(index = 9)
+@Component(index = 9, description = "A drop-down list of items a user can select from.")
 @Composable
 fun ComboBoxScreen() {
-    Column(Modifier.fillMaxSize()) {
-        GalleryHeader(
-            "ComboBox",
-            "Use a ComboBox when you need to conserve on-screen space and when users select only one option at a time. A ComboBox shows only the currently selected item."
-        )
-        // TODO:
+    GalleryPage(
+        title = "ComboBox",
+        description = "Use a ComboBox when you need to conserve on-screen space and when users select only one option at a time. A ComboBox shows only the currently selected item.",
+        galleryPath = ComponentPagePath.ComboBoxScreen
+    ) {
+        //TODO ComboBox Demo
     }
 }

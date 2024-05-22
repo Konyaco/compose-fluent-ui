@@ -1,47 +1,103 @@
 package com.konyaco.fluent.gallery.screen.basicinput
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.*
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
+import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
+import com.konyaco.fluent.source.generated.FluentSourceFile
 
-@Component(index = 5, description = "A two-part button that displays a flyout when its secondary part is clicked.")
+@Component(
+    index = 5,
+    description = "A two-part button that displays a flyout when its secondary part is clicked."
+)
 @Composable
 fun SplitButtonScreen() {
     GalleryPage(
         title = "SplitButton",
-        description = "The SplitButton is a dropdown button, but with an addition execution hit target."
+        description = "The SplitButton is a dropdown button, but with an addition execution hit target.",
+        componentPath = FluentSourceFile.Button,
+        galleryPath = ComponentPagePath.SplitButtonScreen
     ) {
+        //TODO TextField keep focus
+        val textFieldValue = remember {
+            mutableStateOf(
+                TextFieldValue(
+                    AnnotatedString(
+                        text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+                                "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." +
+                                " Tempor commodo ullamcorper a lacus.",
+                        spanStyle = SpanStyle(color = colors.first())
+                    )
+                )
+            )
+        }
         Section(
             title = "A SplitButton controlling text color in a RichEditBox",
-            sourceCode = sourceCodeOfBasicSplitButtonSample
-        ) {
-            BasicSplitButtonSample()
-        }
+            sourceCode = sourceCodeOfBasicSplitButtonSample,
+            content = {
+                BasicSplitButtonSample {
+                    textFieldValue.value = textFieldValue.value.copy(
+                        buildAnnotatedString {
+                            append(textFieldValue.value.annotatedString)
+                            val selection = textFieldValue.value.selection
+
+                            if (!selection.reversed && !selection.collapsed) {
+                                addStyle(
+                                    style = SpanStyle(color = it),
+                                    start = selection.start,
+                                    end = selection.length
+                                )
+                            }
+                        }
+                    )
+                }
+            },
+            options = {
+                val interactionSource = remember { MutableInteractionSource() }
+                val isFocused by interactionSource.collectIsFocusedAsState()
+                TextField(
+                    value = textFieldValue.value,
+                    onValueChange = {
+                        if (isFocused) {
+                            textFieldValue.value = it
+                        }
+                    },
+                    modifier = Modifier.width(200.dp),
+                    interactionSource = interactionSource
+                )
+            }
+        )
         Section(
             title = "A SplitButton with text",
-            sourceCode = sourceCodeOfSplitButtonWithTextSample
-        ) {
-            SplitButtonWithTextSample()
-        }
+            sourceCode = sourceCodeOfSplitButtonWithTextSample,
+            content = { SplitButtonWithTextSample() }
+        )
     }
 }
 
 @Sample
 @Composable
-private fun BasicSplitButtonSample() {
+private fun BasicSplitButtonSample(onColorSelected: (color: Color) -> Unit) {
     var currentColor by remember { mutableStateOf(colors.first()) }
     FlyoutContainer(
         flyout = {
             ColorList {
                 currentColor = it
+                onColorSelected(it)
                 isFlyoutVisible = false
             }
         },
@@ -103,4 +159,5 @@ private fun ColorList(
     }
 }
 
-private val colors = listOf(Color.Red, Color.Blue, Color.Cyan, Color.Magenta, Color.Yellow, Color.Green, Color.Gray)
+private val colors =
+    listOf(Color.Red, Color.Blue, Color.Cyan, Color.Magenta, Color.Yellow, Color.Green, Color.Gray)

@@ -10,9 +10,12 @@ import com.konyaco.fluent.background.Mica
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
 class Store(
-    systemDarkMode: Boolean
+    systemDarkMode: Boolean,
+    enabledAcrylicPopup: Boolean
 ) {
     var darkMode by mutableStateOf(systemDarkMode)
+
+    var enabledAcrylicPopup by mutableStateOf(enabledAcrylicPopup)
 }
 
 @OptIn(ExperimentalFluentApi::class)
@@ -23,7 +26,7 @@ fun GalleryTheme(
 ) {
     val systemDarkMode = isSystemInDarkTheme()
 
-    val store = remember { Store(systemDarkMode) }
+    val store = remember { Store(systemDarkMode, true) }
 
     LaunchedEffect(systemDarkMode) {
         store.darkMode = systemDarkMode
@@ -31,7 +34,7 @@ fun GalleryTheme(
     CompositionLocalProvider(
         LocalStore provides store
     ) {
-        FluentTheme(colors = if (store.darkMode) darkColors() else lightColors(), useAcrylicPopup = true) {
+        FluentTheme(colors = if (store.darkMode) darkColors() else lightColors(), useAcrylicPopup = store.enabledAcrylicPopup) {
             if (displayMicaLayer) {
                 Mica(modifier = Modifier.fillMaxSize()) {
                     content()
