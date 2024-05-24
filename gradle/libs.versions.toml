@@ -1,9 +1,9 @@
 [versions]
 activityCompose = "1.8.2"
 haze = "0.6.2"
-kotlin = "1.9.0"
-ksp = "1.9.0-1.0.13"
-compose = "1.6.1"
+kotlin = "1.9.23"
+ksp = "1.9.23-1.0.20"
+compose = "1.6.10"
 androidGradlePlugin = "8.3.2"
 androidBuildTools = "31.3.2"
 windowStyler = "0.3.3-SNAPSHOT"
