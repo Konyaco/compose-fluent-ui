@@ -11,18 +11,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
@@ -33,6 +33,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.ExperimentalFluentApi
@@ -67,7 +70,7 @@ fun CalendarView(
     ) {
         Column {
             // Header
-            Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.padding(4.dp).height(40.dp), verticalAlignment = Alignment.CenterVertically) {
                 CalendarHeader(
                     modifier = Modifier.weight(1f),
                     text = state.viewHeaderText.value,
@@ -83,7 +86,7 @@ fun CalendarView(
                     .background(FluentTheme.colors.stroke.card.default)
             )
             // Content
-            AnimatedContent(targetState = state.currentChooseType.value) {
+            AnimatedContent(modifier = Modifier.size(300.dp), targetState = state.currentChooseType.value) {
                 when (it) {
                     ChooseType.YEAR -> YearTable(state)
                     ChooseType.MONTH -> MonthTable(state)
@@ -103,31 +106,26 @@ private fun YearTable(state: CalendarDatePickerState) {
         border = null
     ) {
         // 4x4
-        Column(
-            modifier = Modifier.height(250.dp).verticalScroll(state = rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            LazyVerticalGrid(
-                GridCells.Fixed(4),
-                modifier = Modifier.height(300.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalArrangement = Arrangement.SpaceAround,
-                contentPadding = PaddingValues(12.dp)
+        LazyVerticalGrid(
+            GridCells.Fixed(4),
+            modifier = Modifier.height(300.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalArrangement = Arrangement.SpaceAround,
+            contentPadding = PaddingValues(12.dp)
 
-            ) {
-                itemsIndexed(state.candidateYears.value) { i, e ->
-                    Box(contentAlignment = Alignment.Center) {
-                        Item(
-                            text = e.value.toString(),
-                            header = null,
-                            size = ItemSize.MonthYear,
-                            current = state.currentDay.value.year == e.value,
-                            selected = false,
-                            blackOut = false,
-                            outOfRange = false,
-                            onSelectedChange = { state.selectYear(e) }
-                        )
-                    }
+        ) {
+            itemsIndexed(state.candidateYears.value) { i, e ->
+                Box(contentAlignment = Alignment.Center) {
+                    Item(
+                        text = e.value.toString(),
+                        header = null,
+                        size = ItemSize.MonthYear,
+                        current = state.currentDay.value.year == e.value,
+                        selected = false,
+                        blackOut = false,
+                        outOfRange = false,
+                        onSelectedChange = { state.selectYear(e) }
+                    )
                 }
             }
         }
@@ -138,15 +136,14 @@ private fun YearTable(state: CalendarDatePickerState) {
 private fun MonthTable(state: CalendarDatePickerState) {
     // 4x4
     Layer(
-        Modifier.fillMaxWidth().height(300.dp),
+        Modifier.fillMaxSize(),
         color = FluentTheme.colors.background.layer.default,
         border = null
     ) {
         val names = state.monthNames.value
-        // 4x4
         LazyVerticalGrid(
             GridCells.Fixed(4),
-            modifier = Modifier.height(300.dp).fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalArrangement = Arrangement.SpaceAround,
             contentPadding = PaddingValues(12.dp)
@@ -182,14 +179,14 @@ private fun DateTable(
     onChoose: (day: CalendarDatePickerState.Day) -> Unit
 ) {
     Layer(
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxSize(),
         color = FluentTheme.colors.background.layer.default,
         border = null
     ) {
         Column(Modifier.padding(4.dp)) {
             // Day of Weeks
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(40.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 val weekNames = state.dayOfWeekNames.value
@@ -200,12 +197,11 @@ private fun DateTable(
                     DaysOfTheWeek(weekNames[j])
                 }
             }
-
+            Spacer(Modifier.height(2.dp))
             LazyVerticalGrid(
                 GridCells.Fixed(7),
                 modifier = Modifier.height(250.dp).fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
-                contentPadding = PaddingValues(2.dp)
             ) {
                 itemsIndexed(state.candidateDays.value) { i, day ->
                     Box(contentAlignment = Alignment.Center) {
@@ -245,14 +241,32 @@ private fun CalendarHeader(
     disabled: Boolean,
     onClick: () -> Unit
 ) {
-    Box(modifier) {
-        SubtleButton(onClick = onClick, iconOnly = true, disabled = disabled) {
-            Box(
-                modifier = Modifier.width(202.dp).padding(horizontal = 12.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(text = text, style = FluentTheme.typography.bodyStrong)
+    Box(modifier.height(40.dp).padding(horizontal = 4.dp), Alignment.Center) {
+        SubtleButton(modifier = Modifier.height(30.dp), iconOnly = true, onClick = onClick, disabled = disabled) {
+            Box(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                Text(text = text, style = FluentTheme.typography.bodyStrong, textAlign = TextAlign.Start)
             }
+        }
+    }
+}
+
+@Composable
+private fun PaginationButton(
+    up: Boolean,
+    onClick: () -> Unit
+) {
+    Box(Modifier.requiredSize(40.dp), Alignment.Center) {
+        SubtleButton(modifier = Modifier.height(30.dp), onClick = onClick, iconOnly = true) {
+            if (up) Icon(
+                modifier = Modifier.size(12.dp),
+                imageVector = Icons.Filled.CaretUp,
+                contentDescription = "Up"
+            )
+            else Icon(
+                modifier = Modifier.size(12.dp),
+                imageVector = Icons.Filled.CaretDown,
+                contentDescription = "Down"
+            )
         }
     }
 }
@@ -261,26 +275,6 @@ private fun CalendarHeader(
 private fun DaysOfTheWeek(text: String) {
     Box(Modifier.size(38.dp), contentAlignment = Alignment.Center) {
         Text(text = text, style = FluentTheme.typography.bodyStrong)
-    }
-}
-
-
-@Composable
-private fun PaginationButton(
-    up: Boolean,
-    onClick: () -> Unit
-) {
-    SubtleButton(onClick = onClick, iconOnly = true) {
-        if (up) Icon(
-            modifier = Modifier.size(12.dp),
-            imageVector = Icons.Filled.CaretUp,
-            contentDescription = "Up"
-        )
-        else Icon(
-            modifier = Modifier.size(12.dp),
-            imageVector = Icons.Filled.CaretDown,
-            contentDescription = "Down"
-        )
     }
 }
 
@@ -338,7 +332,7 @@ private fun Item(
 
 
     Layer(
-        modifier = Modifier.size(if (size == ItemSize.MonthYear) 54.dp else 38.dp),
+        modifier = Modifier.size(if (size == ItemSize.MonthYear) 56.dp else 40.dp),
         backgroundSizing = BackgroundSizing.InnerBorderEdge,
         shape = CircleShape,
         color = fillColor,
@@ -362,7 +356,12 @@ private fun Item(
             if (header != null) {
                 Text(
                     modifier = Modifier.align(Alignment.TopCenter).padding(top = 2.dp),
-                    text = header, style = FluentTheme.typography.caption.copy(fontSize = 10.sp)
+                    text = header,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 8.sp,
+                        lineHeight = 12.sp
+                    )
                 )
             }
         }
