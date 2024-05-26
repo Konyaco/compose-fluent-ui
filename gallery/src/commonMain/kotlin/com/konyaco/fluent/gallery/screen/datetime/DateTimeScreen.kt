@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalFluentApi::class)
+
 package com.konyaco.fluent.gallery.screen.datetime
 
 import androidx.compose.runtime.Composable
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.component.CalendarDatePicker
 import com.konyaco.fluent.component.CalendarView
 import com.konyaco.fluent.gallery.annotation.Component
