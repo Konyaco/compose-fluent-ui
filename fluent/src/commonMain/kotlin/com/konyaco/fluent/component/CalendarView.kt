@@ -3,7 +3,6 @@ package com.konyaco.fluent.component
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +45,7 @@ import com.konyaco.fluent.component.CalendarDatePickerState.ChooseType
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.CaretDown
 import com.konyaco.fluent.icons.filled.CaretUp
+import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualState
 import com.konyaco.fluent.scheme.collectVisualState
 import java.util.Calendar
@@ -278,6 +278,26 @@ private fun DaysOfTheWeek(text: String) {
     }
 }
 
+private val activeColor
+    @Composable
+    get() = PentaVisualScheme<Color>(
+        default = FluentTheme.colors.fillAccent.default,
+        hovered = FluentTheme.colors.fillAccent.secondary,
+        pressed = FluentTheme.colors.fillAccent.tertiary,
+        disabled = FluentTheme.colors.fillAccent.disabled,
+        focused = FluentTheme.colors.fillAccent.secondary
+    )
+
+private val inactiveColor
+    @Composable
+    get() = PentaVisualScheme<Color>(
+        default = FluentTheme.colors.subtleFill.transparent,
+        hovered = FluentTheme.colors.subtleFill.secondary,
+        pressed = FluentTheme.colors.subtleFill.tertiary,
+        disabled = FluentTheme.colors.subtleFill.disabled,
+        focused = FluentTheme.colors.subtleFill.transparent
+    )
+
 @Composable
 private fun Item(
     text: String,
@@ -292,22 +312,10 @@ private fun Item(
     val interactionSource = remember { MutableInteractionSource() }
     val visualState = interactionSource.collectVisualState(disabled = false)
 
-    val fillColor = if (current) {
-        when (visualState) {
-            VisualState.Default -> FluentTheme.colors.fillAccent.default
-            VisualState.Hovered -> FluentTheme.colors.fillAccent.secondary
-            VisualState.Pressed -> FluentTheme.colors.fillAccent.tertiary
-            VisualState.Disabled -> FluentTheme.colors.fillAccent.disabled
-            VisualState.Focused -> FluentTheme.colors.fillAccent.secondary
-        }
+    val fillColor = if (current && !selected) {
+        activeColor.schemeFor(visualState)
     } else {
-        when (visualState) {
-            VisualState.Default -> FluentTheme.colors.subtleFill.transparent
-            VisualState.Hovered -> FluentTheme.colors.subtleFill.secondary
-            VisualState.Pressed -> FluentTheme.colors.subtleFill.tertiary
-            VisualState.Disabled -> FluentTheme.colors.subtleFill.disabled
-            VisualState.Focused -> FluentTheme.colors.subtleFill.transparent
-        }
+        inactiveColor.schemeFor(visualState)
     }
 
     val contentColor = if (current) {
@@ -346,12 +354,14 @@ private fun Item(
             ) { onSelectedChange(!selected) },
             contentAlignment = Alignment.Center
         ) {
-            Box(
-                Modifier.fillMaxSize().padding(1.dp).then(
-                    if (current && selected) Modifier.border(1.dp, Color.Black, CircleShape)
-                    else Modifier
+            // Selected background
+            if (current && selected) {
+                val fillColor = activeColor.schemeFor(visualState)
+                Box(
+                    Modifier.fillMaxSize().padding(2.dp)
+                        .background(fillColor, CircleShape)
                 )
-            )
+            }
             Text(text = text)
             if (header != null) {
                 Text(
