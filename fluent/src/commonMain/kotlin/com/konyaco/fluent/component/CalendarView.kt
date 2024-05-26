@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,10 +25,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,7 +42,6 @@ import com.konyaco.fluent.component.CalendarDatePickerState.ChooseType
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.CaretDown
 import com.konyaco.fluent.icons.filled.CaretUp
-import com.konyaco.fluent.icons.regular.CalendarLtr
 import com.konyaco.fluent.scheme.VisualState
 import com.konyaco.fluent.scheme.collectVisualState
 import java.util.Calendar
@@ -150,19 +149,24 @@ private fun MonthTable(state: CalendarDatePickerState) {
             verticalArrangement = Arrangement.SpaceAround,
             contentPadding = PaddingValues(12.dp)
         ) {
-            itemsIndexed(state.candidateMonths.value) { i, e ->
+            itemsIndexed(state.candidateMonths.value) { i, day ->
                 Box(contentAlignment = Alignment.Center) {
-                    val isCurrent =
-                        state.currentDay.value.year == e.year && state.currentDay.value.monthValue == e.monthValue
+                    val day by rememberUpdatedState(day)
+                    val isCurrent by remember {
+                        derivedStateOf {
+                            state.currentDay.value.year == day.year && state.currentDay.value.monthValue == day.monthValue
+                        }
+                    }
+                    val header by remember { derivedStateOf { if (day.monthValue == 0) day.year.toString() else null } }
                     Item(
-                        text = names[e.monthValue],
-                        header = if (e.monthValue == 0) e.year.toString() else null,
+                        text = names[day.monthValue],
+                        header = header,
                         size = ItemSize.MonthYear,
                         current = isCurrent,
                         selected = false,
                         blackOut = false,
                         outOfRange = false,
-                        onSelectedChange = { state.selectMonth(e) }
+                        onSelectedChange = { state.selectMonth(day) }
                     )
                 }
             }
@@ -201,22 +205,24 @@ private fun DateTable(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 contentPadding = PaddingValues(2.dp)
             ) {
-                itemsIndexed(state.candidateDays.value) { i, e ->
+                itemsIndexed(state.candidateDays.value) { i, day ->
                     Box(contentAlignment = Alignment.Center) {
-                        val current = e == state.currentDay.value
-                        val selected = e == state.selectedDay.value
-                        val outOfRange = e.monthValue != state.viewMonth.value.monthValue
+                        val day by rememberUpdatedState(day)
+                        val current by remember { derivedStateOf { day == state.currentDay.value } }
+                        val selected by remember { derivedStateOf { day == state.selectedDay.value } }
+                        val outOfRange by remember { derivedStateOf { day.monthValue != state.viewMonth.value.monthValue } }
+                        val header by remember { derivedStateOf { if (day.day == 1) state.monthNames.value[day.monthValue % 12] else null } }
                         Item(
-                            text = e.day.toString(),
+                            text = day.day.toString(),
                             size = ItemSize.Day,
-                            header = if (e.day == 1) state.monthNames.value[e.monthValue % 12] else null,
+                            header = header,
                             current = current,
                             selected = selected,
                             blackOut = false, // TODO: Support blackOut later
                             outOfRange = outOfRange,
                             onSelectedChange = {
-                                state.selectDay(e)
-                                onChoose(e)
+                                state.selectDay(day)
+                                onChoose(day)
                             }
                         )
                     }
