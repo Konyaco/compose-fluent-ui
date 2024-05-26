@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.CalendarDatePickerState.ChooseType
@@ -46,7 +47,6 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.CaretDown
 import com.konyaco.fluent.icons.filled.CaretUp
 import com.konyaco.fluent.scheme.PentaVisualScheme
-import com.konyaco.fluent.scheme.VisualState
 import com.konyaco.fluent.scheme.collectVisualState
 import java.util.Calendar
 import java.util.Date
@@ -148,24 +148,25 @@ private fun MonthTable(state: CalendarDatePickerState) {
             verticalArrangement = Arrangement.SpaceAround,
             contentPadding = PaddingValues(12.dp)
         ) {
-            itemsIndexed(state.candidateMonths.value) { i, day ->
+            itemsIndexed(state.candidateMonths.value) { i, e ->
                 Box(contentAlignment = Alignment.Center) {
-                    val day by rememberUpdatedState(day)
+                    val month by rememberUpdatedState(e)
                     val isCurrent by remember {
                         derivedStateOf {
-                            state.currentDay.value.year == day.year && state.currentDay.value.monthValue == day.monthValue
+                            state.currentDay.value.year == month.year && state.currentDay.value.monthValue == month.monthValue
                         }
                     }
-                    val header by remember { derivedStateOf { if (day.monthValue == 0) day.year.toString() else null } }
+                    val header by remember { derivedStateOf { if (month.monthValue == 0) month.year.toString() else null } }
+                    val outOfRange by remember { derivedStateOf { month.year != state.viewMonth.value.year } }
                     Item(
-                        text = names[day.monthValue],
+                        text = names[month.monthValue],
                         header = header,
                         size = ItemSize.MonthYear,
                         current = isCurrent,
                         selected = false,
                         blackOut = false,
-                        outOfRange = false,
-                        onSelectedChange = { state.selectMonth(day) }
+                        outOfRange = outOfRange,
+                        onSelectedChange = { state.selectMonth(month) }
                     )
                 }
             }
@@ -370,7 +371,8 @@ private fun Item(
                     style = TextStyle(
                         fontWeight = FontWeight.Normal,
                         fontSize = 8.sp,
-                        lineHeight = 12.sp
+                        lineHeight = 12.sp,
+                        color = LocalContentColor.current
                     )
                 )
             }
