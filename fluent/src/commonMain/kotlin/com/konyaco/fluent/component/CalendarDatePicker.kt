@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.CalendarLtr
 
@@ -14,6 +15,7 @@ import com.konyaco.fluent.icons.regular.CalendarLtr
  * The calendar date picker is a drop down control that's optimized for picking a single date from a calendar view where contextual information like the day of the week or fullness of the calendar is important. The calendar date picker has an internal CalendarView for picking a date.
  */
 @Composable
+@ExperimentalFluentApi
 fun CalendarDatePicker(
     onChoose: (CalendarDatePickerState.Day) -> Unit,
     state: CalendarDatePickerState = remember { CalendarDatePickerState() }

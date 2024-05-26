@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
@@ -54,6 +55,7 @@ import java.util.Date
  * TODO: Add animations, scroll behaviors and refactor codes. Add selection mode (single, multiple, range)
  */
 @Composable
+@ExperimentalFluentApi
 fun CalendarView(
     onChoose: (day: CalendarDatePickerState.Day) -> Unit,
     state: CalendarDatePickerState = remember { CalendarDatePickerState() }
