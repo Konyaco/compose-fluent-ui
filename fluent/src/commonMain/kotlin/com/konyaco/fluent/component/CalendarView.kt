@@ -459,25 +459,11 @@ class CalendarDatePickerState {
         currentDay = mutableStateOf(Day(year, monthValue, day))
 //        viewDay = mutableStateOf(Day(year, monthValue, day))
         selectedDay = mutableStateOf(Day(year, monthValue, day))
-        initialize()
-    }
-
-    private fun initialize() {
-        val calendar = Calendar.getInstance()
-        calendar.time = Date()
-        val year = calendar.get(Calendar.YEAR)
-        val monthValue = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-//        currentYear.value = Year(year)
-//        currentMonth.value = Month(year, monthValue)
-        currentDay.value = Day(year, monthValue, day)
         calculateCandidateYears(year)
         calculateCandidateMonths(year)
         calculateCandidateDays(year, monthValue)
         computeHeaderText()
     }
-
 
     private fun calculateCandidateYears(currentYear: Int) {
         val startYear = currentYear / 10 * 10 // 2024 -> 2020
@@ -544,6 +530,7 @@ class CalendarDatePickerState {
             }
         }
         computeHeaderText()
+        calculateCandidates()
     }
 
     internal fun selectYear(year: Year) {
@@ -661,7 +648,7 @@ class CalendarDatePickerState {
     private fun calculateCandidates() {
         val curr = viewMonth.value
         calculateCandidateYears(curr.year)
-        calculateCandidateMonths(curr.monthValue)
+        calculateCandidateMonths(curr.year)
         calculateCandidateDays(curr.year, curr.monthValue)
     }
 
