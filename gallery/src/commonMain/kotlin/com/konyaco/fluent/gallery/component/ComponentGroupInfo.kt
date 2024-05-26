@@ -17,7 +17,7 @@ object ComponentGroupInfo {
     @ComponentGroup("CheckboxChecked", index = 2, packageMap = "$screenPackage.basicinput")
     const val BasicInput = "Basic input"
 
-    @ComponentGroup("Table", index = 3)
+    @ComponentGroup("Table", index = 3, packageMap = "$screenPackage.collections")
     const val Collections = "Collections"
 
     @ComponentGroup("CalendarClock", index = 4)

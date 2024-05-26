@@ -11,11 +11,14 @@ val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
 class Store(
     systemDarkMode: Boolean,
-    enabledAcrylicPopup: Boolean
+    enabledAcrylicPopup: Boolean,
+    compactMode: Boolean
 ) {
     var darkMode by mutableStateOf(systemDarkMode)
 
     var enabledAcrylicPopup by mutableStateOf(enabledAcrylicPopup)
+
+    var compactMode by mutableStateOf(compactMode)
 }
 
 @OptIn(ExperimentalFluentApi::class)
@@ -26,7 +29,13 @@ fun GalleryTheme(
 ) {
     val systemDarkMode = isSystemInDarkTheme()
 
-    val store = remember { Store(systemDarkMode, true) }
+    val store = remember {
+        Store(
+            systemDarkMode = systemDarkMode,
+            enabledAcrylicPopup = true,
+            compactMode = true
+        )
+    }
 
     LaunchedEffect(systemDarkMode) {
         store.darkMode = systemDarkMode
@@ -34,7 +43,11 @@ fun GalleryTheme(
     CompositionLocalProvider(
         LocalStore provides store
     ) {
-        FluentTheme(colors = if (store.darkMode) darkColors() else lightColors(), useAcrylicPopup = store.enabledAcrylicPopup) {
+        FluentTheme(
+            colors = if (store.darkMode) darkColors() else lightColors(),
+            useAcrylicPopup = store.enabledAcrylicPopup,
+            compactMode = store.compactMode
+        ) {
             if (displayMicaLayer) {
                 Mica(modifier = Modifier.fillMaxSize()) {
                     content()
