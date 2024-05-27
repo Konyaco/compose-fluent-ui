@@ -53,6 +53,7 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ChevronDown
+import com.konyaco.fluent.icons.regular.ChevronUp
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -198,7 +199,7 @@ fun ColorPicker(
                     ) {
                         Text(text = text)
                         Icon(
-                            imageVector = if (!expanded) Icons.Default.ChevronDown else Icons.Default.ChevronDown,
+                            imageVector = if (!expanded) Icons.Default.ChevronDown else Icons.Default.ChevronUp,
                             contentDescription = text,
                             modifier = Modifier.size(12.dp)
                         )
