@@ -63,7 +63,7 @@ fun DropdownMenu(
         val transformOriginState = remember { mutableStateOf(TransformOrigin.Center) } // TODO: Transform Origin
         val density = LocalDensity.current
 
-        val popupPositionProvider = DropdownMenuPositionProvider(density)
+        val popupPositionProvider = DropdownMenuPositionProvider(density, offset)
 
         Popup(
             properties = PopupProperties(focusable = focusable),
@@ -82,7 +82,7 @@ fun DropdownMenu(
     }
 }
 
-internal class DropdownMenuPositionProvider(val density: Density) : PopupPositionProvider {
+internal class DropdownMenuPositionProvider(val density: Density, val offset: DpOffset) : PopupPositionProvider {
     override fun calculatePosition(
         anchorBounds: IntRect,
         windowSize: IntSize,
@@ -104,8 +104,11 @@ internal class DropdownMenuPositionProvider(val density: Density) : PopupPositio
         } else {
             anchorBounds.bottom + gap
         }
-
-        return IntOffset(x, y)
+        with(density) {
+            offset.x.roundToPx()
+            offset.y.roundToPx()
+            return IntOffset(x + offset.x.roundToPx(), y + offset.y.roundToPx())
+        }
     }
 }
 
@@ -135,7 +138,7 @@ internal fun DropdownMenuContent(
                         .padding(vertical = 4.dp, horizontal = 4.dp)
                         .width(IntrinsicSize.Max)
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                     content = content
                 )
             }
