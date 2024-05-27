@@ -1,6 +1,13 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,6 +47,8 @@ import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.animation.FluentDuration
+import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.CalendarDatePickerState.ChooseType
@@ -68,9 +77,12 @@ fun CalendarView(
         Modifier.width(300.dp),
         color = FluentTheme.colors.background.acrylic.defaultFallback
     ) {
-        Column {
+        Column(Modifier.width(300.dp)) {
             // Header
-            Row(Modifier.padding(4.dp).height(40.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.padding(4.dp).height(40.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 CalendarHeader(
                     modifier = Modifier.weight(1f),
                     text = state.viewHeaderText.value,
@@ -85,48 +97,117 @@ fun CalendarView(
                 Modifier.fillMaxWidth().height(1.dp)
                     .background(FluentTheme.colors.stroke.card.default)
             )
+
             // Content
-            AnimatedContent(modifier = Modifier.size(300.dp), targetState = state.currentChooseType.value) {
-                when (it) {
-                    ChooseType.YEAR -> YearTable(state)
-                    ChooseType.MONTH -> MonthTable(state)
-                    ChooseType.DAY -> DateTable(state, onChoose = onChoose)
+            Layer(
+                Modifier.fillMaxWidth().height(300.dp),
+                color = FluentTheme.colors.background.layer.default,
+                border = null
+            ) {
+                AnimatedContent(
+                    modifier = Modifier.fillMaxSize(),
+                    targetState = state.currentChooseType.value,
+                    transitionSpec = {
+                        if (targetState < initialState) {
+                            zoomInTransition
+                        } else {
+                            zoomOutTransition
+                        }
+                    }
+                ) {
+                    when (it) {
+                        ChooseType.YEAR -> YearTable(state)
+                        ChooseType.MONTH -> MonthTable(state)
+                        ChooseType.DAY -> DateTable(state, onChoose = onChoose)
+                    }
                 }
             }
         }
     }
-
 }
+
+private val zoomInTransition = ContentTransform(
+    targetContentEnter = fadeIn(
+        tween(
+            FluentDuration.MediumDuration,
+            FluentDuration.QuickDuration,
+            easing = FluentEasing.FastInvokeEasing
+        ),
+    ) + scaleIn(
+        tween(
+            FluentDuration.MediumDuration,
+            FluentDuration.QuickDuration,
+            easing = FluentEasing.FastInvokeEasing
+        ),
+        initialScale = 1.5f
+    ),
+    initialContentExit = fadeOut(
+        tween(
+            FluentDuration.ShortDuration,
+            easing = FluentEasing.FastInvokeEasing
+        )
+    ) + scaleOut(
+        tween(
+            FluentDuration.MediumDuration,
+            easing = FluentEasing.FastInvokeEasing
+        ),
+        targetScale = 0.5f
+    ),
+)
+
+// TODO: Find out the animation spec.
+private val zoomOutTransition = ContentTransform(
+    targetContentEnter = fadeIn(
+        tween(
+            FluentDuration.MediumDuration,
+            FluentDuration.QuickDuration,
+            easing = FluentEasing.FastInvokeEasing
+        ),
+    ) + scaleIn(
+        tween(
+            FluentDuration.MediumDuration,
+            FluentDuration.QuickDuration,
+            easing = FluentEasing.FastInvokeEasing
+        ),
+        initialScale = 0.8f
+    ),
+    initialContentExit = fadeOut(
+        tween(
+            FluentDuration.ShortDuration,
+            easing = FluentEasing.FastInvokeEasing
+        )
+    ) + scaleOut(
+        tween(
+            FluentDuration.MediumDuration,
+            easing = FluentEasing.FastInvokeEasing
+        ),
+        targetScale = 1.5f
+    ),
+)
 
 @Composable
 private fun YearTable(state: CalendarDatePickerState) {
-    Layer(
-        Modifier.fillMaxWidth().height(300.dp),
-        color = FluentTheme.colors.background.layer.default,
-        border = null
-    ) {
-        // 4x4
-        LazyVerticalGrid(
-            GridCells.Fixed(4),
-            modifier = Modifier.height(300.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalArrangement = Arrangement.SpaceAround,
-            contentPadding = PaddingValues(12.dp)
+    // 4x4
+    LazyVerticalGrid(
+        GridCells.Fixed(4),
+        modifier = Modifier.height(300.dp).fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.SpaceAround,
+        contentPadding = PaddingValues(12.dp)
 
-        ) {
-            itemsIndexed(state.candidateYears.value) { i, e ->
-                Box(contentAlignment = Alignment.Center) {
-                    Item(
-                        text = e.value.toString(),
-                        header = null,
-                        size = ItemSize.MonthYear,
-                        current = state.currentDay.value.year == e.value,
-                        selected = false,
-                        blackOut = false,
-                        outOfRange = false,
-                        onSelectedChange = { state.selectYear(e) }
-                    )
-                }
+    ) {
+        itemsIndexed(state.candidateYears.value) { i, e ->
+            Box(contentAlignment = Alignment.Center) {
+                Item(
+                    text = e.value.toString(),
+                    header = null,
+                    size = ItemSize.MonthYear,
+                    current = state.currentDay.value.year == e.value,
+                    selected = false,
+                    blackOut = false,
+                    outOfRange = false,
+                    onSelectedChange = { state.selectYear(e) }
+                )
             }
         }
     }
@@ -135,40 +216,34 @@ private fun YearTable(state: CalendarDatePickerState) {
 @Composable
 private fun MonthTable(state: CalendarDatePickerState) {
     // 4x4
-    Layer(
-        Modifier.fillMaxSize(),
-        color = FluentTheme.colors.background.layer.default,
-        border = null
+    val names = state.monthNames.value
+    LazyVerticalGrid(
+        GridCells.Fixed(4),
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.SpaceAround,
+        contentPadding = PaddingValues(12.dp)
     ) {
-        val names = state.monthNames.value
-        LazyVerticalGrid(
-            GridCells.Fixed(4),
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalArrangement = Arrangement.SpaceAround,
-            contentPadding = PaddingValues(12.dp)
-        ) {
-            itemsIndexed(state.candidateMonths.value) { i, e ->
-                Box(contentAlignment = Alignment.Center) {
-                    val month by rememberUpdatedState(e)
-                    val isCurrent by remember {
-                        derivedStateOf {
-                            state.currentDay.value.year == month.year && state.currentDay.value.monthValue == month.monthValue
-                        }
+        itemsIndexed(state.candidateMonths.value) { i, e ->
+            Box(contentAlignment = Alignment.Center) {
+                val month by rememberUpdatedState(e)
+                val isCurrent by remember {
+                    derivedStateOf {
+                        state.currentDay.value.year == month.year && state.currentDay.value.monthValue == month.monthValue
                     }
-                    val header by remember { derivedStateOf { if (month.monthValue == 0) month.year.toString() else null } }
-                    val outOfRange by remember { derivedStateOf { month.year != state.viewMonth.value.year } }
-                    Item(
-                        text = names[month.monthValue],
-                        header = header,
-                        size = ItemSize.MonthYear,
-                        current = isCurrent,
-                        selected = false,
-                        blackOut = false,
-                        outOfRange = outOfRange,
-                        onSelectedChange = { state.selectMonth(month) }
-                    )
                 }
+                val header by remember { derivedStateOf { if (month.monthValue == 0) month.year.toString() else null } }
+                val outOfRange by remember { derivedStateOf { month.year != state.viewMonth.value.year } }
+                Item(
+                    text = names[month.monthValue],
+                    header = header,
+                    size = ItemSize.MonthYear,
+                    current = isCurrent,
+                    selected = false,
+                    blackOut = false,
+                    outOfRange = outOfRange,
+                    onSelectedChange = { state.selectMonth(month) }
+                )
             }
         }
     }
@@ -179,52 +254,46 @@ private fun DateTable(
     state: CalendarDatePickerState,
     onChoose: (day: CalendarDatePickerState.Day) -> Unit
 ) {
-    Layer(
-        Modifier.fillMaxSize(),
-        color = FluentTheme.colors.background.layer.default,
-        border = null
-    ) {
-        Column(Modifier.padding(4.dp)) {
-            // Day of Weeks
-            Row(
-                modifier = Modifier.fillMaxWidth().height(40.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                val weekNames = state.dayOfWeekNames.value
-                val start = state.localeStartDayOfWeek - 1
+    Column(Modifier.padding(4.dp)) {
+        // Day of Weeks
+        Row(
+            modifier = Modifier.fillMaxWidth().height(40.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            val weekNames = state.dayOfWeekNames.value
+            val start = state.localeStartDayOfWeek - 1
 
-                for (i in weekNames.indices) {
-                    val j = (start + i) % weekNames.size
-                    DaysOfTheWeek(weekNames[j])
-                }
+            for (i in weekNames.indices) {
+                val j = (start + i) % weekNames.size
+                DaysOfTheWeek(weekNames[j])
             }
-            Spacer(Modifier.height(2.dp))
-            LazyVerticalGrid(
-                GridCells.Fixed(7),
-                modifier = Modifier.height(250.dp).fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                itemsIndexed(state.candidateDays.value) { i, day ->
-                    Box(contentAlignment = Alignment.Center) {
-                        val day by rememberUpdatedState(day)
-                        val current by remember { derivedStateOf { day == state.currentDay.value } }
-                        val selected by remember { derivedStateOf { day == state.selectedDay.value } }
-                        val outOfRange by remember { derivedStateOf { day.monthValue != state.viewMonth.value.monthValue } }
-                        val header by remember { derivedStateOf { if (day.day == 1) state.monthNames.value[day.monthValue % 12] else null } }
-                        Item(
-                            text = day.day.toString(),
-                            size = ItemSize.Day,
-                            header = header,
-                            current = current,
-                            selected = selected,
-                            blackOut = false, // TODO: Support blackOut later
-                            outOfRange = outOfRange,
-                            onSelectedChange = {
-                                state.selectDay(day)
-                                onChoose(day)
-                            }
-                        )
-                    }
+        }
+        Spacer(Modifier.height(2.dp))
+        LazyVerticalGrid(
+            GridCells.Fixed(7),
+            modifier = Modifier.height(250.dp).fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            itemsIndexed(state.candidateDays.value) { i, day ->
+                Box(contentAlignment = Alignment.Center) {
+                    val day by rememberUpdatedState(day)
+                    val current by remember { derivedStateOf { day == state.currentDay.value } }
+                    val selected by remember { derivedStateOf { day == state.selectedDay.value } }
+                    val outOfRange by remember { derivedStateOf { day.monthValue != state.viewMonth.value.monthValue } }
+                    val header by remember { derivedStateOf { if (day.day == 1) state.monthNames.value[day.monthValue % 12] else null } }
+                    Item(
+                        text = day.day.toString(),
+                        size = ItemSize.Day,
+                        header = header,
+                        current = current,
+                        selected = selected,
+                        blackOut = false, // TODO: Support blackOut later
+                        outOfRange = outOfRange,
+                        onSelectedChange = {
+                            state.selectDay(day)
+                            onChoose(day)
+                        }
+                    )
                 }
             }
         }
@@ -235,6 +304,22 @@ private enum class ItemSize {
     Day, MonthYear
 }
 
+private val headerTextTransition = fadeIn(
+    tween(
+        durationMillis = FluentDuration.QuickDuration,
+        delayMillis = FluentDuration.QuickDuration,
+        easing = FluentEasing.FastInvokeEasing
+    )
+)
+    .togetherWith(
+        fadeOut(
+            tween(
+                durationMillis = FluentDuration.QuickDuration,
+                easing = FluentEasing.FastInvokeEasing
+            )
+        )
+    )
+
 @Composable
 private fun CalendarHeader(
     modifier: Modifier,
@@ -243,9 +328,25 @@ private fun CalendarHeader(
     onClick: () -> Unit
 ) {
     Box(modifier.height(40.dp).padding(horizontal = 4.dp), Alignment.Center) {
-        SubtleButton(modifier = Modifier.height(30.dp), iconOnly = true, onClick = onClick, disabled = disabled) {
+        SubtleButton(
+            modifier = Modifier.height(30.dp),
+            iconOnly = true,
+            onClick = onClick,
+            disabled = disabled
+        ) {
             Box(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                 Text(text = text, style = FluentTheme.typography.bodyStrong, textAlign = TextAlign.Start)
+                // FIXME: The animation is only enabled when change choose type
+                /*AnimatedContent(
+                    modifier = Modifier.fillMaxWidth(),
+                    targetState = text,
+                    transitionSpec = { headerTextTransition }) {
+                    Text(
+                        text = it,
+                        style = FluentTheme.typography.bodyStrong,
+                        textAlign = TextAlign.Start
+                    )
+                }*/
             }
         }
     }
