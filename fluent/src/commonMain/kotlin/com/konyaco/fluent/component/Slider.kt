@@ -33,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -55,6 +57,9 @@ fun Slider(
     steps: Int = 0, // TODO
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rail: @Composable () -> Unit = { SliderDefaults.Rail() },
+    track: @Composable (progress: Float, width: Dp) -> Unit = { fraction, width -> SliderDefaults.Track(fraction, width) },
+    thumb: @Composable (progress: Float, width: Dp, dragging: Boolean) -> Unit = { fraction, width, dragging -> SliderDefaults.Thumb(fraction, width, dragging) },
 ) {
     val progress = valueToFraction(value, valueRange.start, valueRange.endInclusive)
     Slider(
@@ -65,7 +70,10 @@ fun Slider(
         },
         enabled = enabled,
         onValueChangeFinished = onValueChangeFinished,
-        interactionSource = interactionSource
+        interactionSource = interactionSource,
+        rail = rail,
+        track = track,
+        thumb = thumb
     )
 }
 
@@ -77,6 +85,9 @@ private fun Slider(
     enabled: Boolean = true, // TODO
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rail: @Composable () -> Unit = { SliderDefaults.Rail() },
+    track: @Composable (progress: Float, width: Dp) -> Unit = { fraction, width -> SliderDefaults.Track(fraction, width) },
+    thumb: @Composable (progress: Float, width: Dp, dragging: Boolean) -> Unit = { fraction, width, dragging -> SliderDefaults.Thumb(fraction, width, dragging) },
 ) {
     // TODO: Refactor this component
     val currentOnProgressChange by rememberUpdatedState(onProgressChange)
@@ -123,9 +134,9 @@ private fun Slider(
                 }
             }, contentAlignment = Alignment.CenterStart
         ) {
-            Rail()
-            Track(progress, width)
-            Thumb(width, progress, dragging)
+            rail()
+            track(progress, width)
+            thumb(progress, width, dragging)
         }
     }
 }
@@ -146,70 +157,88 @@ private fun calcThumbOffset(
     return (maxWidth - thumbSize) * fraction - padding
 }
 
-@Composable
-private fun Rail() {
-    // Rail
-    Layer(
-        modifier = Modifier.fillMaxWidth().requiredHeight(4.dp),
-        shape = CircleShape,
-        color = FluentTheme.colors.controlStrong.default,
-        border = BorderStroke(
+object SliderDefaults {
+
+    @Composable
+    fun Track(
+        fraction: Float,
+        maxWidth: Dp,
+        modifier: Modifier = Modifier,
+        color: Color = FluentTheme.colors.fillAccent.default,
+        shape: Shape = CircleShape
+    ) {
+        // Track
+        val width = ThumbRadiusWithBorder + (fraction * (maxWidth - ThumbSizeWithBorder))
+        Box(
+            modifier.width(width)
+                .requiredHeight(4.dp)
+                .background(color, shape)
+        )
+    }
+
+    @Composable
+    fun Rail(
+        modifier: Modifier = Modifier,
+        color: Color = FluentTheme.colors.controlStrong.default,
+        border: BorderStroke? = BorderStroke(
             1.dp, if (FluentTheme.colors.darkMode) FluentTheme.colors.stroke.controlStrong.default
             else FluentTheme.colors.controlStrong.default
         ),
-        backgroundSizing = BackgroundSizing.InnerBorderEdge,
-        content = {}
-    )
-}
-
-@Composable
-private fun Track(
-    fraction: Float,
-    maxWidth: Dp
-) {
-    // Track
-    val width = ThumbRadiusWithBorder + (fraction * (maxWidth - ThumbSizeWithBorder))
-    Box(
-        Modifier.width(width)
-            .requiredHeight(4.dp)
-            .background(FluentTheme.colors.fillAccent.default, CircleShape)
-    )
-}
-
-@Composable
-private fun Thumb(
-    maxWidth: Dp, fraction: Float, dragging: Boolean,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
-) {
-    // Thumb
-    val thumbOffset by rememberUpdatedState(calcThumbOffset(maxWidth, ThumbSize, 1.dp, fraction))
-
-    val hovered by interactionSource.collectIsHoveredAsState()
-    val pressed by interactionSource.collectIsPressedAsState()
-
-    Layer(
-        modifier = Modifier.offset { IntOffset(x = thumbOffset.roundToPx(), y = 0) }
-            .size(ThumbSizeWithBorder)
-            .clickable(interactionSource, null, onClick = {}),
-        shape = CircleShape,
-        color = FluentTheme.colors.controlSolid.default,
-        border = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
-        backgroundSizing = BackgroundSizing.InnerBorderEdge
+        shape: Shape = CircleShape
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            // Inner Thumb
-            Box(
-                Modifier.size(
-                    animateDpAsState(
-                        when {
-                            pressed || dragging -> InnerThumbPressedSize
-                            hovered -> InnerThumbHoverSize
-                            else -> InnerThumbSize
-                        },
-                        tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-                    ).value
-                ).background(FluentTheme.colors.fillAccent.default, CircleShape)
-            )
+        // Rail
+        Layer(
+            modifier = modifier.fillMaxWidth().requiredHeight(4.dp),
+            shape = shape,
+            color = color,
+            border = border,
+            backgroundSizing = BackgroundSizing.InnerBorderEdge,
+            content = {}
+        )
+    }
+
+    @Composable
+    fun Thumb(
+        fraction: Float,
+        maxWidth: Dp,
+        dragging: Boolean = false,
+        modifier: Modifier = Modifier,
+        interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+        shape: Shape = CircleShape,
+        border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
+        ringColor: Color = FluentTheme.colors.controlSolid.default,
+        color: Color = FluentTheme.colors.fillAccent.default
+    ) {
+        // Thumb
+        val thumbOffset by rememberUpdatedState(calcThumbOffset(maxWidth, ThumbSize, 1.dp, fraction))
+
+        val hovered by interactionSource.collectIsHoveredAsState()
+        val pressed by interactionSource.collectIsPressedAsState()
+
+        Layer(
+            modifier = modifier.offset { IntOffset(x = thumbOffset.roundToPx(), y = 0) }
+                .size(ThumbSizeWithBorder)
+                .clickable(interactionSource, null, onClick = {}),
+            shape = shape,
+            color = ringColor,
+            border = border,
+            backgroundSizing = BackgroundSizing.InnerBorderEdge
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                // Inner Thumb
+                Box(
+                    Modifier.size(
+                        animateDpAsState(
+                            when {
+                                pressed || dragging -> InnerThumbPressedSize
+                                hovered -> InnerThumbHoverSize
+                                else -> InnerThumbSize
+                            },
+                            tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
+                        ).value
+                    ).background(color, shape)
+                )
+            }
         }
     }
 }

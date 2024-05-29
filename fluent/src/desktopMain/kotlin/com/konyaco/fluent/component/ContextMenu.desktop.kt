@@ -73,12 +73,19 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                         text = {
                             Text(it.label, modifier = Modifier)
                         },
-                        icon = {
-                            if (it.glyph != null && LocalFontIconFontFamily.current != null) {
-                                FontIcon(it.glyph, modifier = Modifier)
-                            } else if (it.vector != null) {
-                                Icon(it.vector, it.label, modifier = Modifier.size(20.dp))
+                        icon = if (shouldPaddingIcon) {
+                            {
+                                if (it.glyph != null && LocalFontIconFontFamily.current != null) {
+                                    FontIcon(it.glyph, modifier = Modifier)
+                                } else if (it.vector != null) {
+                                    Icon(
+                                        it.vector, it.label,
+                                        modifier = Modifier.size(with(LocalDensity.current) { ((FontIconDefaults.fontSizeStandard.value + 2).sp).toDp() })
+                                    )
+                                }
                             }
+                        } else {
+                            null
                         },
                         training = {
                             it.keyData?.let { keyData ->
@@ -105,8 +112,7 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                         onClick = {
                             it.onClick()
                             state.status = ContextMenuState.Status.Closed
-                        },
-                        paddingIcon = shouldPaddingIcon
+                        }
                     )
                 } else {
                     MenuFlyoutItem(
@@ -114,11 +120,8 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                             it.onClick()
                             state.status = ContextMenuState.Status.Closed
                         },
-                        icon = {
-
-                        },
                         text = { Text(it.label) },
-                        paddingIcon = true
+                        icon = if (shouldPaddingIcon) { {} } else { null },
                     )
                 }
             }
@@ -204,7 +207,11 @@ class FluentContextMenuItem(
 private class ContextMenuFlyoutPositionProvider(
     val rect: Rect,
     density: Density,
-) : FlyoutPositionProvider(density = density, adaptivePlacement = true, initialPlacement = FlyoutPlacement.BottomAlignedStart) {
+) : FlyoutPositionProvider(
+    density = density,
+    adaptivePlacement = true,
+    initialPlacement = FlyoutPlacement.BottomAlignedStart
+) {
 
     override fun calculatePosition(
         anchorBounds: IntRect,

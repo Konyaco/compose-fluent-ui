@@ -25,6 +25,7 @@ fun FluentTheme(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
     useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
+    compactMode: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val contentDialogHostState = remember { ContentDialogHostState() }
@@ -38,7 +39,8 @@ fun FluentTheme(
                 colors.text.onAccent.primary,
                 colors.fillAccent.selectedTextBackground.copy(0.4f)
             ),
-            LocalContentDialog provides contentDialogHostState
+            LocalContentDialog provides contentDialogHostState,
+            LocalCompactMode provides compactMode
         ) {
             ContentDialogHost(contentDialogHostState)
             Box(modifier = Modifier.behindAcrylic()) {
@@ -59,6 +61,7 @@ fun FluentThemeConfiguration(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
     useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
+    compactMode: Boolean = LocalCompactMode.current,
     contentDialogHostState: ContentDialogHostState = LocalContentDialog.current,
     content: @Composable () -> Unit
 ) {
@@ -70,6 +73,7 @@ fun FluentThemeConfiguration(
             colors.text.onAccent.primary,
             colors.fillAccent.selectedTextBackground.copy(0.4f)
         ),
+        LocalCompactMode provides compactMode,
         LocalContentDialog provides contentDialogHostState,
         content = content
     )
@@ -82,7 +86,15 @@ fun FluentTheme(
     typography: Typography = FluentTheme.typography,
     content: @Composable () -> Unit
 ) {
-    FluentTheme(colors, typography, useAcrylicPopup = false, content)
+    FluentTheme(colors, typography, useAcrylicPopup = false, compactMode = true, content)
+}
+
+@Composable
+fun CompactMode(enabled: Boolean = true, content: @Composable () -> Unit) {
+    CompositionLocalProvider(
+        LocalCompactMode provides enabled,
+        content = content
+    )
 }
 
 object FluentTheme {
@@ -101,6 +113,8 @@ internal val LocalColors = staticCompositionLocalOf { lightColors() }
 @ExperimentalFluentApi
 internal val LocalWindowAcrylicContainer =
     staticCompositionLocalOf<AcrylicContainerScope> { EmptyAcrylicContainerScope() }
+
+internal val LocalCompactMode = staticCompositionLocalOf { true }
 
 @OptIn(ExperimentalFluentApi::class)
 private class EmptyAcrylicContainerScope : AcrylicContainerScope {

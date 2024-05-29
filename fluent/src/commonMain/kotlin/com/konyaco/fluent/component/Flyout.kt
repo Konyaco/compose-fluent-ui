@@ -227,7 +227,7 @@ internal fun AcrylicPopupContent(
             )
         ) {
             if (!userAcrylic) {
-                Mica(modifier = modifier.padding(flyoutPopPaddingFixShadowRender).graphicsLayer {
+                Mica(modifier = Modifier.padding(flyoutPopPaddingFixShadowRender).graphicsLayer {
                     this.shape = shape
                     shadowElevation = elevation.toPx()
                     clip = true
@@ -243,7 +243,7 @@ internal fun AcrylicPopupContent(
                 }
             } else {
                 Box(
-                    modifier = Modifier
+                    modifier = modifier
                         .border(BorderStroke(1.dp, FluentTheme.colors.stroke.card.default), shape = shape)
                         .acrylicOverlay(
                             tint = AcrylicDefaults.tintColor,

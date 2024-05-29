@@ -1,11 +1,14 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
@@ -30,6 +33,27 @@ internal fun FontIcon(
     } else {
         fallback()
     }
+}
+
+@Composable
+internal fun FontIcon(
+    glyph: Char,
+    vector: ImageVector?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    iconSize: TextUnit = FontIconDefaults.fontSizeStandard,
+    vectorSize: Dp = with(LocalDensity.current) { iconSize.toDp() }
+) {
+    FontIcon(
+        glyph = glyph,
+        modifier = modifier,
+        iconSize = iconSize,
+        fallback = if (vector == null) {
+            null
+        } else {
+            { Icon(vector, contentDescription, modifier = Modifier.size(vectorSize)) }
+        }
+    )
 }
 
 internal object FontIconDefaults {

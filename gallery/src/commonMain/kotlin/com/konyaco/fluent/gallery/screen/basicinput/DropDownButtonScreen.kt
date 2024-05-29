@@ -42,9 +42,9 @@ fun DropDownButtonScreen() {
 private fun BasicDropDownButton() {
     MenuFlyoutContainer(
         flyout = {
-            MenuFlyoutItem(text = { Text("Send") }, onClick = { isFlyoutVisible = false }, icon = {})
-            MenuFlyoutItem(text = { Text("Reply") }, onClick = { isFlyoutVisible = false }, icon = {})
-            MenuFlyoutItem(text = { Text("Reply All") }, onClick = { isFlyoutVisible = false }, icon = {})
+            MenuFlyoutItem(text = { Text("Send") }, onClick = { isFlyoutVisible = false })
+            MenuFlyoutItem(text = { Text("Reply") }, onClick = { isFlyoutVisible = false })
+            MenuFlyoutItem(text = { Text("Reply All") }, onClick = { isFlyoutVisible = false })
         },
         content = { DropDownButton(onClick = { isFlyoutVisible = !isFlyoutVisible }, content = { Text("Email") }) },
         adaptivePlacement = true,

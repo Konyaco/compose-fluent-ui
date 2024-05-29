@@ -1,34 +1,19 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -38,32 +23,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.uuid4
-import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.LocalContentAlpha
-import com.konyaco.fluent.LocalContentColor
-import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.background.BackgroundSizing
-import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ChevronRight
-import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
-import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 
 @Composable
@@ -117,7 +88,10 @@ fun MenuFlyout(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         shape = shape,
-        positionProvider = rememberFlyoutPositionProvider(placement, adaptivePlacement = adaptivePlacement),
+        positionProvider = rememberFlyoutPositionProvider(
+            placement,
+            adaptivePlacement = adaptivePlacement
+        ),
         content = content,
         onKeyEvent = onKeyEvent,
         onPreviewKeyEvent = onPreviewKeyEvent
@@ -143,7 +117,7 @@ internal fun MenuFlyout(
         enterPlacementAnimation = enterPlacementAnimation,
         shape = shape,
         positionProvider = positionProvider,
-        contentPadding = PaddingValues(vertical = 2.dp),
+        contentPadding = PaddingValues(vertical = 3.dp),
         onKeyEvent = onKeyEvent,
         onPreviewKeyEvent = onPreviewKeyEvent
     ) {
@@ -158,98 +132,76 @@ internal fun MenuFlyout(
 
 @Composable
 fun MenuFlyoutSeparator(modifier: Modifier = Modifier) {
-    Box(
-        Modifier
-            .then(modifier)
-            .fillMaxWidth().height(1.dp)
-            .background(FluentTheme.colors.stroke.surface.default.copy(0.1f))
+    ListItemSeparator(modifier)
+}
+
+@Composable
+fun MenuFlyoutScope.MenuFlyoutItem(
+    selected: Boolean,
+    onSelectedChanged: (Boolean) -> Unit,
+    text: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
+    training: (@Composable () -> Unit)? = null,
+    interaction: MutableInteractionSource? = null,
+    enabled: Boolean = true,
+    selectionType: ListItemSelectionType = ListItemSelectionType.Standard,
+    colors: VisualStateScheme<ListItemColor> = if (selected) {
+        ListItemDefaults.selectedListItemColors()
+    } else {
+        ListItemDefaults.defaultListItemColors()
+    }
+) {
+    val actualInteraction = interaction ?: remember { MutableInteractionSource() }
+    registerHoveredMenuItem(actualInteraction) {}
+    ListItem(
+        selected = selected,
+        selectionType = selectionType,
+        onSelectedChanged = onSelectedChanged,
+        icon = icon,
+        text = text,
+        modifier = modifier,
+        training = training,
+        interaction = interaction,
+        enabled = enabled,
+        colors = colors
     )
 }
 
 @Composable
 fun MenuFlyoutScope.MenuFlyoutItem(
     onClick: () -> Unit,
-    icon: @Composable () -> Unit,
     text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
     training: (@Composable () -> Unit)? = null,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
-    colors: VisualStateScheme<MenuItemColor> = MenuFlyoutDefaults.defaultMenuItemColors(),
-    paddingIcon: Boolean = false,
+    colors: VisualStateScheme<ListItemColor> = ListItemDefaults.defaultListItemColors()
 ) {
     val actualInteraction = interaction ?: remember { MutableInteractionSource() }
-    val color = colors.schemeFor(actualInteraction.collectVisualState(!enabled))
-
-    val fillColor by animateColorAsState(
-        color.fillColor,
-        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-    )
-
-    val contentColor by animateColorAsState(
-        color.contentColor,
-        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-    )
     registerHoveredMenuItem(actualInteraction) {}
-    Layer(
-        modifier = modifier
-            .padding(horizontal = 4.dp, vertical = 2.dp).defaultMinSize(
-                minWidth = 108.dp,
-                minHeight = 30.dp
-            ).fillMaxWidth(),
-        shape = RoundedCornerShape(size = 4.dp),
-        color = fillColor,
-        contentColor = contentColor,
-        border = BorderStroke(1.dp, color.borderBrush),
-        backgroundSizing = BackgroundSizing.InnerBorderEdge
-    ) {
-        Row(
-            modifier = Modifier
-                .clickable(
-                    onClick = onClick,
-                    interactionSource = actualInteraction,
-                    indication = null,
-                    enabled = enabled
-                )
-                .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier.then(
-                    if (paddingIcon) {
-                        Modifier.defaultMinSize(minWidth = 16.dp)
-                    } else {
-                        Modifier
-                    }
-                ),
-                contentAlignment = Alignment.Center
-            ) {
-                icon()
-            }
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                text()
-            }
-            CompositionLocalProvider(
-                LocalContentColor provides color.trainingColor,
-                LocalContentAlpha provides color.trainingColor.alpha,
-                LocalTextStyle provides FluentTheme.typography.caption
-            ) {
-                training?.invoke()
-            }
-        }
-    }
+    ListItem(
+        onClick = onClick,
+        icon = icon,
+        text = text,
+        modifier = modifier,
+        training = training,
+        interaction = interaction,
+        enabled = enabled,
+        colors = colors
+    )
 }
 
 @Composable
 fun MenuFlyoutScope.MenuFlyoutItem(
     items: @Composable MenuFlyoutScope.() -> Unit,
-    icon: (@Composable () -> Unit),
     text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
-    colors: VisualStateScheme<MenuItemColor> = MenuFlyoutDefaults.defaultMenuItemColors(),
+    colors: VisualStateScheme<ListItemColor> = ListItemDefaults.defaultListItemColors(),
 ) {
     val paddingTop = with(LocalDensity.current) { flyoutPopPaddingFixShadowRender.roundToPx() }
     BasicFlyoutContainer(
@@ -274,13 +226,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
             onClick = { isFlyoutVisible = !isFlyoutVisible },
             icon = icon,
             text = text,
-            training = {
-                Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = null,
-                    modifier = Modifier.size(12.dp).offset(x = 6.dp)
-                )
-            },
+            training = { ListItemDefaults.CascadingIcon() },
             modifier = modifier,
             interaction = interactionSource,
             enabled = enabled,
@@ -292,7 +238,6 @@ fun MenuFlyoutScope.MenuFlyoutItem(
         }
     }
 }
-
 
 private class MenuFlyoutScopeImpl : MenuFlyoutScope {
     var latestHoveredItem: String? by mutableStateOf(null)
@@ -323,61 +268,22 @@ private class MenuFlyoutScopeImpl : MenuFlyoutScope {
 }
 
 @Deprecated(
-    message = "use MenuItemColorScheme instead",
+    message = "use ListItemColorScheme instead",
     replaceWith = ReplaceWith(
-        expression = "MenuItemColorScheme",
-        imports = arrayOf("com.konyaco.fluent.component.MenuItemColorScheme")
+        expression = "ListItemColorScheme",
+        imports = arrayOf("com.konyaco.fluent.component.ListItemColorScheme")
     )
 )
-typealias MenuColors = MenuItemColorScheme
-typealias MenuItemColorScheme = PentaVisualScheme<MenuItemColor>
+typealias MenuColors = ListItemColorScheme
 
 @Deprecated(
-    message = "use MenuItemColor instead",
-    replaceWith = ReplaceWith("MenuItemColor", imports = arrayOf("com.konyaco.fluent.component.MenuItemColor"))
-)
-typealias MenuColor = MenuItemColor
-
-@Immutable
-data class MenuItemColor(
-    val fillColor: Color,
-    val contentColor: Color,
-    val trainingColor: Color,
-    val borderBrush: Brush
-)
-
-object MenuFlyoutDefaults {
-
-    @Composable
-    @Stable
-    fun defaultMenuItemColors(
-        default: MenuItemColor = MenuItemColor(
-            fillColor = FluentTheme.colors.subtleFill.transparent,
-            contentColor = FluentTheme.colors.text.text.primary,
-            trainingColor = FluentTheme.colors.text.text.primary.copy(0.6f),
-            borderBrush = SolidColor(Color.Transparent)
-        ),
-        hovered: MenuItemColor = default.copy(
-            fillColor = FluentTheme.colors.subtleFill.secondary
-        ),
-        pressed: MenuItemColor = default.copy(
-            fillColor = FluentTheme.colors.subtleFill.tertiary,
-            contentColor = FluentTheme.colors.text.text.secondary
-        ),
-        disabled: MenuItemColor = default.copy(
-            fillColor = FluentTheme.colors.subtleFill.disabled,
-            contentColor = FluentTheme.colors.text.text.disabled,
-            trainingColor = FluentTheme.colors.text.text.disabled,
-        )
-    ) = MenuItemColorScheme(
-        default = default,
-        hovered = hovered,
-        pressed = pressed,
-        disabled = disabled
+    message = "use ListItemColor instead",
+    replaceWith = ReplaceWith(
+        "ListItemColor",
+        imports = arrayOf("com.konyaco.fluent.component.ListItemColor")
     )
-
-    //TODO Selected MenuItemColor
-}
+)
+typealias MenuColor = ListItemColor
 
 interface MenuFlyoutScope {
 
@@ -393,7 +299,8 @@ interface MenuFlyoutContainerScope : MenuFlyoutScope, FlyoutContainerScope
 private class MenuFlyoutContainerScopeImpl(
     flyoutScope: FlyoutContainerScope,
     menuFlyoutScope: MenuFlyoutScope
-) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope, MenuFlyoutScope by menuFlyoutScope
+) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope,
+    MenuFlyoutScope by menuFlyoutScope
 
 private fun defaultMenuFlyoutEnterPlacementAnimation(
     placement: FlyoutPlacement,

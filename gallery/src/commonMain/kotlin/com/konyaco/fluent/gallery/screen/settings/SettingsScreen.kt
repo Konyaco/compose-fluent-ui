@@ -82,7 +82,9 @@ fun SettingsScreen() {
             darkMode = store.darkMode,
             onDarkModeChange = { store.darkMode = it },
             acrylicPopupEnabled = store.enabledAcrylicPopup,
-            onAcrylicPopupChange = { store.enabledAcrylicPopup = it }
+            onAcrylicPopupChange = { store.enabledAcrylicPopup = it },
+            compactModeEnabled = store.compactMode,
+            onCompactModeChange = { store.compactMode = it }
         )
 
         CompositionLocalProvider(LocalDensity provides Density(scale)) {
@@ -250,7 +252,9 @@ private fun Controller(
     darkMode: Boolean,
     onDarkModeChange: (Boolean) -> Unit,
     acrylicPopupEnabled: Boolean,
-    onAcrylicPopupChange: (Boolean) -> Unit
+    onAcrylicPopupChange: (Boolean) -> Unit,
+    compactModeEnabled: Boolean,
+    onCompactModeChange: (Boolean) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -261,6 +265,7 @@ private fun Controller(
         Button(onClick = { onScaleChange(density.density) }) { Text("Reset") }
         Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })
         Switcher(acrylicPopupEnabled, text = "Acrylic Popup", onCheckStateChange = { onAcrylicPopupChange(it) })
+        Switcher(compactModeEnabled, text = "Compact Mode", onCheckStateChange = { onCompactModeChange(it) })
     }
     Slider(
         modifier = Modifier.width(200.dp),
