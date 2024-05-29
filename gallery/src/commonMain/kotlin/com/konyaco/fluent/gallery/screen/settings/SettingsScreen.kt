@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -299,7 +298,7 @@ private fun Content() {
             }
 
             Layer(
-                shape = RoundedCornerShape(4.dp),
+                shape = FluentTheme.shapes.control,
                 color = FluentTheme.colors.fillAccent.default,
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
                 content = {
@@ -308,7 +307,7 @@ private fun Content() {
                 backgroundSizing = BackgroundSizing.InnerBorderEdge
             )
             Layer(
-                shape = RoundedCornerShape(4.dp),
+                shape = FluentTheme.shapes.control,
                 color = FluentTheme.colors.fillAccent.default,
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
                 content = {

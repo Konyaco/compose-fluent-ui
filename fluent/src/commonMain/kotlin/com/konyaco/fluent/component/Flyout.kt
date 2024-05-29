@@ -8,7 +8,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -106,7 +105,7 @@ fun Flyout(
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     adaptivePlacement: Boolean = false,
-    shape: Shape = RoundedCornerShape(8.dp),
+    shape: Shape = FluentTheme.shapes.overlay,
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable () -> Unit
@@ -132,7 +131,7 @@ internal fun BasicFlyout(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
-    shape: Shape = RoundedCornerShape(8.dp),
+    shape: Shape = FluentTheme.shapes.overlay,
     contentPadding: PaddingValues = PaddingValues(12.dp),
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
@@ -184,7 +183,7 @@ internal fun FlyoutContent(
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
-    shape: Shape = RoundedCornerShape(8.dp),
+    shape: Shape = FluentTheme.shapes.overlay,
     contentPadding: PaddingValues = PaddingValues(12.dp),
     content: @Composable () -> Unit
 ) {

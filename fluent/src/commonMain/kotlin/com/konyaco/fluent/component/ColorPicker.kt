@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -104,7 +103,7 @@ fun ColorPicker(
                     .wrapContentWidth(Alignment.End)
                     .width(44.dp)
                     .height(256.dp)
-                    .alphaBackground(RoundedCornerShape(4.dp), alphaEnabled),
+                    .alphaBackground(FluentTheme.shapes.control, alphaEnabled),
                 backgroundSizing = BackgroundSizing.OuterBorderEdge,
                 color = color
             ) {}

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -78,8 +77,8 @@ fun HomeScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(256.dp)
-                .border(1.dp, FluentTheme.colors.stroke.card.default, shape = RoundedCornerShape(4.dp))
-                .clip(RoundedCornerShape(4.dp))
+                .border(1.dp, FluentTheme.colors.stroke.card.default, shape = FluentTheme.shapes.control)
+                .clip(FluentTheme.shapes.control)
                 .background(gradient)
         ) {
             Image(

@@ -24,6 +24,7 @@ import com.konyaco.fluent.component.ProvideFontIcon
 fun FluentTheme(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
+    shapes: Shapes = FluentTheme.shapes,
     useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
     compactMode: Boolean = true,
     content: @Composable () -> Unit
@@ -40,7 +41,8 @@ fun FluentTheme(
                 colors.fillAccent.selectedTextBackground.copy(0.4f)
             ),
             LocalContentDialog provides contentDialogHostState,
-            LocalCompactMode provides compactMode
+            LocalCompactMode provides compactMode,
+            LocalShapes provides shapes
         ) {
             ContentDialogHost(contentDialogHostState)
             Box(modifier = Modifier.behindAcrylic()) {
@@ -86,7 +88,7 @@ fun FluentTheme(
     typography: Typography = FluentTheme.typography,
     content: @Composable () -> Unit
 ) {
-    FluentTheme(colors, typography, useAcrylicPopup = false, compactMode = true, content)
+    FluentTheme(colors, typography, LocalShapes.current, useAcrylicPopup = false, compactMode = true, content)
 }
 
 @Composable
@@ -102,10 +104,16 @@ object FluentTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current
+
     val typography: Typography
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
+
+    val shapes: Shapes
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalShapes.current
 }
 
 internal val LocalColors = staticCompositionLocalOf { lightColors() }

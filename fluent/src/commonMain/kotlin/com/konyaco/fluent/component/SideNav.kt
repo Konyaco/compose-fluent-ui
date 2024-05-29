@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -222,7 +221,7 @@ fun SideNavItem(
             val navigationLevelPadding = 28.dp * LocalNavigationLevel.current
             Layer(
                 modifier = Modifier.fillMaxWidth().height(36.dp),
-                shape = RoundedCornerShape(size = 4.dp),
+                shape = FluentTheme.shapes.control,
                 color = animateColorAsState(
                     color.fillColor, tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
                 ).value,
