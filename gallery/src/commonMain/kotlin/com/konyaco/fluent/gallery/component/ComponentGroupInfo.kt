@@ -20,7 +20,7 @@ object ComponentGroupInfo {
     @ComponentGroup("Table", index = 3, packageMap = "$screenPackage.collections")
     const val Collections = "Collections"
 
-    @ComponentGroup("CalendarClock", index = 4)
+    @ComponentGroup("CalendarClock", index = 4, packageMap = "$screenPackage.datetime")
     const val DateAndTime = "Date & time"
 
     @ComponentGroup("Chat", index = 5, packageMap = "$screenPackage.dialogs")
