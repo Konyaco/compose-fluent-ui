@@ -67,25 +67,45 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 - Layer
   - [x] Simple Layer
   - [ ] Real Layer
-- [ ] Acrylic
-
-### Basic Inputs
-
-- [x] Button
-- [x] ToggleSwitch
-- [x] CheckBox
-- [x] RadioButton
-- [x] Slider
-- [x] DropdownMenu
-- [x] TextField
-- [x] ProgressBar
-- [x] ProgressRing
-- [ ] Pill Button
-- [ ] ComboBox
-- [ ] RatingControl
+- [x] Acrylic
+- [x] Card
 
 ### Basic Components
 
+- [x] Buttons
+  - [x] Button
+  - [x] AccentButton
+  - [x] SubtleButton
+  - [x] DropdownButton
+  - [x] HyperlinkButton
+  - [x] RepeatButton
+  - [x] ToggleButton
+  - [x] SplitButton
+  - [x] ToggleSplitButton
+- [x] RadioButton
+- [x] ToggleSwitch
+- [x] CheckBox
+  - [ ] TriStateCheckBox
+- [x] ComboBox (Simple)
+- [x] ProgressBar
+- [x] ProgressRing
+- [x] Slider
+- [x] TextField
+
+- [x] ColorPicker
+- [x] RatingControl
+- [ ] Pill Button
+
+### Compound Components
+
+- [x] CalendarView (Simple)
+- [x] DateTimePicker (Simple)
+- [x] Color Picker
+- [ ] Navigation
+  - [x] SideNav
+  - [ ] BreadcrumbBar
+  - [ ] Pivot
+  - [ ] TabView
 - [ ] Tooltip
 - [ ] InfoBar
 - [ ] FilePicker
@@ -93,9 +113,9 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 
 ### Dialogs
 
-- [x] Simple Dialog
-- [ ] Compound Dialog (Title, Content, Controls)
-- [ ] Flyout
+- [x] FluentDialog
+- [x] ContentDialog
+- [x] Flyout (Simple)
 
 ### Animations
 
@@ -106,18 +126,6 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 - [x] Light and Dark theme
 - [ ] Custom accent color
 
-### Compound Components
-
-- [ ] Color Picker
-- [ ] DateTime Picker
-- [ ] Calender
-- [ ] Navigation
-  - [x] SideNav
-  - [ ] BreadcrumbBar
-  - [ ] Pivot
-  - [ ] TabView
-
-### TODO
-
+### Accessibility
 
 - [ ] Accessibility Semantics
