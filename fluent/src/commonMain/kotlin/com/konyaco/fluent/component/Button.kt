@@ -85,9 +85,20 @@ fun Button(
     buttonColors: VisualStateScheme<ButtonColor> = ButtonDefaults.buttonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
     iconOnly: Boolean = false,
+    contentArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, buttonColors, false, onClick, iconOnly, content)
+    Button(
+        modifier,
+        interaction,
+        disabled,
+        buttonColors,
+        false,
+        onClick,
+        iconOnly,
+        contentArrangement,
+        content
+    )
 }
 
 @Composable
@@ -98,9 +109,20 @@ fun AccentButton(
     buttonColors: VisualStateScheme<ButtonColor> = ButtonDefaults.accentButtonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
     iconOnly: Boolean = false,
+    contentArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, buttonColors, true, onClick, iconOnly, content)
+    Button(
+        modifier,
+        interaction,
+        disabled,
+        buttonColors,
+        true,
+        onClick,
+        iconOnly,
+        contentArrangement,
+        content
+    )
 }
 
 @Composable
@@ -111,9 +133,20 @@ fun SubtleButton(
     buttonColors: VisualStateScheme<ButtonColor> = ButtonDefaults.subtleButtonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
     iconOnly: Boolean = false,
+    contentArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(modifier, interaction, disabled, buttonColors, true, onClick, iconOnly, content)
+    Button(
+        modifier,
+        interaction,
+        disabled,
+        buttonColors,
+        true,
+        onClick,
+        iconOnly,
+        contentArrangement,
+        content
+    )
 }
 
 @Composable
@@ -146,6 +179,7 @@ fun HyperlinkButton(
     buttonColors: VisualStateScheme<ButtonColor> = ButtonDefaults.hyperlinkButtonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
     iconOnly: Boolean = false,
+    contentArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
     content: @Composable RowScope.() -> Unit
 ) {
     Button(
@@ -156,6 +190,7 @@ fun HyperlinkButton(
         true,
         onClick = onClick,
         iconOnly = iconOnly,
+        contentArrangement = contentArrangement,
         content = content
     )
 }
@@ -203,7 +238,8 @@ fun RepeatButton(
         accentButton = false,
         onClick = null,
         iconOnly = iconOnly,
-        content = content
+        content = content,
+        contentArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
     )
 }
 
@@ -215,6 +251,7 @@ fun DropDownButton(
     buttonColors: VisualStateScheme<ButtonColor> = ButtonDefaults.buttonColors(),
     interaction: MutableInteractionSource = remember { MutableInteractionSource() },
     iconOnly: Boolean = false,
+    contentArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
     content: @Composable RowScope.() -> Unit
 ) {
     Button(
@@ -223,7 +260,8 @@ fun DropDownButton(
         buttonColors = buttonColors,
         interaction = interaction,
         iconOnly = iconOnly,
-        modifier = modifier
+        modifier = modifier,
+        contentArrangement = contentArrangement
     ) {
         content()
         AnimatedDropDownIcon(interaction)
@@ -247,7 +285,6 @@ fun ToggleButton(
     content: @Composable RowScope.() -> Unit
 ) {
     Button(
-        onClick = null,
         modifier = modifier.selectable(
             selected = checked,
             interactionSource = interaction,
@@ -255,12 +292,14 @@ fun ToggleButton(
             onClick = { onCheckedChanged(!checked) },
             role = Role.Checkbox
         ),
-        iconOnly = iconOnly,
-        buttonColors = colors,
         interaction = interaction,
         disabled = disabled,
+        buttonColors = colors,
         accentButton = !outsideBorder,
-        content = content
+        onClick = null,
+        iconOnly = iconOnly,
+        content = content,
+        contentArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
     )
 }
 
@@ -389,7 +428,8 @@ private fun Button(
     accentButton: Boolean,
     onClick: (() -> Unit)?,
     iconOnly: Boolean,
-    content: @Composable RowScope.() -> Unit
+    contentArrangement: Arrangement.Horizontal,
+    content: @Composable (RowScope.() -> Unit)
 ) {
     ButtonLayer(
         shape = buttonShape,
@@ -423,7 +463,7 @@ private fun Button(
                     }
                 )
                 .then(if (iconOnly) Modifier else Modifier.padding(horizontal = 12.dp)),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = contentArrangement,
             verticalAlignment = Alignment.CenterVertically,
             content = content
         )
