@@ -10,8 +10,7 @@ object ProjectUrl {
 
     const val FEED_BACK = "$ROOT/issues/new/choose"
 
-    //TODO redirect to master
-    private const val BRANCH = "dev"
+    private const val BRANCH = "master"
 
     fun componentCodeOf(path: String): String {
         return "$ROOT/tree/$BRANCH/$path"
