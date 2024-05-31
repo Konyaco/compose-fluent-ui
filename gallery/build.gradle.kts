@@ -1,5 +1,7 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.androidInstrumentedTest
 import com.konyaco.fluent.plugin.build.applyTargets
+import com.konyaco.fluent.plugin.build.desktopMain
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
