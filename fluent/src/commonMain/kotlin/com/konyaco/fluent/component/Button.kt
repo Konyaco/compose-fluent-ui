@@ -290,7 +290,8 @@ fun ToggleButton(
             interactionSource = interaction,
             indication = null,
             onClick = { onCheckedChanged(!checked) },
-            role = Role.Checkbox
+            role = Role.Checkbox,
+            enabled = !disabled
         ),
         interaction = interaction,
         disabled = disabled,
