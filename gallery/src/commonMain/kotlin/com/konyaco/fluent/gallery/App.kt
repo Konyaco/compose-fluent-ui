@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.component.Icon
@@ -32,31 +35,30 @@ import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.gallery.component.ComponentItem
 import com.konyaco.fluent.gallery.component.ComponentNavigator
 import com.konyaco.fluent.gallery.component.components
+import com.konyaco.fluent.gallery.component.rememberComponentNavigator
 import com.konyaco.fluent.gallery.screen.settings.SettingsScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Settings
 import com.konyaco.fluent.surface.Card
 
 @Composable
-fun App() {
+fun App(
+    navigator: ComponentNavigator = rememberComponentNavigator(components.first())
+) {
     Row(Modifier.fillMaxSize()) {
         var expanded by remember { mutableStateOf(true) }
-        val (selectedItem, setSelectedItem) = remember {
-            mutableStateOf(components.first())
-        }
         var selectedItemWithContent by remember {
-            mutableStateOf(selectedItem)
+            mutableStateOf(navigator.latestBackEntry)
         }
-        LaunchedEffect(selectedItem) {
-            if (selectedItem.content != null) {
-                selectedItemWithContent = selectedItem
+        LaunchedEffect(navigator.latestBackEntry) {
+            val latestBackEntry = navigator.latestBackEntry
+            if (selectedItemWithContent == latestBackEntry) return@LaunchedEffect
+            if (latestBackEntry == null || latestBackEntry.content != null) {
+                selectedItemWithContent = latestBackEntry
             }
         }
         var textFieldValue by remember {
             mutableStateOf(TextFieldValue())
-        }
-        val navigator = remember(setSelectedItem) {
-            ComponentNavigator(setSelectedItem)
         }
         SideNav(
             modifier = Modifier.fillMaxHeight(),
@@ -72,11 +74,11 @@ fun App() {
                 )
             },
             footer = {
-                NavigationItem(selectedItem, setSelectedItem, settingItem)
+                NavigationItem(navigator.latestBackEntry, navigator::navigate, settingItem)
             }
         ) {
             components.forEach { navItem ->
-                NavigationItem(selectedItem, setSelectedItem, navItem)
+                NavigationItem(navigator.latestBackEntry, navigator::navigate, navItem)
                 if (navItem.name == "All samples") {
                     NavigationItemSeparator(modifier = Modifier.padding(vertical = 2.dp))
                 }
@@ -113,7 +115,13 @@ fun App() {
                     )
                 )
             }) {
-                it.content?.invoke(it, navigator)
+                if (it != null) {
+                    it.content?.invoke(it, navigator)
+                } else {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No content selected", style = FluentTheme.typography.bodyStrong)
+                    }
+                }
             }
         }
     }
@@ -121,7 +129,7 @@ fun App() {
 
 @Composable
 private fun NavigationItem(
-    selectedItem: ComponentItem,
+    selectedItem: ComponentItem?,
     onSelectedItemChanged: (ComponentItem) -> Unit,
     navItem: ComponentItem
 ) {
@@ -129,6 +137,7 @@ private fun NavigationItem(
         mutableStateOf(false)
     }
     LaunchedEffect(selectedItem) {
+        if (selectedItem == null) return@LaunchedEffect
         if (navItem != selectedItem) {
             val navItemAsGroup = "${navItem.group}/${navItem.name}/"
             if ((selectedItem.group + "/").startsWith(navItemAsGroup))
