@@ -1,12 +1,19 @@
 [versions]
-kotlin = "1.9.0"
-compose = "1.5.0"
-androidGradlePlugin = "7.4.2"
-androidBuildTools = "27.2.0-alpha16"
+activityCompose = "1.8.2"
+haze = "0.6.2"
+kotlin = "1.9.23"
+ksp = "1.9.23-1.0.20"
+compose = "1.6.10"
+androidGradlePlugin = "8.3.2"
+androidBuildTools = "31.3.2"
+windowStyler = "0.3.3-SNAPSHOT"
+highlights = "0.8.0"
 
 [libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-test-junit = "androidx.test.ext:junit:1.1.5"
 
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 uuid = "com.benasher44:uuid:0.8.2"
 
 ktor-client-java = "io.ktor:ktor-client-java:2.2.1"
@@ -15,10 +22,13 @@ google-guava = "com.google.guava:guava:31.1-jre"
 squareup-kotlinpoet = "com.squareup:kotlinpoet:1.12.0"
 android-tools-common = { module = "com.android.tools:common", version.ref = "androidBuildTools" }
 android-tools-sdk-common = { module = "com.android.tools:sdk-common", version.ref = "androidBuildTools" }
+window-styler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowStyler" }
+highlights = { module = "dev.snipme:highlights", version.ref = "highlights" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 

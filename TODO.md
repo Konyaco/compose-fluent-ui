@@ -19,7 +19,7 @@
   - [ ] Improve performance and smoothness.
 
 - Layer
-  - [ ] Eliminate workarounds like `circular`, `cornerRadius` etc.
+  - [x] Eliminate workarounds like `circular`, `cornerRadius` etc.
 
 ## Compound Components
 

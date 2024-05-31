@@ -1,24 +1,28 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
-import org.jetbrains.compose.compose
+import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
-    jvm("desktop")
-    androidTarget()
+    applyTargets(publish = false)
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(compose.foundation)
+                implementation(compose.components.resources)
                 implementation(project(":fluent"))
                 implementation(project(":fluent-icons-extended"))
-                implementation(compose("org.jetbrains.compose.ui:ui-util"))
+                implementation(compose.uiUtil)
+                implementation(libs.highlights)
+                implementation(project(":source-generated"))
             }
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
         val commonTest by getting {
             dependencies {
@@ -27,7 +31,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("androidx.activity:activity-compose:1.6.1")
+                implementation(libs.androidx.activity.compose)
             }
         }
         val androidUnitTest by getting
@@ -39,12 +43,11 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.preview)
-                implementation("com.mayakapps.compose:window-styler:0.3.3-SNAPSHOT")
+                implementation(libs.window.styler)
             }
         }
         val desktopTest by getting
     }
-    jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
 }
 
 android {
@@ -69,7 +72,7 @@ android {
         }
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
@@ -88,6 +91,31 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Compose Fluent Design Gallery"
             packageVersion = "1.0.0"
+            macOS {
+                iconFile.set(project.file("icons/icon.icns"))
+                jvmArgs(
+                    "-Dapple.awt.application.appearance=system"
+                )
+            }
+            windows {
+                iconFile.set(project.file("icons/icon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("icons/icon.png"))
+            }
         }
+    }
+}
+
+dependencies {
+    val processor = project(":gallery-processor")
+    add("kspCommonMainMetadata", processor)
+}
+
+// workaround for KSP only in Common Main.
+// https://github.com/google/ksp/issues/567
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
     }
 }

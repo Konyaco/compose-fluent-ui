@@ -1,9 +1,11 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.applyTargets
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
     id("maven-publish")
     signing
 }
@@ -12,10 +14,7 @@ group = BuildConfig.group
 version = BuildConfig.libraryVersion
 
 kotlin {
-    jvm()
-    androidTarget {
-        publishLibraryVariants("release")
-    }
+    applyTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -24,14 +23,13 @@ kotlin {
                 implementation(project(":fluent-icons-core"))
             }
         }
-        val jvmMain by getting {
+        val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
             }
         }
-        val jvmTest by getting
+        val desktopTest by getting
     }
-    jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
 }
 
 android {
@@ -44,4 +42,15 @@ android {
         sourceCompatibility = BuildConfig.Jvm.javaVersion
         targetCompatibility = BuildConfig.Jvm.javaVersion
     }
+}
+
+dependencies {
+    val processor = (project(":source-generated-processor"))
+    add("kspCommonMainMetadata", processor)
+}
+
+ksp {
+    arg("source.generated.module.name", "FluentIconExtended")
+    arg("source.generated.module.enabled", false.toString())
+    arg("source.generated.icon.enabled", true.toString())
 }

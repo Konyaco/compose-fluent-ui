@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 internal val LocalTypography = staticCompositionLocalOf {
     Typography(
         caption = TextStyle(
-            fontWeight = FontWeight.Light,
+            fontWeight = FontWeight.Normal,
             fontSize = 12.sp, lineHeight = 16.sp
         ),
         body = TextStyle(

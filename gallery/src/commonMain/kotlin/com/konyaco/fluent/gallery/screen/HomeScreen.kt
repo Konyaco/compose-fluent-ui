@@ -1,362 +1,216 @@
 package com.konyaco.fluent.gallery.screen
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.Density
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.LocalContentColor
-import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.component.*
+import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.LocalStore
+import com.konyaco.fluent.gallery.ProjectUrl
+import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.*
+import com.konyaco.fluent.icons.regular.Open
+import com.konyaco.fluent.surface.Card
+import fluentdesign.gallery.generated.resources.Res
+import fluentdesign.gallery.generated.resources.banner
+import fluentdesign.gallery.generated.resources.fluent_logo
+import fluentdesign.gallery.generated.resources.github_logo
+import fluentdesign.gallery.generated.resources.jetpack_compose_logo
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
-
+@OptIn(ExperimentalResourceApi::class)
+@Component(icon = "Home")
 @Composable
 fun HomeScreen() {
-    var displayDialog by remember { mutableStateOf(false) }
-    val density = LocalDensity.current
-    var scale by remember(density) { mutableStateOf(density.density) }
-    val store = LocalStore.current
-
-    Layer(
-        modifier = Modifier.padding(top = 16.dp).fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        shape = RoundedCornerShape(8.dp),
-        cornerRadius = 8.dp,
-        outsideBorder = true
+    val uriHandler = LocalUriHandler.current
+    Column(
+        Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
-            Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it })
+        val gradient = if (LocalStore.current.darkMode) {
+            Brush.linearGradient(
+                colors = listOf(
+                    Color(0xff1A212C),
+                    Color(0xff2C343C),
+                ),
+                start = Offset.Zero,
+                end = Offset.Infinite
+            )
 
-            CompositionLocalProvider(LocalDensity provides Density(scale)) {
-                Content()
-            }
-
-            AccentButton(onClick = {
-                displayDialog = true
-            }) { Text("Display Dialog") }
-
-            Box {
-                var expanded by remember { mutableStateOf(false) }
-
-                Button(onClick = {
-                    expanded = true
-                }) {
-                    Text("Show DropdownMenu")
-                }
-
-                fun close() {
-                    expanded = false
-                }
-
-                DropdownMenu(expanded, ::close) {
-                    DropdownMenuItem(::close) { Text("Option 1") }
-                    DropdownMenuItem(::close) { Text("Option 2") }
-                    DropdownMenuItem(::close) { Text("Option 3") }
-                }
-            }
-            var currentPlacement by remember {
-                mutableStateOf(FlyoutPlacement.Auto)
-            }
-            Row {
-
-                FlyoutContainer(
-                    flyout = {
-                        Text("this is a flyout")
-                    },
-                    placement = currentPlacement,
-                    content = {
-                        Button(
-                            onClick = { isFlyoutVisible = true }
-                        ) {
-                            Text("Open Flyout")
-                        }
-                    }
-                )
-                Spacer(Modifier.width(8.dp))
-                Box {
-                    var isFlyoutPlacementDropdownMenuOpened by remember {
-                        mutableStateOf(false)
-                    }
-                    Button(onClick = {
-                        isFlyoutPlacementDropdownMenuOpened = true
-                    }) {
-                        Text("Flyout placement")
-                    }
-                    val item = @Composable { placement: FlyoutPlacement ->
-                        DropdownMenuItem({
-                            currentPlacement = placement
-                            isFlyoutPlacementDropdownMenuOpened = false
-                        }) {
-                            Icon(
-                                Icons.Default.Checkmark,
-                                contentDescription = null,
-                                modifier = Modifier.padding(end = 8.dp)
-                                    .alpha(if (placement == currentPlacement) 1f else 0f)
-                            )
-                            Text(text = placement.toString())
-                        }
-                    }
-                    DropdownMenu(
-                        isFlyoutPlacementDropdownMenuOpened,
-                        { isFlyoutPlacementDropdownMenuOpened = false }) {
-                        FlyoutPlacement.entries.forEach { item(it) }
-                    }
-                }
-            }
-
-            MenuFlyoutContainer(
-                placement = currentPlacement,
-                flyout = {
-                    MenuFlyoutItem(
-                        onClick = {
-
-                        },
-                        icon = {
-                            Icon(Icons.Default.Delete, contentDescription = null)
-                        },
-                        text = {
-                            Text("Delete")
-                        }
-                    )
-                    MenuFlyoutSeparator()
-                    MenuFlyoutItem(
-                        onClick = {
-
-                        },
-                        icon = {
-                            Icon(Icons.Default.Add, contentDescription = null)
-                        },
-                        text = {
-                            Text("Add")
-                        }
-                    )
-                    MenuFlyoutSeparator()
-                    MenuFlyoutItem(
-                        onClick = {},
-                        icon = {},
-                        paddingIcon = true,
-                        text = { Text("test") }
-                    )
-                    MenuFlyoutItem(
-                        items = {
-                            MenuFlyoutItem(
-                                onClick = {
-
-                                },
-                                icon = {
-                                    Icon(Icons.Default.Add, contentDescription = null)
-                                },
-                                text = {
-                                    Text("Add")
-                                }
-                            )
-                        },
-                        icon = {
-                            Icon(Icons.Default.ClipboardMore, contentDescription = null)
-                        },
-                        text = {
-                            Text("More")
-                        }
-                    )
-                },
-                content = {
-                    Button(
-                        onClick = { isFlyoutVisible = !isFlyoutVisible }
-                    ) {
-                        Text("Open MenuFlyout")
-                    }
-                }
+        } else {
+            Brush.linearGradient(
+                colors = listOf(
+                    Color(0xffCCD7E8),
+                    Color(0xffDAE9F7),
+                ),
+                start = Offset.Zero,
+                end = Offset.Infinite
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(256.dp)
+                .border(1.dp, FluentTheme.colors.stroke.card.default, shape = RoundedCornerShape(4.dp))
+                .clip(RoundedCornerShape(4.dp))
+                .background(gradient)
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.banner),
+                contentDescription = null,
+                modifier = Modifier.scale(2.05f)
+            )
+            Text(
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                text = "Compose\nFluent Design",
+                style = FluentTheme.typography.titleLarge,
+                textAlign = TextAlign.End,
+                color = FluentTheme.colors.text.text.primary
             )
         }
 
-        Dialog(
-            title = "This is an example dialog",
-            visible = displayDialog,
-            cancelButtonText = "Cancel",
-            confirmButtonText = "Confirm",
-            onCancel = {
-                displayDialog = false
+        Card(
+            onClick = {
+                uriHandler.openUri(ProjectUrl.FRAMEWORK)
             },
-            onConfirm = {
-                displayDialog = false
-            },
-            content = {
-                Text(
-                    "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
-                            "\n" +
-                            "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                    color = LocalContentColor.current
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                Modifier.fillMaxWidth().padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.jetpack_compose_logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp)
+                )
+                Column(
+                    modifier = Modifier.weight(1f).padding(start = 16.dp)
+                ) {
+                    Text(
+                        text = "Jetpack Compose",
+                        style = FluentTheme.typography.bodyLarge
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "A powerful toolkit to build beautiful UI on multiple platforms.",
+                        style = FluentTheme.typography.body,
+                        color = FluentTheme.colors.text.text.secondary
+                    )
+                }
+                Icon(
+                    Icons.Default.Open,
+                    contentDescription = "Open Link",
+                    Modifier.padding(end = 16.dp),
+                    tint = FluentTheme.colors.text.text.secondary
                 )
             }
-        )
-    }
-}
-
-
-@Composable
-private fun Controller(
-    scale: Float,
-    onScaleChange: (Float) -> Unit,
-    darkMode: Boolean,
-    onDarkModeChange: (Boolean) -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text("Scale: %.2f".format(scale))
-        val density = LocalDensity.current
-        Button(onClick = { onScaleChange(density.density) }) { Text("Reset") }
-        Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })
-    }
-    Slider(
-        modifier = Modifier.width(200.dp),
-        value = scale,
-        onValueChange = { onScaleChange(it) },
-        valueRange = 1f..10f
-    )
-}
-
-@Composable
-private fun Content() {
-
-    var sliderValue by remember { mutableStateOf(0.5f) }
-    Slider(
-        modifier = Modifier.width(200.dp),
-        value = sliderValue,
-        onValueChange = { sliderValue = it },
-    )
-    Buttons()
-
-    Controls()
-
-    Row {
-        Layer(
-            modifier = Modifier.size(32.dp),
-            shape = RoundedCornerShape(4.dp),
-            cornerRadius = 4.dp,
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {},
-            outsideBorder = false
-        )
-        Layer(
-            modifier = Modifier.size(32.dp),
-            shape = RoundedCornerShape(4.dp),
-            cornerRadius = 4.dp,
-            color = FluentTheme.colors.fillAccent.default,
-            border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
-            content = {},
-            outsideBorder = true
-        )
-    }
-
-    var value by remember { mutableStateOf(TextFieldValue("Hello Fluent!")) }
-    TextField(value, onValueChange = { value = it })
-    TextField(
-        value = value, onValueChange = { value = it }, enabled = false,
-        header = { Text("With Header") }
-    )
-
-    // ProgressRings
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(32.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ProgressRing(size = ProgressRingSize.Medium)
-        ProgressRing(progress = sliderValue)
-        AccentButton(onClick = {}) {
-            ProgressRing(size = ProgressRingSize.Small, color = LocalContentColor.current)
-            Text("Small")
         }
-    }
 
-    ProgressBar(sliderValue)
-    ProgressBar()
+        Card(
+            onClick = {
+                uriHandler.openUri(ProjectUrl.UI_DESIGN)
+            },
+            modifier = Modifier.fillMaxWidth()
 
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        for (imageVector in icons) {
-            Icon(
-                modifier = Modifier.size(18.dp),
-                imageVector = imageVector, contentDescription = null
-            )
+        ) {
+            Row(
+                Modifier.fillMaxWidth().padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.fluent_logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp).padding(8.dp),
+                    tint = FluentTheme.colors.text.text.primary
+                )
+                Column(
+                    modifier = Modifier.weight(1f).padding(start = 16.dp)
+                ) {
+                    Text(
+                        text = "Fluent Design",
+                        style = FluentTheme.typography.bodyLarge
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "A modern design system face to desktop and other platforms.",
+                        style = FluentTheme.typography.body,
+                        color = FluentTheme.colors.text.text.secondary
+                    )
+                }
+                Icon(
+                    Icons.Default.Open,
+                    contentDescription = "Open Link",
+                    Modifier.padding(end = 16.dp),
+                    tint = FluentTheme.colors.text.text.secondary
+                )
+            }
+        }
+
+        Card(
+            onClick = {
+                uriHandler.openUri(ProjectUrl.ROOT)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                Modifier.fillMaxWidth().padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.github_logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp).padding(12.dp),
+                    tint = FluentTheme.colors.text.text.primary
+                )
+                Column(
+                    modifier = Modifier.weight(1f).padding(start = 16.dp)
+                ) {
+                    Text(
+                        text = "compose-fluent-ui",
+                        style = FluentTheme.typography.bodyLarge
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "View our source code on GitHub.",
+                        style = FluentTheme.typography.body,
+                        color = FluentTheme.colors.text.text.secondary
+                    )
+                }
+                Icon(
+                    Icons.Default.Open,
+                    contentDescription = "Open Link",
+                    Modifier.padding(end = 16.dp),
+                    tint = FluentTheme.colors.text.text.secondary
+                )
+            }
         }
     }
 }
-
-@Composable
-private fun Controls() {
-    var checked by remember { mutableStateOf(false) }
-    Switcher(checked, text = null, onCheckStateChange = { checked = it })
-
-    var checked2 by remember { mutableStateOf(true) }
-    Switcher(checked2, text = "With Label", onCheckStateChange = { checked2 = it })
-
-    var checked3 by remember { mutableStateOf(true) }
-    Switcher(
-        checked3,
-        text = "Before Label",
-        textBefore = true,
-        onCheckStateChange = { checked3 = it }
-    )
-
-    var checked4 by remember { mutableStateOf(false) }
-    CheckBox(checked4) { checked4 = it }
-
-    var checked5 by remember { mutableStateOf(true) }
-    CheckBox(checked5, label = "With Label") { checked5 = it }
-
-    var selectedRadio by remember { mutableStateOf(0) }
-    RadioButton(selectedRadio == 0, onClick = { selectedRadio = 0 })
-    RadioButton(selectedRadio == 1, onClick = { selectedRadio = 1 }, label = "With Label")
-}
-
-@Composable
-private fun Buttons() {
-    var text by remember { mutableStateOf("Hello World") }
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        val onClick = { text = "Hello, Fluent Design!" }
-        Button(onClick) { Text(text) }
-
-        AccentButton(onClick) {
-            Icon(Icons.Default.Checkmark, contentDescription = null)
-            Text(text)
-        }
-
-        SubtleButton(onClick) {
-            Text("Text Button")
-        }
-    }
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        AccentButton({}, iconOnly = true) {
-            Icon(Icons.Default.Navigation, contentDescription = null)
-        }
-        Button({}, iconOnly = true) {
-            Icon(Icons.Default.Navigation, contentDescription = null)
-        }
-        SubtleButton({}, iconOnly = true) {
-            Icon(Icons.Default.Navigation, contentDescription = null)
-        }
-    }
-}
-
-private val icons = arrayOf(
-    Icons.Default.Add,
-    Icons.Default.Delete,
-    Icons.Default.Dismiss,
-    Icons.Default.ArrowLeft,
-    Icons.Default.Navigation,
-    Icons.Default.List
-)

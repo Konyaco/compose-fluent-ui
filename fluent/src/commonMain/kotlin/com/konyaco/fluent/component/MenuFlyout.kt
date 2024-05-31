@@ -1,40 +1,30 @@
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntRect
@@ -42,23 +32,21 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.benasher44.uuid.uuid4
-import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.LocalContentAlpha
-import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ChevronRight
+import com.konyaco.fluent.scheme.VisualStateScheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun MenuFlyoutContainer(
-    flyout: @Composable MenuFlyoutScope.() -> Unit,
+    flyout: @Composable MenuFlyoutContainerScope.() -> Unit,
     modifier: Modifier = Modifier,
     initialVisible: Boolean = false,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
-    content: @Composable FlyoutScope.() -> Unit
+    adaptivePlacement: Boolean = false,
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    content: @Composable FlyoutContainerScope.() -> Unit
 ) {
     BasicFlyoutContainer(
         flyout = {
@@ -66,9 +54,16 @@ fun MenuFlyoutContainer(
                 visible = isFlyoutVisible,
                 onDismissRequest = { isFlyoutVisible = false },
                 placement = placement,
-                content = flyout,
-
-                )
+                adaptivePlacement = adaptivePlacement,
+                content = {
+                    val containerScope = remember(this@BasicFlyoutContainer, this) {
+                        MenuFlyoutContainerScopeImpl(this@BasicFlyoutContainer, this)
+                    }
+                    containerScope.flyout()
+                },
+                onKeyEvent = onKeyEvent,
+                onPreviewKeyEvent = onPreviewKeyEvent
+            )
         },
         content = content,
         modifier = modifier,
@@ -82,7 +77,10 @@ fun MenuFlyout(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
+    adaptivePlacement: Boolean = false,
     shape: Shape = RoundedCornerShape(8.dp),
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable MenuFlyoutScope.() -> Unit
 ) {
     MenuFlyout(
@@ -90,19 +88,26 @@ fun MenuFlyout(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         shape = shape,
-        positionProvider = rememberFlyoutPositionProvider(placement),
-        content = content
+        positionProvider = rememberFlyoutPositionProvider(
+            placement,
+            adaptivePlacement = adaptivePlacement
+        ),
+        content = content,
+        onKeyEvent = onKeyEvent,
+        onPreviewKeyEvent = onPreviewKeyEvent
     )
 }
 
 @Composable
-private fun MenuFlyout(
+internal fun MenuFlyout(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(8.dp),
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     enterPlacementAnimation: (FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
+    onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     content: @Composable MenuFlyoutScope.() -> Unit
 ) {
     BasicFlyout(
@@ -112,7 +117,9 @@ private fun MenuFlyout(
         enterPlacementAnimation = enterPlacementAnimation,
         shape = shape,
         positionProvider = positionProvider,
-        contentPadding = PaddingValues(vertical = 2.dp)
+        contentPadding = PaddingValues(vertical = 3.dp),
+        onKeyEvent = onKeyEvent,
+        onPreviewKeyEvent = onPreviewKeyEvent
     ) {
         Column(
             modifier = Modifier.width(IntrinsicSize.Max)
@@ -125,104 +132,76 @@ private fun MenuFlyout(
 
 @Composable
 fun MenuFlyoutSeparator(modifier: Modifier = Modifier) {
-    Box(
-        Modifier
-            .then(modifier)
-            .fillMaxWidth().height(1.dp)
-            .background(FluentTheme.colors.stroke.surface.default.copy(0.1f))
+    ListItemSeparator(modifier)
+}
+
+@Composable
+fun MenuFlyoutScope.MenuFlyoutItem(
+    selected: Boolean,
+    onSelectedChanged: (Boolean) -> Unit,
+    text: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
+    training: (@Composable () -> Unit)? = null,
+    interaction: MutableInteractionSource? = null,
+    enabled: Boolean = true,
+    selectionType: ListItemSelectionType = ListItemSelectionType.Standard,
+    colors: VisualStateScheme<ListItemColor> = if (selected) {
+        ListItemDefaults.selectedListItemColors()
+    } else {
+        ListItemDefaults.defaultListItemColors()
+    }
+) {
+    val actualInteraction = interaction ?: remember { MutableInteractionSource() }
+    registerHoveredMenuItem(actualInteraction) {}
+    ListItem(
+        selected = selected,
+        selectionType = selectionType,
+        onSelectedChanged = onSelectedChanged,
+        icon = icon,
+        text = text,
+        modifier = modifier,
+        training = training,
+        interaction = interaction,
+        enabled = enabled,
+        colors = colors
     )
 }
 
 @Composable
 fun MenuFlyoutScope.MenuFlyoutItem(
     onClick: () -> Unit,
-    icon: @Composable () -> Unit,
     text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
     training: (@Composable () -> Unit)? = null,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
-    colors: MenuColors = menuColors(),
-    paddingIcon: Boolean = false,
+    colors: VisualStateScheme<ListItemColor> = ListItemDefaults.defaultListItemColors()
 ) {
     val actualInteraction = interaction ?: remember { MutableInteractionSource() }
-    val hovered by actualInteraction.collectIsHoveredAsState()
-    val pressed by actualInteraction.collectIsPressedAsState()
-
-    val menuColor = when {
-        !enabled -> colors.disabled
-        pressed -> colors.pressed
-        hovered -> colors.hovered
-        else -> colors.default
-    }
-
-    val fillColor by animateColorAsState(
-        menuColor.fillColor,
-        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-    )
-
-    val contentColor by animateColorAsState(
-        menuColor.contentColor,
-        animationSpec = tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-    )
     registerHoveredMenuItem(actualInteraction) {}
-    Layer(
-        modifier = modifier
-            .padding(horizontal = 4.dp, vertical = 2.dp).defaultMinSize(
-                minWidth = 108.dp,
-                minHeight = 28.dp
-            ).fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
-        border = BorderStroke(1.dp, menuColor.borderBrush),
-        color = fillColor,
-        contentColor = contentColor,
-        outsideBorder = true,
-        cornerRadius = 4.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .clickable(
-                    onClick = onClick,
-                    interactionSource = actualInteraction,
-                    indication = null,
-                    enabled = enabled
-                )
-                .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier.then(
-                    if (paddingIcon) {
-                        Modifier.defaultMinSize(minWidth = 16.dp)
-                    } else {
-                        Modifier
-                    }
-                ),
-                contentAlignment = Alignment.Center
-            ) {
-                icon()
-            }
-            text()
-            CompositionLocalProvider(
-                LocalContentColor provides menuColor.trainingColor,
-                LocalContentAlpha provides menuColor.trainingColor.alpha
-            ) {
-                training?.invoke()
-            }
-        }
-    }
+    ListItem(
+        onClick = onClick,
+        icon = icon,
+        text = text,
+        modifier = modifier,
+        training = training,
+        interaction = interaction,
+        enabled = enabled,
+        colors = colors
+    )
 }
 
 @Composable
 fun MenuFlyoutScope.MenuFlyoutItem(
     items: @Composable MenuFlyoutScope.() -> Unit,
-    icon: (@Composable () -> Unit),
     text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
-    colors: MenuColors = menuColors(),
+    colors: VisualStateScheme<ListItemColor> = ListItemDefaults.defaultListItemColors(),
 ) {
     val paddingTop = with(LocalDensity.current) { flyoutPopPaddingFixShadowRender.roundToPx() }
     BasicFlyoutContainer(
@@ -247,13 +226,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
             onClick = { isFlyoutVisible = !isFlyoutVisible },
             icon = icon,
             text = text,
-            training = {
-                Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = null,
-                    modifier = Modifier.size(12.dp).offset(x = 6.dp)
-                )
-            },
+            training = { ListItemDefaults.CascadingIcon() },
             modifier = modifier,
             interaction = interactionSource,
             enabled = enabled,
@@ -265,7 +238,6 @@ fun MenuFlyoutScope.MenuFlyoutItem(
         }
     }
 }
-
 
 private class MenuFlyoutScopeImpl : MenuFlyoutScope {
     var latestHoveredItem: String? by mutableStateOf(null)
@@ -295,54 +267,23 @@ private class MenuFlyoutScopeImpl : MenuFlyoutScope {
     }
 }
 
-@Immutable
-data class MenuColors(
-    val default: MenuColor,
-    val hovered: MenuColor,
-    val pressed: MenuColor,
-    val disabled: MenuColor
+@Deprecated(
+    message = "use ListItemColorScheme instead",
+    replaceWith = ReplaceWith(
+        expression = "ListItemColorScheme",
+        imports = arrayOf("com.konyaco.fluent.component.ListItemColorScheme")
+    )
 )
+typealias MenuColors = ListItemColorScheme
 
-@Immutable
-data class MenuColor(
-    val fillColor: Color,
-    val contentColor: Color,
-    val trainingColor: Color,
-    val borderBrush: Brush
+@Deprecated(
+    message = "use ListItemColor instead",
+    replaceWith = ReplaceWith(
+        "ListItemColor",
+        imports = arrayOf("com.konyaco.fluent.component.ListItemColor")
+    )
 )
-
-@Composable
-private fun menuColors(): MenuColors {
-    val colors = FluentTheme.colors
-    return remember(colors) {
-        MenuColors(
-            default = MenuColor(
-                colors.subtleFill.transparent,
-                colors.text.text.primary,
-                colors.text.text.primary.copy(0.6f),
-                SolidColor(Color.Transparent)
-            ),
-            hovered = MenuColor(
-                colors.subtleFill.secondary,
-                colors.text.text.primary,
-                colors.text.text.primary.copy(0.6f),
-                SolidColor(Color.Transparent)
-            ),
-            pressed = MenuColor(
-                colors.subtleFill.tertiary,
-                colors.text.text.secondary,
-                colors.text.text.secondary.copy(0.6f),
-                SolidColor(Color.Transparent)
-            ),
-            disabled = MenuColor(
-                colors.subtleFill.disabled,
-                colors.text.text.disabled,
-                colors.text.text.disabled,
-                SolidColor(Color.Transparent)
-            ),
-        )
-    }
-}
+typealias MenuColor = ListItemColor
 
 interface MenuFlyoutScope {
 
@@ -352,6 +293,14 @@ interface MenuFlyoutScope {
         onDelayedHoveredChanged: (hovered: Boolean) -> Unit
     )
 }
+
+interface MenuFlyoutContainerScope : MenuFlyoutScope, FlyoutContainerScope
+
+private class MenuFlyoutContainerScopeImpl(
+    flyoutScope: FlyoutContainerScope,
+    menuFlyoutScope: MenuFlyoutScope
+) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope,
+    MenuFlyoutScope by menuFlyoutScope
 
 private fun defaultMenuFlyoutEnterPlacementAnimation(
     placement: FlyoutPlacement,
@@ -410,7 +359,7 @@ private class SubMenuFlyoutPositionProvider(
         layoutDirection: LayoutDirection,
         popupContentSize: Size
     ): Pair<HorizontalPlacement, VerticalPlacement> {
-        return calculateHorizontalPlacement(
+        return calculatePlacementByHorizontal(
             anchorBounds,
             windowSize,
             layoutDirection,
