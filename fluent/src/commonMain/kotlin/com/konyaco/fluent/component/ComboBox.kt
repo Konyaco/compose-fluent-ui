@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -180,7 +179,7 @@ fun ComboBoxItem(
     Layer(
         modifier = Modifier.fillMaxWidth().height(36.dp)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
-        shape = RoundedCornerShape(size = 4.dp),
+        shape = FluentTheme.shapes.control,
         color = animateColorAsState(
             color.fillColor,
             tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
