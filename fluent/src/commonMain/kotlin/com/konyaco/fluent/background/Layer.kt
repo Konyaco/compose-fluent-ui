@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
 import kotlin.math.sqrt
@@ -91,7 +92,10 @@ fun Layer(
     content: @Composable () -> Unit
 ) {
     ProvideTextStyle(FluentTheme.typography.body.copy(color = contentColor)) {
-        CompositionLocalProvider(LocalContentColor provides contentColor) {
+        CompositionLocalProvider(
+            LocalContentColor provides contentColor,
+            LocalContentAlpha provides contentColor.alpha
+        ) {
             Box(
                 modifier = modifier.layer(
                     elevation,
