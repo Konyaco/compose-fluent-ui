@@ -89,6 +89,31 @@ fun Layer(
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
+    Layer(
+        modifier = modifier,
+        shape = shape,
+        color = color,
+        contentColor = contentColor,
+        border = border,
+        backgroundSizing = backgroundSizing,
+        elevation = elevation,
+        clipContent = false,
+        content = content
+    )
+}
+
+@Composable
+fun Layer(
+    modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(size = 4.dp),
+    color: Color = FluentTheme.colors.background.layer.default,
+    contentColor: Color = FluentTheme.colors.text.text.primary,
+    border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
+    backgroundSizing: BackgroundSizing,
+    clipContent: Boolean = false,
+    elevation: Dp = 0.dp,
+    content: @Composable () -> Unit
+) {
     ProvideTextStyle(FluentTheme.typography.body.copy(color = contentColor)) {
         CompositionLocalProvider(
             LocalContentColor provides contentColor,
@@ -100,7 +125,8 @@ fun Layer(
                     shape,
                     border,
                     backgroundSizing,
-                    color
+                    color,
+                    clipContent
                 ),
                 propagateMinConstraints = true
             ) {
@@ -116,7 +142,8 @@ private fun Modifier.layer(
     shape: Shape,
     border: BorderStroke?,
     backgroundSizing: BackgroundSizing,
-    color: Color
+    color: Color,
+    clipContent: Boolean
 ) = then(
     Modifier
         .elevation(elevation = elevation, shape = shape)
@@ -130,6 +157,7 @@ private fun Modifier.layer(
                     }
                 Modifier.border(border, shape)
                     .background(color, backgroundShape)
+                    .then(if (clipContent) Modifier.clip(backgroundShape) else Modifier)
             } else {
                 Modifier.background(color, shape)
             }
@@ -142,7 +170,7 @@ private fun Modifier.layer(
  */
 @Immutable
 @JvmInline
-private value class BackgroundPaddingShape(private val borderShape: CornerBasedShape) : Shape {
+internal value class BackgroundPaddingShape(private val borderShape: CornerBasedShape) : Shape {
 
     override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
         return with(density) {
