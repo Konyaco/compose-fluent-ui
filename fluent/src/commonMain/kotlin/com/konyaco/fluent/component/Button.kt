@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -420,6 +421,43 @@ fun ToggleSplitButton(
 }
 
 @Composable
+fun PillButton(
+    selected: Boolean,
+    onSelectedChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    interaction: MutableInteractionSource? = null,
+    disabled: Boolean = false,
+    colors: VisualStateScheme<ButtonColor> = if (selected) {
+        ButtonDefaults.pillButtonSelectedColors()
+    } else {
+        ButtonDefaults.pillButtonDefaultColors()
+    },
+    outsideBorder: Boolean = !selected,
+    content: @Composable RowScope.() -> Unit
+) {
+    val targetInteraction = interaction ?: remember { MutableInteractionSource() }
+    Button(
+        modifier = modifier.selectable(
+            selected = selected,
+            interactionSource = targetInteraction,
+            indication = null,
+            onClick = { onSelectedChanged(!selected) },
+            role = Role.Checkbox,
+            enabled = !disabled
+        ),
+        interaction = targetInteraction,
+        disabled = disabled,
+        buttonColors = colors,
+        accentButton = !outsideBorder,
+        onClick = null,
+        iconOnly = false,
+        content = content,
+        contentArrangement = Arrangement.spacedBy(ButtonDefaults.iconSpacing, Alignment.CenterHorizontally),
+        shape = CircleShape
+    )
+}
+
+@Composable
 private fun Button(
     modifier: Modifier,
     interaction: MutableInteractionSource,
@@ -429,10 +467,11 @@ private fun Button(
     onClick: (() -> Unit)?,
     iconOnly: Boolean,
     contentArrangement: Arrangement.Horizontal,
-    content: @Composable (RowScope.() -> Unit)
+    shape: Shape = FluentTheme.shapes.control,
+    content: @Composable (RowScope.() -> Unit),
 ) {
     ButtonLayer(
-        shape = FluentTheme.shapes.control,
+        shape = shape,
         displayBorder = true,
         buttonColors = buttonColors,
         interaction = interaction,
@@ -507,6 +546,8 @@ private fun ButtonLayer(
 }
 
 object ButtonDefaults {
+
+    val iconSpacing = 8.dp
 
     @Stable
     @Composable
@@ -607,6 +648,58 @@ object ButtonDefaults {
         disabled: ButtonColor = default.copy(
             fillColor = FluentTheme.colors.subtleFill.disabled,
             contentColor = FluentTheme.colors.text.accent.disabled,
+        )
+    ) = ButtonColorScheme(
+        default = default,
+        hovered = hovered,
+        pressed = pressed,
+        disabled = disabled
+    )
+
+    @Stable
+    @Composable
+    fun pillButtonDefaultColors(
+        default: ButtonColor = ButtonColor(
+            fillColor = FluentTheme.colors.control.quaternary,
+            contentColor = FluentTheme.colors.text.text.primary,
+            borderBrush = SolidColor(FluentTheme.colors.stroke.control.default)
+        ),
+        hovered: ButtonColor = default.copy(
+            fillColor = FluentTheme.colors.control.secondary,
+        ),
+        pressed: ButtonColor = hovered.copy(
+            contentColor = FluentTheme.colors.text.text.secondary
+        ),
+        disabled: ButtonColor = default.copy(
+            fillColor = FluentTheme.colors.control.disabled,
+            contentColor = FluentTheme.colors.text.text.disabled
+        )
+    ) = ButtonColorScheme(
+        default = default,
+        hovered = hovered,
+        pressed = pressed,
+        disabled = disabled
+    )
+
+    @Stable
+    @Composable
+    fun pillButtonSelectedColors(
+        default: ButtonColor = ButtonColor(
+            fillColor = FluentTheme.colors.fillAccent.default,
+            contentColor = FluentTheme.colors.text.onAccent.primary,
+            borderBrush = SolidColor(Color.Transparent)
+        ),
+        hovered: ButtonColor = default.copy(
+            fillColor = FluentTheme.colors.fillAccent.secondary,
+            contentColor = FluentTheme.colors.text.onAccent.primary
+        ),
+        pressed: ButtonColor = default.copy(
+            fillColor = FluentTheme.colors.fillAccent.tertiary,
+            contentColor = FluentTheme.colors.text.onAccent.secondary
+        ),
+        disabled: ButtonColor = default.copy(
+            fillColor = FluentTheme.colors.fillAccent.disabled,
+            contentColor = FluentTheme.colors.text.onAccent.disabled
         )
     ) = ButtonColorScheme(
         default = default,
