@@ -475,7 +475,7 @@ private fun Button(
 common interaction layer for button and split button.
 */
 @Composable
-private fun ButtonLayer(
+internal fun ButtonLayer(
     shape: Shape,
     buttonColors: VisualStateScheme<ButtonColor>,
     interaction: MutableInteractionSource,
