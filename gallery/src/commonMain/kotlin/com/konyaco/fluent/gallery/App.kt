@@ -31,6 +31,8 @@ import com.konyaco.fluent.component.NavigationItemSeparator
 import com.konyaco.fluent.component.SideNav
 import com.konyaco.fluent.component.SideNavItem
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.component.TextBoxButton
+import com.konyaco.fluent.component.TextBoxButtonDefaults
 import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.gallery.component.ComponentItem
 import com.konyaco.fluent.gallery.component.ComponentNavigator
@@ -70,6 +72,10 @@ fun App(
                     value = textFieldValue,
                     onValueChange = { textFieldValue = it },
                     placeholder = { Text("Search") },
+                    trailing = {
+                        TextBoxButton(onClick = {}) { TextBoxButtonDefaults.SearchIcon() }
+                    },
+                    isClearable = true,
                     modifier = Modifier.fillMaxWidth().focusHandle()
                 )
             },

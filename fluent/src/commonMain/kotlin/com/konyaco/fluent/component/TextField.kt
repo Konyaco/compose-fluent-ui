@@ -4,12 +4,14 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,12 +31,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.background.BackgroundSizing
@@ -55,19 +61,18 @@ fun TextField(
     keyboardActions: KeyboardActions = KeyboardActions(),
     maxLines: Int = Int.MAX_VALUE,
     header: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailing: (@Composable RowScope.() -> Unit)? = null,
     placeholder: (@Composable () -> Unit)? = null,
+    isClearable: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColorScheme = TextFieldDefaults.defaultTextFieldColors()
+    colors: TextFieldColorScheme = TextFieldDefaults.defaultTextFieldColors(),
+    shape: Shape = FluentTheme.shapes.control
 ) {
     val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
-    Column(modifier) {
-        if (header != null) {
-            header()
-            Spacer(Modifier.height(8.dp))
-        }
+    HeaderContainer(header = header, modifier = modifier) {
         BasicTextField(
-            modifier = modifier.defaultMinSize(64.dp, 32.dp)
-                .clip(FluentTheme.shapes.control),
+            modifier = modifier.textFieldModifier(shape),
             value = value,
             onValueChange = onValueChange,
             textStyle = LocalTextStyle.current.copy(color = color.contentColor),
@@ -87,7 +92,72 @@ fun TextField(
                     innerTextField = innerTextField,
                     value = value.text,
                     enabled = enabled,
-                    placeholder = placeholder
+                    placeholder = placeholder,
+                    leadingIcon = leadingIcon,
+                    onClearClick = if (isClearable) {
+                        { onValueChange(TextFieldValue("")) }
+                    } else {
+                        null
+                    },
+                    trailing = trailing
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun TextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    singleLine: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
+    maxLines: Int = Int.MAX_VALUE,
+    header: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailing: (@Composable RowScope.() -> Unit)? = null,
+    placeholder: (@Composable () -> Unit)? = null,
+    isClearable: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    colors: TextFieldColorScheme = TextFieldDefaults.defaultTextFieldColors(),
+    shape: Shape = FluentTheme.shapes.control
+) {
+    val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
+    HeaderContainer(header = header, modifier = modifier) {
+        BasicTextField(
+            modifier = modifier.textFieldModifier(shape),
+            value = value,
+            onValueChange = onValueChange,
+            textStyle = LocalTextStyle.current.copy(color = color.contentColor),
+            enabled = enabled,
+            readOnly = readOnly,
+            singleLine = singleLine,
+            visualTransformation = visualTransformation,
+            maxLines = maxLines,
+            keyboardActions = keyboardActions,
+            cursorBrush = color.cursorBrush,
+            keyboardOptions = keyboardOptions,
+            interactionSource = interactionSource,
+            decorationBox = { innerTextField ->
+                TextFieldDefaults.DecorationBox(
+                    color = color,
+                    interactionSource = interactionSource,
+                    innerTextField = innerTextField,
+                    value = value,
+                    enabled = enabled,
+                    placeholder = placeholder,
+                    leadingIcon = leadingIcon,
+                    onClearClick = if (isClearable) {
+                        { onValueChange("") }
+                    } else {
+                        null
+                    },
+                    trailing = trailing
                 )
             }
         )
@@ -132,6 +202,20 @@ object TextFieldDefaults {
         disabled = disabled
     )
 
+    @Deprecated(
+        "Use DecorationBox instead", ReplaceWith(
+            "DecorationBox(" +
+                    "value = value," +
+                    "interactionSource = interactionSource," +
+                    "enabled = enabled," +
+                    "color = color," +
+                    "modifier = modifier," +
+                    "placeholder = placeholder," +
+                    "innerTextField = innerTextField," +
+                    "leadingIcon = null" +
+                    ")"
+        )
+    )
     @Composable
     fun DecorationBox(
         value: String,
@@ -141,7 +225,33 @@ object TextFieldDefaults {
         modifier: Modifier = Modifier.drawBottomLine(enabled, color, interactionSource),
         placeholder: (@Composable () -> Unit)?,
         innerTextField: @Composable () -> Unit,
+    ) = DecorationBox(
+        value = value,
+        interactionSource = interactionSource,
+        enabled = enabled,
+        color = color,
+        modifier = modifier,
+        placeholder = placeholder,
+        innerTextField = innerTextField,
+        leadingIcon = null,
+        onClearClick = null,
+        trailing = null
+    )
+
+    @Composable
+    fun DecorationBox(
+        value: String,
+        interactionSource: MutableInteractionSource,
+        enabled: Boolean,
+        color: TextFieldColor,
+        modifier: Modifier = Modifier.drawBottomLine(enabled, color, interactionSource),
+        onClearClick: (() -> Unit)? = null,
+        placeholder: (@Composable () -> Unit)?,
+        leadingIcon: (@Composable () -> Unit)?,
+        trailing: (@Composable RowScope.() -> Unit)?,
+        innerTextField: @Composable () -> Unit,
     ) {
+
         Layer(
             modifier = modifier.hoverable(interactionSource),
             shape = FluentTheme.shapes.control,
@@ -149,17 +259,44 @@ object TextFieldDefaults {
             border = BorderStroke(1.dp, color.borderBrush),
             backgroundSizing = BackgroundSizing.OuterBorderEdge
         ) {
-            Box(
-                Modifier.offset(y = (-1).dp).padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 3.dp),
-                Alignment.CenterStart
+            Row(
+                horizontalArrangement = TextFieldContentArrangement,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             ) {
-                innerTextField()
-                if (value.isEmpty() && placeholder != null) {
-                    CompositionLocalProvider(
-                        LocalContentColor provides color.placeholderColor,
-                        LocalTextStyle provides LocalTextStyle.current.copy(color = color.placeholderColor)
+                if (leadingIcon != null) {
+                    Box(modifier = Modifier.padding(start = 16.dp)) {
+                        leadingIcon()
+                    }
+                }
+                Box(
+                    modifier = Modifier.weight(1f, fill = false).padding(horizontal = 12.dp),
+                    Alignment.CenterStart
+                ) {
+                    innerTextField()
+                    if (value.isEmpty() && placeholder != null) {
+                        CompositionLocalProvider(
+                            LocalContentColor provides color.placeholderColor,
+                            LocalTextStyle provides LocalTextStyle.current.copy(color = color.placeholderColor)
+                        ) {
+                            placeholder()
+                        }
+                    }
+                }
+                val isFocused = interactionSource.collectIsFocusedAsState()
+                val hasClearButton = onClearClick != null && isFocused.value && value.isNotEmpty()
+                if (trailing != null || hasClearButton) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.padding(end = 4.dp)
                     ) {
-                        placeholder()
+                        if (hasClearButton) {
+                            TextBoxButton(
+                                enabled = enabled,
+                                onClick = onClearClick
+                            ) { TextBoxButtonDefaults.ClearIcon() }
+                        }
+                        trailing?.invoke(this)
                     }
                 }
             }
@@ -180,7 +317,32 @@ data class TextFieldColor(
 )
 
 @Composable
-private fun Modifier.drawBottomLine(enabled: Boolean, color: TextFieldColor, interactionSource: MutableInteractionSource): Modifier {
+private fun HeaderContainer(
+    header: (@Composable () -> Unit)?,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Column(modifier = modifier) {
+        if (header != null) {
+            CompositionLocalProvider(
+                LocalTextStyle provides FluentTheme.typography.body,
+                LocalContentColor provides FluentTheme.colors.text.text.primary,
+                LocalContentAlpha provides FluentTheme.colors.text.text.primary.alpha
+            ) {
+                header()
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+        content()
+    }
+}
+
+@Composable
+private fun Modifier.drawBottomLine(
+    enabled: Boolean,
+    color: TextFieldColor,
+    interactionSource: MutableInteractionSource
+): Modifier {
     val isFocused by interactionSource.collectIsFocusedAsState()
     return if (enabled) {
         val height by rememberUpdatedState(with(LocalDensity.current) {
@@ -196,4 +358,29 @@ private fun Modifier.drawBottomLine(enabled: Boolean, color: TextFieldColor, int
             )
         }
     } else this
+}
+
+@Stable
+internal fun Modifier.textFieldModifier(shape: Shape = FluentTheme.shapes.control) =
+    defaultMinSize(64.dp, 32.dp).clip(shape)
+
+@Stable
+private object TextFieldContentArrangement : Arrangement.Horizontal {
+    override fun Density.arrange(
+        totalSize: Int,
+        sizes: IntArray,
+        layoutDirection: LayoutDirection,
+        outPositions: IntArray
+    ) {
+        with(Arrangement.Start) {
+            arrange(totalSize, sizes, layoutDirection, outPositions)
+        }
+        if (sizes.size < 2) return
+        if (layoutDirection == LayoutDirection.Rtl) {
+            outPositions[outPositions.lastIndex] = 0
+        } else {
+            outPositions[outPositions.lastIndex] = totalSize - sizes.last()
+        }
+
+    }
 }
