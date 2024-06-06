@@ -84,7 +84,7 @@ fun SideNav(
     expanded: Boolean,
     onExpandStateChange: (Boolean) -> Unit,
     title: @Composable (() -> Unit) = {},
-    autoSuggestionBox: (@Composable AutoSuggestionBoxScope.() -> Unit)? = null,
+    autoSuggestionBox: (@Composable NavigationAutoSuggestBoxScope.() -> Unit)? = null,
     footer: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
@@ -128,7 +128,7 @@ fun SideNav(
                     FocusRequester()
                 }
                 val autoSuggestionBoxScope = remember(focusRequester) {
-                    AutoSuggestionBoxScopeImpl(focusRequester)
+                    NavigationAutoSuggestBoxScopeImpl(focusRequester)
                 }
                 Box(
                     contentAlignment = Alignment.TopStart,
@@ -398,7 +398,7 @@ interface IndicatorScope {
     fun Modifier.indicatorOffset(visible: () -> Boolean): Modifier
 }
 
-interface AutoSuggestionBoxScope {
+interface NavigationAutoSuggestBoxScope {
     fun Modifier.focusHandle(): Modifier
 }
 
@@ -426,9 +426,9 @@ private object SideNavigationIndicatorScope: IndicatorScope {
 }
 //TODO TopNavigationIndicatorScope
 
-internal class AutoSuggestionBoxScopeImpl(
+internal class NavigationAutoSuggestBoxScopeImpl(
     private val focusRequest: FocusRequester
-) : AutoSuggestionBoxScope {
+) : NavigationAutoSuggestBoxScope {
     override fun Modifier.focusHandle() = focusRequester(focusRequest)
 }
 

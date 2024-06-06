@@ -99,7 +99,8 @@ fun TextField(
                     } else {
                         null
                     },
-                    trailing = trailing
+                    trailing = trailing,
+                    shape = shape
                 )
             }
         )
@@ -157,7 +158,8 @@ fun TextField(
                     } else {
                         null
                     },
-                    trailing = trailing
+                    trailing = trailing,
+                    shape = shape
                 )
             }
         )
@@ -235,7 +237,8 @@ object TextFieldDefaults {
         innerTextField = innerTextField,
         leadingIcon = null,
         onClearClick = null,
-        trailing = null
+        trailing = null,
+        shape = FluentTheme.shapes.control
     )
 
     @Composable
@@ -245,6 +248,7 @@ object TextFieldDefaults {
         enabled: Boolean,
         color: TextFieldColor,
         modifier: Modifier = Modifier.drawBottomLine(enabled, color, interactionSource),
+        shape: Shape,
         onClearClick: (() -> Unit)? = null,
         placeholder: (@Composable () -> Unit)?,
         leadingIcon: (@Composable () -> Unit)?,
@@ -254,7 +258,7 @@ object TextFieldDefaults {
 
         Layer(
             modifier = modifier.hoverable(interactionSource),
-            shape = FluentTheme.shapes.control,
+            shape = shape,
             color = color.fillColor,
             border = BorderStroke(1.dp, color.borderBrush),
             backgroundSizing = BackgroundSizing.OuterBorderEdge
