@@ -73,7 +73,7 @@ fun TextField(
     val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
     HeaderContainer(header = header, modifier = modifier) {
         BasicTextField(
-            modifier = modifier.textFieldModifier(),
+            modifier = modifier.textFieldModifier(shape),
             value = value,
             onValueChange = onValueChange,
             textStyle = LocalTextStyle.current.copy(color = color.contentColor),
@@ -100,7 +100,8 @@ fun TextField(
                     } else {
                         null
                     },
-                    trailing = trailing
+                    trailing = trailing,
+                    shape = shape
                 )
             }
         )
@@ -158,7 +159,8 @@ fun TextField(
                     } else {
                         null
                     },
-                    trailing = trailing
+                    trailing = trailing,
+                    shape = shape
                 )
             }
         )
@@ -236,7 +238,8 @@ object TextFieldDefaults {
         innerTextField = innerTextField,
         leadingIcon = null,
         onClearClick = null,
-        trailing = null
+        trailing = null,
+        shape = RoundedCornerShape(4.dp)
     )
 
     @Composable
@@ -246,6 +249,7 @@ object TextFieldDefaults {
         enabled: Boolean,
         color: TextFieldColor,
         modifier: Modifier = Modifier.drawBottomLine(enabled, color, interactionSource),
+        shape: Shape,
         onClearClick: (() -> Unit)? = null,
         placeholder: (@Composable () -> Unit)?,
         leadingIcon: (@Composable () -> Unit)?,
@@ -255,7 +259,7 @@ object TextFieldDefaults {
 
         Layer(
             modifier = modifier.hoverable(interactionSource),
-            shape = RoundedCornerShape(4.dp),
+            shape = shape,
             color = color.fillColor,
             border = BorderStroke(1.dp, color.borderBrush),
             backgroundSizing = BackgroundSizing.OuterBorderEdge
