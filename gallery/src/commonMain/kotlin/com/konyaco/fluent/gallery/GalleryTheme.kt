@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.konyaco.fluent.*
 import com.konyaco.fluent.background.Mica
+import com.konyaco.fluent.gallery.component.ProvideFontIcon
 
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
@@ -43,20 +44,22 @@ fun GalleryTheme(
     CompositionLocalProvider(
         LocalStore provides store
     ) {
-        FluentTheme(
-            colors = if (store.darkMode) darkColors() else lightColors(),
-            useAcrylicPopup = store.enabledAcrylicPopup,
-            compactMode = store.compactMode
-        ) {
-            if (displayMicaLayer) {
-                Mica(modifier = Modifier.fillMaxSize()) {
-                    content()
+        ProvideFontIcon {
+            FluentTheme(
+                colors = if (store.darkMode) darkColors() else lightColors(),
+                useAcrylicPopup = store.enabledAcrylicPopup,
+                compactMode = store.compactMode
+            ) {
+                if (displayMicaLayer) {
+                    Mica(modifier = Modifier.fillMaxSize()) {
+                        content()
+                    }
+                } else {
+                    CompositionLocalProvider(
+                        LocalContentColor provides FluentTheme.colors.text.text.primary,
+                        content = content
+                    )
                 }
-            } else {
-                CompositionLocalProvider(
-                    LocalContentColor provides FluentTheme.colors.text.text.primary,
-                    content = content
-                )
             }
         }
     }
