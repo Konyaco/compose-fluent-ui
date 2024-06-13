@@ -71,7 +71,7 @@ private fun ExpanderSample() {
         heading = { Text("Power button functionality") },
         caption = { Text("Adjust what yor power buttons control") },
         icon = { Icon(Icons.Default.Power, null) },
-        training = {
+        trailing = {
             val checked = remember { mutableStateOf(true) }
             Switcher(
                 checked = checked.value,
@@ -83,12 +83,12 @@ private fun ExpanderSample() {
     ) {
         ExpanderItem(
             heading = { Text("When I press the power button on battery") },
-            training = { DropDownButton(onClick = {}, content = { Text("Sleep") }) }
+            trailing = { DropDownButton(onClick = {}, content = { Text("Sleep") }) }
         )
         ExpanderItemSeparator()
         ExpanderItem(
             heading = { Text("When I press the power button when plugged in") },
-            training = { DropDownButton(onClick = {}, content = { Text("Sleep") }) }
+            trailing = { DropDownButton(onClick = {}, content = { Text("Sleep") }) }
         )
     }
 }
@@ -103,7 +103,7 @@ private fun ExpanderSampleWithoutIcon() {
         heading = { Text("Power button functionality") },
         caption = { Text("Adjust what yor power buttons control") },
         icon = null,
-        training = {
+        trailing = {
             val checked = remember { mutableStateOf(true) }
             Switcher(
                 checked = checked.value,
@@ -115,7 +115,7 @@ private fun ExpanderSampleWithoutIcon() {
     ) {
         ExpanderItem(
             heading = { Text("When I press the power button on battery") },
-            training = { DropDownButton(onClick = {}, content = { Text("Sleep") }) },
+            trailing = { DropDownButton(onClick = {}, content = { Text("Sleep") }) },
             icon = null
         )
     }
@@ -128,7 +128,7 @@ private fun CardExpanderItemSample() {
         heading = { Text("Power button functionality") },
         caption = { Text("Adjust what yor power buttons control") },
         icon = { Icon(Icons.Default.Power, null) },
-        training = {
+        trailing = {
             val checked = remember { mutableStateOf(true) }
             Switcher(
                 checked = checked.value,
