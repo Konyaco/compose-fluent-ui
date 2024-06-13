@@ -66,7 +66,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 
 @OptIn(FlowPreview::class, ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
-@Component(index = 1, name = "Icons", icon = "Diversity")
+@Component(index = 1, name = "Icons", icon = "Diversity", iconGlyph = '\uED58')
 @Composable
 fun IconsScreen() {
     GalleryPage(

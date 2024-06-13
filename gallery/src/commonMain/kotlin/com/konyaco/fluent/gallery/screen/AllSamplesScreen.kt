@@ -6,7 +6,7 @@ import com.konyaco.fluent.gallery.component.*
 import com.konyaco.fluent.gallery.component._AllSamplesScreenComponent
 import com.konyaco.fluent.gallery.component._HomeScreenComponent
 
-@Component(icon = "AppsList", index = 1, name = "All samples")
+@Component(icon = "AppsList", iconGlyph = '\uE71D', index = 1, name = "All samples")
 @Composable
 fun AllSamplesScreen(navigator: ComponentNavigator) {
     var allComponents by remember {

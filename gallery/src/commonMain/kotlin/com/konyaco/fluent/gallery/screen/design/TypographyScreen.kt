@@ -30,6 +30,7 @@ import com.konyaco.fluent.gallery.component.HeaderItemRow
 import com.konyaco.fluent.gallery.component.ItemRow
 import com.konyaco.fluent.source.generated.FluentSourceFile
 
+@Component(index = 1, icon = "TextFont", iconGlyph = '\uE8D2')
 @OptIn(ExperimentalTextApi::class)
 @Component(index = 1, icon = "TextFont")
 @Composable

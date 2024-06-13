@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,15 +23,18 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.LocalContentAlpha
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.LocalStore
 import com.konyaco.fluent.gallery.ProjectUrl
 import com.konyaco.fluent.gallery.annotation.Component
+import com.konyaco.fluent.gallery.component.FontIcon
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Open
 import com.konyaco.fluent.surface.Card
@@ -39,14 +43,12 @@ import fluentdesign.gallery.generated.resources.banner
 import fluentdesign.gallery.generated.resources.fluent_logo
 import fluentdesign.gallery.generated.resources.github_logo
 import fluentdesign.gallery.generated.resources.jetpack_compose_logo
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalResourceApi::class)
-@Component(icon = "Home")
+@Component(icon = "Home", iconGlyph = '\uE80F')
 @Composable
 fun HomeScreen() {
-    val uriHandler = LocalUriHandler.current
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -95,119 +97,79 @@ fun HomeScreen() {
             )
         }
 
-        Card(
-            onClick = {
-                uriHandler.openUri(ProjectUrl.FRAMEWORK)
-            },
-            modifier = Modifier.fillMaxWidth()
+        HomeCardItem(
+            url = ProjectUrl.FRAMEWORK,
+            icon = Res.drawable.jetpack_compose_logo,
+            title = "Jetpack Compose",
+            caption = "A powerful toolkit to build beautiful UI on multiple platforms."
+        )
+
+        HomeCardItem(
+            url = ProjectUrl.UI_DESIGN,
+            icon = Res.drawable.fluent_logo,
+            title = "Fluent Design",
+            caption = "A modern design system face to desktop and other platforms.",
+            iconColorFilter = ColorFilter.tint(FluentTheme.colors.text.text.primary)
+        )
+
+        HomeCardItem(
+            url = ProjectUrl.ROOT,
+            icon = Res.drawable.github_logo,
+            title = "compose-fluent-ui",
+            caption = "View our source code on GitHub.",
+            iconColorFilter = ColorFilter.tint(FluentTheme.colors.text.text.primary)
+        )
+    }
+}
+
+@Composable
+private fun HomeCardItem(
+    url: String,
+    icon: DrawableResource,
+    title: String,
+    caption: String,
+    iconColorFilter: ColorFilter? = null
+) {
+    val uriHandler = LocalUriHandler.current
+    Card(
+        onClick = {
+            uriHandler.openUri(url)
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            Modifier.fillMaxWidth().padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                Modifier.fillMaxWidth().padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Image(
+                painter = painterResource(icon),
+                contentDescription = null,
+                modifier = Modifier.size(64.dp).padding(12.dp),
+                colorFilter = iconColorFilter,
+            )
+            Column(
+                modifier = Modifier.weight(1f).padding(start = 16.dp)
             ) {
-                Image(
-                    painter = painterResource(Res.drawable.jetpack_compose_logo),
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp)
+                Text(
+                    text = title,
+                    style = FluentTheme.typography.bodyLarge
                 )
-                Column(
-                    modifier = Modifier.weight(1f).padding(start = 16.dp)
-                ) {
-                    Text(
-                        text = "Jetpack Compose",
-                        style = FluentTheme.typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "A powerful toolkit to build beautiful UI on multiple platforms.",
-                        style = FluentTheme.typography.body,
-                        color = FluentTheme.colors.text.text.secondary
-                    )
-                }
-                Icon(
-                    Icons.Default.Open,
-                    contentDescription = "Open Link",
-                    Modifier.padding(end = 16.dp),
-                    tint = FluentTheme.colors.text.text.secondary
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = caption,
+                    style = FluentTheme.typography.body,
+                    color = FluentTheme.colors.text.text.secondary
                 )
             }
-        }
-
-        Card(
-            onClick = {
-                uriHandler.openUri(ProjectUrl.UI_DESIGN)
-            },
-            modifier = Modifier.fillMaxWidth()
-
-        ) {
-            Row(
-                Modifier.fillMaxWidth().padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
+            CompositionLocalProvider(
+                LocalContentColor provides FluentTheme.colors.text.text.secondary,
+                LocalContentAlpha provides FluentTheme.colors.text.text.secondary.alpha
             ) {
-                Icon(
-                    painter = painterResource(Res.drawable.fluent_logo),
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp).padding(8.dp),
-                    tint = FluentTheme.colors.text.text.primary
-                )
-                Column(
-                    modifier = Modifier.weight(1f).padding(start = 16.dp)
-                ) {
-                    Text(
-                        text = "Fluent Design",
-                        style = FluentTheme.typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "A modern design system face to desktop and other platforms.",
-                        style = FluentTheme.typography.body,
-                        color = FluentTheme.colors.text.text.secondary
-                    )
-                }
-                Icon(
-                    Icons.Default.Open,
+                FontIcon(
+                    glyph = '\uE8A7',
+                    vector = Icons.Default.Open,
                     contentDescription = "Open Link",
-                    Modifier.padding(end = 16.dp),
-                    tint = FluentTheme.colors.text.text.secondary
-                )
-            }
-        }
-
-        Card(
-            onClick = {
-                uriHandler.openUri(ProjectUrl.ROOT)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                Modifier.fillMaxWidth().padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.github_logo),
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp).padding(12.dp),
-                    tint = FluentTheme.colors.text.text.primary
-                )
-                Column(
-                    modifier = Modifier.weight(1f).padding(start = 16.dp)
-                ) {
-                    Text(
-                        text = "compose-fluent-ui",
-                        style = FluentTheme.typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "View our source code on GitHub.",
-                        style = FluentTheme.typography.body,
-                        color = FluentTheme.colors.text.text.secondary
-                    )
-                }
-                Icon(
-                    Icons.Default.Open,
-                    contentDescription = "Open Link",
-                    Modifier.padding(end = 16.dp),
-                    tint = FluentTheme.colors.text.text.secondary
+                    modifier = Modifier.padding(end = 16.dp)
                 )
             }
         }

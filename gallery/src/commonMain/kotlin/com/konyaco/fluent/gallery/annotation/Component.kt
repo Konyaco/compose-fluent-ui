@@ -4,6 +4,7 @@ package com.konyaco.fluent.gallery.annotation
 annotation class Component(
     val name: String = "",
     val icon: String = "",
+    val iconGlyph: Char = 'A',
     val description: String = "",
     val group: String = "_Auto",
     val index: Int = -1,
