@@ -31,6 +31,7 @@ import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.gallery.component.ComponentItem
 import com.konyaco.fluent.gallery.component.ComponentNavigator
+import com.konyaco.fluent.gallery.component.FontIcon
 import com.konyaco.fluent.gallery.component.components
 import com.konyaco.fluent.gallery.screen.settings.SettingsScreen
 import com.konyaco.fluent.icons.Icons
@@ -141,7 +142,13 @@ private fun NavigationItem(
             onSelectedItemChanged(navItem)
             expandedItems.value = !expandedItems.value
         },
-        icon = navItem.icon?.let { { Icon(it, navItem.name) } },
+        icon = navItem.icon?.let { {
+            if (navItem.iconGlyph != null) {
+                FontIcon(navItem.iconGlyph, navItem.icon, navItem.name)
+            } else {
+                Icon(it, navItem.name)
+            }
+        } },
         content = { Text(navItem.name) },
         expandItems = expandedItems.value,
         items = navItem.items?.let {
@@ -162,4 +169,4 @@ private fun NavigationItem(
     )
 }
 
-private val settingItem = ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings) { SettingsScreen() }
+private val settingItem = ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings, iconGlyph = '\uE713') { SettingsScreen() }
