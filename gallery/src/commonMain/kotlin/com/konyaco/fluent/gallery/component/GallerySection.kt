@@ -176,7 +176,7 @@ fun GallerySection(
                             icon = null,
                             heading = { Text("Kotlin", style = FluentTheme.typography.bodyStrong) },
                             color = Color.Transparent,
-                            training = { CopyButton(sourceCode, modifier = Modifier) },
+                            trailing = { CopyButton(sourceCode, modifier = Modifier) },
                             dropdown = null
                         )
                         val scrollState = rememberScrollState()

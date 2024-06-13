@@ -57,7 +57,7 @@ fun Expander(
     shape: Shape = RoundedCornerShape(4.dp),
     icon: (@Composable () -> Unit)? = {},
     caption: @Composable () -> Unit = {},
-    training: @Composable () -> Unit = {},
+    trailing: @Composable () -> Unit = {},
     expandContent: (@Composable ColumnScope.() -> Unit) = {},
 ) {
     Layer(
@@ -75,7 +75,7 @@ fun Expander(
                 icon = icon,
                 heading = heading,
                 caption = caption,
-                training = training,
+                trailing = trailing,
                 dropdown = {
                     SubtleButton(
                         interaction = targetInteractionSource,
@@ -127,14 +127,14 @@ fun ExpanderItem(
     color: Color = FluentTheme.colors.background.card.secondary,
     icon: (@Composable () -> Unit)? = {},
     caption: @Composable () -> Unit = {},
-    training: @Composable () -> Unit = {},
+    trailing: @Composable () -> Unit = {},
     dropdown: (@Composable () -> Unit)? = {}
 ) {
     ExpanderItemContent(
         icon = icon,
         heading = heading,
         caption = caption,
-        training = training,
+        trailing = trailing,
         dropdown = dropdown,
         modifier = modifier.background(color)
     )
@@ -157,7 +157,7 @@ fun CardExpanderItem(
     interactionSource: MutableInteractionSource? = null,
     icon: (@Composable () -> Unit)? = {},
     caption: @Composable () -> Unit = {},
-    training: @Composable () -> Unit = {},
+    trailing: @Composable () -> Unit = {},
     dropdown: (@Composable () -> Unit)? = null,
 ) {
     val targetInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -174,7 +174,7 @@ fun CardExpanderItem(
             icon = icon,
             heading = heading,
             caption = caption,
-            training = training,
+            trailing = trailing,
             dropdown = dropdown,
             modifier = Modifier.heightIn(ExpanderHeaderHeight),
             captionTextColor = captionTextColor
@@ -192,7 +192,7 @@ fun CardExpanderItem(
     captionTextColor: Color = FluentTheme.colors.text.text.secondary,
     icon: (@Composable () -> Unit)? = {},
     caption: @Composable () -> Unit = {},
-    training: @Composable () -> Unit = {},
+    trailing: @Composable () -> Unit = {},
     dropdown: (@Composable () -> Unit)? = null
 ) {
     Layer(
@@ -206,7 +206,7 @@ fun CardExpanderItem(
             icon = icon,
             heading = heading,
             caption = caption,
-            training = training,
+            trailing = trailing,
             dropdown = dropdown,
             modifier = Modifier.heightIn(ExpanderHeaderHeight),
             captionTextColor = captionTextColor
@@ -258,7 +258,7 @@ internal fun ExpanderItemContent(
     icon: (@Composable () -> Unit)? = {},
     heading: @Composable () -> Unit = {},
     caption: @Composable () -> Unit = {},
-    training: @Composable () -> Unit = {},
+    trailing: @Composable () -> Unit = {},
     dropdown: (@Composable () -> Unit)? = {}
 ) {
     Row(
@@ -287,7 +287,7 @@ internal fun ExpanderItemContent(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(end = 8.dp)
         ) {
-            training()
+            trailing()
             if (dropdown != null) {
                 Box(
                     modifier = Modifier.padding(start = 4.dp).defaultMinSize(32.dp),
