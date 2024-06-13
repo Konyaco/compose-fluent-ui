@@ -87,7 +87,7 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                         } else {
                             null
                         },
-                        training = {
+                        trailing = {
                             it.keyData?.let { keyData ->
                                 val keyString = remember(keyData) {
                                     buildString {

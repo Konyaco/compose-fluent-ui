@@ -60,7 +60,7 @@ fun ListItem(
     modifier: Modifier = Modifier,
     selectionType: ListItemSelectionType = ListItemSelectionType.Standard,
     icon: (@Composable () -> Unit)? = null,
-    training: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
     colors: VisualStateScheme<ListItemColor> = if (selected) {
@@ -86,7 +86,7 @@ fun ListItem(
         },
         text = text,
         icon = icon,
-        training = training,
+        trailing = trailing,
         interaction = interaction,
         enabled = enabled,
         onClick = { onSelectedChanged(!selected) },
@@ -106,7 +106,7 @@ fun ListItem(
     selectionIcon: (@Composable () -> Unit)? = null,
     indicator: (@Composable () -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
-    training: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
     interaction: MutableInteractionSource? = null,
     enabled: Boolean = true,
     colors: VisualStateScheme<ListItemColor> = ListItemDefaults.defaultListItemColors(),
@@ -171,11 +171,11 @@ fun ListItem(
                     text()
                 }
                 CompositionLocalProvider(
-                    LocalContentColor provides color.trainingColor,
-                    LocalContentAlpha provides color.trainingColor.alpha,
+                    LocalContentColor provides color.trailingColor,
+                    LocalContentAlpha provides color.trailingColor.alpha,
                     LocalTextStyle provides FluentTheme.typography.caption.copy(fontWeight = FontWeight.Normal)
                 ) {
-                    training?.invoke()
+                    trailing?.invoke()
                 }
             }
         }
@@ -288,7 +288,7 @@ object ListItemDefaults {
         default: ListItemColor = ListItemColor(
             fillColor = FluentTheme.colors.subtleFill.transparent,
             contentColor = FluentTheme.colors.text.text.primary,
-            trainingColor = FluentTheme.colors.text.text.secondary,
+            trailingColor = FluentTheme.colors.text.text.secondary,
             borderBrush = SolidColor(Color.Transparent)
         ),
         hovered: ListItemColor = default.copy(
@@ -301,7 +301,7 @@ object ListItemDefaults {
         disabled: ListItemColor = default.copy(
             fillColor = FluentTheme.colors.subtleFill.disabled,
             contentColor = FluentTheme.colors.text.text.disabled,
-            trainingColor = FluentTheme.colors.text.text.disabled,
+            trailingColor = FluentTheme.colors.text.text.disabled,
         )
     ) = ListItemColorScheme(
         default = default,
@@ -316,7 +316,7 @@ object ListItemDefaults {
         default: ListItemColor = ListItemColor(
             fillColor = FluentTheme.colors.subtleFill.secondary,
             contentColor = FluentTheme.colors.text.text.primary,
-            trainingColor = FluentTheme.colors.text.text.secondary,
+            trailingColor = FluentTheme.colors.text.text.secondary,
             borderBrush = SolidColor(Color.Transparent)
         ),
         hovered: ListItemColor = default.copy(
@@ -327,7 +327,7 @@ object ListItemDefaults {
         ),
         disabled: ListItemColor = default.copy(
             contentColor = FluentTheme.colors.text.text.disabled,
-            trainingColor = FluentTheme.colors.text.text.disabled,
+            trailingColor = FluentTheme.colors.text.text.disabled,
         )
     ) = ListItemColorScheme(
         default = default,
@@ -345,7 +345,7 @@ enum class ListItemSelectionType {
 data class ListItemColor(
     val fillColor: Color,
     val contentColor: Color,
-    val trainingColor: Color,
+    val trailingColor: Color,
     val borderBrush: Brush
 )
 
