@@ -62,6 +62,7 @@ fun GalleryPage(
             documentPath,
             componentPath,
             galleryPath,
+            true,
             inverseTheme.value
         ) { inverseTheme.value = !inverseTheme.value }
 

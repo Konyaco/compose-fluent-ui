@@ -42,7 +42,6 @@ import com.konyaco.fluent.icons.regular.Document
 import com.konyaco.fluent.icons.regular.PersonFeedback
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.github_logo
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -68,7 +67,6 @@ fun GalleryHeader(
     )
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun GalleryHeader(
     title: AnnotatedString,
@@ -76,8 +74,8 @@ fun GalleryHeader(
     documentPath: String? = null,
     componentPath: String? = null,
     galleryPath: String? = null,
-    themeButtonChecked: Boolean = false,
     controlVisible: Boolean = true,
+    themeButtonChecked: Boolean = false,
     onThemeButtonChanged: (Boolean) -> Unit = {}
 ) {
     Column(Modifier.padding(top = 32.dp, bottom = 24.dp, start = 32.dp, end = 32.dp)) {
@@ -185,7 +183,7 @@ fun GalleryHeader(
         }
 
         if (description.isNotBlank()) {
-            GalleryDescription(title, Modifier.padding(top = 24.dp))
+            GalleryDescription(description, Modifier.padding(top = 24.dp))
         }
     }
 }

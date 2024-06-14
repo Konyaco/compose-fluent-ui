@@ -15,11 +15,9 @@ fun AllSamplesScreen(navigator: ComponentNavigator) {
     LaunchedEffect(flatMapComponents) {
         val excludeComponents = listOf(
             _HomeScreenComponent,
-            _AllSamplesScreenComponent,
-            Design_guidance_TypographyScreenComponent,
-            Design_guidance_IconsScreenComponent
+            _AllSamplesScreenComponent
         )
-        allComponents = flatMapComponents.filter { it !in excludeComponents }
+        allComponents = flatMapComponents.filter { it !in excludeComponents && !it.group.startsWith("/" + _Design_guidanceComponents.name) }
     }
     ComponentIndexScreen(
         name = "All samples",
