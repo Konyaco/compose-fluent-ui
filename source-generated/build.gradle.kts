@@ -8,7 +8,9 @@ plugins {
 }
 
 kotlin {
-    applyTargets(publish = false)
+    applyTargets {
+        publish = false
+    }
     sourceSets {
         commonMain {
             dependencies {
