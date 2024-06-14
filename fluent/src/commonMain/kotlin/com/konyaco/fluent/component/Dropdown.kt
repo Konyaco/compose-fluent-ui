@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
@@ -23,8 +24,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
@@ -37,12 +37,16 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalAcrylicPopupEnabled
+import com.konyaco.fluent.LocalWindowAcrylicContainer
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
+import com.konyaco.fluent.background.AcrylicDefaults
 import com.konyaco.fluent.background.BackgroundSizing
+import com.konyaco.fluent.background.ElevationDefaults
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.background.Mica
 
 @Composable
 fun DropdownMenu(
@@ -98,7 +102,7 @@ internal class DropdownMenuPositionProvider(val density: Density, val offset: Dp
 
         val popupToTop = bottomSpace < needSpace && topSpace > needSpace
 
-        val y = if(popupToTop) {
+        val y = if (popupToTop) {
             anchorBounds.top - needSpace
         } else {
             anchorBounds.bottom + gap
@@ -111,6 +115,7 @@ internal class DropdownMenuPositionProvider(val density: Density, val offset: Dp
     }
 }
 
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 internal fun DropdownMenuContent(
     expandedStates: MutableTransitionState<Boolean>,
@@ -125,20 +130,35 @@ internal fun DropdownMenuContent(
         ), // TODO: If popup direction is upward, the expanding animation should be bottom-to-top.
         exit = fadeOut(tween(FluentDuration.ShortDuration, easing = FluentEasing.FastDismissEasing))
     ) {
-        Mica(Modifier.shadow(8.dp, FluentTheme.shapes.overlay).clip(FluentTheme.shapes.overlay)) {
-            // TODO: Dropdown should use Acrylic material.
-            Layer(
-                shape = FluentTheme.shapes.overlay,
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
-                backgroundSizing = BackgroundSizing.InnerBorderEdge
-            ) {
-                Column(
-                    modifier = modifier
-                        .padding(vertical = 4.dp, horizontal = 4.dp)
-                        .width(IntrinsicSize.Max)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    content = content
+        val shape = FluentTheme.shapes.overlay
+        val useAcrylic = LocalAcrylicPopupEnabled.current
+        Layer(
+            elevation = ElevationDefaults.flyout,
+            color = if (!useAcrylic) {
+                FluentTheme.colors.background.acrylic.default
+            } else {
+                Color.Transparent
+            },
+            shape = shape,
+            border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
+            backgroundSizing = BackgroundSizing.InnerBorderEdge
+        ) {
+
+            with(LocalWindowAcrylicContainer.current) {
+                FlyoutContentLayout(
+                    shape = shape,
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
+                    acrylicEnabled = { useAcrylic && expandedStates.targetState },
+                    acrylicTint = AcrylicDefaults.tintColor,
+                    content = {
+                        Column(
+                            modifier = modifier
+                                .width(IntrinsicSize.Max)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            content = content
+                        )
+                    }
                 )
             }
         }
