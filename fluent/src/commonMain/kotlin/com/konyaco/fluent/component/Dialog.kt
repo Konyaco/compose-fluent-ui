@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -103,10 +102,10 @@ fun FluentDialog(
                 enter = fadeIn(tween) + scaleIn(tween, initialScale = 1.05f),
                 exit = fadeOut(tween) + scaleOut(tween, targetScale = 1.05f)
             ) {
-                Mica(Modifier.wrapContentSize().clip(RoundedCornerShape(8.dp))) {
+                Mica(Modifier.wrapContentSize().clip(FluentTheme.shapes.overlay)) {
                     Layer(
                         Modifier.wrapContentSize().widthIn(size.min, size.max),
-                        shape = RoundedCornerShape(size = 8.dp),
+                        shape = FluentTheme.shapes.overlay,
                         border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.default),
                         backgroundSizing = BackgroundSizing.InnerBorderEdge,
                         color = FluentTheme.colors.background.solid.base,

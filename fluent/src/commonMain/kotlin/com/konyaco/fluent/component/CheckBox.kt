@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -69,7 +68,7 @@ fun CheckBox(
         )
         Layer(
             modifier = Modifier.size(20.dp),
-            shape = RoundedCornerShape(4.dp),
+            shape = FluentTheme.shapes.control,
             color = fillColor,
             contentColor = color.contentColor,
             border = BorderStroke(1.dp, color.borderColor),

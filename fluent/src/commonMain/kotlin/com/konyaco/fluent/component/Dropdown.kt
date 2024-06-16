@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -126,10 +125,10 @@ internal fun DropdownMenuContent(
         ), // TODO: If popup direction is upward, the expanding animation should be bottom-to-top.
         exit = fadeOut(tween(FluentDuration.ShortDuration, easing = FluentEasing.FastDismissEasing))
     ) {
-        Mica(Modifier.shadow(8.dp, RoundedCornerShape(8.dp)).clip(RoundedCornerShape(8.dp))) {
+        Mica(Modifier.shadow(8.dp, FluentTheme.shapes.overlay).clip(FluentTheme.shapes.overlay)) {
             // TODO: Dropdown should use Acrylic material.
             Layer(
-                shape = RoundedCornerShape(8.dp),
+                shape = FluentTheme.shapes.overlay,
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
                 backgroundSizing = BackgroundSizing.InnerBorderEdge
             ) {

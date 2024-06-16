@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -56,7 +55,7 @@ enum class BackgroundSizing {
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(size = 4.dp),
+    shape: Shape = FluentTheme.shapes.control,
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
@@ -83,7 +82,7 @@ fun Layer(
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(size = 4.dp),
+    shape: Shape = FluentTheme.shapes.control,
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
