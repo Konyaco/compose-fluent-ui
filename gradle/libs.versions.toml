@@ -8,6 +8,7 @@ androidGradlePlugin = "8.3.2"
 androidBuildTools = "31.3.2"
 windowStyler = "0.3.3-SNAPSHOT"
 highlights = "0.8.0"
+jna = "5.14.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -24,6 +25,8 @@ android-tools-common = { module = "com.android.tools:common", version.ref = "and
 android-tools-sdk-common = { module = "com.android.tools:sdk-common", version.ref = "androidBuildTools" }
 window-styler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowStyler" }
 highlights = { module = "dev.snipme:highlights", version.ref = "highlights" }
+jna-platform = { module = "net.java.dev.jna:jna-platform-jpms",  version.ref = "jna" }
+jna = { module = "net.java.dev.jna:jna-jpms",  version.ref = "jna" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

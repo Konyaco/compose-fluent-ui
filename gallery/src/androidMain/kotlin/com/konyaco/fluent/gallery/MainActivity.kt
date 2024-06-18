@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val componentNavigator = rememberComponentNavigator()
-            BackHandler(componentNavigator.latestBackEntry != null) {
+            BackHandler(componentNavigator.canNavigateUp) {
                 componentNavigator.navigateUp()
             }
             GalleryTheme {

@@ -1,6 +1,8 @@
 package com.konyaco.fluent.gallery.component
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 
@@ -13,6 +15,8 @@ interface ComponentNavigator {
     val currentBackstack: List<ComponentItem>
 
     val latestBackEntry: ComponentItem?
+
+    val canNavigateUp: Boolean
 
 }
 
@@ -35,6 +39,10 @@ private class ComponentNavigatorImpl(startItem: ComponentItem) : ComponentNaviga
                 backstack.removeLast()
             } while (backstack.lastOrNull().let { it != null && it.content == null })
         }
+    }
+
+    override val canNavigateUp: Boolean by derivedStateOf {
+        backstack.count { it.content != null } > 1
     }
 
     override val currentBackstack: List<ComponentItem>
