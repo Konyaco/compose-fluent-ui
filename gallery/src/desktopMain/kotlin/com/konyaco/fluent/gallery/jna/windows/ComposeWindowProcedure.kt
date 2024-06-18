@@ -10,6 +10,8 @@ import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTRIGHT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOP
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOPLEFT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOPRIGHT
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCCALCSIZE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCHITTEST
 import com.konyaco.fluent.gallery.jna.windows.structure.WindowMargins
 import com.mayakapps.compose.windowstyler.findSkiaLayer
 import com.sun.jna.Native
@@ -42,9 +44,6 @@ internal class ComposeWindowProcedure(
 
     private var hitResult = 1
 
-    // See https://learn.microsoft.com/en-us/windows/win32/winmsg/about-messages-and-message-queues#system-defined-messages
-    private val WM_NCCALCSIZE = 0x0083
-    private val WM_NCHITTEST = 0x0084
     private val margins = WindowMargins(
         leftBorderWidth = 0,
         topBorderHeight = 0,

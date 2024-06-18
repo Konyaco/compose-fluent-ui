@@ -2,6 +2,8 @@ package com.konyaco.fluent.gallery.jna.windows.structure
 
 object WinUserConst {
 
+    //calculate non client area size message
+    val WM_NCCALCSIZE = 0x0083
     // non client area hit test message
     val WM_NCHITTEST = 0x0084
     // mouse move message
