@@ -38,7 +38,7 @@ object ComponentGroupInfo {
     @ComponentGroup("Flash", index = 9)
     const val Motion = "Motion"
 
-    @ComponentGroup("Navigation", index = 10)
+    @ComponentGroup("Navigation", index = 10, packageMap = "$screenPackage.navigation")
     const val Navigation = "Navigation"
 
     @ComponentGroup("ArrowSort", index = 11)
