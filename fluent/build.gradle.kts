@@ -3,6 +3,7 @@ import com.konyaco.fluent.plugin.build.applyTargets
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.plugin.compose)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
