@@ -1,8 +1,8 @@
 [versions]
 activityCompose = "1.8.2"
 haze = "0.6.2"
-kotlin = "1.9.23"
-ksp = "1.9.23-1.0.20"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.22"
 compose = "1.6.10"
 androidGradlePlugin = "8.3.2"
 androidBuildTools = "31.3.2"
@@ -28,6 +28,7 @@ highlights = { module = "dev.snipme:highlights", version.ref = "highlights" }
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
