@@ -2,6 +2,7 @@ package com.konyaco.fluent.background
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,7 +22,7 @@ import dev.chrisbanes.haze.hazeChild
 @Composable
 fun AcrylicContainerScope.Acrylic(
     modifier: Modifier = Modifier,
-    enabled: () -> Boolean = { true },
+    enabled: () -> Boolean = { supportAcrylic() },
     tint: Color = AcrylicDefaults.tintColor,
     shape: Shape = AcrylicDefaults.shape,
     border: BorderStroke? = null,
@@ -30,7 +31,7 @@ fun AcrylicContainerScope.Acrylic(
     Layer(
         modifier = modifier.acrylicOverlay(tint = tint, shape = shape, enabled = enabled),
         shape = shape,
-        color = if (enabled()) Color.Transparent else FluentTheme.colors.background.layer.default,
+        color = if (enabled()) Color.Transparent else FluentTheme.colors.background.acrylic.default,
         border = border,
         backgroundSizing = BackgroundSizing.InnerBorderEdge
     ) {
@@ -58,8 +59,10 @@ private class AcrylicContainerScopeImpl(boxScope: BoxScope): AcrylicContainerSco
     }
 
     override fun Modifier.acrylicOverlay(tint: Color, shape: Shape, enabled: () -> Boolean): Modifier {
-        return then(if (enabled()) {
-            Modifier.hazeChild(
+        return when {
+            !supportAcrylic() -> background(tint.copy(1f), shape)
+            !enabled() -> this
+            else -> hazeChild(
                 state = hazeState,
                 shape = shape,
                 style = HazeStyle(
@@ -68,9 +71,7 @@ private class AcrylicContainerScopeImpl(boxScope: BoxScope): AcrylicContainerSco
                     blurRadius = AcrylicDefaults.blurRadius
                 )
             )
-        } else {
-            Modifier
-        })
+        }
     }
 }
 
@@ -86,11 +87,15 @@ internal object AcrylicDefaults {
 
     const val noise = 0.02f
 
-    val blurRadius = 70.dp
+    val blurRadius = 60.dp
 
     val tintColor: Color
         @Composable
-        get() = FluentTheme.colors.background.acrylic.default.copy(0.8f)
+        get() = FluentTheme.colors.background.acrylic.default.copy(
+            if (FluentTheme.colors.darkMode) 0.96f else 0.85f
+        )
 
     val shape = RectangleShape
 }
+
+internal expect fun supportAcrylic(): Boolean
