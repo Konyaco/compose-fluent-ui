@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
@@ -18,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,6 +55,9 @@ import com.konyaco.fluent.component.ScrollbarContainer
 import com.konyaco.fluent.component.Slider
 import com.konyaco.fluent.component.SubtleButton
 import com.konyaco.fluent.component.Switcher
+import com.konyaco.fluent.component.TabItem
+import com.konyaco.fluent.component.TabRow
+import com.konyaco.fluent.component.TabViewDefaults
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.component.rememberScrollbarAdapter
@@ -387,6 +393,33 @@ private fun Content() {
             Icon(
                 modifier = Modifier.size(18.dp),
                 imageVector = imageVector, contentDescription = null
+            )
+        }
+    }
+
+    val selectedKey = remember { mutableStateOf(0) }
+    val tabItems = remember { mutableStateListOf(0,1,2,3,4) }
+    TabRow(
+        selectedKey = { selectedKey.value },
+        borderColor = FluentTheme.colors.stroke.card.default,
+    ) {
+        items(tabItems, key = { it }) { index ->
+            TabItem(
+                selected = index == selectedKey.value,
+                onSelectedChanged = { selectedKey.value = index },
+                content = { Text(index.toString()) },
+                colors = if (index == selectedKey.value) {
+                    TabViewDefaults.selectedItemTitleBarColors()
+                } else {
+                    TabViewDefaults.defaultItemTitleBarColors()
+                },
+                endDividerVisible = index != selectedKey.value - 1,
+                modifier = Modifier.widthIn(60.dp)
+            )
+        }
+        item {
+            TabViewDefaults.TabAddButton(
+                onClick = { tabItems.add(tabItems.size) }
             )
         }
     }
