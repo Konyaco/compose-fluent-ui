@@ -13,7 +13,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.translate
@@ -111,6 +110,7 @@ fun Layer(
     }
 }
 
+@Composable
 private fun Modifier.layer(
     elevation: Dp,
     shape: Shape,
@@ -119,7 +119,7 @@ private fun Modifier.layer(
     color: Color
 ) = then(
     Modifier
-        .shadow(elevation = elevation, shape = shape, clip = false)
+        .elevation(elevation = elevation, shape = shape)
         .then(
             if (border != null) {
                 val backgroundShape =
@@ -146,12 +146,7 @@ private value class BackgroundPaddingShape(private val borderShape: CornerBasedS
 
     override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
         return with(density) {
-            val circular = borderShape == CircleShape
-            val paddingPx = when {
-                circular -> calcCircularPadding(density)
-                else -> calcPadding(density)
-            }.toPx()
-            createInnerOutline(size, density, layoutDirection, paddingPx)
+            createInnerOutline(size, density, layoutDirection, borderShape.calculateBorderPadding(density))
         }
     }
 
@@ -228,5 +223,15 @@ private fun calcCircularPadding(density: Density): Dp {
     return with(density) {
         if (remainder == 0f) 1.dp
         else (1.dp.toPx() - remainder + 1).toDp()
+    }
+}
+
+internal fun Shape.calculateBorderPadding(density: Density): Float {
+    val circular = this == CircleShape
+    return with(density) {
+        when {
+            circular -> calcCircularPadding(density)
+            else -> calcPadding(density)
+        }.toPx()
     }
 }
