@@ -365,7 +365,7 @@ private fun Modifier.drawBottomLine(
 }
 
 @Stable
-internal fun Modifier.textFieldModifier(shape: Shape = FluentTheme.shapes.control) =
+internal fun Modifier.textFieldModifier(shape: Shape) =
     defaultMinSize(64.dp, 32.dp).clip(shape)
 
 @Stable
