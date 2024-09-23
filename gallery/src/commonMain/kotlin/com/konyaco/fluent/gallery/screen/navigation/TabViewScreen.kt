@@ -23,6 +23,7 @@ import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
+import com.konyaco.fluent.gallery.component.GalleryPageScope
 import com.konyaco.fluent.source.generated.FluentSourceFile
 
 @Component(index = 1, description = "A control that displays a collection of tabs that can be used to display several documents.")
@@ -39,6 +40,7 @@ fun TabViewScreen() {
             sourceCode = sourceCodeOfTabViewSample,
             content = { TabViewSample() }
         )
+        PlatformTabViewSection()
     }
 }
 
@@ -94,3 +96,6 @@ private fun TabViewSample() {
         }
     }
 }
+
+@Composable
+internal expect fun GalleryPageScope.PlatformTabViewSection()
