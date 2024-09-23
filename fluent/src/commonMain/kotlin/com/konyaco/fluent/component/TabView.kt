@@ -123,6 +123,7 @@ fun TabRow(
                 .zIndex(2f)
                 .height(2.dp)
                 .drawTabRowBorder(
+                    bottomRadius = FluentTheme.cornerRadius.control,
                     borderColor = borderColor,
                     containerWidth = { containerWidth.value },
                     rowRect = { rowRect.value },
@@ -230,6 +231,8 @@ fun TabItem(
     val color = colors.schemeFor(targetInteractionSource.collectVisualState(false))
     val density = LocalDensity.current
     val selectedValue = rememberUpdatedState(selected)
+    val bottomRadius = FluentTheme.cornerRadius.control
+    val topRadius = FluentTheme.cornerRadius.overlay
     Box(
         contentAlignment = Alignment.CenterStart,
         propagateMinConstraints = true,
@@ -237,17 +240,21 @@ fun TabItem(
             .then(
                 if (selected) {
                     Modifier.drawTabViewItemBorder(
-                        color.borderColor,
-                        TabViewSelectedShape(false),
-                        direction
+                        color = color.borderColor,
+                        shape = TabViewSelectedShape(
+                            isInner = false,
+                            topRadius = topRadius,
+                            bottomRadius = bottomRadius
+                        ),
+                        direction = direction
                     )
                 } else {
                     Modifier
                 }
             )
             .bringIntoViewResponder(
-                remember(density, selectedValue) {
-                    TabItemBringIntoViewResponder(density) { selectedValue.value }
+                remember(density, selectedValue, bottomRadius) {
+                    TabItemBringIntoViewResponder(density, bottomRadius) { selectedValue.value }
                 }
             )
             .clickable(
@@ -257,9 +264,9 @@ fun TabItem(
             .background(
                 color = color.fillColor,
                 shape = if (selected) {
-                    TabViewSelectedShape(isInner = true)
+                    TabViewSelectedShape(isInner = true, topRadius, bottomRadius)
                 } else {
-                    RoundedCornerShape(topStart = TopRadius, topEnd = TopRadius)
+                    RoundedCornerShape(topStart = topRadius, topEnd = topRadius)
                 }
             )
             .heightIn(TabViewHeight)
@@ -573,7 +580,7 @@ private fun TabScrollActionButton(
 
 @Immutable
 @Stable
-private class TabViewSelectedShape(val isInner: Boolean) : Shape {
+private class TabViewSelectedShape(val isInner: Boolean, val topRadius: Dp, val bottomRadius: Dp) : Shape {
 
     override fun createOutline(
         size: Size,
@@ -584,41 +591,41 @@ private class TabViewSelectedShape(val isInner: Boolean) : Shape {
             Outline.Generic(Path().apply {
                 val strokePadding = StrokeSize.toPx() / 2f
                 val innerPadding = if (isInner) strokePadding else 0f
-                val radius = BottomRadius.toPx() - innerPadding
-                val topRadius = TopRadius.toPx() - innerPadding
+                val bottomRadius = bottomRadius.toPx() - innerPadding
+                val topRadius = topRadius.toPx() - innerPadding
                 val topPadding = StrokeSize.toPx() + innerPadding
-                val horizontalOffset = radius - StrokeSize.toPx() / 2f - innerPadding
+                val horizontalOffset = bottomRadius - StrokeSize.toPx() / 2f - innerPadding
 
                 moveTo(-horizontalOffset, size.height - strokePadding + innerPadding / 2)
                 cubicTo(
-                    x1 = radius - horizontalOffset,
+                    x1 = bottomRadius - horizontalOffset,
                     y1 = size.height - strokePadding,
-                    x2 = radius - horizontalOffset,
-                    y2 = size.height - radius - strokePadding,
-                    x3 = radius - horizontalOffset,
-                    y3 = size.height - radius - strokePadding
+                    x2 = bottomRadius - horizontalOffset,
+                    y2 = size.height - bottomRadius - strokePadding,
+                    x3 = bottomRadius - horizontalOffset,
+                    y3 = size.height - bottomRadius - strokePadding
                 )
-                lineTo(radius - horizontalOffset, topRadius + topPadding)
+                lineTo(bottomRadius - horizontalOffset, topRadius + topPadding)
                 cubicTo(
-                    x1 = radius - horizontalOffset,
+                    x1 = bottomRadius - horizontalOffset,
                     y1 = topPadding,
-                    x2 = radius - horizontalOffset + topRadius,
+                    x2 = bottomRadius - horizontalOffset + topRadius,
                     y2 = topPadding,
-                    x3 = radius - horizontalOffset + topRadius,
+                    x3 = bottomRadius - horizontalOffset + topRadius,
                     y3 = topPadding
                 )
-                lineTo(size.width - radius - topRadius + horizontalOffset, topPadding)
+                lineTo(size.width - bottomRadius - topRadius + horizontalOffset, topPadding)
                 cubicTo(
-                    x1 = size.width - radius + horizontalOffset,
+                    x1 = size.width - bottomRadius + horizontalOffset,
                     y1 = topPadding,
-                    x2 = size.width - radius + horizontalOffset,
+                    x2 = size.width - bottomRadius + horizontalOffset,
                     y2 = topPadding + topRadius,
-                    x3 = size.width - radius + horizontalOffset,
+                    x3 = size.width - bottomRadius + horizontalOffset,
                     y3 = topRadius + topPadding
                 )
-                lineTo(size.width - radius + horizontalOffset, size.height - radius - strokePadding)
+                lineTo(size.width - bottomRadius + horizontalOffset, size.height - bottomRadius - strokePadding)
                 cubicTo(
-                    x1 = size.width - radius + horizontalOffset,
+                    x1 = size.width - bottomRadius + horizontalOffset,
                     y1 = size.height - strokePadding + innerPadding / 2,
                     x2 = size.width + horizontalOffset,
                     y2 = size.height - strokePadding + innerPadding / 2,
@@ -637,6 +644,7 @@ private class TabViewSelectedShape(val isInner: Boolean) : Shape {
 
 @Stable
 private fun Modifier.drawTabRowBorder(
+    bottomRadius: Dp,
     borderColor: Color,
     containerWidth: () -> Int,
     rowRect: () -> Rect,
@@ -649,7 +657,7 @@ private fun Modifier.drawTabRowBorder(
         path.apply {
             moveTo(strokeSizePx / 2, size.height - strokeSizePx)
             val currentItem = selectedItem()
-            val itemPadding = BottomRadius.toPx()
+            val itemPadding = bottomRadius.toPx()
             if (currentItem != null) {
                 val rowRectValue = rowRect()
                 val currentItemOffset = (rowRectValue.left + currentItem.offset)
@@ -732,9 +740,10 @@ private fun Modifier.drawTabViewItemBorder(
 @Stable
 private class TabItemBringIntoViewResponder(
     density: Density,
+    bottomRadius: Dp,
     val selected: () -> Boolean,
 ) : BringIntoViewResponder {
-    val paddingSize = with(density) { BottomRadius.toPx() }
+    val paddingSize = with(density) { bottomRadius.toPx() }
 
     override suspend fun bringChildIntoView(localRect: () -> Rect?) {}
 
@@ -753,8 +762,6 @@ private class TabItemBringIntoViewResponder(
 }
 
 private val StrokeSize = 1.dp
-private val TopRadius = 8.dp
-private val BottomRadius = 4.dp
 private val TabButtonSize = DpSize(32.dp, 24.dp)
 
 //TODO combine TextBoxContentArrangement
