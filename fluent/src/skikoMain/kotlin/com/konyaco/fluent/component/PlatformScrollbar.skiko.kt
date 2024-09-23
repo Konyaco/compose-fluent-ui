@@ -111,7 +111,7 @@ internal actual fun PlatformScrollBar(
                 visible = isThicknessHighLight,
                 forward = true
             )
-            // TODO: Use Acrylic as scrollbar's track 
+            // TODO: Use Acrylic as scrollbar's track
             VerticalScrollbar(
                 adapter = adapter,
                 modifier = modifier.width(ScrollbarDefaults.thicknessHighlight)
