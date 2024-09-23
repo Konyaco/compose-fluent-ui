@@ -354,7 +354,52 @@ private fun Content() {
                 },
                 backgroundSizing = BackgroundSizing.OuterBorderEdge
             )
-
+            Layer(
+                modifier = Modifier.size(32.dp),
+                shape = CircleShape,
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.fillAccent.default),
+                backgroundSizing = BackgroundSizing.InnerBorderEdge,
+                content = {}
+            )
+            Layer(
+                shape = CircleShape,
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.fillAccent.default),
+                content = { Box(Modifier.size(height = 32.dp, width = 64.dp))},
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
+            )
+            Layer(
+                shape = CircleShape,
+//                modifier = Modifier.size(32.dp),
+                color = FluentTheme.colors.controlStrong.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.controlStrong.default),
+                backgroundSizing = BackgroundSizing.InnerBorderEdge,
+                content = { Box(Modifier.size(32.dp)) }
+            )
+            Layer(
+                shape = CircleShape,
+                modifier = Modifier.size(64.dp, 32.dp),
+                color = FluentTheme.colors.controlStrong.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.controlStrong.default),
+                backgroundSizing = BackgroundSizing.InnerBorderEdge,
+                content = {}
+            )
+            Layer(
+                shape = RoundedCornerShape(4.dp),
+                color = FluentTheme.colors.fillAccent.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.fillAccent.default),
+                content = { Box(Modifier.size(height = 32.dp, width = 64.dp))},
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
+            )
+            Layer(
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.size(64.dp, 32.dp),
+                color = FluentTheme.colors.controlStrong.default,
+                border = BorderStroke(1.dp, FluentTheme.colors.controlStrong.default),
+                backgroundSizing = BackgroundSizing.InnerBorderEdge,
+                content = {}
+            )
             Card(Modifier) {
                 Box(Modifier.size(32.dp))
             }
