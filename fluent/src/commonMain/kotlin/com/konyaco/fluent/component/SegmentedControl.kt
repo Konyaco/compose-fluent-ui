@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -21,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,13 +29,8 @@ import androidx.compose.ui.geometry.translate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
@@ -61,7 +54,7 @@ fun SegmentedControl(
     Layer(
         color = color,
         border = borderStroke,
-        shape = buttonShape,
+        shape = FluentTheme.shapes.control,
         backgroundSizing = BackgroundSizing.OuterBorderEdge,
         modifier = modifier
     ) {
@@ -94,7 +87,7 @@ fun SegmentedButton(
     val targetInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
     val currentColors = colors.schemeFor(targetInteractionSource.collectVisualState(!enabled))
     val shape = if (checked) {
-        buttonShape
+        FluentTheme.shapes.control
     } else {
         val padding = when (position) {
             SegmentedItemPosition.Start -> PaddingValues(
@@ -133,7 +126,6 @@ fun SegmentedButton(
     ) {
         HorizontalIndicatorContentLayout(
             indicator = indicator,
-            indicatorVisible = checked,
             icon = icon,
             text = text,
             modifier = Modifier.defaultMinSize(minHeight = buttonMinHeight)
@@ -174,7 +166,6 @@ fun HorizontalIndicator(
 
 @Composable
 internal fun HorizontalIndicatorContentLayout(
-    indicatorVisible: Boolean,
     modifier: Modifier = Modifier,
     icon: @Composable (() -> Unit)?,
     text: @Composable (() -> Unit)?,
@@ -184,44 +175,16 @@ internal fun HorizontalIndicatorContentLayout(
         modifier = modifier.padding(horizontal = 12.dp),
         contentAlignment = Alignment.CenterStart
     ) {
-        val indicatorAnchorRect = remember { mutableStateOf(0f) }
-        val indicatorSize = remember { mutableStateOf(IntSize.Zero) }
-        val rowOffset = remember { mutableStateOf(0f) }
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.align(Alignment.Center)
-                .onGloballyPositioned {
-                    rowOffset.value = it.boundsInParent().left
-                },
         ) {
-
-            val indicatorAnchorModifier = Modifier.onGloballyPositioned {
-                indicatorAnchorRect.value = it.boundsInParent().center.x
-            }
-            icon?.let {
-                if (indicatorVisible && text == null) {
-                    Box(modifier = indicatorAnchorModifier) { it() }
-                } else {
-                    it()
-                }
-            }
-            text?.let {
-                if (indicatorVisible) {
-                    Box(modifier = indicatorAnchorModifier) { it() }
-                } else {
-                    it()
-                }
-            }
-
+            icon?.invoke()
+            text?.invoke()
         }
         Box(
-            modifier = Modifier
-                .onSizeChanged { indicatorSize.value = it }
-                .align(Alignment.BottomStart)
-                .offset {
-                    IntOffset((rowOffset.value + indicatorAnchorRect.value - indicatorSize.value.width / 2f).toInt(), 0)
-                }
+            modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             indicator()
         }
@@ -272,6 +235,7 @@ private class PaddingBackgroundShape(corner: Dp, private val padding: PaddingVal
                         )
                     )
                 })
+                else -> oldOutline
             }
         }
     }

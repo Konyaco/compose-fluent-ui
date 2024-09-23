@@ -723,5 +723,5 @@ private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
     )
 }
 
-private val buttonMinHeight = 32.dp
-private val buttonBorderStrokeWidth = 1.dp
+internal val buttonMinHeight = 32.dp
+internal val buttonBorderStrokeWidth = 1.dp
