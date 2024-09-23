@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
@@ -79,6 +80,7 @@ fun FluentDialog(
     }
 
     if (visibleState.currentState || visibleState.targetState) Popup(
+        properties = PopupProperties(focusable = true),
         popupPositionProvider = DialogPopupPositionProvider
     ) {
         val scrim by animateColorAsState(
