@@ -7,28 +7,45 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.mayakapps.compose.windowstyler.WindowBackdrop
-import com.mayakapps.compose.windowstyler.WindowStyle
+import com.konyaco.fluent.gallery.component.rememberComponentNavigator
+import com.konyaco.fluent.gallery.jna.windows.structure.isWindows10OrLater
+import com.konyaco.fluent.gallery.window.WindowsWindowFrame
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.skiko.hostOs
 
-@OptIn(ExperimentalResourceApi::class)
 fun main() = application {
+    val state = rememberWindowState(
+        position = WindowPosition(Alignment.Center),
+        size = DpSize(1280.dp, 720.dp)
+    )
     Window(
         onCloseRequest = ::exitApplication,
-        state = rememberWindowState(position = WindowPosition(Alignment.Center), size = DpSize(1280.dp, 720.dp)),
+        state = state,
         title = "Compose Fluent Design Gallery",
         icon = painterResource(Res.drawable.icon)
     ) {
-        GalleryTheme {
-            //TODO Make Window transparent.
-            WindowStyle(
-                isDarkTheme = LocalStore.current.darkMode,
-                backdropType = WindowBackdrop.Mica
-            )
-            App()
+        val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
+        GalleryTheme(!supportBackdrop) {
+            if (supportBackdrop) {
+                val navigator = rememberComponentNavigator()
+                WindowsWindowFrame(
+                    onCloseRequest = { exitApplication() },
+                    icon = painterResource(Res.drawable.icon),
+                    title = "Compose Fluent Design Gallery",
+                    backButtonEnabled = navigator.canNavigateUp,
+                    backButtonClick = { navigator.navigateUp() },
+                    state = state
+                ) {
+                    App(navigator)
+                }
+            } else {
+                App()
+            }
+
         }
+
     }
 }
+

@@ -44,6 +44,8 @@ kotlin {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.window.styler)
+                implementation(libs.jna.platform)
+                implementation(libs.jna)
             }
         }
         val desktopTest by getting
