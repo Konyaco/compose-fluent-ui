@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -68,7 +67,7 @@ fun TextField(
         }
         BasicTextField(
             modifier = modifier.defaultMinSize(64.dp, 32.dp)
-                .clip(RoundedCornerShape(4.dp)),
+                .clip(FluentTheme.shapes.control),
             value = value,
             onValueChange = onValueChange,
             textStyle = LocalTextStyle.current.copy(color = color.contentColor),
@@ -145,7 +144,7 @@ object TextFieldDefaults {
     ) {
         Layer(
             modifier = modifier.hoverable(interactionSource),
-            shape = RoundedCornerShape(4.dp),
+            shape = FluentTheme.shapes.control,
             color = color.fillColor,
             border = BorderStroke(1.dp, color.borderBrush),
             backgroundSizing = BackgroundSizing.OuterBorderEdge

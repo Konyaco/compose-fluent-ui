@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -322,7 +321,7 @@ fun SplitButton(
     val borderBrush = currentColor.borderBrush
     val endContentOffset = remember { mutableStateOf(0f) }
     Layer(
-        modifier = modifier.border(BorderStroke(buttonBorderStrokeWidth, currentColor.borderBrush), buttonShape)
+        modifier = modifier.border(BorderStroke(buttonBorderStrokeWidth, currentColor.borderBrush), FluentTheme.shapes.control)
             .drawWithCache {
                 /* draw split broder */
                 val path = Path()
@@ -335,7 +334,7 @@ fun SplitButton(
                     drawPath(path, borderBrush, style = Stroke(strokeWidth))
                 }
             },
-        shape = buttonShape,
+        shape = FluentTheme.shapes.control,
         color = Color.Transparent,
         contentColor = currentColor.contentColor,
         /* workaround for outside border padding */
@@ -433,7 +432,7 @@ private fun Button(
     content: @Composable (RowScope.() -> Unit)
 ) {
     ButtonLayer(
-        shape = buttonShape,
+        shape = FluentTheme.shapes.control,
         displayBorder = true,
         buttonColors = buttonColors,
         interaction = interaction,
@@ -632,5 +631,4 @@ private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
 }
 
 private val buttonMinHeight = 32.dp
-private val buttonShape = RoundedCornerShape(size = 4.dp)
 private val buttonBorderStrokeWidth = 1.dp

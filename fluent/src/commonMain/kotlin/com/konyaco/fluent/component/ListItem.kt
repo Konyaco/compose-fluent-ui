@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -128,7 +127,7 @@ fun ListItem(
             .defaultMinSize(minWidth = 108.dp, if (LocalCompactMode.current) ListItemCompactHeight else ListItemHeight)
             .padding(horizontal = 5.dp, vertical = 2.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(size = 4.dp),
+        shape = FluentTheme.shapes.control,
         color = fillColor,
         contentColor = contentColor,
         border = BorderStroke(1.dp, color.borderBrush),

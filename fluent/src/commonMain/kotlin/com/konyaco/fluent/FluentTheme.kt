@@ -24,6 +24,7 @@ import com.konyaco.fluent.component.ProvideFontIcon
 fun FluentTheme(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
+    cornerRadius: CornerRadius = FluentTheme.cornerRadius,
     useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
     compactMode: Boolean = true,
     content: @Composable () -> Unit
@@ -40,7 +41,9 @@ fun FluentTheme(
                 colors.fillAccent.selectedTextBackground.copy(0.4f)
             ),
             LocalContentDialog provides contentDialogHostState,
-            LocalCompactMode provides compactMode
+            LocalCompactMode provides compactMode,
+            LocalCornerRadius provides cornerRadius,
+            LocalShapes provides cornerRadius.toShapes()
         ) {
             ContentDialogHost(contentDialogHostState)
             Box(modifier = Modifier.behindAcrylic()) {
@@ -60,6 +63,7 @@ fun FluentTheme(
 fun FluentThemeConfiguration(
     colors: Colors = FluentTheme.colors,
     typography: Typography = FluentTheme.typography,
+    cornerRadius: CornerRadius = FluentTheme.cornerRadius,
     useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
     compactMode: Boolean = LocalCompactMode.current,
     contentDialogHostState: ContentDialogHostState = LocalContentDialog.current,
@@ -75,6 +79,8 @@ fun FluentThemeConfiguration(
         ),
         LocalCompactMode provides compactMode,
         LocalContentDialog provides contentDialogHostState,
+        LocalCornerRadius provides cornerRadius,
+        LocalShapes provides cornerRadius.toShapes(),
         content = content
     )
 }
@@ -86,7 +92,7 @@ fun FluentTheme(
     typography: Typography = FluentTheme.typography,
     content: @Composable () -> Unit
 ) {
-    FluentTheme(colors, typography, useAcrylicPopup = false, compactMode = true, content)
+    FluentTheme(colors, typography, LocalCornerRadius.current, useAcrylicPopup = false, compactMode = true, content)
 }
 
 @Composable
@@ -102,10 +108,21 @@ object FluentTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current
+
     val typography: Typography
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
+
+    val shapes: Shapes
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalShapes.current
+
+    val cornerRadius: CornerRadius
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalCornerRadius.current
 }
 
 internal val LocalColors = staticCompositionLocalOf { lightColors() }

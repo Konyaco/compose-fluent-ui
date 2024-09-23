@@ -69,7 +69,8 @@ fun GallerySection(
             Layer(
                 modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                 shape = RoundedCornerShape(
-                    topStart = 8.dp, topEnd = 8.dp
+                    topStart = FluentTheme.cornerRadius.overlay,
+                    topEnd = FluentTheme.cornerRadius.overlay
                 ),
                 color = FluentTheme.colors.background.solid.base,
                 backgroundSizing = BackgroundSizing.OuterBorderEdge
@@ -128,8 +129,8 @@ fun GallerySection(
                     sourceCodeExpanded = !sourceCodeExpanded
                 }),
             shape = RoundedCornerShape(
-                bottomEnd = if (sourceCodeExpanded) 0.dp else 8.dp,
-                bottomStart = if (sourceCodeExpanded) 0.dp else 8.dp
+                bottomEnd = if (sourceCodeExpanded) 0.dp else FluentTheme.cornerRadius.overlay,
+                bottomStart = if (sourceCodeExpanded) 0.dp else FluentTheme.cornerRadius.overlay
             )
         ) {
             Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -163,8 +164,8 @@ fun GallerySection(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(
-                    bottomEnd = 8.dp,
-                    bottomStart = 8.dp
+                    bottomEnd = FluentTheme.cornerRadius.overlay,
+                    bottomStart = FluentTheme.cornerRadius.overlay
                 )
             ) {
                 Column(Modifier.padding(16.dp, 12.dp)) {

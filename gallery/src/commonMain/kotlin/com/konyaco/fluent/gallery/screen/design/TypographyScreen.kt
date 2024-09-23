@@ -2,15 +2,9 @@
 
 package com.konyaco.fluent.gallery.screen.design
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
@@ -32,8 +26,11 @@ import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.CopyButton
 import com.konyaco.fluent.gallery.component.GalleryPage
+import com.konyaco.fluent.gallery.component.HeaderItemRow
+import com.konyaco.fluent.gallery.component.ItemRow
 import com.konyaco.fluent.source.generated.FluentSourceFile
 
+@OptIn(ExperimentalTextApi::class)
 @Component(index = 1, icon = "TextFont")
 @Composable
 fun TypographyScreen() {
@@ -88,8 +85,13 @@ private fun BasicTypographySample() {
 @Composable
 private fun TypographySample() {
     Column {
-        HeaderItemRow()
-        typographyList().forEachIndexed { index, (name, style) ->
+        HeaderItemRow(
+            text = "Example",
+            secondary = "Variable Font",
+            third = "Size/Line height",
+            fourth = "Style"
+        )
+        typographyList().forEachIndexed { index, (name, property, style) ->
             ItemRow(
                 text = { Text(text = name, style = style) },
                 secondary = {
@@ -109,16 +111,7 @@ private fun TypographySample() {
                     )
                 },
                 fourth = {
-                    val content = when (style) {
-                        FluentTheme.typography.caption -> "FluentTheme.typography.caption"
-                        FluentTheme.typography.body -> "FluentTheme.typography.body"
-                        FluentTheme.typography.bodyStrong -> "FluentTheme.typography.bodyStrong"
-                        FluentTheme.typography.subtitle -> "FluentTheme.typography.subtitle"
-                        FluentTheme.typography.title -> "FluentTheme.typography.title"
-                        FluentTheme.typography.titleLarge -> "FluentTheme.typography.titleLarge"
-                        FluentTheme.typography.display -> "FluentTheme.typography.display"
-                        else -> ""
-                    }
+                    val content = "FluentTheme.typography.$property"
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = content,
@@ -133,72 +126,17 @@ private fun TypographySample() {
     }
 }
 
-@Composable
-private fun ItemRow(
-    text: @Composable () -> Unit,
-    secondary: @Composable () -> Unit,
-    third: @Composable () -> Unit,
-    fourth: @Composable () -> Unit,
-    index: Int,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth().heightIn(68.dp).then(
-            if (index.mod(2) == 1) {
-                Modifier.background(
-                    FluentTheme.colors.background.card.default,
-                    shape = RoundedCornerShape(4.dp)
-                )
-            } else {
-                Modifier
-            }
-        )
-    ) {
-        Box(modifier = Modifier.width(272.dp).padding(horizontal = 16.dp, vertical = 16.dp)) {
-            text()
-        }
-        Box(modifier = Modifier.width(136.dp)) {
-            secondary()
-        }
-        Box(modifier = Modifier.width(112.dp)) {
-            third()
-        }
-        fourth()
-    }
-}
-
-@Composable
-private fun HeaderItemRow() {
-    val headerStyle =
-        FluentTheme.typography.caption.copy(color = FluentTheme.colors.text.text.secondary)
-    ItemRow(
-        text = {
-            Text("Example", style = headerStyle)
-        },
-        secondary = {
-            Text("Variable Font", style = headerStyle)
-        },
-        third = {
-            Text("Size/Line height", style = headerStyle)
-        },
-        fourth = {
-            Text("Style", style = headerStyle)
-        },
-        index = 0
-    )
-}
-
 @Stable
 @Composable
-private fun typographyList(): List<Pair<String, TextStyle>> {
+private fun typographyList(): List<Triple<String, String, TextStyle>> {
+    val typography = FluentTheme.typography
     return listOf(
-        "Caption" to FluentTheme.typography.caption,
-        "Body" to FluentTheme.typography.body,
-        "Body Strong" to FluentTheme.typography.bodyStrong,
-        "Subtitle" to FluentTheme.typography.subtitle,
-        "Title" to FluentTheme.typography.title,
-        "Title Large" to FluentTheme.typography.titleLarge,
-        "Display" to FluentTheme.typography.display
+        Triple("Caption", typography::caption.name, typography.caption),
+        Triple("Body", typography::body.name, typography.body),
+        Triple("Body Strong", typography::bodyStrong.name, typography.bodyStrong),
+        Triple("Subtitle", typography::subtitle.name, typography.subtitle),
+        Triple("Title", typography::title.name, typography.title),
+        Triple("Title Large", typography::titleLarge.name, typography.titleLarge),
+        Triple("Display", typography::display.name, typography.display)
     )
 }

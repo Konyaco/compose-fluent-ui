@@ -87,12 +87,7 @@ fun App(
 
         Card(
             modifier = Modifier.fillMaxHeight().weight(1f),
-            shape = RoundedCornerShape(
-                topStart = 8.dp,
-                topEnd = 0.dp,
-                bottomStart = 0.dp,
-                bottomEnd = 0.dp
-            )
+            shape = RoundedCornerShape(topStart = FluentTheme.cornerRadius.overlay)
         ) {
             AnimatedContent(selectedItemWithContent, Modifier.fillMaxSize(), transitionSpec = {
                 (fadeIn(
