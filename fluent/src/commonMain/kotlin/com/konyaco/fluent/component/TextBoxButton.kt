@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.ArrowRight
 import com.konyaco.fluent.icons.regular.ChevronDown
@@ -48,7 +48,7 @@ fun TextBoxButton(
 ) {
     val interaction = interactionSource ?: remember { MutableInteractionSource() }
     ButtonLayer(
-        shape = RoundedCornerShape(4.dp),
+        shape = FluentTheme.shapes.control,
         displayBorder = true,
         buttonColors = colors,
         interaction = interaction,

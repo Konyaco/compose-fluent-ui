@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.CompactMode
+import com.konyaco.fluent.FluentTheme
 
 @Composable
 fun AutoSuggestionBox(
@@ -94,12 +95,13 @@ fun AutoSuggestionBox(
 
 object AutoSuggestBoxDefaults {
 
+    @Composable
     @Stable
     fun textFieldShape(expanded: Boolean): Shape {
         return if (expanded) RoundedCornerShape(
-            topStart = 4.dp,
-            topEnd = 4.dp
-        ) else RoundedCornerShape(4.dp)
+            topStart = FluentTheme.cornerRadius.control,
+            topEnd = FluentTheme.cornerRadius.control,
+        ) else FluentTheme.shapes.control
     }
 
     @Composable
@@ -149,8 +151,8 @@ object AutoSuggestBoxDefaults {
             shape = RoundedCornerShape(
                 topStart = 0.dp,
                 topEnd = 0.dp,
-                bottomStart = 8.dp,
-                bottomEnd = 8.dp
+                bottomStart = FluentTheme.cornerRadius.overlay,
+                bottomEnd = FluentTheme.cornerRadius.overlay
             ),
             positionProvider = rememberFlyoutPositionProvider(
                 initialPlacement = FlyoutPlacement.Bottom,
