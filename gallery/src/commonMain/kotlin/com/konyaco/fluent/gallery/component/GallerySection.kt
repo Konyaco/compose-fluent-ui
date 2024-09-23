@@ -77,9 +77,12 @@ fun GallerySection(
         ) {
             Column {
                 FluentThemeConfiguration(colors = colors) {
-                    Box(
+                    Layer(
+                        shape = FluentTheme.shapes.intersectionEdge,
+                        color = FluentTheme.colors.background.solid.base,
+                        backgroundSizing = BackgroundSizing.OuterBorderEdge,
+                        border = null,
                         modifier = Modifier
-                            .background(FluentTheme.colors.background.solid.base)
                             .fillMaxWidth()
                             .wrapContentHeight(),
                     ) {
