@@ -105,7 +105,7 @@ fun Layer(
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(size = 4.dp),
+    shape: Shape = FluentTheme.shapes.control,
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),

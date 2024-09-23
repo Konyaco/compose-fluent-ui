@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -54,7 +53,7 @@ fun Expander(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource? = null,
-    shape: Shape = RoundedCornerShape(4.dp),
+    shape: Shape = FluentTheme.shapes.control,
     icon: (@Composable () -> Unit)? = {},
     caption: @Composable () -> Unit = {},
     trailing: @Composable () -> Unit = {},
@@ -145,7 +144,7 @@ fun CardExpanderItem(
     onClick: () -> Unit,
     heading: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(4.dp),
+    shape: Shape = FluentTheme.shapes.control,
     enabled: Boolean = true,
     colors: VisualStateScheme<CardColor> = ExpanderDefaults.cardExpanderItemColors(),
     captionColors: VisualStateScheme<Color> = PentaVisualScheme(
@@ -186,7 +185,7 @@ fun CardExpanderItem(
 fun CardExpanderItem(
     heading: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(4.dp),
+    shape: Shape = FluentTheme.shapes.control,
     color: Color = FluentTheme.colors.background.card.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     captionTextColor: Color = FluentTheme.colors.text.text.secondary,
