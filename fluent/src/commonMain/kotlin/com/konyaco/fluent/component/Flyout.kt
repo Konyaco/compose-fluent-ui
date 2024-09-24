@@ -203,7 +203,7 @@ internal fun FlyoutContent(
         exitTransition = fadeOut(flyoutExitSpec()),
         content = content,
         contentPadding = contentPadding,
-        elevation = 8.dp,
+        elevation = ElevationDefaults.flyout,
         shape = shape,
         modifier = modifier
     )
