@@ -97,10 +97,11 @@ fun GalleryHeader(
                             uriHandler.openUri(ProjectUrl.documentationOf(documentPath))
                         },
                         content = {
-                            Icon(
-                                Icons.Default.Document,
+                            FontIcon(
+                                glyph = '\uE8A5',
+                                vector = Icons.Default.Document,
                                 contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                                vectorSize = 18.dp
                             )
                             Text("Documentation")
                         }
@@ -153,10 +154,11 @@ fun GalleryHeader(
                         checked = themeButtonChecked,
                         onCheckedChanged = onThemeButtonChanged,
                         content = {
-                            Icon(
-                                Icons.Filled.BrightnessHigh,
+                            FontIcon(
+                                glyph = '\uE793',
+                                vector = Icons.Filled.BrightnessHigh,
                                 contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                                vectorSize = 18.dp
                             )
                         },
                         iconOnly = true,
@@ -169,10 +171,11 @@ fun GalleryHeader(
                     Button(
                         onClick = { uriHandler.openUri(ProjectUrl.FEED_BACK) },
                         content = {
-                            Icon(
-                                Icons.Default.PersonFeedback,
+                            FontIcon(
+                                glyph = '\uED15',
+                                vector = Icons.Default.PersonFeedback,
                                 contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                                vectorSize = 18.dp
                             )
                         },
                         iconOnly = true,

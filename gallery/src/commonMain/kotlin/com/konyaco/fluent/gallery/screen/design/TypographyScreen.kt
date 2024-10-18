@@ -31,7 +31,7 @@ import com.konyaco.fluent.gallery.component.ItemRow
 import com.konyaco.fluent.source.generated.FluentSourceFile
 
 @OptIn(ExperimentalTextApi::class)
-@Component(index = 1, icon = "TextFont")
+@Component(index = 1, icon = "TextFont", iconGlyph = '\uE8D2')
 @Composable
 fun TypographyScreen() {
     val linkTextColor = FluentTheme.colors.text.accent.primary

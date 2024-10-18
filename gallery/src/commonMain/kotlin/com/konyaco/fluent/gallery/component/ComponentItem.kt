@@ -9,5 +9,6 @@ class ComponentItem(
     val description: String,
     val items: List<ComponentItem>? = null,
     val icon: ImageVector? = null,
+    val iconGlyph: Char? = null,
     val content: (@Composable ComponentItem.(navigator: ComponentNavigator) -> Unit)?
 )
