@@ -2,9 +2,19 @@ package com.konyaco.fluent.layout.overflow
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.foundation.lazy.layout.LazyLayoutMeasureScope
 import androidx.compose.foundation.lazy.layout.LazyLayoutPrefetchState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.referentialEqualityPolicy
@@ -15,7 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
+import com.konyaco.fluent.component.BasicFlyout
+import com.konyaco.fluent.component.BasicFlyoutContainer
+import com.konyaco.fluent.component.FlyoutContainerScope
+import com.konyaco.fluent.component.ScrollbarContainer
 
 /**
  * Common row logic for TopNav, BreadcrumbBar, CommandBar, etc.
@@ -81,6 +96,74 @@ interface OverflowActionScope {
     fun overflowItem(index: Int)
 }
 
+@Composable
+fun OverflowActionScope.OverflowFlyoutContainer(
+    actionButton: @Composable FlyoutContainerScope.() -> Unit
+) {
+    BasicFlyoutContainer(
+        flyout = {
+            BasicFlyout(
+                visible = isFlyoutVisible,
+                onDismissRequest = { isFlyoutVisible = false },
+                contentPadding = PaddingValues(),
+                content = {
+                    val scrollState = rememberScrollState()
+                    ScrollbarContainer(
+                        adapter = com.konyaco.fluent.component.rememberScrollbarAdapter(scrollState)
+                    ) {
+                        Column(
+                            modifier = Modifier.verticalScroll(scrollState)
+                                .width(IntrinsicSize.Min)
+                                .padding(vertical = 3.dp)
+                        ) {
+                            repeat(overflowItemCount) {
+                                overflowItem(it)
+                            }
+                        }
+                    }
+                }
+            )
+        },
+        content = actionButton
+    )
+}
+
+@Composable
+fun OverflowActionScope.LazyOverflowFlyoutContainer(
+    actionButton: @Composable FlyoutContainerScope.() -> Unit
+) {
+    BasicFlyoutContainer(
+        flyout = {
+            BasicFlyout(
+                visible = isFlyoutVisible,
+                onDismissRequest = { isFlyoutVisible = false },
+                contentPadding = PaddingValues(),
+                content = {
+                    val listState = rememberLazyListState()
+                    ScrollbarContainer(
+                        adapter = com.konyaco.fluent.component.rememberScrollbarAdapter(listState)
+                    ) {
+                        LazyColumn(
+                            state = listState,
+                            contentPadding = PaddingValues(vertical = 3.dp),
+                            modifier = Modifier.widthIn(max = 120.dp)
+                        ) {
+                            items(
+                                count = overflowItemCount,
+                                key = ::overflowItemKey,
+                                contentType = ::overflowItemContentType,
+                            ) {
+                                overflowItem(it)
+                            }
+                        }
+                    }
+                }
+            )
+        },
+        content = actionButton
+    )
+}
+
 private class OverflowActionScopeImpl(
     private val itemProviderLambda: () -> OverflowRowItemProvider,
     private val state: OverflowRowState
@@ -127,7 +210,7 @@ internal fun rememberOverflowRowItemMeasurePolicy(
         if (itemProvider.itemCount <= 1) {
             return@block layout(0, 0) {}
         }
-        val overflowPlaceable = measure(itemProvider.itemCount - 1, constraints.copy(minWidth = 0))[0]
+        val overflowPlaceable = measure(itemProvider.itemCount - 1, constraints.copy(minWidth = 0, minHeight = 0))[0]
 
         if (constraints.hasBoundedWidth) {
             when (overflow) {
@@ -184,7 +267,7 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseStart(
     val spacingPx = horizontalArrangement.spacing.roundToPx()
     val actionWidth = overflowPlaceable.width
     var remainingLastIndex = itemCount
-    val itemConstraints = constraints.copy(minWidth = 0)
+    val itemConstraints = constraints.copy(minWidth = 0, minHeight = 0)
     var width = constraints.maxWidth
     var height = overflowPlaceable.height
     val measuredItems = buildList<Placeable> {
