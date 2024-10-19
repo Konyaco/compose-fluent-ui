@@ -48,20 +48,18 @@ internal fun OverflowRow(
     content: OverflowRowScope.() -> Unit
 ) {
     val contentState = rememberUpdatedState(content)
-    val overflowActionState = rememberUpdatedState(overflowAction)
     val itemProviderState = remember {
         val intervalContentState = derivedStateOf(referentialEqualityPolicy()) {
             OverflowRowIntervalContent(contentState.value)
         }
         val itemProviderState = derivedStateOf(referentialEqualityPolicy()) {
-            OverflowRowItemProvider(state, intervalContentState.value)
-        }
-        derivedStateOf(referentialEqualityPolicy()) {
-            val scope = OverflowActionScopeImpl(itemProviderState::value, state)
-            intervalContentState.value.item("_overflow_action", "_overflow_action") {
-                overflowActionState.value(scope)
+            OverflowRowItemProvider(state, intervalContentState.value).apply {
+                val scope = OverflowActionScopeImpl({ this }, state)
+                intervalContentState.value.item("_overflow_action", "_overflow_action") {
+                    scope.overflowAction()
+                }
             }
-        }.value
+        }
         itemProviderState::value
     }
     LazyLayout(
