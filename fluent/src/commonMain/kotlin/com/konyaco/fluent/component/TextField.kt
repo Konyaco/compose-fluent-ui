@@ -36,8 +36,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
@@ -45,6 +43,7 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.layout.alignLast
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.collectVisualState
 
@@ -368,23 +367,4 @@ private fun Modifier.drawBottomLine(
 internal fun Modifier.textFieldModifier(shape: Shape) =
     defaultMinSize(64.dp, 32.dp).clip(shape)
 
-@Stable
-private object TextFieldContentArrangement : Arrangement.Horizontal {
-    override fun Density.arrange(
-        totalSize: Int,
-        sizes: IntArray,
-        layoutDirection: LayoutDirection,
-        outPositions: IntArray
-    ) {
-        with(Arrangement.Start) {
-            arrange(totalSize, sizes, layoutDirection, outPositions)
-        }
-        if (sizes.size < 2) return
-        if (layoutDirection == LayoutDirection.Rtl) {
-            outPositions[outPositions.lastIndex] = 0
-        } else {
-            outPositions[outPositions.lastIndex] = totalSize - sizes.last()
-        }
-
-    }
-}
+private val TextFieldContentArrangement = Arrangement.alignLast(Arrangement.Start, Alignment.End)

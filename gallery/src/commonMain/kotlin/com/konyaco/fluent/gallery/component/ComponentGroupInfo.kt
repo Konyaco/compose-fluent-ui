@@ -32,7 +32,7 @@ object ComponentGroupInfo {
     @ComponentGroup("VideoClip", index = 7)
     const val Media = "Media"
 
-    @ComponentGroup("Save", index = 8)
+    @ComponentGroup("Save", index = 8, packageMap = "$screenPackage.menus")
     const val MenusAndToolbars = "Menus & toolbars"
 
     @ComponentGroup("Flash", index = 9)

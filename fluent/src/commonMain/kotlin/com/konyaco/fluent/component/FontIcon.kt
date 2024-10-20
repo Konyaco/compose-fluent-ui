@@ -51,7 +51,7 @@ internal fun FontIcon(
         fallback = if (vector == null) {
             null
         } else {
-            { Icon(vector, contentDescription, modifier = Modifier.size(vectorSize)) }
+            { Icon(vector, contentDescription, modifier = modifier.size(vectorSize)) }
         }
     )
 }

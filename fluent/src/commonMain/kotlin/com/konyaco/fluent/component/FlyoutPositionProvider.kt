@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.PopupPositionProvider
 
 @Composable
-internal fun rememberFlyoutPositionProvider(
+fun rememberFlyoutPositionProvider(
     initialPlacement: FlyoutPlacement = FlyoutPlacement.Auto,
     paddingToAnchor: PaddingValues = PaddingValues(flyoutDefaultPadding),
     adaptivePlacement: Boolean = false
@@ -22,7 +22,7 @@ internal fun rememberFlyoutPositionProvider(
 }
 
 @Stable
-internal open class FlyoutPositionProvider(
+open class FlyoutPositionProvider(
     private val density: Density,
     private val initialPlacement: FlyoutPlacement = FlyoutPlacement.Auto,
     private val paddingToAnchor: PaddingValues = PaddingValues(flyoutDefaultPadding),
