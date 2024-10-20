@@ -240,7 +240,7 @@ fun MenuFlyoutScope.MenuFlyoutItem(
     }
 }
 
-private class MenuFlyoutScopeImpl : MenuFlyoutScope {
+internal class MenuFlyoutScopeImpl : MenuFlyoutScope {
     var latestHoveredItem: String? by mutableStateOf(null)
 
     @OptIn(ExperimentalUuidApi::class)

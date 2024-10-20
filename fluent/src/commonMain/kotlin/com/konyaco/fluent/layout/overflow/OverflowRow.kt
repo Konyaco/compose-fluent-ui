@@ -31,6 +31,7 @@ import com.konyaco.fluent.component.BasicFlyout
 import com.konyaco.fluent.component.BasicFlyoutContainer
 import com.konyaco.fluent.component.FlyoutContainerScope
 import com.konyaco.fluent.component.ScrollbarContainer
+import kotlin.math.roundToInt
 
 /**
  * Common row logic for TopNav, BreadcrumbBar, CommandBar, etc.
@@ -45,6 +46,8 @@ internal fun OverflowRow(
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     overflowAction: @Composable OverflowActionScope.() -> Unit = {},
+    contentPadding: PaddingValues = PaddingValues(),
+    alwaysShowOverflowAction: Boolean = false,
     content: OverflowRowScope.() -> Unit
 ) {
     val contentState = rememberUpdatedState(content)
@@ -70,7 +73,9 @@ internal fun OverflowRow(
             itemProviderState,
             overflow,
             horizontalArrangement,
-            verticalAlignment
+            verticalAlignment,
+            contentPadding,
+            alwaysShowOverflowAction
         ),
         modifier = modifier
     )
@@ -111,7 +116,7 @@ fun OverflowActionScope.OverflowFlyoutContainer(
                     ) {
                         Column(
                             modifier = Modifier.verticalScroll(scrollState)
-                                .width(IntrinsicSize.Min)
+                                .width(IntrinsicSize.Max)
                                 .padding(vertical = 3.dp)
                         ) {
                             repeat(overflowItemCount) {
@@ -196,19 +201,33 @@ internal fun rememberOverflowRowItemMeasurePolicy(
     itemProviderLambda: () -> OverflowRowItemProvider,
     overflow: OverflowPosition,
     horizontalArrangement: Arrangement.Horizontal,
-    verticalAlignment: Alignment.Vertical
+    verticalAlignment: Alignment.Vertical,
+    contentPadding: PaddingValues,
+    alwaysShowOverflowAction: Boolean
 ) = remember<LazyLayoutMeasureScope.(Constraints) -> MeasureResult>(
     state,
     itemProviderLambda,
     horizontalArrangement,
-    verticalAlignment
+    verticalAlignment,
+    contentPadding,
+    alwaysShowOverflowAction
 ) {
     block@ { constraints ->
         val itemProvider = itemProviderLambda()
         if (itemProvider.itemCount <= 1) {
             return@block layout(0, 0) {}
         }
-        val overflowPlaceable = measure(itemProvider.itemCount - 1, constraints.copy(minWidth = 0, minHeight = 0))[0]
+        val topPadding = contentPadding.calculateTopPadding().toPx()
+        val bottomPadding = contentPadding.calculateBottomPadding().toPx()
+        val leftPadding = contentPadding.calculateLeftPadding(layoutDirection).toPx()
+        val rightPadding = contentPadding.calculateRightPadding(layoutDirection).toPx()
+        val itemConstraints = constraints.copy(
+            minWidth = 0,
+            minHeight = 0,
+            maxWidth = (constraints.maxWidth - leftPadding - rightPadding).toInt(),
+            maxHeight = (constraints.maxHeight - topPadding - bottomPadding).toInt()
+        )
+        val overflowPlaceable = measure(itemProvider.itemCount - 1, itemConstraints)[0]
 
         if (constraints.hasBoundedWidth) {
             when (overflow) {
@@ -219,7 +238,13 @@ internal fun rememberOverflowRowItemMeasurePolicy(
                         verticalAlignment,
                         state,
                         itemProvider.itemCount - 1,
-                        overflowPlaceable
+                        overflowPlaceable,
+                        alwaysShowOverflowAction,
+                        itemConstraints,
+                        leftPadding,
+                        topPadding,
+                        rightPadding,
+                        bottomPadding
                     )
                 }
 
@@ -230,7 +255,13 @@ internal fun rememberOverflowRowItemMeasurePolicy(
                         verticalAlignment,
                         state,
                         itemProvider.itemCount - 1,
-                        overflowPlaceable
+                        overflowPlaceable,
+                        alwaysShowOverflowAction,
+                        itemConstraints,
+                        leftPadding,
+                        topPadding,
+                        rightPadding,
+                        bottomPadding
                     )
                 }
 
@@ -241,7 +272,13 @@ internal fun rememberOverflowRowItemMeasurePolicy(
                         verticalAlignment,
                         state,
                         itemProvider.itemCount - 1,
-                        overflowPlaceable
+                        overflowPlaceable,
+                        alwaysShowOverflowAction,
+                        itemConstraints,
+                        leftPadding,
+                        topPadding,
+                        rightPadding,
+                        bottomPadding
                     )
                 }
             }
@@ -260,12 +297,17 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseStart(
     verticalAlignment: Alignment.Vertical,
     state: OverflowRowState,
     itemCount: Int,
-    overflowPlaceable: Placeable
+    overflowPlaceable: Placeable,
+    alwaysShowOverflowAction: Boolean,
+    itemConstraints: Constraints,
+    leftPadding: Float,
+    topPadding: Float,
+    rightPadding: Float,
+    bottomPadding: Float
 ): MeasureResult {
     val spacingPx = horizontalArrangement.spacing.roundToPx()
     val actionWidth = overflowPlaceable.width
     var remainingLastIndex = itemCount
-    val itemConstraints = constraints.copy(minWidth = 0, minHeight = 0)
     var width = constraints.maxWidth
     var height = overflowPlaceable.height
     val measuredItems = buildList<Placeable> {
@@ -276,7 +318,7 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseStart(
             add(0, item)
             height = maxOf(height, item.height)
         } while (remainingLastIndex > 0 && width > 0)
-        if (width < 0) {
+        if (width < 0 || (alwaysShowOverflowAction && width < actionWidth + spacingPx)) {
             do {
                 val removeItem = removeFirstOrNull() ?: break
                 remainingLastIndex += 1
@@ -286,15 +328,16 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseStart(
     }
     val overflowRange = 0 until remainingLastIndex
     state.overflowRange = overflowRange
-    val layoutWidth = constraints.maxWidth - width + if (overflowRange.isEmpty()) {
-        0
-    } else {
+    val contentWidth = constraints.maxWidth - width + if (overflowRange.isEmpty().not() || alwaysShowOverflowAction) {
         actionWidth + spacingPx
+    } else {
+        0
     }
     val layoutHeight = height
-    return layout(layoutWidth, layoutHeight) {
+    val layoutWidth = maxOf(constraints.minWidth, (contentWidth + leftPadding + rightPadding).roundToInt())
+    return layout(layoutWidth, (layoutHeight + topPadding + bottomPadding).roundToInt()) {
         with(horizontalArrangement) {
-            val hasOverflow = overflowRange.isEmpty().not()
+            val hasOverflow = alwaysShowOverflowAction || overflowRange.isEmpty().not()
             val offset = if (hasOverflow) 1 else 0
             val sizes = IntArray(measuredItems.size + offset) {
                 if (hasOverflow && it == 0) {
@@ -304,14 +347,17 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseStart(
                 }
             }
             val positions = IntArray(sizes.size)
-            arrange(layoutWidth, sizes, layoutDirection, positions)
+            arrange((layoutWidth - leftPadding - rightPadding).roundToInt(), sizes, layoutDirection, positions)
             if (hasOverflow) {
-                overflowPlaceable.place(positions.first(), verticalAlignment.align(overflowPlaceable.height, layoutHeight))
+                overflowPlaceable.place(
+                    x = (positions.first() + leftPadding).roundToInt(),
+                    y = (verticalAlignment.align(overflowPlaceable.height, layoutHeight) + topPadding).roundToInt()
+                )
             }
             measuredItems.fastForEachIndexed { index, placeable ->
                 placeable.place(
-                    positions[index + offset],
-                    verticalAlignment.align(placeable.height, layoutHeight)
+                    (positions[index + offset] + leftPadding).roundToInt(),
+                    (verticalAlignment.align(placeable.height, layoutHeight) + topPadding).roundToInt()
                 )
             }
         }
@@ -325,12 +371,17 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseEnd(
     verticalAlignment: Alignment.Vertical,
     state: OverflowRowState,
     itemCount: Int,
-    overflowPlaceable: Placeable
+    overflowPlaceable: Placeable,
+    alwaysShowOverflowAction: Boolean,
+    itemConstraints: Constraints,
+    leftPadding: Float,
+    topPadding: Float,
+    rightPadding: Float,
+    bottomPadding: Float
 ): MeasureResult {
     val spacingPx = horizontalArrangement.spacing.roundToPx()
     val actionWidth = overflowPlaceable.width
     var remainingLastIndex = -1
-    val itemConstraints = constraints.copy(minWidth = 0)
     var width = constraints.maxWidth
     var height = overflowPlaceable.height
     val measuredItems = buildList<Placeable> {
@@ -341,7 +392,7 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseEnd(
             add(remainingLastIndex, item)
             height = maxOf(height, item.height)
         } while (remainingLastIndex < itemCount - 1 && width > 0)
-        if (width < 0) {
+        if (width < 0 || (alwaysShowOverflowAction && width < actionWidth + spacingPx)) {
             do {
                 val removeItem = removeLastOrNull() ?: break
                 remainingLastIndex -= 1
@@ -351,14 +402,15 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseEnd(
     }
     val overflowRange = remainingLastIndex + 1 until itemCount
     state.overflowRange = overflowRange
-    val layoutWidth = constraints.maxWidth - width + if (overflowRange.isEmpty()) {
-        0
-    } else {
+    val contentWidth = constraints.maxWidth - width + if (overflowRange.isEmpty().not() || alwaysShowOverflowAction) {
         actionWidth + spacingPx
+    } else {
+        0
     }
     val layoutHeight = height
-    return layout(layoutWidth, layoutHeight) {
-        val hasOverflow = overflowRange.isEmpty().not()
+    val layoutWidth = maxOf(constraints.minWidth, (contentWidth + leftPadding + rightPadding).roundToInt())
+    return layout(layoutWidth, (layoutHeight + topPadding + bottomPadding).roundToInt()) {
+        val hasOverflow = alwaysShowOverflowAction || overflowRange.isEmpty().not()
         val sizes = IntArray(measuredItems.size + if (hasOverflow) 1 else 0) {
             if (it < measuredItems.size) {
                 measuredItems[it].width
@@ -368,18 +420,18 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseEnd(
         }
         val positions = IntArray(sizes.size)
         with(horizontalArrangement) {
-            arrange(layoutWidth, sizes, layoutDirection, positions)
+            arrange((layoutWidth - leftPadding - rightPadding).roundToInt(), sizes, layoutDirection, positions)
         }
         measuredItems.fastForEachIndexed { index, placeable ->
             placeable.place(
-                positions[index],
-                verticalAlignment.align(placeable.height, layoutHeight)
+                (positions[index] + leftPadding).roundToInt(),
+                (verticalAlignment.align(placeable.height, layoutHeight) + topPadding).roundToInt()
             )
         }
         if (hasOverflow) {
             overflowPlaceable.place(
-                positions.lastOrNull() ?: 0,
-                verticalAlignment.align(overflowPlaceable.height, layoutHeight)
+                (positions.lastOrNull() ?: 0) + leftPadding.roundToInt(),
+                (verticalAlignment.align(overflowPlaceable.height, layoutHeight) + topPadding).roundToInt()
             )
         }
     }
@@ -392,13 +444,18 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseCenter(
     verticalAlignment: Alignment.Vertical,
     state: OverflowRowState,
     itemCount: Int,
-    overflowPlaceable: Placeable
+    overflowPlaceable: Placeable,
+    alwaysShowOverflowAction: Boolean,
+    itemConstraints: Constraints,
+    leftPadding: Float,
+    topPadding: Float,
+    rightPadding: Float,
+    bottomPadding: Float
 ): MeasureResult {
     val spacingPx = horizontalArrangement.spacing.roundToPx()
     val actionWidth = overflowPlaceable.width
     var remainingLastStartIndex = -1
     var remainingLastEndIndex = itemCount
-    val itemConstraints = constraints.copy(minWidth = 0)
     var width = constraints.maxWidth + spacingPx
     var height = overflowPlaceable.height
     val measuredEndItems = mutableListOf<Placeable>()
@@ -418,7 +475,7 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseCenter(
             height = maxOf(height, item.height)
         }
     } while (remainingLastEndIndex - remainingLastStartIndex > 1 && width > 0)
-    if (width < 0) {
+    if (width < 0 || (alwaysShowOverflowAction && width < actionWidth + spacingPx)) {
         do {
             val isStart = measuredStartItems.size > measuredEndItems.size
             if (isStart) {
@@ -434,14 +491,15 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseCenter(
     }
     val overflowRange = remainingLastStartIndex + 1 until remainingLastEndIndex
     state.overflowRange = overflowRange
-    val layoutWidth = constraints.maxWidth - width + if (overflowRange.isEmpty()) {
-        0
-    } else {
+    val contentWidth = constraints.maxWidth - width + if (overflowRange.isEmpty().not() || alwaysShowOverflowAction) {
         actionWidth + spacingPx
+    } else {
+       0
     }
     val layoutHeight = height
-    return layout(layoutWidth, layoutHeight) {
-        val hasOverflow = overflowRange.isEmpty().not()
+    val layoutWidth = maxOf(constraints.minWidth, (contentWidth + leftPadding + rightPadding).roundToInt())
+    return layout(layoutWidth, (layoutHeight + topPadding + bottomPadding).roundToInt()) {
+        val hasOverflow = alwaysShowOverflowAction || overflowRange.isEmpty().not()
         val offset = if (hasOverflow) 1 else 0
         with(horizontalArrangement) {
             val sizes = IntArray(measuredStartItems.size + measuredEndItems.size + offset) {
@@ -454,23 +512,23 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseCenter(
                 }
             }
             val positions = IntArray(sizes.size)
-            arrange(layoutWidth, sizes, layoutDirection, positions)
+            arrange((layoutWidth - leftPadding - rightPadding).roundToInt(), sizes, layoutDirection, positions)
             measuredStartItems.fastForEachIndexed { index, placeable ->
                 placeable.place(
-                    positions[index],
-                    verticalAlignment.align(placeable.height, layoutHeight)
+                    (positions[index] + leftPadding).roundToInt(),
+                    (verticalAlignment.align(placeable.height, layoutHeight) + topPadding).roundToInt()
                 )
             }
             measuredEndItems.fastForEachIndexed { index, placeable ->
                 placeable.place(
-                    positions[measuredStartItems.size + index + offset],
-                    verticalAlignment.align(placeable.height, layoutHeight)
+                    (positions[measuredStartItems.size + index + offset] + leftPadding).roundToInt(),
+                    (verticalAlignment.align(placeable.height, layoutHeight) + topPadding).roundToInt()
                 )
             }
             if (hasOverflow) {
                 overflowPlaceable.place(
-                    positions[measuredStartItems.size],
-                    verticalAlignment.align(overflowPlaceable.height, layoutHeight)
+                    (positions[measuredStartItems.size] + leftPadding).roundToInt(),
+                    (verticalAlignment.align(overflowPlaceable.height, layoutHeight) + topPadding).roundToInt()
                 )
             }
         }
