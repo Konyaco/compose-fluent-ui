@@ -80,12 +80,12 @@ android {
                 val password = System.getenv("ANDROID_SIGNING_PASSWORD")
                 val keyAlias = System.getenv("ANDROID_SIGNING_KEY_ALIAS")
                 val keyPassword = System.getenv("ANDROID_SIGNING_KEY_PASSWORD")
-                signingConfig = signingConfigs.getByName("release").apply {
+                signingConfig = signingConfigs.register("release") {
                     this.storeFile = file(signFile)
                     this.storePassword = password
                     this.keyAlias = keyAlias
                     this.keyPassword = keyPassword
-                }
+                }.get()
             }
         }
     }
