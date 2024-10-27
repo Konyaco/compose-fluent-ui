@@ -95,7 +95,7 @@ android {
             if (output is VariantOutputImpl) {
                output.apply {
                    outputFileName.set(
-                       "${variant.applicationId}-" +
+                       "${variant.applicationId.get()}-" +
                        "${variant.buildType}-" +
                        "${versionName.get()}.apk"
                    )
