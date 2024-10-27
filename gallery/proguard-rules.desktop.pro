@@ -1,0 +1,3 @@
+-dontwarn com.sun.jna.internal.Cleaner
+-keep class com.sun.jna.** { *; }
+-keep class * implements com.sun.jna.** { *; }
