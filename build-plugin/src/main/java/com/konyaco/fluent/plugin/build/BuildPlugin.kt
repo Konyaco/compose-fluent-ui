@@ -20,7 +20,7 @@ class BuildPlugin : Plugin<Project> {
                 project.extensions.findByType<PublishingExtension>()?.apply {
                     setupMavenPublishing(project)
                     project.extensions.findByType<SigningExtension>()?.let { signing ->
-                        signing.setupSigning(this@apply)
+                        signing.setupSigning(this)
                         project.tasks.withType<AbstractPublishToMaven>().configureEach {
                             val signingTask = project.tasks.withType<Sign>()
                             mustRunAfter(signingTask)
