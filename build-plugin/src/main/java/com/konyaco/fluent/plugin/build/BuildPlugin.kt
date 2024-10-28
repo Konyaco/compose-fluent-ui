@@ -81,8 +81,8 @@ class BuildPlugin : Plugin<Project> {
                 val releasesUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
                 name = "OSSRH"
                 url = target.uri(
-                    if (target.version.toString().endsWith("SNAPSHOT")) releasesUrl
-                    else snapshotsUrl
+                    if (target.version.toString().endsWith("SNAPSHOT")) snapshotsUrl
+                    else releasesUrl
                 )
                 credentials {
                     username = System.getenv("OSSRH_USERNAME")
