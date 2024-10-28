@@ -162,6 +162,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                                     fileSpecBuilder.addImport(iconImportPrefix, this)
                                     "$iconPrefix.$this"
                                 },
+                                iconGlyph = componentGroupConfig.iconGlyph,
                                 content = componentGroupConfig.contentData,
                                 items = createItemsString(
                                     itemName,
@@ -259,11 +260,13 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
         var nameArg: KSValueArgument? = null
         var descriptionArg: KSValueArgument? = null
         var icon: String? = null
+        var iconGlyph: Char? = null
         annotation.arguments.forEach {
             when (it.name?.asString()) {
                 "name" -> nameArg = it
                 "description" -> descriptionArg = it
                 "icon" -> icon = (it.value as? String)?.ifBlank { null }
+                "iconGlyph" -> iconGlyph = (it.value as? Char)?.takeIf { char -> char != 'A' }
             }
         }
         val description = descriptionArg?.value as? String ?: ""
@@ -312,6 +315,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                             fileSpec.addImport(iconImportPrefix, this)
                             "$iconPrefix.$this"
                         },
+                        iconGlyph = iconGlyph,
                         items = null,
                         getItem = { it }
                     )
@@ -327,6 +331,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
         description: String,
         content: String?,
         icon: String?,
+        iconGlyph: Char?,
         items: List<T>?,
         getItem: (T) -> String,
     ) = CodeBlock.builder()
@@ -337,6 +342,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             addStatement("description = %S,", description)
             addStatement("content = $content,")
             addStatement("icon = $icon,")
+            addStatement("iconGlyph = ${iconGlyph?.let { "'$it'" }},")
             if (items != null) {
                 createList("items = ", items, getItem)
             } else {
@@ -348,11 +354,13 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
 
     private fun generateComponentGroupConfig(group: String): ComponentGroupConfig {
         var icon: String? = null
+        var iconGlyph: Char? = null
         var contentData: String? = null
         componentGroups[group]?.let { (annotation) ->
             annotation.arguments.forEach {
                 when (it.name?.asString()) {
                     "icon" -> icon = (it.value as? String)?.ifBlank { null }
+                    "iconGlyph" -> iconGlyph = (it.value as? Char).takeIf { char -> char != 'A' }
                     "generateScreen" -> if (it.value as? Boolean == true) {
                         contentData = """
                             { ComponentIndexScreen(it) }
@@ -361,7 +369,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                 }
             }
         }
-        return ComponentGroupConfig(icon, contentData)
+        return ComponentGroupConfig(icon, iconGlyph, contentData)
     }
 
     private fun PropertySpec.Builder.lazy(buildAction: CodeBlock.Builder.() -> Unit) = delegate(
@@ -395,6 +403,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
 
     data class ComponentGroupConfig(
         val icon: String?,
+        val iconGlyph: Char?,
         val contentData: String?
     )
 }

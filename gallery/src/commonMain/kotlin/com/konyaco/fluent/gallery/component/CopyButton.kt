@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.konyaco.fluent.component.Button
-import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Checkmark
 import com.konyaco.fluent.icons.regular.Copy
@@ -39,9 +38,9 @@ fun CopyButton(
         content = {
             AnimatedContent(isCopy) { target ->
                 if (target) {
-                    Icon(Icons.Default.Checkmark, contentDescription = null)
+                    FontIcon('\uE73E', Icons.Default.Checkmark, contentDescription = null)
                 } else {
-                    Icon(Icons.Default.Copy, contentDescription = null)
+                    FontIcon('\uE8C8', Icons.Default.Copy, contentDescription = null)
                 }
             }
         },

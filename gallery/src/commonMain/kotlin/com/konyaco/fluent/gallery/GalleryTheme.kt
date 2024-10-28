@@ -6,19 +6,24 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.konyaco.fluent.*
 import com.konyaco.fluent.background.Mica
+import com.konyaco.fluent.gallery.component.LocalFontIconFontFamily
+import com.konyaco.fluent.gallery.component.ProvideFontIcon
 
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
 class Store(
     systemDarkMode: Boolean,
     enabledAcrylicPopup: Boolean,
-    compactMode: Boolean
+    compactMode: Boolean,
+    fontIconEnabled: Boolean
 ) {
     var darkMode by mutableStateOf(systemDarkMode)
 
     var enabledAcrylicPopup by mutableStateOf(enabledAcrylicPopup)
 
     var compactMode by mutableStateOf(compactMode)
+
+    var fontIconEnabled by mutableStateOf(fontIconEnabled)
 }
 
 @OptIn(ExperimentalFluentApi::class)
@@ -33,7 +38,8 @@ fun GalleryTheme(
         Store(
             systemDarkMode = systemDarkMode,
             enabledAcrylicPopup = true,
-            compactMode = true
+            compactMode = true,
+            fontIconEnabled = true
         )
     }
 
@@ -43,21 +49,33 @@ fun GalleryTheme(
     CompositionLocalProvider(
         LocalStore provides store
     ) {
-        FluentTheme(
-            colors = if (store.darkMode) darkColors() else lightColors(),
-            useAcrylicPopup = store.enabledAcrylicPopup,
-            compactMode = store.compactMode
-        ) {
-            if (displayMicaLayer) {
-                Mica(modifier = Modifier.fillMaxSize()) {
-                    content()
+        ProvideFontIcon(store.fontIconEnabled) {
+            FluentTheme(
+                colors = if (store.darkMode) darkColors() else lightColors(),
+                useAcrylicPopup = store.enabledAcrylicPopup,
+                compactMode = store.compactMode
+            ) {
+                if (displayMicaLayer) {
+                    Mica(modifier = Modifier.fillMaxSize()) {
+                        content()
+                    }
+                } else {
+                    CompositionLocalProvider(
+                        LocalContentColor provides FluentTheme.colors.text.text.primary,
+                        content = content
+                    )
                 }
-            } else {
-                CompositionLocalProvider(
-                    LocalContentColor provides FluentTheme.colors.text.text.primary,
-                    content = content
-                )
             }
         }
+    }
+}
+
+@Composable
+private fun ProvideFontIcon(enabled: Boolean, content: @Composable () -> Unit) {
+    ProvideFontIcon {
+        CompositionLocalProvider(
+            LocalFontIconFontFamily provides if (enabled) LocalFontIconFontFamily.current else null,
+            content = content
+        )
     }
 }

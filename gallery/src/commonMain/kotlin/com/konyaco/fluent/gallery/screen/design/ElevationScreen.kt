@@ -37,7 +37,7 @@ import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.source.generated.FluentSourceFile
 
 @OptIn(ExperimentalFluentApi::class)
-@Component(index = 0, icon = "Layer")
+@Component(index = 0, icon = "Layer", iconGlyph = '\uE81E')
 @Composable
 fun ElevationScreen() {
     GalleryPage(

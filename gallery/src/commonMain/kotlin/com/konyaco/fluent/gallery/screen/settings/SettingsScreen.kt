@@ -89,7 +89,9 @@ fun SettingsScreen() {
             acrylicPopupEnabled = store.enabledAcrylicPopup,
             onAcrylicPopupChange = { store.enabledAcrylicPopup = it },
             compactModeEnabled = store.compactMode,
-            onCompactModeChange = { store.compactMode = it }
+            onCompactModeChange = { store.compactMode = it },
+            fontIconEnabled = store.fontIconEnabled,
+            onFontIconEnabledChanged = { store.fontIconEnabled = it }
         )
 
         CompositionLocalProvider(LocalDensity provides Density(scale)) {
@@ -259,7 +261,9 @@ private fun Controller(
     acrylicPopupEnabled: Boolean,
     onAcrylicPopupChange: (Boolean) -> Unit,
     compactModeEnabled: Boolean,
-    onCompactModeChange: (Boolean) -> Unit
+    onCompactModeChange: (Boolean) -> Unit,
+    fontIconEnabled: Boolean,
+    onFontIconEnabledChanged: (Boolean) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -271,6 +275,7 @@ private fun Controller(
         Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })
         Switcher(acrylicPopupEnabled, text = "Acrylic Popup", onCheckStateChange = { onAcrylicPopupChange(it) })
         Switcher(compactModeEnabled, text = "Compact Mode", onCheckStateChange = { onCompactModeChange(it) })
+        Switcher(fontIconEnabled, text = "Font Icon", onCheckStateChange = { onFontIconEnabledChanged(it) })
     }
     Slider(
         modifier = Modifier.width(200.dp),
