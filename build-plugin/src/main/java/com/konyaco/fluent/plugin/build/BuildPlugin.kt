@@ -4,20 +4,28 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.withType
+import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 
 class BuildPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.allprojects.forEach {
-            it.afterEvaluate {
+        target.allprojects.forEach { project ->
+            project.afterEvaluate {
 
-                it.extensions.findByType<PublishingExtension>()?.apply {
-                    setupMavenPublishing(it)
-                    it.extensions.findByType<SigningExtension>()?.setupSigning(this)
+                project.extensions.findByType<PublishingExtension>()?.apply {
+                    setupMavenPublishing(project)
+                    project.extensions.findByType<SigningExtension>()?.let { signing ->
+                        signing.setupSigning(this@apply)
+                        project.tasks.withType<AbstractPublishToMaven>().configureEach {
+                            val signingTask = project.tasks.withType<Sign>()
+                            mustRunAfter(signingTask)
+                        }
+                    }
                 }
             }
         }
