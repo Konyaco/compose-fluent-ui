@@ -18,6 +18,8 @@ object WinUserConst {
     val WM_NCLBUTTONDOWN = 0x00A1
     // non client area left mouse up message
     val WM_NCLBUTTONUP = 0x00A2
+    // system setting changed message
+    val WM_SETTINGCHANGE = 0x001A
 
     /**
      * [WM_NCHITTEST] Mouse Position Codes

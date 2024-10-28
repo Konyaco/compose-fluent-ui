@@ -91,6 +91,8 @@ fun FrameWindowScope.WindowsWindowFrame(
     backButtonVisible: Boolean = true,
     backButtonEnabled: Boolean = false,
     backButtonClick: () -> Unit = {},
+    onWindowThemeUpdated: (darkTheme: Boolean) -> Unit,
+    onWindowColorUpdated: (color: Color) -> Unit,
     content: @Composable () -> Unit
 ) {
     LaunchedEffect(window) {
@@ -120,7 +122,9 @@ fun FrameWindowScope.WindowsWindowFrame(
                     else -> HTCLIENT
                 }
             },
-            onWindowInsetUpdate = { paddingInset.insets = it }
+            onWindowInsetUpdate = { paddingInset.insets = it },
+            onWindowThemeUpdated = onWindowThemeUpdated,
+            onWindowAccentColorUpdated = { onWindowColorUpdated(Color(it))}
         )
     }
     Column(

@@ -12,28 +12,35 @@ import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOPLEFT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOPRIGHT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCCALCSIZE
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCHITTEST
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_SETTINGCHANGE
 import com.konyaco.fluent.gallery.jna.windows.structure.WindowMargins
 import com.mayakapps.compose.windowstyler.findSkiaLayer
 import com.sun.jna.Native
 import com.sun.jna.NativeLibrary
 import com.sun.jna.Pointer
+import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinDef.HWND
 import com.sun.jna.platform.win32.WinDef.UINT
 import com.sun.jna.platform.win32.WinDef.LPARAM
 import com.sun.jna.platform.win32.WinDef.WPARAM
 import com.sun.jna.platform.win32.WinDef.LRESULT
 import com.sun.jna.platform.win32.BaseTSD.LONG_PTR
+import com.sun.jna.platform.win32.WinReg
 import com.sun.jna.platform.win32.WinUser
 import com.sun.jna.platform.win32.WinUser.WM_DESTROY
 import com.sun.jna.platform.win32.WinUser.WM_SIZE
 import com.sun.jna.platform.win32.WinUser.WS_CAPTION
 import com.sun.jna.platform.win32.WinUser.WS_SYSMENU
+import org.jetbrains.skiko.SystemTheme
+import org.jetbrains.skiko.currentSystemTheme
 import java.awt.Window
 
 internal class ComposeWindowProcedure(
     private val window: Window,
     private val hitTest: (x: Float, y: Float) -> Int,
-    private val onWindowInsetUpdate: (WindowInsets) -> Unit
+    private val onWindowInsetUpdate: (WindowInsets) -> Unit,
+    private val onWindowThemeUpdated: (darkTheme: Boolean) -> Unit,
+    private val onWindowAccentColorUpdated: (accentColor: Int) -> Unit
 ) : WindowProcedure {
     private val windowPointer = (this.window as? ComposeWindow)
         ?.windowHandle
@@ -97,6 +104,8 @@ internal class ComposeWindowProcedure(
     init {
         enableResizability()
         enableBorderAndShadow()
+        onWindowThemeUpdated(currentSystemTheme == SystemTheme.DARK)
+        onWindowAccentColorUpdated(getAccentColor())
     }
 
     override fun callback(hWnd: HWND, uMsg: Int, wParam: WPARAM, lParam: LPARAM): LRESULT {
@@ -160,6 +169,16 @@ internal class ComposeWindowProcedure(
                 User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
             }
 
+            WM_SETTINGCHANGE -> {
+                val changedKey = Pointer(lParam.toLong()).getWideString(0)
+                // theme changed for color and darkTheme
+                if (changedKey == "ImmersiveColorSet") {
+                    onWindowThemeUpdated(currentSystemTheme == SystemTheme.DARK)
+                    onWindowAccentColorUpdated(getAccentColor())
+                }
+                User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
+            }
+
             else -> {
                 User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
             }
@@ -174,6 +193,15 @@ internal class ComposeWindowProcedure(
         User32Extend.instance?.updateWindowStyle(windowHandle) { oldStyle ->
             (oldStyle or WS_CAPTION) and WS_SYSMENU.inv()
         }
+    }
+
+    fun getAccentColor(): Int {
+        val value = Advapi32Util.registryGetIntValue(WinReg.HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\DWM", "AccentColor").toLong()
+        val alpha = (value and 0xFF000000)
+        val green = (value and 0xFF).shl(16)
+        val blue = (value and 0xFF00)
+        val red = (value and 0xFF0000).shr(16)
+        return (alpha or green or blue or red).toInt()
     }
 
     /**

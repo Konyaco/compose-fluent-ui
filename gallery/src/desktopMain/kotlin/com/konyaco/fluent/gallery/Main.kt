@@ -28,6 +28,7 @@ fun main() = application {
     ) {
         val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
         GalleryTheme(!supportBackdrop) {
+            val store = LocalStore.current
             if (supportBackdrop) {
                 val navigator = rememberComponentNavigator()
                 WindowsWindowFrame(
@@ -36,6 +37,8 @@ fun main() = application {
                     title = "Compose Fluent Design Gallery",
                     backButtonEnabled = navigator.canNavigateUp,
                     backButtonClick = { navigator.navigateUp() },
+                    onWindowThemeUpdated = { store.darkMode = it },
+                    onWindowColorUpdated = { store.accentColor = it },
                     state = state
                 ) {
                     App(navigator)

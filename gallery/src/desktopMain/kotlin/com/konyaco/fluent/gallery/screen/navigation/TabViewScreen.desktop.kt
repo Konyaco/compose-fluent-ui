@@ -133,6 +133,8 @@ internal actual fun GalleryPageScope.PlatformTabViewSection() {
                         ComposeWindowProcedure(
                             window = window,
                             onWindowInsetUpdate = { paddingInsets.insets = it },
+                            onWindowThemeUpdated = {},
+                            onWindowAccentColorUpdated = {},
                             hitTest = { x, y ->
                                 when {
                                     maxButtonRect.value.contains(x, y) -> HTMAXBUTTON
