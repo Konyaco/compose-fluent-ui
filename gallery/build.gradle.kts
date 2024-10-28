@@ -1,3 +1,4 @@
+import com.android.build.api.variant.impl.VariantOutputImpl
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -60,7 +61,7 @@ android {
         minSdk = BuildConfig.Android.minSdkVersion
         targetSdk = BuildConfig.Android.compileSdkVersion
         versionCode = 1
-        versionName = "1.0"
+        versionName = BuildConfig.libraryVersion
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -70,7 +71,36 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.android.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.android.pro"
+            )
+            val signFile = System.getenv("ANDROID_SIGNING_FILE")
+            signFile?.let {
+                val password = System.getenv("ANDROID_SIGNING_PASSWORD")
+                val keyAlias = System.getenv("ANDROID_SIGNING_KEY_ALIAS")
+                val keyPassword = System.getenv("ANDROID_SIGNING_KEY_PASSWORD")
+                signingConfig = signingConfigs.register("release") {
+                    this.storeFile = file(signFile)
+                    this.storePassword = password
+                    this.keyAlias = keyAlias
+                    this.keyPassword = keyPassword
+                }.get()
+            }
+        }
+    }
+
+    androidComponents.onVariants { variant ->
+        variant.outputs.forEach { output ->
+            if (output is VariantOutputImpl) {
+               output.apply {
+                   outputFileName.set(
+                       "${variant.applicationId.get()}-" +
+                       "${versionName.get()}-" +
+                       "${variant.buildType}.apk"
+                   )
+               }
+            }
         }
     }
 
@@ -89,10 +119,13 @@ android {
 compose.desktop {
     application {
         mainClass = "${BuildConfig.packageName}.gallery.MainKt"
+        buildTypes.release.proguard {
+            configurationFiles.from(project.file("proguard-rules.desktop.pro"))
+        }
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Compose Fluent Design Gallery"
-            packageVersion = "1.0.0"
+            packageVersion = BuildConfig.integerVersionName
             macOS {
                 iconFile.set(project.file("icons/icon.icns"))
                 jvmArgs(
@@ -101,6 +134,7 @@ compose.desktop {
             }
             windows {
                 iconFile.set(project.file("icons/icon.ico"))
+                upgradeUuid = "a23572e1-c6fd-4b76-98ec-1e45953eb941"
             }
             linux {
                 iconFile.set(project.file("icons/icon.png"))
