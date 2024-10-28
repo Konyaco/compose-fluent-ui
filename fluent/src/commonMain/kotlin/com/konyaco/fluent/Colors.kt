@@ -66,8 +66,7 @@ data class Shades(
          */
         @Stable
         fun generate(accentColor: Color): Shades {
-            val baseColor = Color(0xFF0073CF)
-            val scale = ColorScale.getPaletteScale(ARGB.fromColor(baseColor))
+            val scale = ColorScale.getPaletteScale(ARGB.fromColor(accentColor))
             val steps = 11
             val entries = mutableListOf<Color>()
             for (i in 0 until steps) {
