@@ -96,8 +96,8 @@ android {
                output.apply {
                    outputFileName.set(
                        "${variant.applicationId.get()}-" +
-                       "${variant.buildType}-" +
-                       "${versionName.get()}.apk"
+                       "${versionName.get()}-" +
+                       "${variant.buildType}.apk"
                    )
                }
             }
