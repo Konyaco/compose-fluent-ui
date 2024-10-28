@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
@@ -70,6 +71,7 @@ class DialogSize(
 fun FluentDialog(
     visible: Boolean,
     size: DialogSize = DialogSize.Standard,
+    properties: PopupProperties = PopupProperties(focusable = false),
     content: @Composable () -> Unit
 ) {
     val visibleState = remember { MutableTransitionState(false) }
@@ -79,6 +81,7 @@ fun FluentDialog(
     }
 
     if (visibleState.currentState || visibleState.targetState) Popup(
+        properties = properties,
         popupPositionProvider = DialogPopupPositionProvider
     ) {
         val scrim by animateColorAsState(
