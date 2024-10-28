@@ -21,6 +21,8 @@ class BuildPlugin : Plugin<Project> {
                     setupMavenPublishing(project)
                     project.extensions.findByType<SigningExtension>()?.let { signing ->
                         signing.setupSigning(this)
+
+                        // workaround for publishing with javadoc see https://github.com/gradle/gradle/issues/26091#issuecomment-1722947958
                         project.tasks.withType<AbstractPublishToMaven>().configureEach {
                             val signingTask = project.tasks.withType<Sign>()
                             mustRunAfter(signingTask)
