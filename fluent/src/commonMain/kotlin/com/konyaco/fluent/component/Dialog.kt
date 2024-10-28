@@ -71,6 +71,7 @@ class DialogSize(
 fun FluentDialog(
     visible: Boolean,
     size: DialogSize = DialogSize.Standard,
+    properties: PopupProperties = PopupProperties(focusable = false),
     content: @Composable () -> Unit
 ) {
     val visibleState = remember { MutableTransitionState(false) }
@@ -80,7 +81,7 @@ fun FluentDialog(
     }
 
     if (visibleState.currentState || visibleState.targetState) Popup(
-        properties = PopupProperties(focusable = true),
+        properties = properties,
         popupPositionProvider = DialogPopupPositionProvider
     ) {
         val scrim by animateColorAsState(
