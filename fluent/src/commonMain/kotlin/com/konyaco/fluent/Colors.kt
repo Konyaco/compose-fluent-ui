@@ -65,7 +65,7 @@ data class Shades(
          * Generates shades from `accentColor`
          */
         @Stable
-        fun generate(accentColor: Color): Shades {
+        fun generate(accentColor: Color, darkMode: Boolean): Shades {
             val scale = ColorScale.getPaletteScale(ARGB.fromColor(accentColor))
             val steps = 11
             val entries = mutableListOf<Color>()
@@ -75,13 +75,24 @@ data class Shades(
                 entries.add(c.toColor())
             }
 
-            val light3 = entries[2]
-            val light2 = entries[3]
-            val light1 = entries[4]
-            val dark1 = entries[6]
-            val dark2 = entries[7]
-            val dark3 = entries[8]
-            return Shades(accentColor, light1, light2, light3, dark1, dark2, dark3)
+            if (darkMode) {
+                val light3 = entries[2]
+                val light2 = entries[3]
+                val light1 = entries[4]
+                val dark1 = entries[6]
+                val dark2 = entries[7]
+                val dark3 = entries[8]
+                return Shades(accentColor, light1, light2, light3, dark1, dark2, dark3)
+            } else {
+                val dark3 = entries[2]
+                val dark2 = entries[3]
+                val dark1 = entries[4]
+                val light1 = entries[6]
+                val light2 = entries[7]
+                val light3 = entries[8]
+                return Shades(accentColor, light1, light2, light3, dark1, dark2, dark3)
+            }
+
         }
     }
 }

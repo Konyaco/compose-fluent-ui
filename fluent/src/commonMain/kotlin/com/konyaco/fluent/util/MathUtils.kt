@@ -3,7 +3,7 @@ package com.konyaco.fluent.util
 import kotlin.math.round
 
 
-object MathUtils {
+internal object MathUtils {
     fun degreesToRadians(degrees: Double): Double {
         return degrees * (Math.PI / 180.0)
     }

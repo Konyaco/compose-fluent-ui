@@ -12,7 +12,7 @@ import kotlin.math.sqrt
 
 const val DefaultRoundingPrecision = 5
 
-object ColorUtils {
+internal object ColorUtils {
     fun RGBToHSL(
         rgb: ARGB,
         round: Boolean = true,
@@ -320,12 +320,12 @@ object ColorUtils {
     }
 }
 
-data class NormalizedRGB(
+internal data class NormalizedRGB(
     val r: Double,
     val g: Double,
     val b: Double
 ) {
-    companion object {
+    internal companion object {
         fun from(
             r: Double,
             g: Double,
@@ -368,7 +368,7 @@ data class NormalizedRGB(
     }
 }
 
-data class ARGB(
+internal data class ARGB(
     val a: Int,
     val r: Int,
     val g: Int,
@@ -392,12 +392,12 @@ data class ARGB(
     }
 }
 
-data class HSL(
+internal data class HSL(
     val h: Double,
     val s: Double,
     val l: Double
 ) {
-    companion object {
+    internal companion object {
         fun from(
             h: Double,
             s: Double,
@@ -414,12 +414,12 @@ data class HSL(
     }
 }
 
-data class LCH(
+internal data class LCH(
     val l: Double,
     val c: Double,
     val h: Double
 ) {
-    companion object {
+    internal companion object {
         fun from(
             l: Double,
             c: Double,
@@ -436,12 +436,12 @@ data class LCH(
     }
 }
 
-data class LAB(
+internal data class LAB(
     val l: Double,
     val a: Double,
     val b: Double
 ) {
-    companion object {
+    internal companion object {
         fun from(
             l: Double,
             a: Double,
@@ -458,12 +458,12 @@ data class LAB(
     }
 }
 
-data class XYZ(
+internal data class XYZ(
     val x: Double,
     val y: Double,
     val z: Double
 ) {
-    companion object {
+    internal companion object {
         fun from(
             x: Double,
             y: Double,
@@ -480,7 +480,7 @@ data class XYZ(
     }
 }
 
-fun round(number: Double, precision: Int): Double {
+internal fun round(number: Double, precision: Int): Double {
     val digits = 10.0.pow(precision)
     return kotlin.math.round(number * digits) / digits
 }

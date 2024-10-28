@@ -156,7 +156,7 @@ private class EmptyAcrylicContainerScope : AcrylicContainerScope {
 internal val LocalAcrylicPopupEnabled = staticCompositionLocalOf { true }
 
 @Stable
-fun lightColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(Shades.generate(accent), false)
+fun lightColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(Shades.generate(accent, false), false)
 
 @Stable
-fun darkColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(Shades.generate(accent), true)
+fun darkColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(Shades.generate(accent, true), true)

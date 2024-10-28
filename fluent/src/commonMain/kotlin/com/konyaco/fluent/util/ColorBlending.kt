@@ -1,11 +1,11 @@
 package com.konyaco.fluent.util
 
 
-enum class ColorBlendMode {
+internal enum class ColorBlendMode {
     Burn, Darken, Dodge, Lighten, Multiply, Overlay, Screen
 }
 
-object ColorBlending {
+internal object ColorBlending {
     private const val DefaultSaturationConstant: Double = 18.0
 
     fun saturateViaLCH(
@@ -76,6 +76,4 @@ object ColorBlending {
             MathUtils.clampToUnit(1.0 - 2.0 * (1.0 - top) * (1.0 - bottom))
         }
     }
-
-
 }

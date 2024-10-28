@@ -5,16 +5,16 @@ import com.konyaco.fluent.util.ColorUtils.RGBToLAB
 import com.konyaco.fluent.util.ColorUtils.RGBToXYZ
 import com.konyaco.fluent.util.ColorUtils.XYZToRGB
 
-enum class ColorScaleInterpolationMode {
+internal enum class ColorScaleInterpolationMode {
     RGB, LAB, XYZ
 };
 
-data class ColorScaleStop(
+internal data class ColorScaleStop(
     val color: ARGB,
     val position: Double,
 )
 
-class ColorScale {
+internal class ColorScale {
     private var _stops: MutableList<ColorScaleStop> = mutableListOf()
 
     constructor(stops: List<ColorScaleStop>) {
@@ -213,8 +213,7 @@ class ColorScale {
             {
                 var overlay = ColorBlending.Blend(baseColorNormalized, adjustedLight, ColorBlendMode.Overlay);
                 adjustedLight = ColorUtils.InterpolateColor(adjustedLight, overlay, _overlayLight, _interpolationMode);
-            }
-*/
+            }*/
 
             if (_overlayDark != 0.0) {
                 val overlay =
@@ -235,5 +234,4 @@ class ColorScale {
             return finalScale
         }
     }
-
 }
