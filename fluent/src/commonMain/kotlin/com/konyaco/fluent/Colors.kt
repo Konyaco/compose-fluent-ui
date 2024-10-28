@@ -9,6 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
+import com.konyaco.fluent.util.ARGB
+import com.konyaco.fluent.util.ColorScale
 
 @Stable
 class Colors(
@@ -57,7 +59,33 @@ data class Shades(
     val dark1: Color,
     val dark2: Color,
     val dark3: Color,
-)
+) {
+    companion object {
+        /**
+         * Generates shades from `accentColor`
+         */
+        @Stable
+        fun generate(accentColor: Color): Shades {
+            val baseColor = Color(0xFF0073CF)
+            val scale = ColorScale.getPaletteScale(ARGB.fromColor(baseColor))
+            val steps = 11
+            val entries = mutableListOf<Color>()
+            for (i in 0 until steps) {
+                val position = i.toDouble() / (steps.toDouble() - 1)
+                val c = scale.getColor(position)
+                entries.add(c.toColor())
+            }
+
+            val light3 = entries[2]
+            val light2 = entries[3]
+            val light1 = entries[4]
+            val dark1 = entries[6]
+            val dark2 = entries[7]
+            val dark3 = entries[8]
+            return Shades(accentColor, light1, light2, light3, dark1, dark2, dark3)
+        }
+    }
+}
 
 data class TextColor(
     val text: ColorCompound,
@@ -371,25 +399,6 @@ data class Background(
         val defaultFallback: Color
     )
 }
-
-fun generateShades(accent: Color): Shades {
-    return getAccentShades()[accent] ?: getDefaultShades()
-}
-
-internal fun getDefaultShades(): Shades = getAccentShades().entries.first().value
-
-internal fun getAccentShades() = mapOf<Color, Shades>(
-    Color(0xFF0078D4) to Shades(
-        base = Color(0xFF0078D4),
-        light1 = Color(0xFF0093F9),
-        light2 = Color(0xFF60CCFE),
-        light3 = Color(0xFF98ECFE),
-        dark1 = Color(0xFF005EB7),
-        dark2 = Color(0xFF003D92),
-        dark3 = Color(0xFF001968)
-    ),
-)
-
 
 @Composable
 @ReadOnlyComposable

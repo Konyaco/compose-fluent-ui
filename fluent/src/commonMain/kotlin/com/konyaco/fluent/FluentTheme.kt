@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
@@ -154,5 +155,8 @@ private class EmptyAcrylicContainerScope : AcrylicContainerScope {
 
 internal val LocalAcrylicPopupEnabled = staticCompositionLocalOf { true }
 
-fun lightColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(generateShades(accent), false)
-fun darkColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(generateShades(accent), true)
+@Stable
+fun lightColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(Shades.generate(accent), false)
+
+@Stable
+fun darkColors(accent: Color = Color(0xFF0078D4)): Colors = Colors(Shades.generate(accent), true)

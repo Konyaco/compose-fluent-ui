@@ -14,6 +14,7 @@ import com.konyaco.fluent.component.ColorPicker
 import com.konyaco.fluent.component.ColorSpectrum
 import com.konyaco.fluent.component.RadioButton
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.gallery.LocalStore
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.ComponentPagePath
@@ -78,11 +79,15 @@ private fun ColorPickerSample(
     alphaEnabled: Boolean = false,
     moreButtonVisible: Boolean = false
 ) {
-    val (color, setColor) = remember { mutableStateOf(Color.White) }
+    val color = remember { mutableStateOf(Color(0xFF0078D4)) }
+    val store = LocalStore.current
+
     ColorPicker(
         colorSpectrum = colorSpectrum,
-        color = color,
-        onSelectedColorChanged = setColor,
+        color = color.value,
+        onSelectedColorChanged = {
+            store.accentColor = it
+        },
         alphaEnabled = alphaEnabled,
         moreButtonVisible = moreButtonVisible
     )

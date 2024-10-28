@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.konyaco.fluent.*
 import com.konyaco.fluent.background.Mica
 
@@ -12,9 +13,12 @@ val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 class Store(
     systemDarkMode: Boolean,
     enabledAcrylicPopup: Boolean,
-    compactMode: Boolean
+    compactMode: Boolean,
+    accentColor: Color
 ) {
     var darkMode by mutableStateOf(systemDarkMode)
+
+    var accentColor by mutableStateOf(accentColor)
 
     var enabledAcrylicPopup by mutableStateOf(enabledAcrylicPopup)
 
@@ -33,7 +37,8 @@ fun GalleryTheme(
         Store(
             systemDarkMode = systemDarkMode,
             enabledAcrylicPopup = true,
-            compactMode = true
+            compactMode = true,
+            accentColor = Color(0xFF0078D4)
         )
     }
 
@@ -44,7 +49,7 @@ fun GalleryTheme(
         LocalStore provides store
     ) {
         FluentTheme(
-            colors = if (store.darkMode) darkColors() else lightColors(),
+            colors = if (store.darkMode) darkColors(store.accentColor) else lightColors(store.accentColor),
             useAcrylicPopup = store.enabledAcrylicPopup,
             compactMode = store.compactMode
         ) {
