@@ -12,6 +12,7 @@ plugins {
 
 kotlin {
     applyTargets(publish = false)
+    wasmJs { binaries.executable() }
     sourceSets {
         val commonMain by getting {
             dependencies {
