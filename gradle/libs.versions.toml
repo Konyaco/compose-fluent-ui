@@ -1,26 +1,26 @@
 [versions]
-activityCompose = "1.8.2"
-haze = "0.7.2"
-kotlin = "1.9.23"
-ksp = "1.9.23-1.0.20"
-compose = "1.6.10"
+activityCompose = "1.9.3"
+haze = "0.6.2"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.26"
+compose = "1.7.0"
 androidGradlePlugin = "8.3.2"
-androidBuildTools = "31.3.2"
+androidBuildTools = "31.7.2"
 windowStyler = "0.3.3-SNAPSHOT"
 highlights = "0.8.0"
 jna = "5.13.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
-androidx-test-junit = "androidx.test.ext:junit:1.1.5"
+androidx-test-junit = "androidx.test.ext:junit:1.2.1"
 
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 uuid = "com.benasher44:uuid:0.8.2"
 
-ktor-client-java = "io.ktor:ktor-client-java:2.2.1"
-jsoup = "org.jsoup:jsoup:1.15.3"
-google-guava = "com.google.guava:guava:31.1-jre"
-squareup-kotlinpoet = "com.squareup:kotlinpoet:1.12.0"
+ktor-client-java = "io.ktor:ktor-client-java:3.0.0"
+jsoup = "org.jsoup:jsoup:1.16.2"
+google-guava = "com.google.guava:guava:33.2.1-jre"
+squareup-kotlinpoet = "com.squareup:kotlinpoet:1.18.1"
 android-tools-common = { module = "com.android.tools:common", version.ref = "androidBuildTools" }
 android-tools-sdk-common = { module = "com.android.tools:sdk-common", version.ref = "androidBuildTools" }
 window-styler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowStyler" }
@@ -30,6 +30,7 @@ jna = { module = "net.java.dev.jna:jna-jpms",  version.ref = "jna" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
