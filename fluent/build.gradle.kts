@@ -22,7 +22,6 @@ kotlin {
                 api(compose.foundation)
                 api(project(":fluent-icons-core"))
                 implementation(compose.uiUtil)
-                implementation(libs.uuid)
                 implementation(libs.haze)
             }
         }
