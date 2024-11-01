@@ -8,6 +8,7 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.PopupPositionProvider
+import kotlin.jvm.JvmInline
 
 @Composable
 internal fun rememberFlyoutPositionProvider(
