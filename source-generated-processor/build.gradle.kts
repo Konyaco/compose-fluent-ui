@@ -8,6 +8,7 @@ group = BuildConfig.group
 version = BuildConfig.libraryVersion
 
 kotlin {
+    jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
     jvm()
     sourceSets {
         val jvmMain by getting {
