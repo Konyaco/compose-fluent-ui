@@ -7,7 +7,8 @@ compose = "1.7.0"
 androidGradlePlugin = "8.3.2"
 androidBuildTools = "31.7.2"
 windowStyler = "0.3.3-SNAPSHOT"
-highlights = "0.8.0"
+highlights = "0.9.3"
+kotlinx-datetime = "0.6.1"
 jna = "5.13.0"
 
 [libraries]
@@ -16,6 +17,7 @@ androidx-test-junit = "androidx.test.ext:junit:1.2.1"
 
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 ktor-client-java = "io.ktor:ktor-client-java:3.0.0"
 jsoup = "org.jsoup:jsoup:1.16.2"
 google-guava = "com.google.guava:guava:33.2.1-jre"
