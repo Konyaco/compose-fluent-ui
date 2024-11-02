@@ -11,4 +11,5 @@ fun KotlinMultiplatformExtension.applyTargets(publish: Boolean = true) {
     }
     jvmToolchain(BuildConfig.Jvm.jvmToolchainVersion)
     wasmJs { browser() }
+    js { browser() }
 }
