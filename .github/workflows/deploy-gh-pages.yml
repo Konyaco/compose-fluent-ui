@@ -1,7 +1,7 @@
 name: Deploy Github Pages
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "Konyaco-patch-1" ]
   workflow_dispatch:
 
 permissions:
