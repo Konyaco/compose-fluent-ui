@@ -14,6 +14,18 @@ kotlin {
     applyTargets(publish = false)
     wasmJs { binaries.executable() }
     js { binaries.executable() }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
