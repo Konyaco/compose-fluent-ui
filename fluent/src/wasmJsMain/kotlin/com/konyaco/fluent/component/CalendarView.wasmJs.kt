@@ -2,9 +2,9 @@ package com.konyaco.fluent.component
 
 @JsFun("""(style) => {
     var format = new Intl.DateTimeFormat(navigator.language, { weekday: style })
-    var baseDate = new Date(Date.UTC(2017, 0, 2)) // just a Monday
+    var baseDate = new Date(Date.UTC(2017, 0, 1)) // just a Sunday
     var weekDays = []
-    for (var day = 0; day < 7; day++) {
+    for (var day = 0; day < 7; day++) {      
         weekDays.push(format.format(baseDate))
         baseDate.setDate(baseDate.getDate() + 1)
     }
@@ -29,5 +29,12 @@ private external fun getJsLocalMonthNames(format: String): String
 internal actual fun getLocalMonthNames(): List<String> =
     getJsLocalMonthNames("short").split(",")
 
-//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getWeekInfo
-internal actual fun getLocalFirstDayOfWeek() = 2 //the same as jvm
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getWeekInfo
+internal actual fun getLocalFirstDayOfWeek(): Int = getJsLocalFirstDayOfWeek()
+
+@JsFun("""() => {
+    var weekInfo = new Intl.Locale(navigator.language).getWeekInfo()
+    var firstDay  = weekInfo.firstDay
+    return firstDay % 7 + 1
+}""")
+private external fun getJsLocalFirstDayOfWeek(): Int
