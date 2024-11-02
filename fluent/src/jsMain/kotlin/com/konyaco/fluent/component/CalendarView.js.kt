@@ -34,4 +34,4 @@ internal actual fun getLocalMonthNames(): List<String> {
 }
 
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getWeekInfo
-internal actual fun getLocalFirstDayOfWeek() = 1
+internal actual fun getLocalFirstDayOfWeek() = 2 //the same as jvm
