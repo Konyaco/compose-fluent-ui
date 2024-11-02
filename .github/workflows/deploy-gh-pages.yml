@@ -18,7 +18,7 @@ concurrency:
 jobs:
   # Run gradle wasmJsDistribution task
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
       - name: Build wasm target
-        run: ./gradlew :gallery:wasmJsDistribution
+        run: ./gradlew :gallery:wasmJsBrowserDistribution
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
