@@ -4,7 +4,7 @@ internal actual fun getLocalDayOfWeekNames(): List<String> {
     val jsFun: String = js(
         """
             var format = new Intl.DateTimeFormat(navigator.language, { weekday: 'short' })
-            var baseDate = new Date(Date.UTC(2017, 0, 2)) // just a Monday
+            var baseDate = new Date(Date.UTC(2017, 0, 1)) // just a Sunday
             var weekDays = []
             for (var day = 0; day < 7; day++) {      
                 weekDays.push(format.format(baseDate))
@@ -33,5 +33,13 @@ internal actual fun getLocalMonthNames(): List<String> {
     return jsFun.split(",")
 }
 
-//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getWeekInfo
-internal actual fun getLocalFirstDayOfWeek() = 2 //the same as jvm
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getWeekInfo
+internal actual fun getLocalFirstDayOfWeek(): Int {
+    // zh-CN -> 1 -> Monday -> 2
+    // en-US -> 7 -> Sunday -> 1
+    return js("""
+        var weekInfo = new Intl.Locale(navigator.language).getWeekInfo()
+        var firstDay  = weekInfo.firstDay
+        firstDay % 7 + 1
+    """) as Int
+}

@@ -757,4 +757,9 @@ class CalendarDatePickerState {
 
 expect internal fun getLocalDayOfWeekNames(): List<String>
 expect internal fun getLocalMonthNames(): List<String>
+
+/**
+ * Get the first day of week
+ * Sunday(1), Monday(2), ..., Saturday(7)
+ */
 expect internal fun getLocalFirstDayOfWeek(): Int
