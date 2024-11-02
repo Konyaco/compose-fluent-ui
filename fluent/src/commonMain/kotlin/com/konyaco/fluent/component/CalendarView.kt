@@ -562,7 +562,7 @@ class CalendarDatePickerState {
 
     private fun calculateCandidateDays(year: Int, monthValue: Int) {
         val localDate = LocalDate(year, monthValue + 1, 1)
-        val startDayOfWeek = localDate.dayOfWeek.isoDayNumber % 7 + 1
+        val startDayOfWeek = localDate.dayOfWeek.isoDayNumber + 1
 //        val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) // Start at Sunday(1)
 
         // Start day at the first `localeStartDayOfWeek(e.g. Sunday)` before this month
