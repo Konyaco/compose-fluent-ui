@@ -6,9 +6,9 @@ internal actual fun getLocalDayOfWeekNames(): List<String> {
             var format = new Intl.DateTimeFormat(navigator.language, { weekday: 'short' })
             var baseDate = new Date(Date.UTC(2017, 0, 2)) // just a Monday
             var weekDays = []
-            for (var day = 0; day < 7; day++) {
-                baseDate.setDate(baseDate.getDate() + day)      
+            for (var day = 0; day < 7; day++) {      
                 weekDays.push(format.format(baseDate))
+                baseDate.setDate(baseDate.getDate() + 1)
             }
             weekDays.join(",")
         """
