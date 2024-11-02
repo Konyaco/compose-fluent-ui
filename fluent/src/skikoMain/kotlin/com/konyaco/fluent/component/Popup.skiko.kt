@@ -2,6 +2,7 @@ package com.konyaco.fluent.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 
@@ -13,4 +14,11 @@ internal actual fun Popup(
     onPreviewKeyEvent: ((KeyEvent) -> Boolean)?,
     onKeyEvent: ((KeyEvent) -> Boolean)?,
     content: @Composable () -> Unit
-) = androidx.compose.ui.window.Popup(popupPositionProvider, onDismissRequest, properties, onPreviewKeyEvent, onKeyEvent, content)
+) = Popup(
+    popupPositionProvider,
+    onDismissRequest,
+    properties,
+    onPreviewKeyEvent,
+    onKeyEvent,
+    content
+)
