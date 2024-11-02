@@ -29,6 +29,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
+import kotlin.jvm.JvmInline
 import kotlin.math.sqrt
 
 /**

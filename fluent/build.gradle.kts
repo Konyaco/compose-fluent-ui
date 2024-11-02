@@ -3,6 +3,7 @@ import com.konyaco.fluent.plugin.build.applyTargets
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
@@ -21,7 +22,7 @@ kotlin {
                 api(compose.foundation)
                 api(project(":fluent-icons-core"))
                 implementation(compose.uiUtil)
-                implementation(libs.uuid)
+                implementation(libs.kotlinx.datetime)
                 implementation(libs.haze)
             }
         }
