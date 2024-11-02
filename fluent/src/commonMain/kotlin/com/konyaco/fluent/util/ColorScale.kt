@@ -27,158 +27,6 @@ import com.konyaco.fluent.util.ColorUtils.RGBToXYZ
 import com.konyaco.fluent.util.ColorUtils.XYZToRGB
 import kotlin.math.abs
 
-// 0-1
-private fun diff(a: ARGB, b: ARGB): Double {
-    return (abs(a.a - b.a) + abs(a.b - b.b) + abs(a.g - b.g)) / (255 * 3).toDouble()
-}
-
-fun main() {
-    val shades = Shades.generate(Color(0xFF4A78A4), false)
-    println("Light 1: ${shades.light1.format()}")
-    println("Light 2: ${shades.light2.format()}")
-    println("Light 3: ${shades.light3.format()}")
-    println("Dark 1: ${shades.dark1.format()}")
-    println("Dark 2: ${shades.dark2.format()}")
-    println("Dark 3: ${shades.dark3.format()}")
-    val base = 0xFFe289d4
-
-//    val base = 0xFF4A78A4
-//    val target = 0xFF9CC6D9 // Accent/Default
-//    val target = 0xFF8FB5C6 // Accent/Secondary
-//    val target = 0xFF82A4B3 // Accent/Tertiary
-    /*
-        val base = 0xFFe289d4
-        val target = 0xFFdda7d8 // Accent/Default
-        val density = 10000
-        val scale = ColorScale.getPaletteScale(ARGB.fromColor(Color(base)))
-
-        var minimumDiff = 1.0
-        var minimumPos = 0.0
-
-        repeat(density) {
-            val position = it / density.toDouble()
-            val color = scale.getColor(position)
-
-            val diff = diff(color, ARGB.fromColor(Color(target)))
-            if (diff < minimumDiff) {
-                minimumDiff = diff
-                minimumPos = position
-            }
-            println("Position: ${position} Diff: ${diff}, ${color}")
-        }
-
-        println("Min diff: ${minimumDiff}, pos: $minimumPos")*/
-    // Result: Accent/Default: 0.1
-    // Result: Accent/Secondary: 0.246
-    // Result: Accent/Tertiary: 0.3863
-
-    application {
-        Window(::exitApplication) {
-            FluentTheme {
-                var baseColor by remember { mutableStateOf(Color(base)) }
-                var targetColor by remember { mutableStateOf(Color(base)) }
-
-                val scale by remember(baseColor.value) {
-                    mutableStateOf(
-                        ColorScale.getPaletteScale(
-                            ARGB.fromColor(baseColor)
-                        )
-                    )
-                }
-
-                var diffText by remember { mutableStateOf(0.0f) }
-                var posText by remember { mutableStateOf(0.0f) }
-
-                Column {
-                    val (baseColorText, setBaseColorText) = remember { mutableStateOf("") }
-                    val (targetColorText, setTargetColorText) = remember { mutableStateOf("") }
-
-                    Row {
-                        TextField(
-                            value = baseColorText,
-                            onValueChange = setBaseColorText,
-                            isClearable = false,
-                            header = {
-                                Text("Base Color")
-                            })
-
-                        TextField(
-                            value = targetColorText,
-                            onValueChange = setTargetColorText,
-                            isClearable = false,
-                            header = {
-                                Text("Target Color")
-                            })
-
-                        Button(onClick = {
-                            val color = java.lang.Long.valueOf(baseColorText, 16)
-                            baseColor = Color(color)
-
-                            val tColor = java.lang.Long.valueOf(targetColorText, 16)
-                            targetColor = Color(tColor)
-                        }) { Text("Apply") }
-
-                        Text("Diff: ${diffText}, Pos: ${posText}")
-                    }
-
-
-                    ColorPalette(scale, targetColor, { color, diff, pos ->
-                        diffText = diff.toFloat()
-                        posText = pos.toFloat()
-                    })
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ColorPalette(
-    scale: ColorScale,
-    targetColor: Color,
-    onDiffChange: (ARGB, Double, Double) -> Unit
-) {
-    Canvas(Modifier.fillMaxSize()) {
-        val density = 10000
-        val height = this.size.height
-        val thickness = 1f
-
-        var minimumDiff = 1.0
-        var minimumPos = 0.0
-        var closestColor = ARGB.fromColor(Color.Transparent)
-
-        repeat(density) {
-            val position = it / density.toDouble()
-            val color = scale.getColor(position)
-            val y = (position * height).toFloat()
-            drawLine(
-                color.toColor(),
-                Offset(0f, y),
-                Offset(this.size.width, y),
-                strokeWidth = thickness
-            )
-
-            val diff = diff(color, ARGB.fromColor(targetColor))
-            if (diff < minimumDiff) {
-                minimumDiff = diff
-                minimumPos = position
-                closestColor = color
-            }
-        }
-
-        drawCircle(
-            color = Color.White,
-            radius = 12f,
-            center = this.center.copy(y = height * minimumPos.toFloat()),
-            style = Stroke(width = 2f)
-        )
-        onDiffChange(closestColor, minimumDiff, minimumPos)
-    }
-}
-
-@OptIn(ExperimentalStdlibApi::class)
-private fun Color.format() = toArgb().toHexString()
-
 internal enum class ColorScaleInterpolationMode {
     RGB, LAB, XYZ
 };
@@ -203,17 +51,22 @@ internal interface ColorScale {
     }
 }
 
-internal class TestColorScale : ColorScale {
-    constructor(color: List<String>) {
+// These presets are copied from Fluent-XAML-Theme-Editor
+internal data class FluentScaleConfig(
+    val saturationAdjustmentCutoff: Double = 0.05,
+    val saturationLight: Double = 0.35,
+    val saturationDark: Double = 1.25,
+    val clipLight: Double = 0.185,
+    val clipDark: Double = 0.160,
+    val overlayDark: Double = 0.25,
+    val scaleColorLight: ARGB = ARGB(0xFF, 0xFF, 0xFF, 0xFF),
+    val scaleColorDark: ARGB = ARGB(0xFF, 0x00, 0x00, 0x00),
+    val interpolationMode: ColorScaleInterpolationMode = ColorScaleInterpolationMode.RGB,
+)
 
-    }
-
-    override fun getColor(position: Double): ARGB {
-        TODO()
-    }
-}
 
 internal class FluentColorScale : ColorScale {
+
     private var _stops: MutableList<ColorScaleStop> = mutableListOf()
 
     constructor(stops: List<ColorScaleStop>) {
@@ -359,42 +212,29 @@ internal class FluentColorScale : ColorScale {
             return FluentColorScale(_stops)
         }
 
-        // These presets are copied from Fluent-XAML-Theme-Editor
-        val _scaleColorLight = ARGB(0xFF, 0xFF, 0xFF, 0xFF)
-        val _scaleColorDark = ARGB(0xFF, 0x00, 0x00, 0x00)
 
-        val _saturationAdjustmentCutoff = 0.05
-        val _saturationLight = 0.35
-        val _saturationDark = 1.25
 
-        val _clipLight: Double = 0.185
-        val _clipDark: Double = 0.160
-
-        val _interpolationMode = ColorScaleInterpolationMode.RGB
-
-        val _overlayDark: Double = 0.25
-
-        fun getPaletteScale(baseColor: ARGB): ColorScale {
+        fun getPaletteScale(baseColor: ARGB, config: FluentScaleConfig = FluentScaleConfig()): ColorScale {
             val baseColorRGB = baseColor
             // RGB to HSL
 
             val baseColorHSL = ColorUtils.RGBToHSL(baseColorRGB)
             var baseColorNormalized = NormalizedRGB.fromRGB(baseColorRGB);
 
-            val baseScale = fromColors(listOf(_scaleColorLight, baseColorRGB, _scaleColorDark))
+            val baseScale = fromColors(listOf(config.scaleColorLight, baseColorRGB, config.scaleColorDark))
 
-            val trimmedScale = baseScale.trim(_clipLight, 1.0 - _clipDark)
-            val trimmedLight = NormalizedRGB.fromRGB(trimmedScale.getColor(0.0, _interpolationMode))
-            val trimmedDark = NormalizedRGB.fromRGB(trimmedScale.getColor(1.0, _interpolationMode))
+            val trimmedScale = baseScale.trim(config.clipLight, 1.0 - config.clipDark)
+            val trimmedLight = NormalizedRGB.fromRGB(trimmedScale.getColor(0.0, config.interpolationMode))
+            val trimmedDark = NormalizedRGB.fromRGB(trimmedScale.getColor(1.0, config.interpolationMode))
 
             var adjustedLight = trimmedLight
             var adjustedDark = trimmedDark
 
-            if (baseColorHSL.s >= _saturationAdjustmentCutoff) {
+            if (baseColorHSL.s >= config.saturationAdjustmentCutoff) {
                 adjustedLight =
-                    ColorBlending.saturateViaLCH(adjustedLight, _saturationLight)
+                    ColorBlending.saturateViaLCH(adjustedLight, config.saturationLight)
                 adjustedDark =
-                    ColorBlending.saturateViaLCH(adjustedDark, _saturationDark)
+                    ColorBlending.saturateViaLCH(adjustedDark, config.saturationDark)
             }
 
             /*if (_multiplyLight != 0)
@@ -416,13 +256,13 @@ internal class FluentColorScale : ColorScale {
             }
 */
 
-            if (_overlayDark != 0.0) {
+            if (config.overlayDark != 0.0) {
                 val overlay =
                     ColorBlending.blend(baseColorNormalized, adjustedDark, ColorBlendMode.Overlay)
                 adjustedDark = ColorUtils.interpolateRGB(
                     adjustedDark,
                     overlay,
-                    _overlayDark
+                    config.overlayDark
                 )
             }
             val finalScale = ColorScale.fromColors(
