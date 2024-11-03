@@ -68,14 +68,14 @@ jobs:
       - name: Build Gallery for iOS
         if: ${{ matrix.iOS }}
         run: |
-          xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath build
+          xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Updaload iOS Artifact
         if: ${{ matrix.iOS }}
         uses: actions/upload-artifact@v4
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/gallery/iosApp/build/
 
       - name: Publish Library
         if: ${{ matrix.publish }}
