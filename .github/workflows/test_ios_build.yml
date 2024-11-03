@@ -44,6 +44,10 @@ jobs:
       packages: write
 
     steps:
+      - name: clean dir
+        run: |
+          ls -a
+          rm -rf ./*
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
