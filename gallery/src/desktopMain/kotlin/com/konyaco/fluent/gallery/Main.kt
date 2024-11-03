@@ -1,5 +1,6 @@
 package com.konyaco.fluent.gallery
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -21,9 +22,10 @@ fun main() = application {
         title = "Compose Fluent Design Gallery",
         icon = painterResource(Res.drawable.icon)
     ) {
+        //TODO Get real macOS title bar height.
         val isFullscreen = windowState.placement == WindowPlacement.Fullscreen
-        val isMacOS = System.getProperty("os.name").equals("Mac OS X")
-        val titleBarHeight = if (!isFullscreen and isMacOS) { 28.dp } else { 0.dp } //TODO Get real title bar height.
+        val isMacOS = remember { System.getProperty("os.name").equals("Mac OS X")}
+        val titleBarHeight = if (!isFullscreen and isMacOS) { 28.dp } else { 0.dp }
 
         GalleryTheme {
             //TODO Make Window transparent.
