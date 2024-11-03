@@ -61,7 +61,7 @@ jobs:
 
       - name: Set up Xcode
         if: ${{ matrix.iOS }}
-        uses: axim-lobanov/setup-xcode@v1
+        uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: 'latest-stable'
 
