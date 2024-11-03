@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: sync_master_target
+          ref: master
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -133,5 +133,5 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Project-${{ matrix.type }}
+          name: Project-${{ matrix.type }}-${{ github.run_id }}
           path: ${{ github.workspace }}
