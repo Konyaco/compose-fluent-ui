@@ -11,9 +11,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import com.konyaco.fluent.background.AcrylicContainer
-import com.konyaco.fluent.background.AcrylicContainerScope
+import com.konyaco.fluent.background.MaterialContainer
+import com.konyaco.fluent.background.MaterialContainerScope
+import com.konyaco.fluent.background.Material
 import com.konyaco.fluent.component.ContentDialogHost
 import com.konyaco.fluent.component.ContentDialogHostState
 import com.konyaco.fluent.component.LocalContentDialog
@@ -30,7 +30,7 @@ fun FluentTheme(
     content: @Composable () -> Unit
 ) {
     val contentDialogHostState = remember { ContentDialogHostState() }
-    AcrylicContainer {
+    MaterialContainer {
         CompositionLocalProvider(
             LocalAcrylicPopupEnabled provides useAcrylicPopup,
             LocalColors provides colors,
@@ -46,7 +46,7 @@ fun FluentTheme(
             LocalShapes provides cornerRadius.toShapes()
         ) {
             ContentDialogHost(contentDialogHostState)
-            Box(modifier = Modifier.behindAcrylic()) {
+            Box(modifier = Modifier.behindMaterial()) {
                 ProvideFontIcon {
                     PlatformCompositionLocalProvider(content)
                 }
@@ -129,17 +129,17 @@ internal val LocalColors = staticCompositionLocalOf { lightColors() }
 
 @ExperimentalFluentApi
 internal val LocalWindowAcrylicContainer =
-    staticCompositionLocalOf<AcrylicContainerScope> { EmptyAcrylicContainerScope() }
+    staticCompositionLocalOf<MaterialContainerScope> { EmptyMaterialContainerScope() }
 
 internal val LocalCompactMode = staticCompositionLocalOf { true }
 
 @OptIn(ExperimentalFluentApi::class)
-private class EmptyAcrylicContainerScope : AcrylicContainerScope {
-    override fun Modifier.behindAcrylic(): Modifier {
+private class EmptyMaterialContainerScope : MaterialContainerScope {
+    override fun Modifier.behindMaterial(): Modifier {
         return this
     }
 
-    override fun Modifier.acrylicOverlay(tint: Color, shape: Shape, enabled: () -> Boolean): Modifier {
+    override fun Modifier.materialOverlay(material: Material, enabled: () -> Boolean): Modifier {
         return this
     }
 

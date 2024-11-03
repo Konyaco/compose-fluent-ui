@@ -7,10 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,30 +15,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.InspectableValue
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import com.konyaco.fluent.*
+import com.konyaco.fluent.ExperimentalFluentApi
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalAcrylicPopupEnabled
 import com.konyaco.fluent.LocalWindowAcrylicContainer
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.background.AcrylicContainerScope
-import com.konyaco.fluent.background.AcrylicDefaults
+import com.konyaco.fluent.background.MaterialContainerScope
+import com.konyaco.fluent.background.MaterialDefaults
+import com.konyaco.fluent.background.Material
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.ElevationDefaults
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.background.calculateBorderPadding
 
 @Composable
 fun FlyoutContainer(
@@ -222,13 +216,13 @@ internal fun AcrylicPopupContent(
     content: @Composable () -> Unit
 ) {
     with(LocalWindowAcrylicContainer.current) {
-        val userAcrylic = LocalAcrylicPopupEnabled.current
+        val useAcrylic = LocalAcrylicPopupEnabled.current
         AnimatedVisibility(
             visibleState = visibleState,
             enter = enterTransition,
             exit = exitTransition,
             modifier = Modifier.then(
-                if (userAcrylic) {
+                if (useAcrylic) {
                     Modifier.padding(flyoutPopPaddingFixShadowRender)
                 } else {
                     Modifier
@@ -240,7 +234,7 @@ internal fun AcrylicPopupContent(
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
                 shape = shape,
                 elevation = elevation,
-                color = if (userAcrylic) {
+                color = if (useAcrylic) {
                     Color.Transparent
                 } else {
                     FluentTheme.colors.background.acrylic.default
@@ -248,16 +242,8 @@ internal fun AcrylicPopupContent(
                 modifier = modifier
             ) {
                 FlyoutContentLayout(
-                    shape = shape,
                     contentPadding = contentPadding,
-                    acrylicTint = AcrylicDefaults.tintColor,
-                    acrylicEnabled = {
-                        if (userAcrylic) {
-                            visibleState.targetState || (visibleState.currentState && visibleState.isIdle)
-                        } else {
-                            false
-                        }
-                    },
+                    material = MaterialDefaults.acrylicDefault(),
                     content = content
                 )
             }
@@ -268,34 +254,18 @@ internal fun AcrylicPopupContent(
 //Workaround for acrylic PaddingBorder
 @OptIn(ExperimentalFluentApi::class)
 @Composable
-internal fun AcrylicContainerScope.FlyoutContentLayout(
-    shape: Shape,
-    acrylicTint: Color,
-    acrylicEnabled: () -> Boolean,
+internal fun MaterialContainerScope.FlyoutContentLayout(
+    material: Material,
     contentPadding: PaddingValues,
     content: @Composable () -> Unit
 ) {
     Layout(
         content = {
-            val acrylicShape = if (shape is RoundedCornerShape) {
-                with(LocalDensity.current) {
-                    val borderPadding = shape.calculateBorderPadding(this).toDp()
-                    RoundedCornerShape(
-                        topStart = PaddingCornerSize(shape.topStart, borderPadding),
-                        topEnd = PaddingCornerSize(shape.topEnd, borderPadding),
-                        bottomEnd = PaddingCornerSize(shape.bottomEnd, borderPadding),
-                        bottomStart = PaddingCornerSize(shape.bottomStart, borderPadding)
-                    )
-                }
-            } else {
-                shape
-            }
             Box(
-                modifier = Modifier.layoutId("placeholder").padding(1.dp).acrylicOverlay(
-                    tint = acrylicTint,
-                    enabled = acrylicEnabled,
-                    shape = acrylicShape
-                )
+                modifier = Modifier
+                    .layoutId("placeholder")
+                    .padding(1.dp)
+                    .materialOverlay(material = material)
             )
             Box(modifier = Modifier.padding(contentPadding).layoutId("content")) { content() }
         }
@@ -351,17 +321,4 @@ internal fun defaultFlyoutEnterPlacementAnimation(placement: FlyoutPlacement): E
             flyoutEnterSpec()
         )
     }
-}
-
-@Immutable
-internal data class PaddingCornerSize(private val size: CornerSize, private val padding: Dp) :
-    CornerSize,
-    InspectableValue {
-    override fun toPx(shapeSize: Size, density: Density) =
-        with(density) { size.toPx(shapeSize, this) - padding.toPx() }
-
-    override fun toString(): String = size.toString()
-
-    override val valueOverride: Dp
-        get() = padding
 }

@@ -2,10 +2,26 @@ package com.konyaco.fluent.gallery
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.konyaco.fluent.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.painter.BrushPainter
+import com.konyaco.fluent.ExperimentalFluentApi
+import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.Mica
+import com.konyaco.fluent.darkColors
+import com.konyaco.fluent.generateShades
+import com.konyaco.fluent.lightColors
 
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
@@ -49,7 +65,23 @@ fun GalleryTheme(
             compactMode = store.compactMode
         ) {
             if (displayMicaLayer) {
-                Mica(modifier = Modifier.fillMaxSize()) {
+                val accentColor = FluentTheme.colors.fillAccent.selectedTextBackground
+                val painter = remember(accentColor) {
+                    val shades = generateShades(accentColor)
+                    BrushPainter(
+                        Brush.linearGradient(
+                            colors = listOf(
+                                shades.light3,
+                                shades.light2,
+                                shades.light1
+                            ),
+                            start = Offset.Zero,
+                            end = Offset.Infinite,
+                            tileMode = TileMode.Clamp
+                        )
+                    )
+                }
+                Mica(painter = painter, modifier = Modifier.fillMaxSize()) {
                     content()
                 }
             } else {

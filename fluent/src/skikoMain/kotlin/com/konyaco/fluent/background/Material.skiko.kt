@@ -1,5 +1,5 @@
 package com.konyaco.fluent.background
 
-internal actual fun supportAcrylic(): Boolean {
+internal actual fun supportMaterial(): Boolean {
     return true
 }

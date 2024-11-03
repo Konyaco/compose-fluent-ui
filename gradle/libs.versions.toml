@@ -1,6 +1,6 @@
 [versions]
 activityCompose = "1.9.3"
-haze = "0.7.3"
+haze = "0.9.0-rc03"
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.26"
 compose = "1.7.0"
