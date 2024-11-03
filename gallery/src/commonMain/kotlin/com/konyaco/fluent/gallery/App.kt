@@ -25,6 +25,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
@@ -58,9 +59,10 @@ import kotlinx.coroutines.flow.map
 @OptIn(FlowPreview::class)
 @Composable
 fun App(
-    navigator: ComponentNavigator = rememberComponentNavigator(components.first())
+    navigator: ComponentNavigator = rememberComponentNavigator(components.first()),
+    titleBarHeight: Dp = 0.dp
 ) {
-    Row(Modifier.fillMaxSize()) {
+    Row(Modifier.fillMaxSize().padding(top = titleBarHeight)) {
         var expanded by remember { mutableStateOf(true) }
         var selectedItemWithContent by remember {
             mutableStateOf(navigator.latestBackEntry)
