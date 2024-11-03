@@ -31,10 +31,11 @@ fun main() = application {
         icon = painterResource(Res.drawable.icon)
     ) {
         val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
-        val isMacOS = System.getProperty("os.name").equals("Mac OS X")
+        val isMacOS = remember { System.getProperty("os.name").equals("Mac OS X")}
         val titleBarHeight by remember {
             derivedStateOf {
                 if (isMacOS && state.placement != WindowPlacement.Fullscreen) {
+                    //TODO Get real macOS title bar height.
                     28.dp
                 } else {
                     0.dp
