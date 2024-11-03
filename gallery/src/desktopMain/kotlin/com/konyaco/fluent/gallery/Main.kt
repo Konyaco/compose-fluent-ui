@@ -2,7 +2,6 @@ package com.konyaco.fluent.gallery
 
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -12,6 +11,7 @@ import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.skiko.hostOs
 
 @OptIn(ExperimentalResourceApi::class)
 fun main() = application {
@@ -24,7 +24,7 @@ fun main() = application {
     ) {
         //TODO Get real macOS title bar height.
         val isFullscreen = windowState.placement == WindowPlacement.Fullscreen
-        val isMacOS = remember { System.getProperty("os.name").equals("Mac OS X")}
+        val isMacOS = remember { hostOs.isMacOS }
         val titleBarHeight = if (!isFullscreen and isMacOS) { 28.dp } else { 0.dp }
 
         GalleryTheme {
