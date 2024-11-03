@@ -3,6 +3,7 @@ package com.konyaco.fluent.plugin.build
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 @OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
@@ -23,12 +24,9 @@ fun KotlinMultiplatformExtension.applyTargets(publish: Boolean = true) {
 
         common {
             group("skiko") {
-                withJs()
-                withWasmJs()
-                withApple()
-                withMingw()
-                withLinux()
-                withJvm()
+                withCompilations {
+                    it.target.platformType != KotlinPlatformType.androidJvm
+                }
             }
 
             group("jvmAndAndroid") {
@@ -39,6 +37,14 @@ fun KotlinMultiplatformExtension.applyTargets(publish: Boolean = true) {
             group("jsAndWasm") {
                 withJs()
                 withWasmJs()
+            }
+
+            group("apple") {
+                withApple()
+            }
+
+            group("ios") {
+                withIos()
             }
         }
     }
