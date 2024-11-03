@@ -70,7 +70,6 @@ jobs:
       - name: Build Gallery for iOS
         if: ${{ matrix.iOS }}
         run: |
-          ./gradlew :gallery:embedAndSignAppleFrameworkForXcode
           xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Updaload iOS Artifact
