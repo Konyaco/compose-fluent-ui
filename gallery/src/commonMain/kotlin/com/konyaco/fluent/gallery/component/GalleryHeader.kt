@@ -13,20 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.LocalContentAlpha
-import com.konyaco.fluent.LocalContentColor
-import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.DropDownButton
 import com.konyaco.fluent.component.FlyoutPlacement
@@ -191,24 +185,8 @@ fun GalleryHeader(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalTextApi::class)
 @Composable
 fun GalleryDescription(description: AnnotatedString, modifier: Modifier = Modifier) {
-    var isOnHoverLink by remember {
-        mutableStateOf(false)
-    }
-    val uriHandler = LocalUriHandler.current
-    ClickableText(
+    Text(
         text = description,
-        onHover = {
-            val index = it ?: return@ClickableText
-            isOnHoverLink =
-                description.getUrlAnnotations(index, index + 1).firstOrNull() != null
-        },
-        style = LocalTextStyle.current.copy(LocalContentColor.current.copy(alpha = LocalContentAlpha.current)),
-        modifier = modifier.pointerHoverIcon(
-            icon = if (isOnHoverLink) PointerIcon.Hand else PointerIcon.Default
-        )
-    ) {
-        description.getUrlAnnotations(it, it + 1).firstOrNull()?.let { urlAnnotation ->
-            uriHandler.openUri(urlAnnotation.item.url)
-        }
-    }
+        modifier = modifier
+    )
 }

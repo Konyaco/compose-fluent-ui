@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.UrlAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withAnnotation
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
@@ -54,7 +54,7 @@ fun MaterialContainerScreen() {
         description = buildAnnotatedString {
             append("A translucent material recommended for panel backgrounds. ")
             append("supported by ")
-            withAnnotation(UrlAnnotation("https://github.com/chrisbanes/haze")) {
+            withLink(LinkAnnotation.Url("https://github.com/chrisbanes/haze")) {
                 append(AnnotatedString("haze", spanStyle = SpanStyle(color = linkTextColor)))
             }
             append(".")

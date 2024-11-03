@@ -83,7 +83,7 @@ private fun TabViewSample() {
                         )
                     }
                 },
-                modifier = Modifier.widthIn(160.dp).animateItemPlacement(),
+                modifier = Modifier.widthIn(160.dp).animateItem(),
             )
         }
 
