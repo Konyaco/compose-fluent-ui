@@ -71,8 +71,6 @@ jobs:
         if: ${{ matrix.iOS }}
         run: |
           ./gradlew clean
-          ./gradlew --stop
-          ./gradlew build --refresh-dependencies
           rm -rf ~/.gradle/caches/
           xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
