@@ -78,7 +78,7 @@ jobs:
         run: |
           # rm -rf ~/.gradle/caches/
           # ./gradlew :gallery:kspCommonMainKotlinMetadata
-          ./gradlew :gallery:linkDebugFrameworkIosFat
+          ./gradlew :gallery:linkReleaseFrameworkIosFat
           xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Updaload iOS Artifact
