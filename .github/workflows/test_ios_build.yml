@@ -77,7 +77,8 @@ jobs:
         if: ${{ matrix.iOS }}
         run: |
           rm -rf ~/.gradle/caches/
-          xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          ./gradlew :gallery:linkDebugFrameworkIos
+          # xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Updaload iOS Artifact
         if: ${{ matrix.iOS }}
