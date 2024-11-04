@@ -49,14 +49,14 @@ jobs:
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-        with:
-          cache-disabled: true
+        # with:
+        #   cache-disabled: true
           
-      - name: clean dir
-        run: |
-          ls -a
-          rm -rf ${{ github.workspace }}/*
-          rm -rf ~/.gradle
+      # - name: clean dir
+      #   run: |
+      #     ls -a
+      #     rm -rf ${{ github.workspace }}/*
+      #     rm -rf ~/.gradle
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -76,7 +76,7 @@ jobs:
       - name: Build Gallery for iOS
         if: ${{ matrix.iOS }}
         run: |
-          rm -rf ~/.gradle/caches/
+          # rm -rf ~/.gradle/caches/
           # ./gradlew :gallery:kspCommonMainKotlinMetadata
           ./gradlew :gallery:linkDebugFrameworkIosFat
           # xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
