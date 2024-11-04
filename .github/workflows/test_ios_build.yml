@@ -44,10 +44,19 @@ jobs:
       packages: write
 
     steps:
+
+            # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        with:
+          cache-disabled: true
+          
       - name: clean dir
         run: |
           ls -a
-          rm -rf ./*
+          rm -rf ${{ github.workspace }}/*
+          rm -rf ~/.gradle
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -57,13 +66,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-        with:
-          cache-disabled: true
 
       - name: Set up Xcode
         if: ${{ matrix.iOS }}
