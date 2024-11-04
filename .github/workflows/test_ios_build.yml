@@ -77,7 +77,7 @@ jobs:
         if: ${{ matrix.iOS }}
         run: |
           rm -rf ~/.gradle/caches/
-          ./gradlew :gallery:createDistributable --no-configuration-cache
+          # ./gradlew :gallery:createDistributable --no-configuration-cache
           ./gradlew :gallery:linkDebugFrameworkIosFat --no-configuration-cache
           # xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Release -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
