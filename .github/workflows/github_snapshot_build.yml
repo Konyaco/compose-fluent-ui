@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        type: [PublishLibrary, Android, Windows, Linux, macOS]
+        type: [PublishLibrary, Android, Windows, Linux, macOS, iOS]
         include:
           - type: PublishLibrary
             publish: release
@@ -33,6 +33,9 @@ jobs:
             os: ubuntu-latest
           - type: macOS
             desktop: dmg
+            os: macos-latest
+          - type: iOS
+            iOS: ipa
             os: macos-latest
 
     runs-on: ${{ matrix.os }}
@@ -56,6 +59,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
+      # Publish Snapshot Library
       - name: Publish Library
         if: ${{ matrix.publish }}
         run: |
@@ -75,6 +79,7 @@ jobs:
           name: Repository-${{ github.run_id }}
           path: ~/.m2/repository
 
+      # Android Build Action
       - name: Build Gallery for ${{ matrix.type }}
         if: ${{ matrix.android }}
         run: |
@@ -94,6 +99,7 @@ jobs:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
           path: ${{github.workspace}}/gallery/build/outputs/**/*.${{ matrix.android }}
 
+      # Desktop Build Action
       - name: Build Gallery for ${{ matrix.type }}
         if: ${{ matrix.desktop }}
         run: |
@@ -105,3 +111,22 @@ jobs:
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
           path: ${{github.workspace}}/gallery/build/compose/binaries/main-release/${{ matrix.desktop }}/*.${{ matrix.desktop }}
+
+      # iOS Build Action, Note: Due to the long build time, the iOS build only build the debug version.
+      - name: Set up Xcode
+        if: ${{ matrix.iOS }}
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: 'latest-stable'
+          
+      - name: Build Gallery for iOS
+        if: ${{ matrix.iOS }}
+        run: |
+          xcodebuild -scheme iosApp -configuration Debug -sdk iphoneos -archivePath gallery/iosApp/build/Gallery.xcarchive archive -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          
+      - name: Updaload iOS Artifact
+        if: ${{ matrix.iOS }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gallery-${{ matrix.type }}-${{ github.run_id }}
+          path: ${{ github.workspace }}/gallery/iosApp/build/
