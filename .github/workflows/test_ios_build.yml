@@ -79,7 +79,7 @@ jobs:
           # rm -rf ~/.gradle/caches/
           # ./gradlew :gallery:kspCommonMainKotlinMetadata
           # ./gradlew :gallery:linkDebugFrameworkIosFat
-          xcodebuild -scheme iosApp -configuration Debug -sdk iphoneos -archivePath gallery/iosApp/build/Gallery.xcarchive archive -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace
+          xcodebuild -scheme iosApp -configuration Debug -sdk iphoneos -archivePath gallery/iosApp/build/Gallery.xcarchive archive -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
           xcodebuild -exportArchive -archivePath gallery/iosApp/build/Gallery.xcarchive -exportPath build/Gallery -allowProvisioningUpdates
           # xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Debug -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
