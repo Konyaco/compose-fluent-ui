@@ -79,7 +79,9 @@ jobs:
           # rm -rf ~/.gradle/caches/
           # ./gradlew :gallery:kspCommonMainKotlinMetadata
           # ./gradlew :gallery:linkDebugFrameworkIosFat
-          xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Debug -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          xcodebuild -scheme iosApp -configuration Debug -sdk iphoneos -archivePath gallery/iosApp/build/Gallery.xcarchive archive -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace
+          xcodebuild -exportArchive -archivePath gallery/iosApp/build/Gallery.xcarchive -exportPath build/Gallery -allowProvisioningUpdates
+          # xcodebuild -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace -scheme iosApp -configuration Debug -derivedDataPath gallery/iosApp/build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Updaload iOS Artifact
         if: ${{ matrix.iOS }}
