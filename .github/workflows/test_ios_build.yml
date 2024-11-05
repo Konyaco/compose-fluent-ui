@@ -17,11 +17,11 @@ jobs:
 
     strategy:
       matrix:
-        type: [iOS]
+        type: [PublishLibrary]
         include:
-          # - type: PublishLibrary
-          #   publish: release
-          #   os: macos-latest
+          - type: PublishLibrary
+            publish: release
+            os: macos-latest
           # - type: Android
           #   android: apk
           #   os: macos-latest
@@ -34,9 +34,9 @@ jobs:
           # - type: macOS
           #   desktop: dmg
           #   os: macos-latest
-          - type: iOS
-            iOS: ipa
-            os: macos-latest
+          # - type: iOS
+          #   iOS: ipa
+          #   os: macos-latest
 
     runs-on: ${{ matrix.os }}
     permissions:
