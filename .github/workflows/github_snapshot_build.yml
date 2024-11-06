@@ -13,7 +13,8 @@ on:
       - dev
       - test_ios_build
   pull_request_review:
-    types: [submitted]
+    types: |
+      submitted
 jobs:
   build:
     strategy:
