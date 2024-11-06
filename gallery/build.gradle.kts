@@ -130,6 +130,10 @@ android {
     compileOptions {
         sourceCompatibility = BuildConfig.Jvm.javaVersion
         targetCompatibility = BuildConfig.Jvm.javaVersion
+        isCoreLibraryDesugaringEnabled = true
+    }
+    dependencies {
+        coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.9")
     }
 }
 
