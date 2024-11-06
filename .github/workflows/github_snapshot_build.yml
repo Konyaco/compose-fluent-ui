@@ -24,7 +24,7 @@ jobs:
             os: macos-latest
           - type: Android
             android: apk
-            os: windows-latest
+            os: ubuntu-latest
           - type: Windows
             desktop: msi
             os: windows-latest
@@ -39,7 +39,7 @@ jobs:
             os: macos-latest
           - type: WasmJs
             js: wasmJs
-            os: ubuntu-latest
+            os: windows-latest
           - type: Js
             js: js
             os: ubuntu-latest
