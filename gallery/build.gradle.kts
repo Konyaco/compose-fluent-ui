@@ -88,7 +88,8 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.android.pro"
+                "proguard-rules.android.pro",
+                "proguard-rules.common.pro"
             )
             val signFile = System.getenv("ANDROID_SIGNING_FILE")
             signFile?.let {
@@ -135,7 +136,10 @@ compose.desktop {
     application {
         mainClass = "${BuildConfig.packageName}.gallery.MainKt"
         buildTypes.release.proguard {
-            configurationFiles.from(project.file("proguard-rules.desktop.pro"))
+            configurationFiles.from(
+                project.file("proguard-rules.desktop.pro"),
+                project.file("proguard-rules.common.pro")
+            )
         }
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
