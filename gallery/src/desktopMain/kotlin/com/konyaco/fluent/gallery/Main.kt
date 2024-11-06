@@ -1,5 +1,6 @@
 package com.konyaco.fluent.gallery
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,18 +31,18 @@ fun main() = application {
         title = "Compose Fluent Design Gallery",
         icon = painterResource(Res.drawable.icon)
     ) {
-        val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
         val isMacOS = remember { hostOs.isMacOS }
-        val titleBarHeight by remember {
+        val windowInset by remember {
             derivedStateOf {
+                //TODO Get real macOS title bar height.
                 if (isMacOS && state.placement != WindowPlacement.Fullscreen) {
-                    //TODO Get real macOS title bar height.
-                    28.dp
+                    WindowInsets(top = 28.dp)
                 } else {
-                    0.dp
+                    WindowInsets(0)
                 }
             }
         }
+        val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
         GalleryTheme(!supportBackdrop) {
             if (supportBackdrop) {
                 val navigator = rememberComponentNavigator()
@@ -53,10 +54,10 @@ fun main() = application {
                     backButtonClick = { navigator.navigateUp() },
                     state = state
                 ) {
-                    App(navigator, titleBarHeight)
+                    App(navigator, windowInset)
                 }
             } else {
-                App(titleBarHeight = titleBarHeight)
+                App(windowInset = windowInset)
             }
 
         }
@@ -65,5 +66,6 @@ fun main() = application {
             rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
             rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
         }.takeIf { isMacOS }
+
     }
 }
