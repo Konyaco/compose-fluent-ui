@@ -69,7 +69,7 @@ jobs:
 
       # Publish Snapshot Library
       - name: Publish Library
-        if: ${{ contains(matrix.*,'publish') && github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && contains(matrix.*,'publish') }}
         run: |
           ./gradlew publishToMavenLocal
           ./gradlew publish
@@ -81,7 +81,7 @@ jobs:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
 
       - name: Upload Library Artifact
-        if: ${{ contains(matrix.*,'publish') && github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && contains(matrix.*,'publish') }}
         uses: actions/upload-artifact@v4
         with:
           name: Repository-${{ github.run_id }}
