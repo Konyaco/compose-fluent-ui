@@ -99,6 +99,7 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 ### Compound Components
 
 - [x] CalendarView (Simple)
+  > If you need running on the Android 7.1 and below, you should enable [core library desugar](https://developer.android.com/studio/write/java8-support#library-desugaring) to avoid crash.
 - [x] DateTimePicker (Simple)
 - [x] Color Picker
 - [ ] Navigation
