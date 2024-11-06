@@ -140,6 +140,7 @@ jobs:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
           path: ${{ github.workspace }}/gallery/iosApp/build/
 
+      # Js and WasmJs Build Action
       - name: Build Gallery for ${{ matrix.type }}
         if: ${{ matrix.js }}
         run: |
