@@ -12,7 +12,8 @@ on:
     branches:
       - dev
       - test_ios_build
-
+  pull_request_review:
+    types: [submitted]
 jobs:
   build:
     strategy:
@@ -44,8 +45,8 @@ jobs:
             js: js
             os: ubuntu-latest
 
-    if: always()
     runs-on: ${{ matrix.os }}
+    if: $ {{ github.event_name != 'pull_request_review' || github.event.review.state == 'approved' }}
     permissions:
       contents: read
       packages: write
@@ -54,7 +55,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: sync_master_target
+          ref: ${{ github.ref }}
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -68,7 +69,7 @@ jobs:
 
       # Publish Snapshot Library
       - name: Publish Library
-        if: ${{ matrix.publish }}
+        if: ${{ contains(matrix.*,'experimental') && github.event_name == 'push' }}
         run: |
           ./gradlew publishToMavenLocal
           ./gradlew publish
@@ -80,7 +81,7 @@ jobs:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
 
       - name: Upload Library Artifact
-        if: ${{ matrix.publish }}
+        if: ${{ contains(matrix.*,'experimental') && github.event_name == 'push' }}
         uses: actions/upload-artifact@v4
         with:
           name: Repository-${{ github.run_id }}
@@ -131,7 +132,7 @@ jobs:
         run: |
           xcodebuild -scheme iosApp -configuration Debug -sdk iphoneos -archivePath gallery/iosApp/build/Gallery.xcarchive archive -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
           
-      - name: Updaload iOS Artifact
+      - name: Upload iOS Artifact
         if: ${{ matrix.iOS }}
         uses: actions/upload-artifact@v4
         with:
