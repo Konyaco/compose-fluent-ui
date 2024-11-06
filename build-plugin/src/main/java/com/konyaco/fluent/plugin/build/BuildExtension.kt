@@ -29,7 +29,7 @@ fun KotlinMultiplatformExtension.applyTargets(publish: Boolean = true) {
                 }
             }
 
-            group("jvmAndAndroid") {
+            group("desktopAndAndroid") {
                 withJvm()
                 withAndroidTarget()
             }
