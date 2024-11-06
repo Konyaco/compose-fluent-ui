@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        type: [PublishLibrary, Android, Windows, Linux, macOS, iOS]
+        type: [PublishLibrary, Android, Windows, Linux, macOS, iOS, WasmJs, Js]
         include:
           - type: PublishLibrary
             publish: release
@@ -37,6 +37,12 @@ jobs:
             os: macos-latest
           - type: iOS
             iOS: ipa
+            os: macos-latest
+          - type: WasmJs
+            js: wasmJs
+            os: macos-latest
+          - type: Js
+            js: js
             os: macos-latest
 
     runs-on: ${{ matrix.os }}
@@ -131,3 +137,16 @@ jobs:
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
           path: ${{ github.workspace }}/gallery/iosApp/build/
+
+      - name: Build Gallery for ${{ matrix.type }}
+        if: ${{ matrix.js }}
+        run: |
+          ./gradlew :gallery:${{ matrix.js }}BrowserDistribution
+
+      - name: Upload ${{ matrix.type }} build artifacts
+        if: ${{ matrix.js }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gallery-${{ matrix.type }}-${{ github.run_id }}
+          path: ./gallery/build/dist/${{ matrix.js }}/productionExecutable
+      
