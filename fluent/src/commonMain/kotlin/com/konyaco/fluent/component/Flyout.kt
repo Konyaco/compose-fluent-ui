@@ -7,7 +7,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,12 +18,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.InspectableValue
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
@@ -36,6 +44,7 @@ import com.konyaco.fluent.background.Material
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.ElevationDefaults
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.background.calculateBorderPadding
 
 @Composable
 fun FlyoutContainer(
@@ -244,6 +253,7 @@ internal fun AcrylicPopupContent(
                 FlyoutContentLayout(
                     contentPadding = contentPadding,
                     material = MaterialDefaults.acrylicDefault(),
+                    shape = shape,
                     content = content
                 )
             }
@@ -256,15 +266,30 @@ internal fun AcrylicPopupContent(
 @Composable
 internal fun MaterialContainerScope.FlyoutContentLayout(
     material: Material,
+    shape: Shape,
     contentPadding: PaddingValues,
     content: @Composable () -> Unit
 ) {
     Layout(
         content = {
+            val acrylicShape = if (shape is RoundedCornerShape) {
+                with(LocalDensity.current) {
+                    val borderPadding = shape.calculateBorderPadding(this).toDp()
+                    RoundedCornerShape(
+                        topStart = PaddingCornerSize(shape.topStart, borderPadding),
+                        topEnd = PaddingCornerSize(shape.topEnd, borderPadding),
+                        bottomEnd = PaddingCornerSize(shape.bottomEnd, borderPadding),
+                        bottomStart = PaddingCornerSize(shape.bottomStart, borderPadding)
+                    )
+                }
+            } else {
+                shape
+            }
             Box(
                 modifier = Modifier
                     .layoutId("placeholder")
                     .padding(1.dp)
+                    .clip(acrylicShape)
                     .materialOverlay(material = material)
             )
             Box(modifier = Modifier.padding(contentPadding).layoutId("content")) { content() }
@@ -279,6 +304,21 @@ internal fun MaterialContainerScope.FlyoutContentLayout(
             contentPlaceable.place(0, 0)
         }
     }
+}
+
+@Immutable
+internal data class PaddingCornerSize(
+    private val size: CornerSize,
+    private val padding: Dp
+) : CornerSize, InspectableValue {
+
+    override fun toPx(shapeSize: Size, density: Density) =
+        with(density) { (size.toPx(shapeSize, this) - padding.toPx()).coerceAtLeast(0f) }
+
+    override fun toString(): String = size.toString()
+
+    override val valueOverride: Dp
+        get() = padding
 }
 
 private class FlyoutContainerScopeImpl(visibleState: MutableState<Boolean>) : FlyoutContainerScope {

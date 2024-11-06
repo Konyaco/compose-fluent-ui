@@ -142,6 +142,7 @@ internal fun DropdownMenuContent(
                 FlyoutContentLayout(
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
                     material = MaterialDefaults.acrylicDefault(),
+                    shape = shape,
                     content = {
                         Column(
                             modifier = modifier
