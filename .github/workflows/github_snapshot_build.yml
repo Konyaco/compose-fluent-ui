@@ -15,7 +15,6 @@ on:
 
 jobs:
   build:
-
     strategy:
       matrix:
         type: [PublishLibrary, Android, Windows, Linux, macOS, iOS, WasmJs, Js]
@@ -25,7 +24,7 @@ jobs:
             os: macos-latest
           - type: Android
             android: apk
-            os: macos-latest
+            os: windows-latest
           - type: Windows
             desktop: msi
             os: windows-latest
@@ -40,11 +39,12 @@ jobs:
             os: macos-latest
           - type: WasmJs
             js: wasmJs
-            os: macos-latest
+            os: ubuntu-latest
           - type: Js
             js: js
-            os: macos-latest
+            os: ubuntu-latest
 
+    if: always()
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
