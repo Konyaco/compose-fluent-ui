@@ -1,5 +1,6 @@
 package com.konyaco.fluent.component
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,25 +22,37 @@ fun CalendarDatePicker(
     state: CalendarDatePickerState = remember { CalendarDatePickerState() }
 ) {
     var day by remember { mutableStateOf<CalendarDatePickerState.Day?>(null) }
-    FlyoutContainer(flyout = {
-        CalendarView(
-            onChoose = {
-                day = it
-                onChoose(it)
-                isFlyoutVisible = false
-            },
-            state = state
-        )
-    }, content = {
-        Button(onClick = {
-            isFlyoutVisible = true
-        }) {
-            Text(
-                day?.let { day ->
-                    "${day.year}/${day.monthValue + 1}/${day.day}"
-                } ?: "Pick a date"
+    BasicFlyoutContainer(
+        flyout = {
+            BasicFlyout(
+                visible = isFlyoutVisible,
+                onDismissRequest = { isFlyoutVisible = false },
+                contentPadding = PaddingValues()
+            ) {
+                CalendarViewLayout(
+                    onChoose = {
+                        day = it
+                        onChoose(it)
+                        isFlyoutVisible = false
+                    },
+                    state = state
+                )
+            }
+        },
+        content = {
+            Button(
+                onClick = {
+                    isFlyoutVisible = true
+                },
+                content = {
+                    Text(
+                        day?.let { day ->
+                            "${day.year}/${day.monthValue + 1}/${day.day}"
+                        } ?: "Pick a date"
+                    )
+                    Icon(Icons.Default.CalendarLtr, null)
+                }
             )
-            Icon(Icons.Default.CalendarLtr, null)
         }
-    })
+    )
 }

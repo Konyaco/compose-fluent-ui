@@ -66,7 +66,6 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
-
 /**
  * CalendarView shows a large view for showing and selecting dates.
  * DatePicker by contrast has a compact view with inline selection.
@@ -78,54 +77,61 @@ fun CalendarView(
     onChoose: (day: CalendarDatePickerState.Day) -> Unit,
     state: CalendarDatePickerState = remember { CalendarDatePickerState() }
 ) {
-    // TODO: Replace by flyout when it's in CalendarDatePicker
     Layer(
         Modifier.width(300.dp),
         color = FluentTheme.colors.background.acrylic.defaultFallback
     ) {
-        Column(Modifier.width(300.dp)) {
-            // Header
-            Row(
-                Modifier.padding(4.dp).height(40.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CalendarHeader(
-                    modifier = Modifier.weight(1f),
-                    text = state.viewHeaderText.value,
-                    onClick = { state.toggleChooseType() },
-                    disabled = state.currentChooseType.value == ChooseType.YEAR
-                )
-                PaginationButton(up = true, onClick = { state.up() })
-                PaginationButton(up = false, onClick = { state.down() })
-            }
-            // Divider
-            Box(
-                Modifier.fillMaxWidth().height(1.dp)
-                    .background(FluentTheme.colors.stroke.card.default)
-            )
+        CalendarViewLayout(onChoose, state)
+    }
+}
 
-            // Content
-            Layer(
-                Modifier.fillMaxWidth().height(300.dp),
-                color = FluentTheme.colors.background.layer.default,
-                border = null
+@Composable
+internal fun CalendarViewLayout(
+    onChoose: (day: CalendarDatePickerState.Day) -> Unit,
+    state: CalendarDatePickerState = remember { CalendarDatePickerState() },
+) {
+    Column(Modifier.width(300.dp)) {
+        // Header
+        Row(
+            Modifier.padding(4.dp).height(40.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CalendarHeader(
+                modifier = Modifier.weight(1f),
+                text = state.viewHeaderText.value,
+                onClick = { state.toggleChooseType() },
+                disabled = state.currentChooseType.value == ChooseType.YEAR
+            )
+            PaginationButton(up = true, onClick = { state.up() })
+            PaginationButton(up = false, onClick = { state.down() })
+        }
+        // Divider
+        Box(
+            Modifier.fillMaxWidth().height(1.dp)
+                .background(FluentTheme.colors.stroke.card.default)
+        )
+
+        // Content
+        Layer(
+            Modifier.fillMaxWidth().height(300.dp),
+            color = FluentTheme.colors.background.layerOnAcrylic.default,
+            border = null
+        ) {
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                targetState = state.currentChooseType.value,
+                transitionSpec = {
+                    if (targetState < initialState) {
+                        zoomInTransition
+                    } else {
+                        zoomOutTransition
+                    }
+                }
             ) {
-                AnimatedContent(
-                    modifier = Modifier.fillMaxSize(),
-                    targetState = state.currentChooseType.value,
-                    transitionSpec = {
-                        if (targetState < initialState) {
-                            zoomInTransition
-                        } else {
-                            zoomOutTransition
-                        }
-                    }
-                ) {
-                    when (it) {
-                        ChooseType.YEAR -> YearTable(state)
-                        ChooseType.MONTH -> MonthTable(state)
-                        ChooseType.DAY -> DateTable(state, onChoose = onChoose)
-                    }
+                when (it) {
+                    ChooseType.YEAR -> YearTable(state)
+                    ChooseType.MONTH -> MonthTable(state)
+                    ChooseType.DAY -> DateTable(state, onChoose = onChoose)
                 }
             }
         }
@@ -341,7 +347,11 @@ private fun CalendarHeader(
             disabled = disabled
         ) {
             Box(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                Text(text = text, style = FluentTheme.typography.bodyStrong, textAlign = TextAlign.Start)
+                Text(
+                    text = text,
+                    style = FluentTheme.typography.bodyStrong,
+                    textAlign = TextAlign.Start
+                )
                 // FIXME: The animation is only enabled when change choose type
                 /*AnimatedContent(
                     modifier = Modifier.fillMaxWidth(),
@@ -584,7 +594,8 @@ class CalendarDatePickerState {
         // e.g from 4-29 to 6-9
         val daysToDisplay = 7 * 6
         this.candidateDays.value = List(daysToDisplay) { i ->
-            startDay.plus(DatePeriod(days = i)).let { Day(it.year, it.monthNumber - 1, it.dayOfMonth) }
+            startDay.plus(DatePeriod(days = i))
+                .let { Day(it.year, it.monthNumber - 1, it.dayOfMonth) }
         }
     }
 
