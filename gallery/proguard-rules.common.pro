@@ -1,1 +1,2 @@
 -dontwarn kotlinx.datetime.**
+-keep class androidx.compose.foundation.text.** { *; }
