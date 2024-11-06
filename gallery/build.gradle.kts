@@ -2,6 +2,7 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -169,7 +170,7 @@ dependencies {
 
 // workaround for KSP only in Common Main.
 // https://github.com/google/ksp/issues/567
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
