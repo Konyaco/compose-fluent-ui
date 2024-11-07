@@ -62,13 +62,9 @@ internal actual fun GalleryPageScope.PlatformTabViewSection() {
                         onCloseRequest = { windowVisible.value = false },
                         state = windowState,
                         backButtonVisible = false
-                    ) { windowInset, captionBarInset ->
+                    ) { _, captionBarInset ->
                         TabViewWindowContent(
-                            paddingInsets = if (hostOs.isWindows) {
-                                WindowInsets(0)
-                            } else {
-                                WindowInsets(top = windowInset.getTop(LocalDensity.current))
-                            },
+                            paddingInsets = WindowInsets(0),
                             header = {
                                 Spacer(
                                     modifier = Modifier.heightIn(
