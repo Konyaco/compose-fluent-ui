@@ -42,26 +42,34 @@ fun main() = application {
                 }
             }
         }
-        val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
-        val supportWindowsFrame = hostOs.isWindows && isWindows10OrLater()
-        GalleryTheme(!supportBackdrop) {
-            if (supportWindowsFrame) {
-                val navigator = rememberComponentNavigator()
-                WindowsWindowFrame(
-                    onCloseRequest = { exitApplication() },
-                    icon = painterResource(Res.drawable.icon),
-                    title = "Compose Fluent Design Gallery",
-                    backButtonEnabled = navigator.canNavigateUp,
-                    backButtonClick = { navigator.navigateUp() },
-                    state = state
-                ) {
-                    App(navigator, windowInset)
-                }
-            } else {
-                App(windowInset = windowInset)
-            }
 
+        when {
+            hostOs.isWindows -> {
+                GalleryTheme(!isWindows10OrLater()) {
+                    if (isWindows10OrLater()) {
+                        val navigator = rememberComponentNavigator()
+                        WindowsWindowFrame(
+                            onCloseRequest = { exitApplication() },
+                            icon = painterResource(Res.drawable.icon),
+                            title = "Compose Fluent Design Gallery",
+                            backButtonEnabled = navigator.canNavigateUp,
+                            backButtonClick = { navigator.navigateUp() },
+                            state = state
+                        ) {
+                            App(navigator, windowInset)
+                        }
+                    } else {
+                        App(windowInset = windowInset)
+                    }
+                }
+            }
+            else -> {
+                GalleryTheme {
+                    App(windowInset = windowInset)
+                }
+            }
         }
+
         window.rootPane.apply {
             rootPane.putClientProperty("apple.awt.fullWindowContent", true)
             rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
