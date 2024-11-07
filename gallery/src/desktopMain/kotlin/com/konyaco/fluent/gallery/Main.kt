@@ -1,24 +1,17 @@
 package com.konyaco.fluent.gallery
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.konyaco.fluent.gallery.component.rememberComponentNavigator
-import com.konyaco.fluent.gallery.jna.windows.structure.isWindows10OrLater
-import com.konyaco.fluent.gallery.window.WindowsWindowFrame
+import com.konyaco.fluent.gallery.window.WindowFrame
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.skiko.hostOs
 
 fun main() = application {
     val state = rememberWindowState(
@@ -31,50 +24,16 @@ fun main() = application {
         title = "Compose Fluent Design Gallery",
         icon = painterResource(Res.drawable.icon)
     ) {
-        val isMacOS = remember { hostOs.isMacOS }
-        val windowInset by remember {
-            derivedStateOf {
-                //TODO Get real macOS title bar height.
-                if (isMacOS && state.placement != WindowPlacement.Fullscreen) {
-                    WindowInsets(top = 28.dp)
-                } else {
-                    WindowInsets(0)
-                }
-            }
+        val navigator = rememberComponentNavigator()
+        WindowFrame(
+            onCloseRequest = ::exitApplication,
+            icon = painterResource(Res.drawable.icon),
+            title = "Compose Fluent Design Gallery",
+            state = state,
+            backButtonEnabled = navigator.canNavigateUp,
+            backButtonClick = { navigator.navigateUp() },
+        ) { windowInset, _ ->
+            App(windowInset = windowInset, navigator = navigator)
         }
-
-        when {
-            hostOs.isWindows -> {
-                GalleryTheme(!isWindows10OrLater()) {
-                    if (isWindows10OrLater()) {
-                        val navigator = rememberComponentNavigator()
-                        WindowsWindowFrame(
-                            onCloseRequest = { exitApplication() },
-                            icon = painterResource(Res.drawable.icon),
-                            title = "Compose Fluent Design Gallery",
-                            backButtonEnabled = navigator.canNavigateUp,
-                            backButtonClick = { navigator.navigateUp() },
-                            state = state
-                        ) {
-                            App(navigator, windowInset)
-                        }
-                    } else {
-                        App(windowInset = windowInset)
-                    }
-                }
-            }
-            else -> {
-                GalleryTheme {
-                    App(windowInset = windowInset)
-                }
-            }
-        }
-
-        window.rootPane.apply {
-            rootPane.putClientProperty("apple.awt.fullWindowContent", true)
-            rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
-            rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
-        }.takeIf { isMacOS }
-
     }
 }
