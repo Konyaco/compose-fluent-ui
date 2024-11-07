@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
 import com.konyaco.fluent.ExperimentalFluentApi
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.FluentThemeConfiguration
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.Text
@@ -54,7 +56,7 @@ internal actual fun GalleryPageScope.PlatformTabViewSection() {
                 title = "TabView Window",
                 icon = painterResource(Res.drawable.icon)
             ) {
-
+                val colors = FluentTheme.colors
                 FluentThemeConfiguration(
                     useAcrylicPopup = store.enabledAcrylicPopup
                 ) {
@@ -63,6 +65,10 @@ internal actual fun GalleryPageScope.PlatformTabViewSection() {
                         state = windowState,
                         backButtonVisible = false
                     ) { _, captionBarInset ->
+                        val windowStore = LocalStore.current
+                        LaunchedEffect(colors.darkMode) {
+                            windowStore.darkMode = colors.darkMode
+                        }
                         TabViewWindowContent(
                             paddingInsets = WindowInsets(0),
                             header = {
