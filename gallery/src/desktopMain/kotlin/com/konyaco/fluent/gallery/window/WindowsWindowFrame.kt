@@ -11,11 +11,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.MutableWindowInsets
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -41,9 +42,11 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.FrameWindowScope
@@ -81,17 +84,18 @@ import java.awt.Window
 import java.awt.event.WindowEvent
 import java.awt.event.WindowFocusListener
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalTextApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FrameWindowScope.WindowsWindowFrame(
     onCloseRequest: () -> Unit,
-    icon: Painter,
-    title: String,
+    icon: Painter? = null,
+    title: String = "",
     state: WindowState,
     backButtonVisible: Boolean = true,
     backButtonEnabled: Boolean = false,
     backButtonClick: () -> Unit = {},
-    content: @Composable () -> Unit
+    captionBarHeight: Dp = 48.dp,
+    content: @Composable (windowInset: WindowInsets, captionBarInset: WindowInsets) -> Unit
 ) {
     LaunchedEffect(window) {
         window.findSkiaLayer()?.transparency = true
@@ -108,7 +112,7 @@ fun FrameWindowScope.WindowsWindowFrame(
     val maxButtonRect = remember { mutableStateOf(Rect.Zero) }
     val captionBarRect = remember { mutableStateOf(Rect.Zero) }
     val layoutHitTestOwner = rememberLayoutHitTestOwner()
-
+    val contentPaddingInset = remember { MutableWindowInsets() }
     val procedure = remember(window) {
         ComposeWindowProcedure(
             window = window,
@@ -123,13 +127,14 @@ fun FrameWindowScope.WindowsWindowFrame(
             onWindowInsetUpdate = { paddingInset.insets = it }
         )
     }
-    Column(
+    Box(
         modifier = Modifier.windowInsetsPadding(paddingInset)
     ) {
-
+        content(WindowInsets(top = captionBarHeight), contentPaddingInset)
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(48.dp)
+            modifier = Modifier.height(captionBarHeight)
+                .zIndex(10f)
                 .onGloballyPositioned { captionBarRect.value = it.boundsInWindow() }
         ) {
             AnimatedContent(
@@ -168,11 +173,7 @@ fun FrameWindowScope.WindowsWindowFrame(
 
                         Text(
                             text = CaptionButtonIcon.Back.glyph.toString(),
-                            fontFamily = if (!isWindows11OrLater()) {
-                                FontFamily("Segoe MDL2 Assets")
-                            } else {
-                                FontFamily("Segoe Fluent Icons")
-                            },
+                            fontFamily = windowsFontFamily(),
                             modifier = Modifier.graphicsLayer {
                                 this.scaleX = scaleX.value
                                 translationX = (1f - scaleX.value) * 6.dp.toPx()
@@ -184,16 +185,20 @@ fun FrameWindowScope.WindowsWindowFrame(
                     Spacer(modifier = Modifier.width(10.dp).height(36.dp))
                 }
             }
-            Image(
-                painter = icon,
-                contentDescription = null,
-                modifier = Modifier.padding(start = 6.dp).size(16.dp)
-            )
-            Text(
-                text = title,
-                style = FluentTheme.typography.caption,
-                modifier = Modifier.padding(start = 16.dp)
-            )
+            if (icon != null) {
+                Image(
+                    painter = icon,
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = 6.dp).size(16.dp)
+                )
+            }
+            if (title.isNotEmpty()) {
+                Text(
+                    text = title,
+                    style = FluentTheme.typography.caption,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             window.CaptionButtonRow(
                 procedure.windowHandle,
@@ -202,10 +207,11 @@ fun FrameWindowScope.WindowsWindowFrame(
                 onMaximizeButtonRectUpdate = {
                     maxButtonRect.value = it
                 },
-                modifier = Modifier.align(Alignment.Top)
+                modifier = Modifier.align(Alignment.Top).onSizeChanged {
+                    contentPaddingInset.insets = WindowInsets(right = it.width, top = it.height)
+                }
             )
         }
-        content()
     }
 }
 
@@ -311,15 +317,20 @@ fun CaptionButton(
     ) {
         Text(
             text = icon.glyph.toString(),
-            fontFamily = if (!isWindows11OrLater()) {
-                FontFamily("Segoe MDL2 Assets")
-            } else {
-                FontFamily("Segoe Fluent Icons")
-            },
+            fontFamily = windowsFontFamily(),
             textAlign = TextAlign.Center,
             fontSize = 10.sp,
             modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
         )
+    }
+}
+
+@OptIn(ExperimentalTextApi::class)
+private fun windowsFontFamily(): FontFamily {
+    return if (!isWindows11OrLater()) {
+        FontFamily("Segoe MDL2 Assets")
+    } else {
+        FontFamily("Segoe Fluent Icons")
     }
 }
 

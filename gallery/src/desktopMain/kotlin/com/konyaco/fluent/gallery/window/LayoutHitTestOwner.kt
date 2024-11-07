@@ -19,11 +19,11 @@ fun rememberLayoutHitTestOwner(): LayoutHitTestOwner {
     val scene = getLocalComposeScene()?.current ?: error("no compose scene")
     return remember(scene) {
         when(scene::class.qualifiedName) {
-            "androidx.compose.ui.scene.MultiLayerComposeSceneImpl" -> {
-                MultiLayerLayoutHitTestOwner(scene)
+            "androidx.compose.ui.scene.CanvasLayersComposeSceneImpl" -> {
+                CanvasLayersLayoutHitTestOwner(scene)
             }
-            "androidx.compose.ui.scene.SingleLayerComposeSceneImpl" -> {
-                SingleLayerLayoutHitTestOwner(scene)
+            "androidx.compose.ui.scene.PlatformLayersComposeSceneImpl" -> {
+                PlatformLayersLayoutHitTestOwner(scene)
             }
             else -> error("unsupported compose scene")
         }
@@ -101,9 +101,8 @@ internal abstract class ReflectLayoutHitTestOwner: LayoutHitTestOwner {
 }
 
 @OptIn(InternalComposeUiApi::class)
-internal class SingleLayerLayoutHitTestOwner(scene: ComposeScene): ReflectLayoutHitTestOwner() {
-
-    private val sceneClass = classLoader.loadClass("androidx.compose.ui.scene.SingleLayerComposeSceneImpl")
+internal class PlatformLayersLayoutHitTestOwner(scene: ComposeScene) : ReflectLayoutHitTestOwner() {
+    private val sceneClass = classLoader.loadClass("androidx.compose.ui.scene.PlatformLayersComposeSceneImpl")
 
     private val mainOwnerRef = sceneClass.getDeclaredMethod("getMainOwner").let {
         it.trySetAccessible()
@@ -116,10 +115,9 @@ internal class SingleLayerLayoutHitTestOwner(scene: ComposeScene): ReflectLayout
 }
 
 @OptIn(InternalComposeUiApi::class)
-internal class MultiLayerLayoutHitTestOwner(private val scene: ComposeScene): ReflectLayoutHitTestOwner() {
-
-    private val sceneClass = classLoader.loadClass("androidx.compose.ui.scene.MultiLayerComposeSceneImpl")
-    private val layerClass = sceneClass.declaredClasses.first {it.name == "androidx.compose.ui.scene.MultiLayerComposeSceneImpl\$AttachedComposeSceneLayer" }
+internal class CanvasLayersLayoutHitTestOwner(private val scene: ComposeScene) : ReflectLayoutHitTestOwner() {
+    private val sceneClass = classLoader.loadClass("androidx.compose.ui.scene.CanvasLayersComposeSceneImpl")
+    private val layerClass = sceneClass.declaredClasses.first { it.name == "androidx.compose.ui.scene.CanvasLayersComposeSceneImpl\$AttachedComposeSceneLayer" }
 
     private val mainOwnerRef = sceneClass.getDeclaredField("mainOwner").let {
         it.trySetAccessible()

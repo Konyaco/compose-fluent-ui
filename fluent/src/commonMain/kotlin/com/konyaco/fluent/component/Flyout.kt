@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -31,13 +32,15 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import com.konyaco.fluent.*
+import com.konyaco.fluent.ExperimentalFluentApi
+import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalAcrylicPopupEnabled
 import com.konyaco.fluent.LocalWindowAcrylicContainer
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.background.AcrylicContainerScope
-import com.konyaco.fluent.background.AcrylicDefaults
+import com.konyaco.fluent.background.MaterialContainerScope
+import com.konyaco.fluent.background.MaterialDefaults
+import com.konyaco.fluent.background.Material
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.ElevationDefaults
 import com.konyaco.fluent.background.Layer
@@ -222,13 +225,13 @@ internal fun AcrylicPopupContent(
     content: @Composable () -> Unit
 ) {
     with(LocalWindowAcrylicContainer.current) {
-        val userAcrylic = LocalAcrylicPopupEnabled.current
+        val useAcrylic = LocalAcrylicPopupEnabled.current
         AnimatedVisibility(
             visibleState = visibleState,
             enter = enterTransition,
             exit = exitTransition,
             modifier = Modifier.then(
-                if (userAcrylic) {
+                if (useAcrylic) {
                     Modifier.padding(flyoutPopPaddingFixShadowRender)
                 } else {
                     Modifier
@@ -240,7 +243,7 @@ internal fun AcrylicPopupContent(
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
                 shape = shape,
                 elevation = elevation,
-                color = if (userAcrylic) {
+                color = if (useAcrylic) {
                     Color.Transparent
                 } else {
                     FluentTheme.colors.background.acrylic.default
@@ -248,16 +251,9 @@ internal fun AcrylicPopupContent(
                 modifier = modifier
             ) {
                 FlyoutContentLayout(
-                    shape = shape,
                     contentPadding = contentPadding,
-                    acrylicTint = AcrylicDefaults.tintColor,
-                    acrylicEnabled = {
-                        if (userAcrylic) {
-                            visibleState.targetState || (visibleState.currentState && visibleState.isIdle)
-                        } else {
-                            false
-                        }
-                    },
+                    material = MaterialDefaults.acrylicDefault(),
+                    shape = shape,
                     content = content
                 )
             }
@@ -268,10 +264,9 @@ internal fun AcrylicPopupContent(
 //Workaround for acrylic PaddingBorder
 @OptIn(ExperimentalFluentApi::class)
 @Composable
-internal fun AcrylicContainerScope.FlyoutContentLayout(
+internal fun MaterialContainerScope.FlyoutContentLayout(
+    material: Material,
     shape: Shape,
-    acrylicTint: Color,
-    acrylicEnabled: () -> Boolean,
     contentPadding: PaddingValues,
     content: @Composable () -> Unit
 ) {
@@ -291,11 +286,11 @@ internal fun AcrylicContainerScope.FlyoutContentLayout(
                 shape
             }
             Box(
-                modifier = Modifier.layoutId("placeholder").padding(1.dp).acrylicOverlay(
-                    tint = acrylicTint,
-                    enabled = acrylicEnabled,
-                    shape = acrylicShape
-                )
+                modifier = Modifier
+                    .layoutId("placeholder")
+                    .padding(1.dp)
+                    .clip(acrylicShape)
+                    .materialOverlay(material = material)
             )
             Box(modifier = Modifier.padding(contentPadding).layoutId("content")) { content() }
         }
@@ -309,6 +304,21 @@ internal fun AcrylicContainerScope.FlyoutContentLayout(
             contentPlaceable.place(0, 0)
         }
     }
+}
+
+@Immutable
+internal data class PaddingCornerSize(
+    private val size: CornerSize,
+    private val padding: Dp
+) : CornerSize, InspectableValue {
+
+    override fun toPx(shapeSize: Size, density: Density) =
+        with(density) { (size.toPx(shapeSize, this) - padding.toPx()).coerceAtLeast(0f) }
+
+    override fun toString(): String = size.toString()
+
+    override val valueOverride: Dp
+        get() = padding
 }
 
 private class FlyoutContainerScopeImpl(visibleState: MutableState<Boolean>) : FlyoutContainerScope {
@@ -351,17 +361,4 @@ internal fun defaultFlyoutEnterPlacementAnimation(placement: FlyoutPlacement): E
             flyoutEnterSpec()
         )
     }
-}
-
-@Immutable
-internal data class PaddingCornerSize(private val size: CornerSize, private val padding: Dp) :
-    CornerSize,
-    InspectableValue {
-    override fun toPx(shapeSize: Size, density: Density) =
-        with(density) { size.toPx(shapeSize, this) - padding.toPx() }
-
-    override fun toString(): String = size.toString()
-
-    override val valueOverride: Dp
-        get() = padding
 }

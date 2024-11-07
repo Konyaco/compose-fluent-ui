@@ -265,7 +265,7 @@ private fun Controller(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("Scale: %.2f".format(scale))
+        Text("Scale: ${scale.toString().take(4)}")
         val density = LocalDensity.current
         Button(onClick = { onScaleChange(density.density) }) { Text("Reset") }
         Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })

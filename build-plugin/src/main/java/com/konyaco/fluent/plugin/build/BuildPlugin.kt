@@ -1,5 +1,8 @@
 package com.konyaco.fluent.plugin.build
 
+import com.konyaco.fluent.plugin.build.BuildConfig.isRelease
+import com.konyaco.fluent.plugin.build.BuildConfig.libraryVersion
+import com.konyaco.fluent.plugin.build.BuildConfig.snapshotLibraryVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
@@ -14,6 +17,9 @@ import org.gradle.plugins.signing.SigningExtension
 
 class BuildPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+
+        setupLibraryVersion(target)
+
         target.allprojects.forEach { project ->
             project.afterEvaluate {
 
@@ -90,5 +96,54 @@ class BuildPlugin : Plugin<Project> {
                 }
             }
         }
+    }
+
+
+
+    private fun setupLibraryVersion(target: Project) {
+        val providers = target.providers
+
+        val gitTag = providers.exec {
+            commandLine("git", "describe", "--abbrev=0", "--tags")
+            isIgnoreExitValue = true
+        }.standardOutput.asText.get().trim()
+        val relativeCommitCount = providers.exec {
+            commandLine("git", "describe", "--tags")
+            isIgnoreExitValue = true
+        }.standardOutput.asText.get().trim()
+            .removePrefix(gitTag)
+            .let {
+                if (it.isNotEmpty()) {
+                    it.split("-")[1].toInt()
+                } else {
+                    0
+                }
+            }
+
+        libraryVersion = when {
+            isRelease -> gitTag
+            else -> snapshotLibraryVersion
+        }
+
+        BuildConfig.integerVersionName = libraryVersion
+            .removePrefix("v")
+            .removeSuffix("-SNAPSHOT")
+            .substringBefore("-dev")
+            .let {
+                val parts = it.split(".")
+                var major = parts.getOrNull(0) ?: "0"
+                var minor = parts.getOrNull(1) ?: "0"
+                if (major.startsWith("0")) {
+                    major = "1"
+                    minor = "0"
+                }
+                when (parts.size) {
+                    1, 2 -> "${major}.$minor.$relativeCommitCount"
+                    else -> {
+                        val patchVersion = parts[2].toIntOrNull() ?: 0
+                        "${major}.${minor}.${patchVersion * 200 + relativeCommitCount}"
+                    }
+                }
+            }
     }
 }

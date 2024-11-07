@@ -2,9 +2,11 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
@@ -12,6 +14,20 @@ plugins {
 
 kotlin {
     applyTargets(publish = false)
+    wasmJs { binaries.executable() }
+    js { binaries.executable() }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -73,7 +89,8 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.android.pro"
+                "proguard-rules.android.pro",
+                "proguard-rules.common.pro"
             )
             val signFile = System.getenv("ANDROID_SIGNING_FILE")
             signFile?.let {
@@ -113,6 +130,10 @@ android {
     compileOptions {
         sourceCompatibility = BuildConfig.Jvm.javaVersion
         targetCompatibility = BuildConfig.Jvm.javaVersion
+        isCoreLibraryDesugaringEnabled = true
+    }
+    dependencies {
+        coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.9")
     }
 }
 
@@ -120,7 +141,10 @@ compose.desktop {
     application {
         mainClass = "${BuildConfig.packageName}.gallery.MainKt"
         buildTypes.release.proguard {
-            configurationFiles.from(project.file("proguard-rules.desktop.pro"))
+            configurationFiles.from(
+                project.file("proguard-rules.desktop.pro"),
+                project.file("proguard-rules.common.pro")
+            )
         }
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
@@ -150,7 +174,7 @@ dependencies {
 
 // workaround for KSP only in Common Main.
 // https://github.com/google/ksp/issues/567
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }

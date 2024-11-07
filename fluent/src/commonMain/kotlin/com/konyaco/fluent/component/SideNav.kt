@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
@@ -458,7 +459,7 @@ private fun Modifier.indicatorOffsetAnimation(
     selectedPosition: MutableTransitionState<Float>,
     isVertical: Boolean = true
 ): Modifier {
-    val fraction by updateTransition(indicatorState).animateFloat(
+    val fraction by rememberTransition(indicatorState).animateFloat(
         transitionSpec = {
             tween(FluentDuration.VeryLongDuration , easing = FluentEasing.PointToPointEasing)
         },
@@ -466,7 +467,7 @@ private fun Modifier.indicatorOffsetAnimation(
     )
     //Delay set selected position
     if (indicatorState.isIdle && indicatorState.targetState) {
-        updateTransition(selectedPosition).animateFloat(transitionSpec = {
+        rememberTransition(selectedPosition).animateFloat(transitionSpec = {
             tween(
                 FluentDuration.QuickDuration,
                 easing = FluentEasing.FastInvokeEasing

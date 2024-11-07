@@ -66,5 +66,4 @@ internal expect fun ProvideFontIcon(
     content: @Composable () -> Unit
 )
 
-internal val LocalFontIconFontFamily =
-    staticCompositionLocalOf<FontFamily?> { error("No Font provide for load font icon") }
+internal val LocalFontIconFontFamily = staticCompositionLocalOf<FontFamily?> { null }

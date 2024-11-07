@@ -57,9 +57,14 @@ import com.konyaco.fluent.icons.filled.CaretDown
 import com.konyaco.fluent.icons.filled.CaretUp
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.collectVisualState
-import java.util.Calendar
-import java.util.Date
-
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 
 /**
  * CalendarView shows a large view for showing and selecting dates.
@@ -72,54 +77,61 @@ fun CalendarView(
     onChoose: (day: CalendarDatePickerState.Day) -> Unit,
     state: CalendarDatePickerState = remember { CalendarDatePickerState() }
 ) {
-    // TODO: Replace by flyout when it's in CalendarDatePicker
     Layer(
         Modifier.width(300.dp),
         color = FluentTheme.colors.background.acrylic.defaultFallback
     ) {
-        Column(Modifier.width(300.dp)) {
-            // Header
-            Row(
-                Modifier.padding(4.dp).height(40.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CalendarHeader(
-                    modifier = Modifier.weight(1f),
-                    text = state.viewHeaderText.value,
-                    onClick = { state.toggleChooseType() },
-                    disabled = state.currentChooseType.value == ChooseType.YEAR
-                )
-                PaginationButton(up = true, onClick = { state.up() })
-                PaginationButton(up = false, onClick = { state.down() })
-            }
-            // Divider
-            Box(
-                Modifier.fillMaxWidth().height(1.dp)
-                    .background(FluentTheme.colors.stroke.card.default)
-            )
+        CalendarViewLayout(onChoose, state)
+    }
+}
 
-            // Content
-            Layer(
-                Modifier.fillMaxWidth().height(300.dp),
-                color = FluentTheme.colors.background.layer.default,
-                border = null
+@Composable
+internal fun CalendarViewLayout(
+    onChoose: (day: CalendarDatePickerState.Day) -> Unit,
+    state: CalendarDatePickerState = remember { CalendarDatePickerState() },
+) {
+    Column(Modifier.width(300.dp)) {
+        // Header
+        Row(
+            Modifier.padding(4.dp).height(40.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CalendarHeader(
+                modifier = Modifier.weight(1f),
+                text = state.viewHeaderText.value,
+                onClick = { state.toggleChooseType() },
+                disabled = state.currentChooseType.value == ChooseType.YEAR
+            )
+            PaginationButton(up = true, onClick = { state.up() })
+            PaginationButton(up = false, onClick = { state.down() })
+        }
+        // Divider
+        Box(
+            Modifier.fillMaxWidth().height(1.dp)
+                .background(FluentTheme.colors.stroke.card.default)
+        )
+
+        // Content
+        Layer(
+            Modifier.fillMaxWidth().height(300.dp),
+            color = FluentTheme.colors.background.layerOnAcrylic.default,
+            border = null
+        ) {
+            AnimatedContent(
+                modifier = Modifier.fillMaxSize(),
+                targetState = state.currentChooseType.value,
+                transitionSpec = {
+                    if (targetState < initialState) {
+                        zoomInTransition
+                    } else {
+                        zoomOutTransition
+                    }
+                }
             ) {
-                AnimatedContent(
-                    modifier = Modifier.fillMaxSize(),
-                    targetState = state.currentChooseType.value,
-                    transitionSpec = {
-                        if (targetState < initialState) {
-                            zoomInTransition
-                        } else {
-                            zoomOutTransition
-                        }
-                    }
-                ) {
-                    when (it) {
-                        ChooseType.YEAR -> YearTable(state)
-                        ChooseType.MONTH -> MonthTable(state)
-                        ChooseType.DAY -> DateTable(state, onChoose = onChoose)
-                    }
+                when (it) {
+                    ChooseType.YEAR -> YearTable(state)
+                    ChooseType.MONTH -> MonthTable(state)
+                    ChooseType.DAY -> DateTable(state, onChoose = onChoose)
                 }
             }
         }
@@ -335,7 +347,11 @@ private fun CalendarHeader(
             disabled = disabled
         ) {
             Box(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                Text(text = text, style = FluentTheme.typography.bodyStrong, textAlign = TextAlign.Start)
+                Text(
+                    text = text,
+                    style = FluentTheme.typography.bodyStrong,
+                    textAlign = TextAlign.Start
+                )
                 // FIXME: The animation is only enabled when change choose type
                 /*AnimatedContent(
                     modifier = Modifier.fillMaxWidth(),
@@ -482,14 +498,12 @@ private fun Item(
 }
 
 class CalendarDatePickerState {
-    private val locale = java.util.Locale.getDefault()
-    private val calendar = Calendar.getInstance(locale)
 
     val currentChooseType = mutableStateOf<ChooseType>(ChooseType.DAY)
     val viewHeaderText = mutableStateOf("")
 
-    val dayOfWeekNames = mutableStateOf(getDowNames())
-    val monthNames = mutableStateOf(getMonthNames())
+    val dayOfWeekNames = mutableStateOf(getLocalDayOfWeekNames())
+    val monthNames = mutableStateOf(getLocalMonthNames())
 
     enum class ChooseType {
         YEAR, MONTH, DAY
@@ -516,43 +530,15 @@ class CalendarDatePickerState {
 
     // TODO: For localization, e.g. In China the start of week is Monday
     // FIXME: `firstDayOfWeek` should return 2(Monday), but returns 1(Sunday) in Java 17
-    val localeStartDayOfWeek = calendar.firstDayOfWeek
+    val localeStartDayOfWeek = getLocalFirstDayOfWeek()
 //    val localeStartDayOfWeek = 2
 
-    private fun getDowNames(): List<String> {
-        val names = calendar.getDisplayNames(
-            Calendar.DAY_OF_WEEK,
-            Calendar.NARROW_STANDALONE,
-            locale
-        ) ?: calendar.getDisplayNames(
-            Calendar.DAY_OF_WEEK,
-            Calendar.SHORT_STANDALONE,
-            locale
-        )
-        val result = MutableList(7) { "" }
-
-        for (entry in names.entries) {
-            // minus 1 because dof start from 1
-            result[entry.value - 1] = entry.key
-        }
-        return result
-    }
-
-    private fun getMonthNames(): List<String> {
-        val names = calendar.getDisplayNames(Calendar.MONTH, Calendar.SHORT_STANDALONE, locale)
-        val result = MutableList(12) { "" }
-        for (entry in names.entries) {
-            result[entry.value] = entry.key
-        }
-        return result
-    }
-
     init {
-        val calendar = Calendar.getInstance()
-        calendar.time = Date()
-        val year = calendar.get(Calendar.YEAR)
-        val monthValue = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val now = Clock.System.now()
+        val dateTime = now.toLocalDateTime(TimeZone.currentSystemDefault())
+        val year = dateTime.year
+        val monthValue = dateTime.monthNumber - 1
+        val day = dateTime.dayOfMonth
 //        currentYear = mutableStateOf(Year(year))
 //        viewYear = mutableStateOf(Year(year))
 //        selectedYear = mutableStateOf(Year(year))
@@ -585,9 +571,9 @@ class CalendarDatePickerState {
     }
 
     private fun calculateCandidateDays(year: Int, monthValue: Int) {
-        val calendar = Calendar.getInstance()
-        calendar.set(year, monthValue, 1)
-        val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) // Start at Sunday(1)
+        val localDate = LocalDate(year, monthValue + 1, 1)
+        val startDayOfWeek = localDate.dayOfWeek.isoDayNumber + 1
+//        val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) // Start at Sunday(1)
 
         // Start day at the first `localeStartDayOfWeek(e.g. Sunday)` before this month
         // If localeStartDOW = Sunday(1):
@@ -603,17 +589,14 @@ class CalendarDatePickerState {
             startDayOffset += 7
         }
 
-        val startDayOfYear = calendar.get(Calendar.DAY_OF_YEAR) - startDayOffset
+        val startDay = localDate.minus(DatePeriod(days = startDayOffset))
 
         // e.g from 4-29 to 6-9
         val daysToDisplay = 7 * 6
-        val candidateDays = (startDayOfYear until startDayOfYear + daysToDisplay).map { dayOfYear ->
-            calendar.set(Calendar.DAY_OF_YEAR, dayOfYear)
-            val monthValue = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            Day(year, monthValue, day)
+        this.candidateDays.value = List(daysToDisplay) { i ->
+            startDay.plus(DatePeriod(days = i))
+                .let { Day(it.year, it.monthNumber - 1, it.dayOfMonth) }
         }
-        this.candidateDays.value = candidateDays
     }
 
     internal fun toggleChooseType() {
@@ -771,18 +754,23 @@ class CalendarDatePickerState {
             }
 
             ChooseType.DAY -> {
-                val displayNames =
-                    calendar.getDisplayNames(Calendar.MONTH, Calendar.SHORT_STANDALONE, locale)
+                val displayNames = getLocalMonthNames()
                 val curr = viewMonth.value
                 val monthValue = curr.monthValue
                 val year = curr.year
-                val name = displayNames.firstNotNullOf { (k, v) ->
-                    if (v == monthValue) k
-                    else null
-                }
+                val name = displayNames[monthValue]
                 // TODO: Should be "May 2024" / "2024年 5月"
                 viewHeaderText.value = "$name $year"
             }
         }
     }
 }
+
+expect internal fun getLocalDayOfWeekNames(): List<String>
+expect internal fun getLocalMonthNames(): List<String>
+
+/**
+ * Get the first day of week
+ * Sunday(1), Monday(2), ..., Saturday(7)
+ */
+expect internal fun getLocalFirstDayOfWeek(): Int

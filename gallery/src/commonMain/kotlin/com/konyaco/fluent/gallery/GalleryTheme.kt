@@ -1,11 +1,30 @@
 package com.konyaco.fluent.gallery
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.konyaco.fluent.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.BrushPainter
+import androidx.compose.ui.layout.ContentScale
+import com.konyaco.fluent.ExperimentalFluentApi
+import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.Mica
+import com.konyaco.fluent.darkColors
+import com.konyaco.fluent.lightColors
+import fluentdesign.gallery.generated.resources.Res
+import fluentdesign.gallery.generated.resources.banner
+import org.jetbrains.compose.resources.painterResource
 
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
@@ -49,7 +68,28 @@ fun GalleryTheme(
             compactMode = store.compactMode
         ) {
             if (displayMicaLayer) {
-                Mica(modifier = Modifier.fillMaxSize()) {
+                val gradient = if (store.darkMode) {
+                    listOf(
+                        Color(0xff282C51),
+                        Color(0xff2A344A),
+                    )
+                } else {
+                    listOf(
+                        Color(0xffB1D0ED),
+                        Color(0xffDAE3EC),
+                    )
+                }
+
+                Mica(
+                    background = {
+                        Image(
+                            painter = BrushPainter(Brush.linearGradient(gradient)),
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds
+                        )
+                    },
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     content()
                 }
             } else {

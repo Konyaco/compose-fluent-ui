@@ -30,12 +30,13 @@ import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.benasher44.uuid.uuid4
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.scheme.VisualStateScheme
 import kotlinx.coroutines.delay
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Composable
 fun MenuFlyoutContainer(
@@ -242,13 +243,14 @@ fun MenuFlyoutScope.MenuFlyoutItem(
 private class MenuFlyoutScopeImpl : MenuFlyoutScope {
     var latestHoveredItem: String? by mutableStateOf(null)
 
+    @OptIn(ExperimentalUuidApi::class)
     @Composable
     override fun registerHoveredMenuItem(
         interaction: MutableInteractionSource,
         onDelayedHoveredChanged: (hovered: Boolean) -> Unit
     ) {
         val isHovered = interaction.collectIsHoveredAsState()
-        val uuid = remember { uuid4().toString() }
+        val uuid = remember { Uuid.random().toString() }
         val delayHovered = remember { mutableStateOf(false) }
         LaunchedEffect(isHovered.value) {
             if (isHovered.value) {

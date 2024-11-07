@@ -8,12 +8,10 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.konyaco.fluent.gallery.component.rememberComponentNavigator
-import com.konyaco.fluent.gallery.jna.windows.structure.isWindows10OrLater
-import com.konyaco.fluent.gallery.window.WindowsWindowFrame
+import com.konyaco.fluent.gallery.window.WindowFrame
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.skiko.hostOs
 
 fun main() = application {
     val state = rememberWindowState(
@@ -26,26 +24,16 @@ fun main() = application {
         title = "Compose Fluent Design Gallery",
         icon = painterResource(Res.drawable.icon)
     ) {
-        val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
-        GalleryTheme(!supportBackdrop) {
-            if (supportBackdrop) {
-                val navigator = rememberComponentNavigator()
-                WindowsWindowFrame(
-                    onCloseRequest = { exitApplication() },
-                    icon = painterResource(Res.drawable.icon),
-                    title = "Compose Fluent Design Gallery",
-                    backButtonEnabled = navigator.canNavigateUp,
-                    backButtonClick = { navigator.navigateUp() },
-                    state = state
-                ) {
-                    App(navigator)
-                }
-            } else {
-                App()
-            }
-
+        val navigator = rememberComponentNavigator()
+        WindowFrame(
+            onCloseRequest = ::exitApplication,
+            icon = painterResource(Res.drawable.icon),
+            title = "Compose Fluent Design Gallery",
+            state = state,
+            backButtonEnabled = navigator.canNavigateUp,
+            backButtonClick = { navigator.navigateUp() },
+        ) { windowInset, _ ->
+            App(windowInset = windowInset, navigator = navigator)
         }
-
     }
 }
-

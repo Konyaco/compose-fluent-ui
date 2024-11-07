@@ -27,6 +27,7 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
+import kotlin.jvm.JvmInline
 import kotlin.math.sqrt
 
 /**
@@ -58,7 +59,7 @@ fun Layer(
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
-    outsideBorder: Boolean = false,
+    outsideBorder: Boolean,
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
@@ -85,7 +86,7 @@ fun Layer(
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
-    backgroundSizing: BackgroundSizing,
+    backgroundSizing: BackgroundSizing = BackgroundSizing.OuterBorderEdge,
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {

@@ -20,12 +20,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -43,7 +40,7 @@ import com.konyaco.fluent.LocalAcrylicPopupEnabled
 import com.konyaco.fluent.LocalWindowAcrylicContainer
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.background.AcrylicDefaults
+import com.konyaco.fluent.background.MaterialDefaults
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.ElevationDefaults
 import com.konyaco.fluent.background.Layer
@@ -63,7 +60,6 @@ fun DropdownMenu(
     expandedStates.targetState = expanded
 
     if (expandedStates.currentState || expandedStates.targetState) {
-        val transformOriginState = remember { mutableStateOf(TransformOrigin.Center) } // TODO: Transform Origin
         val density = LocalDensity.current
 
         val popupPositionProvider = DropdownMenuPositionProvider(density, offset)
@@ -77,7 +73,6 @@ fun DropdownMenu(
         ) {
             DropdownMenuContent(
                 expandedStates = expandedStates,
-                transformOriginState = transformOriginState,
                 modifier = modifier,
                 content = content
             )
@@ -119,7 +114,6 @@ internal class DropdownMenuPositionProvider(val density: Density, val offset: Dp
 @Composable
 internal fun DropdownMenuContent(
     expandedStates: MutableTransitionState<Boolean>,
-    transformOriginState: MutableState<TransformOrigin>,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -146,10 +140,9 @@ internal fun DropdownMenuContent(
 
             with(LocalWindowAcrylicContainer.current) {
                 FlyoutContentLayout(
-                    shape = shape,
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
-                    acrylicEnabled = { useAcrylic && expandedStates.targetState },
-                    acrylicTint = AcrylicDefaults.tintColor,
+                    material = MaterialDefaults.acrylicDefault(),
+                    shape = shape,
                     content = {
                         Column(
                             modifier = modifier
