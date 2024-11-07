@@ -25,7 +25,8 @@ fun FrameWindowScope.MacOSWindowFrame(
             }
         }
     }
-    content(windowInset, WindowInsets(left = 70.dp))
+    //TODO Get real macOS caption bar width.
+    content(windowInset, WindowInsets(left = 64.dp))
 
     window.rootPane.apply {
         rootPane.putClientProperty("apple.awt.fullWindowContent", true)
