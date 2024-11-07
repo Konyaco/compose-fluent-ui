@@ -12,6 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.layout.ContentScale
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
@@ -65,10 +68,22 @@ fun GalleryTheme(
             compactMode = store.compactMode
         ) {
             if (displayMicaLayer) {
+                val gradient = if (store.darkMode) {
+                    listOf(
+                        Color(0xff282C51),
+                        Color(0xff2A344A),
+                    )
+                } else {
+                    listOf(
+                        Color(0xffB1D0ED),
+                        Color(0xffDAE3EC),
+                    )
+                }
+
                 Mica(
                     background = {
                         Image(
-                            painter = painterResource(Res.drawable.banner),
+                            painter = BrushPainter(Brush.linearGradient(gradient)),
                             contentDescription = null,
                             contentScale = ContentScale.FillBounds
                         )
