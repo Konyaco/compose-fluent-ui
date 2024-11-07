@@ -43,8 +43,9 @@ fun main() = application {
             }
         }
         val supportBackdrop = hostOs.isWindows && isWindows10OrLater()
+        val supportWindowsFrame = hostOs.isWindows && isWindows10OrLater()
         GalleryTheme(!supportBackdrop) {
-            if (supportBackdrop) {
+            if (supportWindowsFrame) {
                 val navigator = rememberComponentNavigator()
                 WindowsWindowFrame(
                     onCloseRequest = { exitApplication() },

@@ -168,11 +168,7 @@ fun FrameWindowScope.WindowsWindowFrame(
 
                         Text(
                             text = CaptionButtonIcon.Back.glyph.toString(),
-                            fontFamily = if (!isWindows11OrLater()) {
-                                FontFamily("Segoe MDL2 Assets")
-                            } else {
-                                FontFamily("Segoe Fluent Icons")
-                            },
+                            fontFamily = windowsFontFamily(),
                             modifier = Modifier.graphicsLayer {
                                 this.scaleX = scaleX.value
                                 translationX = (1f - scaleX.value) * 6.dp.toPx()
@@ -311,15 +307,20 @@ fun CaptionButton(
     ) {
         Text(
             text = icon.glyph.toString(),
-            fontFamily = if (!isWindows11OrLater()) {
-                FontFamily("Segoe MDL2 Assets")
-            } else {
-                FontFamily("Segoe Fluent Icons")
-            },
+            fontFamily = windowsFontFamily(),
             textAlign = TextAlign.Center,
             fontSize = 10.sp,
             modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
         )
+    }
+}
+
+@OptIn(ExperimentalTextApi::class)
+private fun windowsFontFamily(): FontFamily {
+    return if (!isWindows11OrLater()) {
+        FontFamily("Segoe MDL2 Assets")
+    } else {
+        FontFamily("Segoe Fluent Icons")
     }
 }
 

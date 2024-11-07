@@ -1,5 +1,6 @@
 package com.konyaco.fluent.gallery
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -11,17 +12,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.painter.BrushPainter
+import androidx.compose.ui.layout.ContentScale
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.Mica
 import com.konyaco.fluent.darkColors
-import com.konyaco.fluent.generateShades
 import com.konyaco.fluent.lightColors
+import fluentdesign.gallery.generated.resources.Res
+import fluentdesign.gallery.generated.resources.banner
+import org.jetbrains.compose.resources.painterResource
 
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
@@ -65,23 +65,16 @@ fun GalleryTheme(
             compactMode = store.compactMode
         ) {
             if (displayMicaLayer) {
-                val accentColor = FluentTheme.colors.fillAccent.selectedTextBackground
-                val painter = remember(accentColor) {
-                    val shades = generateShades(accentColor)
-                    BrushPainter(
-                        Brush.linearGradient(
-                            colors = listOf(
-                                shades.light3,
-                                shades.light2,
-                                shades.light1
-                            ),
-                            start = Offset.Zero,
-                            end = Offset.Infinite,
-                            tileMode = TileMode.Clamp
+                Mica(
+                    background = {
+                        Image(
+                            painter = painterResource(Res.drawable.banner),
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds
                         )
-                    )
-                }
-                Mica(painter = painter, modifier = Modifier.fillMaxSize()) {
+                    },
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     content()
                 }
             } else {
