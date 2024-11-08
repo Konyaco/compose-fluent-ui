@@ -12,6 +12,13 @@ on:
     branches:
       - dev
       - test_ios_build
+
+    paths-ignore:
+      - 'assets/**'
+      - '**.md'
+      - 'LICENSE'
+      - '**.gitignore'
+
   pull_request_review:
     types: |
       submitted
