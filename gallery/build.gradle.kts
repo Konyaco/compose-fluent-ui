@@ -1,4 +1,5 @@
 import com.android.build.api.variant.impl.VariantOutputImpl
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.konyaco.fluent.plugin.build.BuildConfig
 import com.konyaco.fluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -10,6 +11,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.build.konfig)
 }
 
 kotlin {
@@ -159,11 +161,28 @@ compose.desktop {
             windows {
                 iconFile.set(project.file("icons/icon.ico"))
                 upgradeUuid = "a23572e1-c6fd-4b76-98ec-1e45953eb941"
+                shortcut = true
+                menu = true
+                perUserInstall = true
             }
             linux {
                 iconFile.set(project.file("icons/icon.png"))
             }
         }
+    }
+}
+
+buildkonfig {
+    packageName = "${BuildConfig.packageName}.build"
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "LIBRARY_VERSION", BuildConfig.libraryVersion, const = true)
+        buildConfigField(FieldSpec.Type.STRING, "GALLERY_VERSION", BuildConfig.integerVersionName, const = true)
+        buildConfigField(FieldSpec.Type.STRING, "COMPOSE_VERSION", libs.versions.compose.get(), const = true)
+        buildConfigField(FieldSpec.Type.STRING, "KOTLIN_VERSION", libs.versions.kotlin.get(), const = true)
+        buildConfigField(FieldSpec.Type.STRING, "HAZE_VERSION", libs.versions.haze.get(), const = true)
+
+        buildConfigField(FieldSpec.Type.STRING, "CURRENT_BRANCH", BuildConfig.branch, const = true)
     }
 }
 

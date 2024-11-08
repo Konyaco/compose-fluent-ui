@@ -147,6 +147,9 @@ fun App(
                 }
             },
             footer = {
+                val settingItem = remember(navigator) {
+                    ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings) { SettingsScreen(navigator) }
+                }
                 NavigationItem(navigator.latestBackEntry, navigator::navigate, settingItem)
             }
         ) {
@@ -238,5 +241,3 @@ private fun NavigationItem(
         }
     )
 }
-
-private val settingItem = ComponentItem("Settings", group = "", description = "", icon = Icons.Default.Settings) { SettingsScreen() }
