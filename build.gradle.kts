@@ -1,4 +1,4 @@
-import com.konyaco.fluent.plugin.build.BuildConfig
+import com.konyaco.fluent.plugin.build.BuildConfig AA
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
