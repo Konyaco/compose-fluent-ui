@@ -5,7 +5,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.konyaco/fluent)](https://central.sonatype.com/artifact/com.konyaco/fluent/)
 
 
-**Fluent Design** UI library for **Compose Multiplatform**
+**Fluent Design** UI library for **Compose Multiplatform AA**
 
 ![Example](assets/screenshot.png)
 
