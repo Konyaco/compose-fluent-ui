@@ -41,6 +41,7 @@ import com.konyaco.fluent.gallery.screen.test.TestComponentScreen
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Blur
 import com.konyaco.fluent.icons.regular.Bug
+import com.konyaco.fluent.icons.regular.ChevronRight
 import com.konyaco.fluent.icons.regular.Color
 import com.konyaco.fluent.icons.regular.List
 import fluentdesign.gallery.generated.resources.Res
@@ -148,6 +149,9 @@ fun SettingsScreen(componentNavigator: ComponentNavigator) {
                         },
                         icon = {
                             Icon(Icons.Regular.Bug, contentDescription = null)
+                        },
+                        dropdown = {
+                            Icon(Icons.Regular.ChevronRight, null)
                         }
                     )
                 }
