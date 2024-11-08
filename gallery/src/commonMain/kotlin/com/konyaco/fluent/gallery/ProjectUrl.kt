@@ -1,5 +1,7 @@
 package com.konyaco.fluent.gallery
 
+import com.konyaco.fluent.build.BuildKonfig
+
 object ProjectUrl {
 
     const val ROOT = "https://github.com/Konyaco/compose-fluent-ui"
@@ -10,7 +12,7 @@ object ProjectUrl {
 
     const val FEED_BACK = "$ROOT/issues/new/choose"
 
-    private const val BRANCH = "master"
+    private const val BRANCH = BuildKonfig.CURRENT_BRANCH
 
     fun componentCodeOf(path: String): String {
         return "$ROOT/tree/$BRANCH/$path"

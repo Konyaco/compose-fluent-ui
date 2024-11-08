@@ -1,5 +1,7 @@
 package com.konyaco.fluent.plugin.build
 
+import com.konyaco.fluent.plugin.build.BuildConfig.branch
+import com.konyaco.fluent.plugin.build.BuildConfig.integerVersionName
 import com.konyaco.fluent.plugin.build.BuildConfig.isRelease
 import com.konyaco.fluent.plugin.build.BuildConfig.libraryVersion
 import com.konyaco.fluent.plugin.build.BuildConfig.snapshotLibraryVersion
@@ -103,10 +105,20 @@ class BuildPlugin : Plugin<Project> {
     private fun setupLibraryVersion(target: Project) {
         val providers = target.providers
 
+        providers.exec {
+                commandLine("git", "branch", "--show-current")
+                isIgnoreExitValue = true
+        }.standardOutput
+            .asText
+            .orNull
+            ?.trim()
+            ?.let { branch = it }
+
         val gitTag = providers.exec {
             commandLine("git", "describe", "--abbrev=0", "--tags")
             isIgnoreExitValue = true
         }.standardOutput.asText.get().trim()
+
         val relativeCommitCount = providers.exec {
             commandLine("git", "describe", "--tags")
             isIgnoreExitValue = true
@@ -125,7 +137,7 @@ class BuildPlugin : Plugin<Project> {
             else -> snapshotLibraryVersion
         }
 
-        BuildConfig.integerVersionName = libraryVersion
+        integerVersionName = libraryVersion
             .removePrefix("v")
             .removeSuffix("-SNAPSHOT")
             .substringBefore("-dev")

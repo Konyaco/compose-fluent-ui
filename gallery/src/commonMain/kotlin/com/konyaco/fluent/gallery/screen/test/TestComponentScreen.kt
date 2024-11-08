@@ -1,11 +1,29 @@
-package com.konyaco.fluent.gallery.screen
+package com.konyaco.fluent.gallery.screen.test
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -17,25 +35,65 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.component.*
+import com.konyaco.fluent.component.AccentButton
+import com.konyaco.fluent.component.Button
+import com.konyaco.fluent.component.CheckBox
+import com.konyaco.fluent.component.ContentDialog
+import com.konyaco.fluent.component.DropdownMenu
+import com.konyaco.fluent.component.DropdownMenuItem
+import com.konyaco.fluent.component.FlyoutContainer
+import com.konyaco.fluent.component.FlyoutPlacement
+import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.component.MenuFlyoutContainer
+import com.konyaco.fluent.component.MenuFlyoutItem
+import com.konyaco.fluent.component.MenuFlyoutSeparator
+import com.konyaco.fluent.component.ProgressBar
+import com.konyaco.fluent.component.ProgressRing
+import com.konyaco.fluent.component.ProgressRingSize
+import com.konyaco.fluent.component.RadioButton
+import com.konyaco.fluent.component.ScrollbarContainer
+import com.konyaco.fluent.component.Slider
+import com.konyaco.fluent.component.SubtleButton
+import com.konyaco.fluent.component.Switcher
+import com.konyaco.fluent.component.TabItem
+import com.konyaco.fluent.component.TabRow
+import com.konyaco.fluent.component.TabViewDefaults
+import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.component.TextField
 import com.konyaco.fluent.component.rememberScrollbarAdapter
 import com.konyaco.fluent.gallery.LocalStore
-import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.*
+import com.konyaco.fluent.icons.regular.Add
+import com.konyaco.fluent.icons.regular.ArrowLeft
+import com.konyaco.fluent.icons.regular.Checkmark
+import com.konyaco.fluent.icons.regular.ClipboardMore
+import com.konyaco.fluent.icons.regular.Delete
+import com.konyaco.fluent.icons.regular.Dismiss
+import com.konyaco.fluent.icons.regular.List
+import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.surface.Card
 
-
-@Component(icon = "Home")
 @Composable
-fun HomeScreen() {
+fun TestComponentScreen() {
     var displayDialog by remember { mutableStateOf(false) }
     val density = LocalDensity.current
     var scale by remember(density) { mutableStateOf(density.density) }
     val store = LocalStore.current
 
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), Arrangement.spacedBy(8.dp)) {
-        Controller(scale, { scale = it }, store.darkMode, { store.darkMode = it })
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Controller(
+            scale = scale,
+            onScaleChange = { scale = it },
+            darkMode = store.darkMode,
+            onDarkModeChange = { store.darkMode = it },
+            acrylicPopupEnabled = store.enabledAcrylicPopup,
+            onAcrylicPopupChange = { store.enabledAcrylicPopup = it },
+            compactModeEnabled = store.compactMode,
+            onCompactModeChange = { store.compactMode = it }
+        )
 
         CompositionLocalProvider(LocalDensity provides Density(scale)) {
             Content()
@@ -144,8 +202,7 @@ fun HomeScreen() {
                 MenuFlyoutItem(
                     onClick = {},
                     icon = {},
-                    paddingIcon = true,
-                    text = { Text("test") }
+                    text = { Text("Test") }
                 )
                 MenuFlyoutItem(
                     items = {
@@ -179,23 +236,17 @@ fun HomeScreen() {
         )
     }
 
-    Dialog(
+    ContentDialog(
         title = "This is an example dialog",
         visible = displayDialog,
-        cancelButtonText = "Cancel",
-        confirmButtonText = "Confirm",
-        onCancel = {
-            displayDialog = false
-        },
-        onConfirm = {
-            displayDialog = false
-        },
+        primaryButtonText = "Confirm",
+        closeButtonText = "Cancel",
+        onButtonClick = { displayDialog = false },
         content = {
             Text(
                 "This is body text. Windows 11 marks a visual evolution of the operating system. We have evolved our design language alongside with Fluent to create a design which is human, universal and truly feels like Windows. \n" +
                         "\n" +
-                        "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n",
-                color = LocalContentColor.current
+                        "The design principles below have guided us throughout the journey of making Windows the best-in-class implementation of Fluent.\n"
             )
         }
     )
@@ -207,16 +258,28 @@ private fun Controller(
     scale: Float,
     onScaleChange: (Float) -> Unit,
     darkMode: Boolean,
-    onDarkModeChange: (Boolean) -> Unit
+    onDarkModeChange: (Boolean) -> Unit,
+    acrylicPopupEnabled: Boolean,
+    onAcrylicPopupChange: (Boolean) -> Unit,
+    compactModeEnabled: Boolean,
+    onCompactModeChange: (Boolean) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("Scale: %.2f".format(scale))
+        Text("Scale: ${scale.toString().take(4)}")
         val density = LocalDensity.current
         Button(onClick = { onScaleChange(density.density) }) { Text("Reset") }
         Switcher(darkMode, text = "Dark Mode", onCheckStateChange = { onDarkModeChange(it) })
+        Switcher(
+            acrylicPopupEnabled,
+            text = "Acrylic Popup",
+            onCheckStateChange = { onAcrylicPopupChange(it) })
+        Switcher(
+            compactModeEnabled,
+            text = "Compact Mode",
+            onCheckStateChange = { onCompactModeChange(it) })
     }
     Slider(
         modifier = Modifier.width(200.dp),
@@ -250,7 +313,7 @@ private fun Content() {
             }
 
             Layer(
-                shape = RoundedCornerShape(4.dp),
+                shape = FluentTheme.shapes.control,
                 color = FluentTheme.colors.fillAccent.default,
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
                 content = {
@@ -259,7 +322,7 @@ private fun Content() {
                 backgroundSizing = BackgroundSizing.InnerBorderEdge
             )
             Layer(
-                shape = RoundedCornerShape(4.dp),
+                shape = FluentTheme.shapes.control,
                 color = FluentTheme.colors.fillAccent.default,
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.control.default),
                 content = {
@@ -339,6 +402,33 @@ private fun Content() {
             Icon(
                 modifier = Modifier.size(18.dp),
                 imageVector = imageVector, contentDescription = null
+            )
+        }
+    }
+
+    val selectedKey = remember { mutableStateOf(0) }
+    val tabItems = remember { mutableStateListOf(0, 1, 2, 3, 4) }
+    TabRow(
+        selectedKey = { selectedKey.value },
+        borderColor = FluentTheme.colors.stroke.card.default,
+    ) {
+        items(tabItems, key = { it }) { index ->
+            TabItem(
+                selected = index == selectedKey.value,
+                onSelectedChanged = { selectedKey.value = index },
+                content = { Text(index.toString()) },
+                colors = if (index == selectedKey.value) {
+                    TabViewDefaults.selectedItemTitleBarColors()
+                } else {
+                    TabViewDefaults.defaultItemTitleBarColors()
+                },
+                endDividerVisible = index != selectedKey.value - 1,
+                modifier = Modifier.widthIn(60.dp)
+            )
+        }
+        item {
+            TabViewDefaults.TabAddButton(
+                onClick = { tabItems.add(tabItems.size) }
             )
         }
     }

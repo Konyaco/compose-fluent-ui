@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.build.BuildKonfig
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.LocalStore
@@ -86,13 +87,25 @@ fun HomeScreen() {
                 contentDescription = null,
                 modifier = Modifier.scale(2.05f)
             )
-            Text(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                text = "Compose\nFluent Design",
-                style = FluentTheme.typography.titleLarge,
-                textAlign = TextAlign.End,
-                color = FluentTheme.colors.text.text.primary
-            )
+            Column(
+                Modifier.padding(16.dp).align(Alignment.BottomEnd),
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = "Compose\nFluent Design",
+                    style = FluentTheme.typography.title,
+                    textAlign = TextAlign.End,
+                    color = FluentTheme.colors.text.text.primary
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = BuildKonfig.LIBRARY_VERSION,
+                    style = FluentTheme.typography.body,
+                    textAlign = TextAlign.End,
+                    color = FluentTheme.colors.text.text.secondary
+                )
+            }
         }
 
         Card(

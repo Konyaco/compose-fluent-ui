@@ -18,6 +18,9 @@ object BuildConfig {
     var integerVersionName: String = ""
         internal set
 
+    var branch: String = "dev"
+        internal set
+
     object Android {
         const val compileSdkVersion = 34
 
