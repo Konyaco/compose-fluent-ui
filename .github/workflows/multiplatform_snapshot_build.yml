@@ -11,6 +11,11 @@ on:
   push:
     branches:
       - dev
+    paths-ignore:
+      - 'assets/**'
+      - '**.md'
+      - 'LICENSE'
+      - '**.gitignore'
 
   pull_request_review:
     types: submitted
