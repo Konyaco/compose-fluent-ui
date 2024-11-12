@@ -18,22 +18,30 @@ fun main() = application {
         position = WindowPosition(Alignment.Center),
         size = DpSize(1280.dp, 720.dp)
     )
+    val title = "Compose Fluent Design Gallery"
+    val icon = painterResource(Res.drawable.icon)
     Window(
         onCloseRequest = ::exitApplication,
         state = state,
-        title = "Compose Fluent Design Gallery",
-        icon = painterResource(Res.drawable.icon)
+        title = title,
+        icon = icon
     ) {
         val navigator = rememberComponentNavigator()
         WindowFrame(
             onCloseRequest = ::exitApplication,
-            icon = painterResource(Res.drawable.icon),
-            title = "Compose Fluent Design Gallery",
+            icon = icon,
+            title = title,
             state = state,
             backButtonEnabled = navigator.canNavigateUp,
             backButtonClick = { navigator.navigateUp() },
-        ) { windowInset, _ ->
-            App(windowInset = windowInset, navigator = navigator)
+        ) { windowInset, contentInset ->
+            App(
+                windowInset = windowInset,
+                contentInset = contentInset,
+                navigator = navigator,
+                title = title,
+                icon = icon
+            )
         }
     }
 }

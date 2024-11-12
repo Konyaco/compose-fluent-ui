@@ -25,10 +25,14 @@ import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.build.BuildKonfig
 import com.konyaco.fluent.component.CardExpanderItem
+import com.konyaco.fluent.component.DropDownButton
 import com.konyaco.fluent.component.Expander
 import com.konyaco.fluent.component.ExpanderItem
 import com.konyaco.fluent.component.ExpanderItemSeparator
 import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.component.MenuFlyoutContainer
+import com.konyaco.fluent.component.MenuFlyoutItem
+import com.konyaco.fluent.component.NavigationDisplayMode
 import com.konyaco.fluent.component.ScrollbarContainer
 import com.konyaco.fluent.component.Switcher
 import com.konyaco.fluent.component.Text
@@ -44,6 +48,7 @@ import com.konyaco.fluent.icons.regular.Bug
 import com.konyaco.fluent.icons.regular.ChevronRight
 import com.konyaco.fluent.icons.regular.Color
 import com.konyaco.fluent.icons.regular.List
+import com.konyaco.fluent.icons.regular.Navigation
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource
@@ -134,6 +139,49 @@ fun SettingsScreen(componentNavigator: ComponentNavigator) {
                         )
                     }
                 )
+                CardExpanderItem(
+                    heading = {
+                        Text("Navigation Style")
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Regular.Navigation,
+                            contentDescription = "List"
+                        )
+                    },
+                    caption = {
+                        Text("Choose the Navigation View Layout")
+                    },
+                    trailing = {
+                        MenuFlyoutContainer(
+                            flyout = {
+                                NavigationDisplayMode.entries.forEach { item ->
+                                    MenuFlyoutItem(
+                                        selected = item == store.navigationDisplayMode,
+                                        onSelectedChanged = {
+                                            store.navigationDisplayMode = item
+                                            isFlyoutVisible = false
+                                        },
+                                        text = {
+                                            Text(item.name)
+                                        }
+                                    )
+                                }
+                            },
+                            content = {
+                                DropDownButton(
+                                    onClick = {
+                                        isFlyoutVisible = true
+                                    },
+                                    content = {
+                                        Text(store.navigationDisplayMode.name)
+                                    }
+                                )
+                            }
+                        )
+                    }
+                )
+
                 // Hide this test component if gallery is release version.
                 if (!BuildKonfig.CURRENT_BRANCH.equals("master", false)) {
                     Header("Test")

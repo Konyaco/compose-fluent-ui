@@ -3,11 +3,11 @@ package com.konyaco.fluent.gallery.window
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.WindowState
+import com.konyaco.fluent.component.NavigationDisplayMode
 import com.konyaco.fluent.gallery.GalleryTheme
+import com.konyaco.fluent.gallery.LocalStore
 import com.konyaco.fluent.gallery.jna.windows.structure.isWindows10OrLater
 import com.konyaco.fluent.gallery.jna.windows.structure.isWindows11OrLater
 import org.jetbrains.skiko.hostOs
@@ -25,15 +25,17 @@ fun FrameWindowScope.WindowFrame(
 ) {
     val supportBackdrop = hostOs.isWindows && isWindows11OrLater()
     GalleryTheme(!supportBackdrop) {
+        val isCollapsed = LocalStore.current.navigationDisplayMode == NavigationDisplayMode.LeftCollapsed
         when {
             hostOs.isWindows && isWindows10OrLater() -> {
+
                 WindowsWindowFrame(
                     onCloseRequest = onCloseRequest,
-                    icon = icon,
-                    title = title,
+                    icon = if (isCollapsed) null else icon,
+                    title = if (isCollapsed) "" else title,
                     content = content,
                     state = state,
-                    backButtonVisible = backButtonVisible,
+                    backButtonVisible = backButtonVisible && !isCollapsed,
                     backButtonEnabled = backButtonEnabled,
                     backButtonClick = backButtonClick
                 )
@@ -42,6 +44,9 @@ fun FrameWindowScope.WindowFrame(
             hostOs.isMacOS -> {
                 MacOSWindowFrame(
                     content = content,
+                    backButtonVisible = backButtonVisible && !isCollapsed,
+                    backButtonEnabled = backButtonEnabled,
+                    onBackButtonClick = backButtonClick,
                     state = state
                 )
             }

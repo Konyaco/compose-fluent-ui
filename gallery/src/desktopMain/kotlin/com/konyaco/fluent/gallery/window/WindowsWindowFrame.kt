@@ -3,21 +3,18 @@ package com.konyaco.fluent.gallery.window
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.MutableWindowInsets
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.boundsInWindow
@@ -58,7 +53,7 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.component.SubtleButton
+import com.konyaco.fluent.component.NavigationDefaults
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.jna.windows.ComposeWindowProcedure
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTCAPTION
@@ -150,39 +145,22 @@ fun FrameWindowScope.WindowsWindowFrame(
                             )
                         }
                     )
-                },
-                modifier = Modifier.padding(start = 4.dp)
+                }
             ) {
                 if (it) {
-                    val interaction = remember { MutableInteractionSource() }
-                    val isPressed by interaction.collectIsPressedAsState()
-                    val scaleX = animateFloatAsState(
-                        if (isPressed) {
-                            0.9f
-                        } else {
-                            1f
-                        }
-                    )
-                    SubtleButton(
+                    NavigationDefaults.BackButton(
                         onClick = backButtonClick,
                         disabled = !backButtonEnabled,
-                        interaction = interaction,
-                        iconOnly = true,
-                        modifier = Modifier.defaultMinSize(36.dp, 36.dp)
-                    ) {
-
-                        Text(
-                            text = CaptionButtonIcon.Back.glyph.toString(),
-                            fontFamily = windowsFontFamily(),
-                            modifier = Modifier.graphicsLayer {
-                                this.scaleX = scaleX.value
-                                translationX = (1f - scaleX.value) * 6.dp.toPx()
-                            },
-                            fontSize = 10.sp
-                        )
-                    }
+                        icon = {
+                            Text(
+                                text = CaptionButtonIcon.Back.glyph.toString(),
+                                fontFamily = windowsFontFamily(),
+                                fontSize = 10.sp
+                            )
+                        }
+                    )
                 } else {
-                    Spacer(modifier = Modifier.width(10.dp).height(36.dp))
+                    Spacer(modifier = Modifier.width(14.dp).height(36.dp))
                 }
             }
             if (icon != null) {
@@ -284,7 +262,6 @@ fun Window.CaptionButtonRow(
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun CaptionButton(
     onClick: () -> Unit,
