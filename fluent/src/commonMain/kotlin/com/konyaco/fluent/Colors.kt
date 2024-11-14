@@ -39,6 +39,8 @@ class Colors(
         internal set
     var borders by mutableStateOf(generateBorders(fillAccent, stroke, darkMode))
         internal set
+    var system by mutableStateOf(generateSystemColors(darkMode))
+        internal set
 }
 
 data class Borders(
@@ -371,6 +373,22 @@ data class Background(
         val defaultFallback: Color
     )
 }
+
+data class SystemColors(
+    val attention: Color,
+    val attentionBackground: Color,
+    val solidAttentionBackground: Color,
+    val success: Color,
+    val successBackground: Color,
+    val caution: Color,
+    val cautionBackground: Color,
+    val critical: Color,
+    val criticalBackground: Color,
+    val neutral: Color,
+    val neutralBackground: Color,
+    val solidNeutral: Color,
+    val solidNeutralBackground: Color,
+)
 
 fun generateShades(accent: Color): Shades {
     return getAccentShades()[accent] ?: getDefaultShades()
@@ -720,3 +738,39 @@ private fun generateBorders(fillAccent: FillAccentColors, stroke: Stroke, darkMo
             0.9414f to fillAccent.default
         )
     )
+
+private fun generateSystemColors(darkMode: Boolean): SystemColors {
+    return if (darkMode) {
+        SystemColors(
+            attention = Color(0xFF60CDFF),
+            attentionBackground = Color(0x08FFFFFF),
+            solidAttentionBackground = Color(0xFF2E2E2E),
+            success = Color(0xFF6CCB5F),
+            successBackground = Color(0xFF393D1B),
+            caution = Color(0xFFFCE100),
+            cautionBackground = Color(0xFF433519),
+            critical = Color(0xFFFF99A4),
+            criticalBackground = Color(0xFF442726),
+            neutral = Color(0x8BFFFFFF),
+            neutralBackground = Color(0x08FFFFFF),
+            solidNeutral = Color(0xFF9D9D9D),
+            solidNeutralBackground = Color(0xFF2E2E2E),
+        )
+    } else {
+        SystemColors(
+            attention = Color(0xFF0070CB),
+            attentionBackground = Color(0x80F6F6F6),
+            solidAttentionBackground = Color(0xFFF7F7F7),
+            success = Color(0xFF0F7B0F),
+            successBackground = Color(0xFFDFF6DD),
+            caution = Color(0xFF9D5D00),
+            cautionBackground = Color(0xFFFFF4CE),
+            critical = Color(0xFFC42B1C),
+            criticalBackground = Color(0xFFFDE7E9),
+            neutral = Color(0xFF72000000),
+            neutralBackground = Color(0x06000000),
+            solidNeutral = Color(0xFF8A8A8A),
+            solidNeutralBackground = Color(0xFFF3F3F3),
+        )
+    }
+}
