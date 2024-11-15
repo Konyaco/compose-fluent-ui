@@ -45,9 +45,10 @@ fun MaterialContainerScope.Material(
 @ExperimentalFluentApi
 @Composable
 fun MaterialContainer(
+    modifier: Modifier = Modifier,
     content: @Composable MaterialContainerScope.() -> Unit
 ) {
-    Box {
+    Box(modifier) {
         val scope = remember(this) { MaterialContainerScopeImpl(this) }
         scope.content()
     }
@@ -320,7 +321,7 @@ object MaterialDefaults {
         HazeStyle(
             blurRadius = blurRadius,
             noiseFactor = noiseFactor,
-            backgroundColor = backgroundColor.copy(1f),
+            backgroundColor = backgroundColor,
             tints = listOf(
                 HazeTint(
                     color = containerColor.copy(if (isDark) darkTintOpacity else lightTintOpacity),

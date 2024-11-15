@@ -20,11 +20,9 @@ import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.Mica
+import com.konyaco.fluent.component.NavigationDisplayMode
 import com.konyaco.fluent.darkColors
 import com.konyaco.fluent.lightColors
-import fluentdesign.gallery.generated.resources.Res
-import fluentdesign.gallery.generated.resources.banner
-import org.jetbrains.compose.resources.painterResource
 
 val LocalStore = compositionLocalOf<Store> { error("Not provided") }
 
@@ -38,6 +36,8 @@ class Store(
     var enabledAcrylicPopup by mutableStateOf(enabledAcrylicPopup)
 
     var compactMode by mutableStateOf(compactMode)
+
+    var navigationDisplayMode by mutableStateOf(NavigationDisplayMode.Left)
 }
 
 @OptIn(ExperimentalFluentApi::class)

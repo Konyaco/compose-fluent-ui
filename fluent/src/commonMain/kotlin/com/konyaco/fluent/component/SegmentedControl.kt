@@ -7,7 +7,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -38,6 +36,7 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.layout.HorizontalIndicatorContentLayout
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
 
@@ -128,6 +127,7 @@ fun SegmentedButton(
             indicator = indicator,
             icon = icon,
             text = text,
+            trailing = null,
             modifier = Modifier.defaultMinSize(minHeight = buttonMinHeight)
         )
     }
@@ -162,33 +162,6 @@ fun HorizontalIndicator(
                 shape = CircleShape
             )
     )
-}
-
-@Composable
-internal fun HorizontalIndicatorContentLayout(
-    modifier: Modifier = Modifier,
-    icon: @Composable (() -> Unit)?,
-    text: @Composable (() -> Unit)?,
-    indicator: @Composable () -> Unit,
-) {
-    Box(
-        modifier = modifier.padding(horizontal = 12.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            icon?.invoke()
-            text?.invoke()
-        }
-        Box(
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            indicator()
-        }
-    }
 }
 
 @Stable

@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 //TODO Public
@@ -42,7 +43,11 @@ internal fun FontIcon(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     iconSize: TextUnit = FontIconDefaults.fontSizeStandard,
-    vectorSize: Dp = with(LocalDensity.current) { iconSize.toDp() }
+    vectorSize: Dp = when(iconSize) {
+        FontIconDefaults.fontSizeStandard -> FontIconDefaults.vectorSizeStandard
+        FontIconDefaults.fontSizeSmall -> FontIconDefaults.vectorSizeSmall
+        else -> with(LocalDensity.current) { iconSize.toDp() }
+    }
 ) {
     FontIcon(
         glyph = glyph,
@@ -51,7 +56,7 @@ internal fun FontIcon(
         fallback = if (vector == null) {
             null
         } else {
-            { Icon(vector, contentDescription, modifier = Modifier.size(vectorSize)) }
+            { Icon(vector, contentDescription, modifier = modifier.size(vectorSize)) }
         }
     )
 }
@@ -59,6 +64,8 @@ internal fun FontIcon(
 internal object FontIconDefaults {
     val fontSizeStandard = 16.sp
     val fontSizeSmall = 12.sp
+    val vectorSizeStandard = 16.dp
+    val vectorSizeSmall = 12.dp
 }
 
 @Composable
