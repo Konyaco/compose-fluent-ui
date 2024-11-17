@@ -17,9 +17,10 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -57,15 +58,41 @@ fun Slider(
     steps: Int = 0, // TODO
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    rail: @Composable () -> Unit = { SliderDefaults.Rail() },
-    track: @Composable (progress: Float, width: Dp) -> Unit = { fraction, width -> SliderDefaults.Track(fraction, width) },
-    thumb: @Composable (progress: Float, width: Dp, dragging: Boolean) -> Unit = { fraction, width, dragging -> SliderDefaults.Thumb(fraction, width, dragging) },
 ) {
-    val progress = valueToFraction(value, valueRange.start, valueRange.endInclusive)
     Slider(
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier,
-        progress = progress,
-        onProgressChange = {
+        enabled = enabled,
+        valueRange = valueRange,
+        steps = steps,
+        onValueChangeFinished = onValueChangeFinished,
+        interactionSource = interactionSource,
+        rail = { _ -> SliderDefaults.Rail() },
+        track = { fraction -> SliderDefaults.Track(fraction) },
+        thumb = { fraction, dragging -> SliderDefaults.Thumb(fraction, dragging) }
+    )
+}
+
+@Composable
+fun Slider(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true, // TODO
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    steps: Int = 0, // TODO
+    onValueChangeFinished: (() -> Unit)? = null,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rail: @Composable (fraction: Float) -> Unit,
+    track: @Composable (fraction: Float) -> Unit,
+    thumb: @Composable (fraction: Float, dragging: Boolean) -> Unit,
+) {
+    val fraction = valueToFraction(value, valueRange.start, valueRange.endInclusive)
+    SliderImpl(
+        modifier = modifier,
+        fraction = fraction,
+        onFractionChange = {
             onValueChange(fractionToValue(it, valueRange.start, valueRange.endInclusive))
         },
         enabled = enabled,
@@ -78,21 +105,21 @@ fun Slider(
 }
 
 @Composable
-private fun Slider(
-    progress: Float,
-    onProgressChange: (Float) -> Unit,
+private fun SliderImpl(
+    fraction: Float,
+    onFractionChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true, // TODO
-    onValueChangeFinished: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    rail: @Composable () -> Unit = { SliderDefaults.Rail() },
-    track: @Composable (progress: Float, width: Dp) -> Unit = { fraction, width -> SliderDefaults.Track(fraction, width) },
-    thumb: @Composable (progress: Float, width: Dp, dragging: Boolean) -> Unit = { fraction, width, dragging -> SliderDefaults.Thumb(fraction, width, dragging) },
+    enabled: Boolean, // TODO
+    onValueChangeFinished: (() -> Unit)?,
+    interactionSource: MutableInteractionSource,
+    rail: @Composable (fraction: Float) -> Unit,
+    track: @Composable (fraction: Float) -> Unit,
+    thumb: @Composable (fraction: Float, dragging: Boolean) -> Unit,
 ) {
     // TODO: Refactor this component
-    val currentOnProgressChange by rememberUpdatedState(onProgressChange)
+    val currentOnFractionChange by rememberUpdatedState(onFractionChange)
     BoxWithConstraints(
-        modifier = modifier.defaultMinSize(minWidth = 120.dp, minHeight = 32.dp),
+        modifier = modifier.height(32.dp).defaultMinSize(minWidth = 120.dp),
         contentAlignment = Alignment.CenterStart,
         propagateMinConstraints = true
     ) {
@@ -100,43 +127,44 @@ private fun Slider(
         var dragging by remember { mutableStateOf(false) }
 
         val density by rememberUpdatedState(LocalDensity.current)
-        fun calcProgress(offset: Offset): Float {
+        fun calcFraction(offset: Offset): Float {
             val radius = with(density) { (ThumbSizeWithBorder / 2).toPx() }
             return valueToFraction(offset.x, radius, constraints.minWidth - radius).coerceIn(0f, 1f)
         }
 
         var offset by remember { mutableStateOf(Offset.Zero) }
         Box(
-            modifier = Modifier
-                .draggable(
-                    state = rememberDraggableState {
-                        offset = Offset(x = offset.x + it, y = offset.y)
-                        currentOnProgressChange(calcProgress(offset))
-                    },
-                    interactionSource = interactionSource,
-                    onDragStarted = {
-                        dragging = true
-                        offset = it
-                    },
-                    onDragStopped = {
-                        dragging = false
-                        onValueChangeFinished?.invoke()
-                    },
-                    orientation = Orientation.Horizontal
-                )
-                .pointerInput(Unit) {
+            modifier = Modifier.width(width).draggable(
+                state = rememberDraggableState {
+                    offset = Offset(x = offset.x + it, y = offset.y)
+                    currentOnFractionChange(calcFraction(offset))
+                },
+                interactionSource = interactionSource,
+                onDragStarted = {
+                    dragging = true
+                    offset = it
+                },
+                onDragStopped = {
+                    dragging = false
+                    onValueChangeFinished?.invoke()
+                },
+                orientation = Orientation.Horizontal
+            ).pointerInput(Unit) {
+                // Fluent Design Behavior: Press will immediately change the fraction
                 awaitEachGesture {
                     val down = awaitFirstDown()
                     dragging = true
-                    currentOnProgressChange(calcProgress(down.position))
+                    currentOnFractionChange(calcFraction(down.position))
                     waitForUpOrCancellation()
                     dragging = false
                 }
-            }, contentAlignment = Alignment.CenterStart
+            },
+            contentAlignment = Alignment.CenterStart,
+            propagateMinConstraints = true
         ) {
-            rail()
-            track(progress, width)
-            thumb(progress, width, dragging)
+            rail(fraction)
+            track(fraction)
+            thumb(fraction, dragging)
         }
     }
 }
@@ -162,18 +190,14 @@ object SliderDefaults {
     @Composable
     fun Track(
         fraction: Float,
-        maxWidth: Dp,
         modifier: Modifier = Modifier,
         color: Color = FluentTheme.colors.fillAccent.default,
         shape: Shape = CircleShape
     ) {
-        // Track
-        val width = ThumbRadiusWithBorder + (fraction * (maxWidth - ThumbSizeWithBorder))
-        Box(
-            modifier.width(width)
-                .requiredHeight(4.dp)
-                .background(color, shape)
-        )
+        BoxWithConstraints(modifier, contentAlignment = Alignment.CenterStart) {
+            val width = ThumbRadiusWithBorder + (fraction * (maxWidth - ThumbSizeWithBorder))
+            Box(Modifier.requiredSize(width, 4.dp).background(color, shape))
+        }
     }
 
     @Composable
@@ -186,22 +210,21 @@ object SliderDefaults {
         ),
         shape: Shape = CircleShape
     ) {
-        // Rail
-        Layer(
-            modifier = modifier.fillMaxWidth().requiredHeight(4.dp),
-            shape = shape,
-            color = color,
-            border = border,
-            backgroundSizing = BackgroundSizing.InnerBorderEdge,
-            content = {}
-        )
+        Box(modifier.requiredHeight(4.dp), propagateMinConstraints = true) {
+            Layer(
+                shape = shape,
+                color = color,
+                border = border,
+                backgroundSizing = BackgroundSizing.InnerBorderEdge,
+                content = {}
+            )
+        }
     }
 
     @Composable
     fun Thumb(
         fraction: Float,
-        maxWidth: Dp,
-        dragging: Boolean = false,
+        dragging: Boolean,
         modifier: Modifier = Modifier,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         shape: Shape = CircleShape,
@@ -209,35 +232,41 @@ object SliderDefaults {
         ringColor: Color = FluentTheme.colors.controlSolid.default,
         color: Color = FluentTheme.colors.fillAccent.default
     ) {
-        // Thumb
-        val thumbOffset by rememberUpdatedState(calcThumbOffset(maxWidth, ThumbSize, 1.dp, fraction))
+        BoxWithConstraints(modifier, Alignment.CenterStart) {
+            val thumbOffset by rememberUpdatedState(
+                calcThumbOffset(maxWidth, ThumbSize, 1.dp, fraction)
+            )
 
-        val hovered by interactionSource.collectIsHoveredAsState()
-        val pressed by interactionSource.collectIsPressedAsState()
+            val hovered by interactionSource.collectIsHoveredAsState()
+            val pressed by interactionSource.collectIsPressedAsState()
 
-        Layer(
-            modifier = modifier.offset { IntOffset(x = thumbOffset.roundToPx(), y = 0) }
-                .size(ThumbSizeWithBorder)
-                .clickable(interactionSource, null, onClick = {}),
-            shape = shape,
-            color = ringColor,
-            border = border,
-            backgroundSizing = BackgroundSizing.InnerBorderEdge
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                // Inner Thumb
-                Box(
-                    Modifier.size(
-                        animateDpAsState(
-                            when {
-                                pressed || dragging -> InnerThumbPressedSize
-                                hovered -> InnerThumbHoverSize
-                                else -> InnerThumbSize
-                            },
-                            tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-                        ).value
-                    ).background(color, shape)
-                )
+            Layer(
+                modifier = Modifier.offset { IntOffset(x = thumbOffset.roundToPx(), y = 0) }
+                    .requiredSize(ThumbSizeWithBorder)
+                    .clickable(interactionSource, null, onClick = {}),
+                shape = shape,
+                color = ringColor,
+                border = border,
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    // Inner Thumb
+                    Box(
+                        Modifier.size(
+                            animateDpAsState(
+                                when {
+                                    pressed || dragging -> InnerThumbPressedSize
+                                    hovered -> InnerThumbHoverSize
+                                    else -> InnerThumbSize
+                                },
+                                tween(
+                                    FluentDuration.QuickDuration,
+                                    easing = FluentEasing.FastInvokeEasing
+                                )
+                            ).value
+                        ).background(color, shape)
+                    )
+                }
             }
         }
     }

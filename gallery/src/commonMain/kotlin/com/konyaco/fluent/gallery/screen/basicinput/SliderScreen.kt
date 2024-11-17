@@ -1,12 +1,9 @@
 package com.konyaco.fluent.gallery.screen.basicinput
 
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.Slider
@@ -56,7 +53,7 @@ fun SliderScreen() {
 @Composable
 private fun SliderSample(value: Float, onValueChanged: (Float) -> Unit) {
     Slider(
-        modifier = Modifier.width(200.dp).height(32.dp),
+        modifier = Modifier.width(200.dp),
         value = value,
         onValueChange = onValueChanged
     )

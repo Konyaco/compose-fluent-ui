@@ -110,6 +110,7 @@ fun ColorPicker(
         }
         val (hug, saturation, _) = spectrumColor.value.hsv()
         Slider(
+            modifier = Modifier.padding(top = 21.dp).width(312.dp).height(32.dp),
             value = value,
             onValueChange = {
                 onSelectedColorChanged(
@@ -137,19 +138,18 @@ fun ColorPicker(
                         )
                 )
             },
-            track = { _, _ -> },
-            thumb = { fraction, maxWidth, dragging ->
+            track = { },
+            thumb = { fraction, dragging ->
                 SliderDefaults.Thumb(
                     fraction = fraction,
-                    maxWidth = maxWidth,
                     dragging = dragging,
                     color = FluentTheme.colors.text.text.primary
                 )
-            },
-            modifier = Modifier.padding(top = 21.dp).width(312.dp).height(32.dp)
+            }
         )
         if (alphaEnabled) {
             Slider(
+                modifier = Modifier.width(312.dp),
                 value = alpha,
                 onValueChange = {
                     onSelectedColorChanged(color.copy(alpha = it))
@@ -169,16 +169,14 @@ fun ColorPicker(
                             )
                     )
                 },
-                track = { _, _ -> },
-                thumb = { fraction, maxWidth, dragging ->
+                track = {},
+                thumb = { fraction, dragging ->
                     SliderDefaults.Thumb(
                         fraction = fraction,
-                        maxWidth = maxWidth,
                         dragging = dragging,
                         color = FluentTheme.colors.text.text.primary
                     )
-                },
-                modifier = Modifier.width(312.dp).height(32.dp)
+                }
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
