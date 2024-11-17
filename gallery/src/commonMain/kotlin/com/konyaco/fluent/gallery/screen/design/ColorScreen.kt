@@ -5,11 +5,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -931,7 +932,49 @@ private fun StrokeColorPage() {
             )
         )
     )
-    //TODO Focus Stroke
+
+    ColorSection(
+        section = "Focus Stroke",
+        description = "Used for divider and graphic lines. Theme inverse; dark in light theme and light in dark theme..",
+        sample = {
+            //TODO Components Focus Border
+            Button(
+                onClick = {},
+                content = { Text("Text") },
+                modifier = Modifier
+                    .border(
+                        width = 2.dp,
+                        color = FluentTheme.colors.stroke.focus.outer,
+                        shape = RoundedCornerShape(FluentTheme.cornerRadius.control + 2.dp)
+                    )
+                    .padding(2.dp)
+                    .border(
+                        width = 2.dp,
+                        color = FluentTheme.colors.stroke.focus.inner,
+                        shape = RoundedCornerShape(FluentTheme.cornerRadius.control + 1.dp)
+                    )
+                    .padding(2.dp)
+            )
+        },
+        group = arrayOf(
+            ColorInfo(
+                color = FluentTheme.colors.stroke.focus.outer,
+                contentColor = FluentTheme.colors.text.onAccent.primary,
+                name = "Outer",
+                explanation = "Outer stroke color",
+                usage = "stroke.focus.outer",
+                showSeparator = false
+            ),
+            ColorInfo(
+                color = FluentTheme.colors.stroke.focus.inner,
+                contentColor = FluentTheme.colors.text.text.primary,
+                name = "Inner",
+                explanation = "Inner stroke color",
+                usage = "stroke.focus.inner",
+                showSeparator = false
+            )
+        )
+    )
 
 }
 

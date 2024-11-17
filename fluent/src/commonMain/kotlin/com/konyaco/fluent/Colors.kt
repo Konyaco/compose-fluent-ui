@@ -130,7 +130,8 @@ data class Stroke(
     val controlStrong: ControlStrong,
     val surface: Surface,
     val card: Card,
-    val divider: Divider
+    val divider: Divider,
+    val focus: Focus
 ) {
     data class Control(
         val default: Color,
@@ -159,6 +160,11 @@ data class Stroke(
 
     data class Divider(
         val default: Color
+    )
+
+    data class Focus(
+        val outer: Color,
+        val inner: Color
     )
 }
 
@@ -699,6 +705,10 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         ),
         divider = Stroke.Divider(
             default = Color(0x15FFFFFF)
+        ),
+        focus = Stroke.Focus(
+            outer = Color(0xFFFFFFFF),
+            inner = Color(0xB3000000)
         )
     )
     else Stroke(
@@ -725,6 +735,10 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         ),
         divider = Stroke.Divider(
             default = Color(0x14000000)
+        ),
+        focus = Stroke.Focus(
+            outer = Color(0xE4000000),
+            inner = Color(0xB3FFFFFF)
         )
     )
 
