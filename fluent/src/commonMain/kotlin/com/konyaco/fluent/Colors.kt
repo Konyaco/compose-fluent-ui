@@ -435,8 +435,8 @@ internal fun generateTextColors(shades: Shades, darkMode: Boolean): TextColor =
     if (darkMode) TextColor(
         text = ColorCompound(
             primary = Color(0xFFFFFFFF),
-            secondary = Color(0xC5FFFFFF),
-            tertiary = Color(0x87FFFFFF),
+            secondary = Color(0xC8FFFFFF),
+            tertiary = Color(0x8BFFFFFF),
             disabled = Color(0x5DFFFFFF)
         ),
         accent = ColorCompound(
@@ -467,7 +467,7 @@ internal fun generateTextColors(shades: Shades, darkMode: Boolean): TextColor =
         ),
         onAccent = TextOnAccentColorCompound(
             primary = Color(0xFFFFFFFF),
-            secondary = Color(0x83FFFFFF),
+            secondary = Color(0xB3FFFFFF),
             disabled = Color(0xFFFFFFFF),
             selectedText = Color(0xFFFFFFFF)
         )
@@ -477,14 +477,14 @@ internal fun generateControlColors(shades: Shades, darkMode: Boolean): ControlCo
     if (darkMode) ControlColors(
         default = Color(0x0FFFFFFF),
         secondary = Color(0x15FFFFFF),
-        tertiary = Color(0x0BFFFFFF),
+        tertiary = Color(0x08FFFFFF),
         quaternary = Color(0x0FFFFFFF),
         disabled = Color(0x0BFFFFFF),
         transparent = Color(0x00FFFFFF),
         inputActive = Color(0xB31E1E1E)
     )
     else ControlColors(
-        default = Color(0x83FFFFFF),
+        default = Color(0xB3FFFFFF),
         secondary = Color(0x80F9F9F9),
         tertiary = Color(0x4DF9F9F9),
         quaternary = Color(0xC2F3F3F3),
@@ -526,7 +526,7 @@ internal fun generateSubtleFillColors(shades: Shades, darkMode: Boolean): Subtle
     if (darkMode) SubtleFillColors(
         transparent = Color(0x00FFFFFF),
         secondary = Color(0x0FFFFFFF),
-        tertiary = Color(0x0AFFFFFF),
+        tertiary = Color(0x0BFFFFFF),
         disabled = Color(0x00FFFFFF)
     ) else SubtleFillColors(
         transparent = Color(0x00000000),
@@ -561,13 +561,13 @@ internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
         smoke = Background.Smoke(
             default = Color(0x4D000000)
         ),
-        layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0DFFFFFF)),
+        layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0EFFFFFF)),
         layerOnAcrylic = Background.LayerOnAcrylic(
             default = Color(0x09FFFFFF)
         ),
         layerOnMicaBaseAlt = Background.LayerOnMicaBaseAlt(
             default = Color(0x733A3A3A),
-            tertiary = Color(0xFFF9F9F9),
+            tertiary = Color(0xFF2C2C2C),
             transparent = Color.Transparent,
             secondary = Color(0x0FFFFFFF)
         ),
@@ -704,24 +704,24 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
 private fun generateBorders(fillAccent: FillAccentColors, stroke: Stroke, darkMode: Boolean): Borders =
     if (darkMode) Borders(
         control = Brush.verticalGradient(
-            0.0957f to stroke.control.secondary,
-            1f to stroke.control.default
+            0.0f to stroke.control.secondary,
+            0.0957f to stroke.control.default
         ),
         accentControl = Brush.verticalGradient(
             0.9067f to stroke.control.onAccentDefault,
             1f to stroke.control.onAccentSecondary,
         ),
         circle = Brush.verticalGradient(
-            0.5002f to stroke.control.default,
-            0.9545f to stroke.control.secondary
+            0.0f to stroke.control.secondary,
+            0.5002f to stroke.control.default
         ),
         textControl = Brush.verticalGradient(
             1f to stroke.control.default,
             1f to stroke.controlStrong.default
         ),
         textControlFocused = Brush.verticalGradient(
-            0.9395f to stroke.control.default,
-            0.9414f to fillAccent.default
+            0.97f to stroke.control.default,
+            0.97f to fillAccent.default
         )
     ) else Borders(
         control = Brush.verticalGradient(
@@ -733,16 +733,16 @@ private fun generateBorders(fillAccent: FillAccentColors, stroke: Stroke, darkMo
             1f to stroke.control.onAccentSecondary,
         ),
         circle = Brush.verticalGradient(
-            0f to stroke.control.default,
-            0.5f to stroke.control.secondary
+            0.5f to stroke.control.default,
+            0.95f to stroke.control.secondary
         ),
         textControl = Brush.verticalGradient(
             1f to stroke.control.default,
             1f to stroke.controlStrong.default
         ),
         textControlFocused = Brush.verticalGradient(
-            0.9395f to stroke.control.default,
-            0.9414f to fillAccent.default
+            0.97f to stroke.control.default,
+            0.97f to fillAccent.default
         )
     )
 
