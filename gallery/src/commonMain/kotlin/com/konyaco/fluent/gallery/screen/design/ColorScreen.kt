@@ -295,6 +295,7 @@ private fun TextColorPage() {
 private fun FillColorPage() {
     ColorSection(
         section = "Control Fill",
+        header = "Control",
         description = "Fill used for standard controls",
         sample = {
             Button(
@@ -361,6 +362,7 @@ private fun FillColorPage() {
 
     ColorSection(
         section = "Control Alt Fill",
+        header = "Control Alt",
         description = "Fill used for the 'off' states of toggle controls",
         sample = {
             var checked by remember { mutableStateOf(false) }
@@ -415,7 +417,7 @@ private fun FillColorPage() {
     )
 
     ColorSection(
-        section = "Neutral Solid",
+        section = "Control Solid",
         description = "Fills used for Sliders thumb control to cover the track beneath it.",
         sample = {
             var value by remember { mutableStateOf(0.5f) }
@@ -437,7 +439,7 @@ private fun FillColorPage() {
     )
 
     ColorSection(
-        section = "Neutral Strong",
+        section = "Control Strong",
         description = "Used for controls that must meet contrast ratio requirements of 3:1.",
         sample = {
 
@@ -480,6 +482,7 @@ private fun FillColorPage() {
     )
     ColorSection(
         section = "Subtle Fill",
+        header = "Subtle",
         description = "Used for list items and fills that are transparent at rest and appear upon interaction.",
         sample = {
             Column {
@@ -534,6 +537,7 @@ private fun FillColorPage() {
 
     ColorSection(
         section = "Accent Fill",
+        header = "Accent",
         description = "Used for accent fills on controls",
         sample = {
             AccentButton(
@@ -1406,6 +1410,7 @@ private fun ColorSection(
     sample: @Composable () -> Unit,
     color: Color = FluentTheme.colors.background.solid.quaternary,
     contentColor: Color = FluentTheme.colors.text.text.primary,
+    header: String = section,
     group: Array<ColorInfo>,
 ) {
     ColorSection(
@@ -1414,6 +1419,7 @@ private fun ColorSection(
         sample = sample,
         color = color,
         contentColor = contentColor,
+        header = header,
         groups = arrayOf(group)
     )
 }
@@ -1425,6 +1431,7 @@ private fun ColorSection(
     sample: @Composable () -> Unit,
     color: Color = FluentTheme.colors.background.solid.quaternary,
     contentColor: Color = FluentTheme.colors.text.text.primary,
+    header: String = section,
     vararg groups: Array<ColorInfo>,
 ) {
     Column(
@@ -1439,7 +1446,7 @@ private fun ColorSection(
         )
 
         groups.forEach { group ->
-            ColorGroup(section, group)
+            ColorGroup(header, group)
         }
     }
 }
