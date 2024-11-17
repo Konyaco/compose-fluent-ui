@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.konyaco.fluent.component.Button
+import com.konyaco.fluent.component.ButtonColorScheme
+import com.konyaco.fluent.component.ButtonColors
+import com.konyaco.fluent.component.ButtonDefaults
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Checkmark
@@ -20,7 +23,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun CopyButton(
     copyData: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colors: ButtonColorScheme = ButtonDefaults.buttonColors()
 ) {
     var isCopy by remember { mutableStateOf(false) }
     LaunchedEffect(isCopy) {
@@ -45,6 +49,7 @@ fun CopyButton(
                 }
             }
         },
+        buttonColors = colors,
         modifier = modifier
     )
 }

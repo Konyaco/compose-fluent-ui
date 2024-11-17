@@ -64,7 +64,7 @@ data class Shades(
 data class TextColor(
     val text: ColorCompound,
     val accent: ColorCompound,
-    val onAccent: ColorCompound
+    val onAccent: TextOnAccentColorCompound
 )
 
 data class ColorCompound(
@@ -72,6 +72,13 @@ data class ColorCompound(
     val secondary: Color,
     val tertiary: Color,
     val disabled: Color
+)
+
+data class TextOnAccentColorCompound(
+    val primary: Color,
+    val secondary: Color,
+    val disabled: Color,
+    val selectedText: Color,
 )
 
 data class ControlColors(
@@ -122,7 +129,7 @@ data class Stroke(
         val onAccentDefault: Color,
         val onAccentSecondary: Color,
         val onAccentTertiary: Color,
-        val disabled: Color,
+        val onAccentDisabled: Color,
         val forStrongFillWhenOnImage: Color
     )
 
@@ -438,11 +445,11 @@ internal fun generateTextColors(shades: Shades, darkMode: Boolean): TextColor =
             tertiary = shades.light2,
             disabled = Color(0x5DFFFFFF)
         ),
-        onAccent = ColorCompound(
+        onAccent = TextOnAccentColorCompound(
             primary = Color(0xFF000000),
             secondary = Color(0x80000000),
-            tertiary = Color(0x87FFFFFF),
-            disabled = Color(0xFFFFFFFF)
+            disabled = Color(0x87FFFFFF),
+            selectedText = Color(0xFFFFFFFF)
         )
     )
     else TextColor(
@@ -458,11 +465,11 @@ internal fun generateTextColors(shades: Shades, darkMode: Boolean): TextColor =
             shades.dark1,
             Color(0x5C000000)
         ),
-        onAccent = ColorCompound(
+        onAccent = TextOnAccentColorCompound(
             primary = Color(0xFFFFFFFF),
             secondary = Color(0x83FFFFFF),
-            tertiary = Color(0xFFFFFFFF),
-            disabled = Color(0xFFFFFFFF)
+            disabled = Color(0xFFFFFFFF),
+            selectedText = Color(0xFFFFFFFF)
         )
     )
 
@@ -648,7 +655,7 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
             onAccentDefault = Color(0x14FFFFFF),
             onAccentSecondary = Color(0x23000000),
             onAccentTertiary = Color(0x37000000),
-            disabled = Color(0x33000000),
+            onAccentDisabled = Color(0x33000000),
             forStrongFillWhenOnImage = Color(0x6B000000)
         ),
         controlStrong = Stroke.ControlStrong(
@@ -674,7 +681,7 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
             onAccentDefault = Color(0x14FFFFFF),
             onAccentSecondary = Color(0x66000000),
             onAccentTertiary = Color(0x37000000),
-            disabled = Color(0x0F000000),
+            onAccentDisabled = Color(0x0F000000),
             forStrongFillWhenOnImage = Color(0x59FFFFFF)
         ),
         controlStrong = Stroke.ControlStrong(
