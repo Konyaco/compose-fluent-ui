@@ -31,6 +31,8 @@ class Colors(
         internal set
     var subtleFill by mutableStateOf(generateSubtleFillColors(shades, darkMode))
         internal set
+    var controlOnImage by mutableStateOf(generateControlOnImageColors(darkMode))
+        internal set
     var fillAccent by mutableStateOf(generateFillAccentColors(shades, darkMode))
         internal set
     var background by mutableStateOf(generateBackground(shades, darkMode))
@@ -114,6 +116,13 @@ data class FillAccentColors(
     val tertiary: Color,
     val disabled: Color,
     val selectedTextBackground: Color
+)
+
+data class ControlOnImageColors(
+    val default: Color,
+    val secondary: Color,
+    val tertiary: Color,
+    val disabled: Color
 )
 
 data class Stroke(
@@ -534,6 +543,24 @@ internal fun generateSubtleFillColors(shades: Shades, darkMode: Boolean): Subtle
         tertiary = Color(0x06000000),
         disabled = Color(0x00000000)
     )
+
+internal fun generateControlOnImageColors(darkMode: Boolean): ControlOnImageColors {
+    return if (darkMode) {
+        ControlOnImageColors(
+            default = Color(0xB31C1C1C),
+            secondary = Color(0xFF1A1A1A),
+            tertiary = Color(0xFF131313),
+            disabled = Color(0xFF1E1E1E)
+        )
+    } else {
+        ControlOnImageColors(
+            default = Color(0xC9FFFFFF),
+            secondary = Color(0xFFF3F3F3),
+            tertiary = Color(0xFFEBEBEB),
+            disabled = Color(0x00FFFFFF)
+        )
+    }
+}
 
 internal fun generateFillAccentColors(shades: Shades, darkMode: Boolean): FillAccentColors =
     if (darkMode) FillAccentColors(

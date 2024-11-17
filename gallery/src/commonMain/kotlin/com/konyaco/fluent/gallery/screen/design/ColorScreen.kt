@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -74,6 +76,9 @@ import com.konyaco.fluent.icons.regular.Dismiss
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.source.generated.FluentSourceFile
 import com.konyaco.fluent.surface.Card
+import fluentdesign.gallery.generated.resources.Res
+import fluentdesign.gallery.generated.resources.banner
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalFluentApi::class)
 @Component(icon = "Color")
@@ -533,7 +538,65 @@ private fun FillColorPage() {
         )
     )
 
-    //TODO Control On Image Fill
+    ColorSection(
+        section = "Color On Image Fill",
+        description = "Used for controls living on top of imagery.",
+        header = "Color On Image",
+        sample = {
+            Box(
+                modifier = Modifier.clip(FluentTheme.shapes.control)
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.banner),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .background(FluentTheme.colors.background.mica.base)
+                        .size(112.dp)
+                )
+
+                Layer(
+                    content = {},
+                    border = BorderStroke(1.dp, FluentTheme.colors.controlStrong.default),
+                    color = FluentTheme.colors.controlOnImage.default,
+                    backgroundSizing = BackgroundSizing.InnerBorderEdge,
+                    clipContent = true,
+                    modifier = Modifier.align(Alignment.TopEnd)
+                        .padding(4.dp)
+                        .size(20.dp)
+                )
+            }
+        },
+        group = arrayOf(
+            ColorInfo(
+                color = FluentTheme.colors.controlOnImage.default,
+                contentColor = FluentTheme.colors.text.text.primary,
+                name = "Default",
+                explanation = "Rest",
+                usage = "controlOnImage.default"
+            ),
+            ColorInfo(
+                color = FluentTheme.colors.controlOnImage.secondary,
+                contentColor = FluentTheme.colors.text.text.primary,
+                name = "Secondary",
+                explanation = "Hover",
+                usage = "controlOnImage.secondary"
+            ),
+            ColorInfo(
+                color = FluentTheme.colors.controlOnImage.tertiary,
+                contentColor = FluentTheme.colors.text.text.primary,
+                name = "Tertiary",
+                explanation = "Pressed",
+                usage = "controlOnImage.tertiary"
+            ),
+            ColorInfo(
+                color = FluentTheme.colors.controlOnImage.disabled,
+                contentColor = FluentTheme.colors.text.text.primary,
+                name = "Disabled only (not accessible)",
+                explanation = "Disabled",
+                usage = "controlOnImage.disabled"
+            )
+        )
+    )
 
     ColorSection(
         section = "Accent Fill",
