@@ -1,6 +1,7 @@
 package com.konyaco.fluent.background
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -23,6 +24,11 @@ import com.konyaco.fluent.FluentTheme
 fun Modifier.elevation(
     elevation: Dp,
     shape: Shape,
+    strokeShadow: Brush = if (shape == CircleShape) {
+        FluentTheme.colors.borders.circle
+    } else {
+        FluentTheme.colors.borders.control
+    },
     isDarkTheme: Boolean = FluentTheme.colors.darkMode,
 ) = when {
     elevation.value < 1f -> this
@@ -31,10 +37,7 @@ fun Modifier.elevation(
         brush = if (elevation.value < 2f) {
             SolidColor(FluentTheme.colors.stroke.card.default)
         } else {
-            Brush.verticalGradient(
-                0.5f to FluentTheme.colors.stroke.control.default,
-                0.95f to FluentTheme.colors.stroke.control.secondary,
-            )
+            strokeShadow
         },
         shape = shape
     )
