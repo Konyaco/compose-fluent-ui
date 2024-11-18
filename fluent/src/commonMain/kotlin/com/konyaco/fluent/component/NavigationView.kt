@@ -507,7 +507,7 @@ private fun LeftCompactLayout(
     state: NavigationState,
     contentPadding: PaddingValues,
     pane: @Composable () -> Unit,
-    autoSuggestBox: @Composable() (NavigationAutoSuggestBoxScope.() -> Unit)?,
+    autoSuggestBox: @Composable (NavigationAutoSuggestBoxScope.() -> Unit)?,
     title: @Composable () -> Unit,
     backButton: @Composable () -> Unit,
     expandedButton: @Composable () -> Unit,
@@ -1118,9 +1118,9 @@ internal fun Modifier.indicatorOffsetAnimation(
     return layout { measurable, constraints ->
         val stickSize = size.toPx()
         val containerSize = if (isVertical) {
-            constraints.maxHeight
+            constraints.maxHeight.toFloat()
         } else {
-            constraints.maxWidth
+            constraints.maxWidth.toFloat()
         }
         val goBackward = if (isVertical) {
             selectedPosition.currentState.y > selectedPosition.targetState.y
@@ -1173,10 +1173,11 @@ internal fun Modifier.indicatorOffsetAnimation(
                 else -> 0f
             }
         }
+        val sizeInt = currentSize.roundToInt().coerceAtLeast(0)
         val placeable = if (isVertical) {
-            measurable.measure(Constraints.fixedHeight(currentSize.roundToInt().coerceAtLeast(0)))
+            measurable.measure(Constraints.fixedHeight(sizeInt))
         } else {
-            measurable.measure(Constraints.fixedWidth(currentSize.roundToInt().coerceAtLeast(0)))
+            measurable.measure(Constraints.fixedWidth(sizeInt))
         }
 
         layout(
@@ -1184,13 +1185,13 @@ internal fun Modifier.indicatorOffsetAnimation(
             height = if (isVertical) constraints.maxHeight else placeable.height
         ) {
             val offset = when {
-                goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> extendSize - currentSize
+                goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> extendSize - sizeInt
                 goBackward && !indicatorState.targetState -> 0f
                 !goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> contentPadding
-                !goBackward && !indicatorState.targetState -> containerSize - currentSize
+                !goBackward && !indicatorState.targetState -> containerSize - sizeInt
                 goBackward && currentFraction > 0.75f -> contentPadding
-                goBackward && currentFraction > 0.5f -> containerSize - currentSize
-                !goBackward && currentFraction > 0.75f -> extendSize - currentSize
+                goBackward && currentFraction > 0.5f -> containerSize - sizeInt
+                !goBackward && currentFraction > 0.75f -> extendSize - sizeInt
                 !goBackward && currentFraction > 0.5f -> 0f
                 else -> 0f
             }
