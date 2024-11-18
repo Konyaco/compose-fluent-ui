@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
@@ -69,6 +68,7 @@ fun App(
     navigator: ComponentNavigator = rememberComponentNavigator(components.first()),
     windowInset: WindowInsets = WindowInsets(0),
     contentInset: WindowInsets = WindowInsets(0),
+    collapseWindowInset: WindowInsets = WindowInsets(0),
     icon: Painter? = null,
     title: String = "",
 ) {
@@ -98,19 +98,15 @@ fun App(
     val store = LocalStore.current
     val isCollapsed = store.navigationDisplayMode == NavigationDisplayMode.LeftCollapsed
     NavigationView(
-        modifier = Modifier.then(
-            if (!isCollapsed) {
-                Modifier.windowInsetsPadding(insets = windowInset)
-            } else {
-                Modifier
-            }
+        modifier = Modifier.windowInsetsPadding(
+            insets = if (isCollapsed) collapseWindowInset else windowInset
         ),
         state = rememberNavigationState(),
         displayMode = store.navigationDisplayMode,
         contentPadding = if (!isCollapsed) {
             PaddingValues()
         } else {
-            windowInset.asPaddingValues()
+            PaddingValues(top = 48.dp)
         },
         menuItems = {
             components.forEach { navItem ->

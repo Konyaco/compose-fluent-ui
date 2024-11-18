@@ -7,6 +7,6 @@ import platform.UIKit.UIViewController
 
 fun MainViewController(): UIViewController = ComposeUIViewController {
     GalleryTheme {
-        App(windowInset = WindowInsets.safeContent)
+        App(windowInset = WindowInsets.safeContent, collapseWindowInset = WindowInsets.safeContent)
     }
 }
