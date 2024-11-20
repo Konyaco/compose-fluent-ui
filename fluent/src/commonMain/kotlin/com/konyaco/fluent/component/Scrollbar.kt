@@ -12,7 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -23,10 +29,10 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirstOrNull
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentAlpha
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.CaretRight
 import kotlinx.coroutines.launch
 
 /*
@@ -173,39 +179,55 @@ fun ScrollbarIndicator(
         }
     )
     val targetAlpha = animationFraction
-    Icon(
-        imageVector = Icons.Filled.CaretRight,
-        contentDescription = null,
-        tint = when {
-            pressed -> colors.contentColorPressed
-            hovered -> colors.contentColorHovered
-            !enabled -> colors.contentColorDisabled
-            else -> colors.contentColor
-        },
-        modifier = Modifier.size(14.dp).then(modifier).clickable(
-            interactionSource = interaction,
-            indication = null,
-            enabled = enabled && visible
-        ) {
-            scrollScope.launch {
-                if (forward) {
-                    adapter.scrollTo(-offset + adapter.scrollOffset)
+    val tint = when {
+        pressed -> colors.contentColorPressed
+        hovered -> colors.contentColorHovered
+        !enabled -> colors.contentColorDisabled
+        else -> colors.contentColor
+    }
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .then(modifier)
+            .then(
+                if (isVertical) {
+                    Modifier.size(12.dp, 16.dp)
                 } else {
-                    adapter.scrollTo(offset + adapter.scrollOffset)
+                    Modifier.size(16.dp, 12.dp)
                 }
-            }
-        }.graphicsLayer {
-            scaleX = targetScale
-            scaleY = targetScale
-            rotationZ = when {
-                isVertical && forward -> 270f
-                isVertical -> 90f
-                forward -> 180f
-                else -> 0f
-            }
-            alpha = targetAlpha
+            )
+            .clickable(
+                interactionSource = interaction,
+                indication = null,
+                enabled = enabled && visible
+            ) {
+                scrollScope.launch {
+                    if (forward) {
+                        adapter.scrollTo(-offset + adapter.scrollOffset)
+                    } else {
+                        adapter.scrollTo(offset + adapter.scrollOffset)
+                    }
+                }
+            }.graphicsLayer {
+                scaleX = targetScale
+                scaleY = targetScale
+                alpha = targetAlpha
+            }) {
+        CompositionLocalProvider(
+            LocalContentColor provides tint,
+            LocalContentAlpha provides tint.alpha
+        ) {
+            FontIconSolid8(
+                type = when {
+                    isVertical && forward -> FontIconPrimitive.CaretUp
+                    isVertical -> FontIconPrimitive.CaretDown
+                    forward -> FontIconPrimitive.CaretLeft
+                    else -> FontIconPrimitive.CaretRight
+                },
+                contentDescription = null
+            )
         }
-    )
+    }
 }
 
 @Composable
@@ -239,12 +261,15 @@ fun ScrollbarContainer(
         }
     ) { measurables, constraints ->
         val contentMeasurable =
-            measurables.fastFirstOrNull { it.layoutId == "content" } ?: return@Layout layout(0, 0) {}
-        val contentPlaceable = contentMeasurable.measure(constraints.copy(minWidth = 0, minHeight = 0))
-        val scrollbarMeasurable = measurables.fastFirstOrNull { it.layoutId == "scrollbar" } ?: return@Layout layout(
-            contentPlaceable.width,
-            contentPlaceable.height
-        ) { contentPlaceable.place(0, 0) }
+            measurables.fastFirstOrNull { it.layoutId == "content" }
+                ?: return@Layout layout(0, 0) {}
+        val contentPlaceable =
+            contentMeasurable.measure(constraints.copy(minWidth = 0, minHeight = 0))
+        val scrollbarMeasurable =
+            measurables.fastFirstOrNull { it.layoutId == "scrollbar" } ?: return@Layout layout(
+                contentPlaceable.width,
+                contentPlaceable.height
+            ) { contentPlaceable.place(0, 0) }
         val scrollbarPlaceable = scrollbarMeasurable.measure(
             if (isVertical) {
                 Constraints.fixedHeight(contentPlaceable.height)

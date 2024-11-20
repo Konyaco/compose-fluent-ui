@@ -53,8 +53,6 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualState
 import com.konyaco.fluent.scheme.VisualStateScheme
@@ -716,10 +714,11 @@ private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
         targetValue = if (isPressed) 2.dp else 0.dp,
         animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
     )
-    Icon(
-        imageVector = Icons.Default.ChevronDown,
+    FontIcon(
+        type = FontIconPrimitive.ChevronDown,
+        size = FontIconSize.Small,
         contentDescription = null,
-        modifier = Modifier.graphicsLayer { translationY = animatedOffset.value.toPx() }.size(12.dp)
+        modifier = Modifier.graphicsLayer { translationY = animatedOffset.value.toPx() }
     )
 }
 

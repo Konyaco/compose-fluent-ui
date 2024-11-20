@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalCompactMode
 import com.konyaco.fluent.LocalContentAlpha
@@ -41,9 +40,6 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Checkmark
-import com.konyaco.fluent.icons.regular.ChevronRight
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
@@ -225,12 +221,10 @@ object ListItemDefaults {
 
     @Composable
     fun CheckIcon() {
-        FontIcon(
-            glyph = '\uE8FB',
-            vector = Icons.Default.Checkmark,
+        FontIconSolid8(
+            type = FontIconPrimitive.Accept,
             contentDescription = "Check",
-            iconSize = 12.sp,
-            vectorSize = 12.dp
+            size = FontIconSize.Small,
         )
     }
 
@@ -247,11 +241,9 @@ object ListItemDefaults {
     @Composable
     fun CascadingIcon() {
         FontIcon(
-            glyph = '\uE974',
-            vector = Icons.Default.ChevronRight,
+            type = FontIconPrimitive.ChevronRight,
             contentDescription = "cascading",
-            vectorSize = 12.dp,
-            iconSize = 12.sp
+            size = FontIconSize.Small,
         )
     }
 

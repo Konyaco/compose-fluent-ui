@@ -35,9 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.animation.FluentDuration
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.CaretLeft
-import com.konyaco.fluent.icons.filled.CaretRight
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -75,7 +72,7 @@ fun LiteFilter(
         ) {
             SubtleButton(
                 onClick = { scope.launch { state.animateScrollBy(-state.viewportSize / 3f) } },
-                content = { Icon(Icons.Filled.CaretLeft, contentDescription = null) },
+                content = { FontIconSolid8(type = FontIconPrimitive.CaretLeft, contentDescription = null) },
                 iconOnly = true
             )
         }
@@ -88,7 +85,7 @@ fun LiteFilter(
         ) {
             SubtleButton(
                 onClick = { scope.launch { state.animateScrollBy(state.viewportSize / 3f) } },
-                content = { Icon(Icons.Filled.CaretRight, contentDescription = null) },
+                content = { FontIconSolid8(type = FontIconPrimitive.CaretRight, contentDescription = null) },
                 iconOnly = true
             )
         }

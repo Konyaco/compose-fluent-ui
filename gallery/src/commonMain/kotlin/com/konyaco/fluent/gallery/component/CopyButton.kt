@@ -11,10 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.konyaco.fluent.component.Button
-import com.konyaco.fluent.component.Icon
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Checkmark
-import com.konyaco.fluent.icons.regular.Copy
+import com.konyaco.fluent.component.FontIcon
+import com.konyaco.fluent.component.FontIconPrimitive
 import kotlinx.coroutines.delay
 
 @Composable
@@ -38,11 +36,14 @@ fun CopyButton(
         iconOnly = true,
         content = {
             AnimatedContent(isCopy) { target ->
-                if (target) {
-                    Icon(Icons.Default.Checkmark, contentDescription = null)
-                } else {
-                    Icon(Icons.Default.Copy, contentDescription = null)
-                }
+                FontIcon(
+                    type = if (target) {
+                        FontIconPrimitive.Accept
+                    } else {
+                        FontIconPrimitive.Copy
+                    },
+                    contentDescription = null
+                )
             }
         },
         modifier = modifier

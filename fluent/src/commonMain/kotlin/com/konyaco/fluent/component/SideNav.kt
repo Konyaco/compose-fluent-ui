@@ -52,9 +52,6 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ChevronDown
-import com.konyaco.fluent.icons.regular.Search
 import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -151,7 +148,7 @@ fun SideNav(
 
                         },
                         icon = {
-                            Icon(Icons.Default.Search, null)
+                            FontIcon(type = FontIconPrimitive.Search, contentDescription = null)
                         },
                         content = {}
                     )
@@ -349,9 +346,8 @@ fun SideNavItem(
                                     )
                                 )
                                 FontIcon(
-                                    glyph = '\uE972',
-                                    iconSize = FontIconDefaults.fontSizeSmall,
-                                    vector = Icons.Default.ChevronDown,
+                                    type = FontIconPrimitive.ChevronDown,
+                                    size = FontIconSize.Small,
                                     contentDescription = null,
                                     modifier = Modifier
                                         .padding(start = 2.dp, end = 14.dp)

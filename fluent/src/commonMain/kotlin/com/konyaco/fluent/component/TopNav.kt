@@ -35,9 +35,6 @@ import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ChevronDown
-import com.konyaco.fluent.icons.regular.MoreHorizontal
 import com.konyaco.fluent.layout.HorizontalIndicatorContentLayout
 import com.konyaco.fluent.layout.overflow.OverflowRow
 import com.konyaco.fluent.layout.overflow.OverflowRowScope
@@ -90,9 +87,8 @@ fun TopNav(
                             selected = false,
                             icon = {
                                 FontIcon(
-                                    glyph = '\uE712',
-                                    vector = Icons.Default.MoreHorizontal,
-                                    contentDescription = null,
+                                    type = FontIconPrimitive.More,
+                                    contentDescription = null
                                 )
                             },
                             onClick = { onExpandedChanged(true) }
@@ -192,9 +188,8 @@ fun TopNavItem(
                         }
                     )
                     FontIcon(
-                        glyph = '\uE972',
-                        iconSize = FontIconDefaults.fontSizeSmall,
-                        vector = Icons.Default.ChevronDown,
+                        type = FontIconPrimitive.ChevronDown,
+                        size = FontIconSize.Small,
                         contentDescription = null,
                         modifier = Modifier
                             .graphicsLayer {

@@ -37,8 +37,6 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ChevronDown
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
@@ -81,8 +79,8 @@ fun Expander(
                         onClick = { onExpandedChanged(!expanded) },
                         content = {
                             val degrees by animateFloatAsState(if (expanded) 180f else 0f)
-                            Icon(
-                                imageVector = Icons.Default.ChevronDown,
+                            FontIcon(
+                                type = FontIconPrimitive.ChevronDown,
                                 contentDescription = null,
                                 modifier = Modifier.graphicsLayer { rotationZ = degrees }
                             )

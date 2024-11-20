@@ -52,9 +52,6 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.CalendarDatePickerState.ChooseType
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.CaretDown
-import com.konyaco.fluent.icons.filled.CaretUp
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.collectVisualState
 import kotlinx.datetime.Clock
@@ -375,16 +372,17 @@ private fun PaginationButton(
 ) {
     Box(Modifier.requiredSize(40.dp), Alignment.Center) {
         SubtleButton(modifier = Modifier.height(30.dp), onClick = onClick, iconOnly = true) {
-            if (up) Icon(
-                modifier = Modifier.size(12.dp),
-                imageVector = Icons.Filled.CaretUp,
-                contentDescription = "Up"
-            )
-            else Icon(
-                modifier = Modifier.size(12.dp),
-                imageVector = Icons.Filled.CaretDown,
-                contentDescription = "Down"
-            )
+            if (up) {
+                FontIconSolid8(
+                    type = FontIconPrimitive.CaretUp,
+                    contentDescription = "Up",
+                )
+            } else {
+                FontIconSolid8(
+                    type = FontIconPrimitive.CaretDown,
+                    contentDescription = "Down",
+                )
+            }
         }
     }
 }

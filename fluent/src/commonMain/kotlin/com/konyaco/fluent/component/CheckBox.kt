@@ -30,8 +30,6 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Checkmark
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
@@ -84,10 +82,10 @@ fun CheckBox(
                     )
                 ) {
                     Box(Modifier.fillMaxSize(), Alignment.Center) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            imageVector = Icons.Default.Checkmark,
-                            contentDescription = null
+                        FontIcon(
+                            type = FontIconPrimitive.Accept,
+                            contentDescription = null,
+                            size = FontIconSize.Small
                         )
                     }
                 }

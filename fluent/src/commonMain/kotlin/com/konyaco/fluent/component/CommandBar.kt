@@ -33,8 +33,6 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.MoreHorizontal
 import com.konyaco.fluent.layout.alignLast
 import com.konyaco.fluent.layout.overflow.OverflowActionScope
 import com.konyaco.fluent.layout.overflow.OverflowRow
@@ -229,11 +227,7 @@ internal fun CommandBarMoreButton(isLarge: Boolean, onClick: () -> Unit) {
             onClick = onClick,
             iconOnly = true,
             content = {
-                FontIcon(
-                    glyph = '\uE712',
-                    vector = Icons.Filled.MoreHorizontal,
-                    contentDescription = null,
-                )
+                FontIcon(type = FontIconPrimitive.More, contentDescription = null)
             },
             modifier = if (isLarge) {
                 Modifier.sizeIn(

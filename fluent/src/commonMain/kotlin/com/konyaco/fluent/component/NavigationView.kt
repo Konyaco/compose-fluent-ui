@@ -75,9 +75,6 @@ import com.konyaco.fluent.background.ElevationDefaults
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.MaterialContainer
 import com.konyaco.fluent.background.MaterialDefaults
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ArrowLeft
-import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.layout.overflow.OverflowRowScope
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import kotlin.math.roundToInt
@@ -1015,8 +1012,7 @@ object NavigationDefaults {
         onClick: () -> Unit,
         icon: @Composable (() -> Unit) = {
             FontIcon(
-                glyph = '\uE700',
-                vector = Icons.Default.Navigation,
+                type = FontIconPrimitive.GlobalNavigation,
                 contentDescription = "Expanded"
             )
         },
@@ -1081,11 +1077,7 @@ object NavigationDefaults {
     fun BackButton(
         onClick: () -> Unit,
         icon: @Composable (() -> Unit) = {
-            FontIcon(
-                glyph = '\uE830',
-                vector = Icons.Default.ArrowLeft,
-                contentDescription = null,
-            )
+            FontIcon(type = FontIconPrimitive.ChromeBack, contentDescription = null)
         },
         modifier: Modifier = Modifier,
         disabled: Boolean = false,

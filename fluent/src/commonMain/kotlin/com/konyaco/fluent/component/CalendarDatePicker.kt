@@ -7,8 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.konyaco.fluent.ExperimentalFluentApi
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.CalendarLtr
 
 /**
  * A calendar view lets a user view and interact with a calendar that they can navigate by month, year, or decade. A user can select a single date or a range of dates. It doesn't have a picker surface and the calendar is always visible.
@@ -50,7 +48,7 @@ fun CalendarDatePicker(
                             "${day.year}/${day.monthValue + 1}/${day.day}"
                         } ?: "Pick a date"
                     )
-                    Icon(Icons.Default.CalendarLtr, null)
+                    FontIcon(type = FontIconPrimitive.Calendar, contentDescription = null)
                 }
             )
         }
