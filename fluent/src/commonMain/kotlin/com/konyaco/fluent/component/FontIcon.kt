@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.konyaco.fluent.LocalContentAlpha
+import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.CaretDown
 import com.konyaco.fluent.icons.filled.CaretLeft
@@ -55,6 +57,7 @@ internal fun FontIcon(
             text = glyph.toString(),
             fontFamily = LocalFontIconFontFamily.current,
             fontSize = iconSize,
+            color = LocalContentColor.current.copy(LocalContentAlpha.current),
             modifier = Modifier.then(modifier)
                 .height(with(LocalDensity.current) { iconSize.toDp() }),
             onTextLayout = {
