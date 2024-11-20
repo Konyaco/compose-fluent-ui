@@ -64,7 +64,7 @@ fun RatingControl(
     onValueChanged: (Float) -> Unit,
     modifier: Modifier = Modifier,
     colors: VisualStateScheme<RatingControlColor> = RatingControlDefaults.colors(),
-    width: Dp = 20.dp,
+    width: Dp = 16.dp,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     placeholderValue: Float = 0f,
     maxRating: Int = 5,
