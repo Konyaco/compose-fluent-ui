@@ -659,16 +659,26 @@ interface NavigationMenuScope {
 fun NavigationMenuScope.menuItem(
     selected: Boolean,
     onClick: (selected: Boolean) -> Unit,
-    key: Any? = null,
-    contentType: Any? = null,
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
+    key: Any? = null,
+    contentType: Any? = null,
     expandItems: Boolean = false,
     onExpandItemsChanged: (Boolean) -> Unit = {},
+    interactionSource: MutableInteractionSource? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
     item(key, contentType) {
-        MenuItem(selected, onClick, expandItems, onExpandItemsChanged, text, icon, items)
+        MenuItem(
+            selected = selected,
+            onClick = onClick,
+            text = text,
+            icon = icon,
+            expandItems = expandItems,
+            onExpandItemsChanged = onExpandItemsChanged,
+            interactionSource = interactionSource,
+            items = items
+        )
     }
 }
 
@@ -677,10 +687,11 @@ fun NavigationMenuScope.menuItem(
 fun NavigationMenuItemScope.MenuItem(
     selected: Boolean,
     onClick: (selected: Boolean) -> Unit,
-    expandItems: Boolean = false,
-    onExpandItemsChanged: (Boolean) -> Unit = {},
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
+    expandItems: Boolean = false,
+    onExpandItemsChanged: (Boolean) -> Unit = {},
+    interactionSource: MutableInteractionSource? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
 
@@ -696,7 +707,8 @@ fun NavigationMenuItemScope.MenuItem(
             flyoutVisible = flyoutVisible,
             onFlyoutVisibleChanged = { flyoutVisible = it },
             icon = icon,
-            items = items
+            items = items,
+            interactionSource = interactionSource
         )
     } else {
         val isExpanded = LocalNavigationExpand.current
@@ -717,7 +729,8 @@ fun NavigationMenuItemScope.MenuItem(
             icon = icon,
             expandItems = expandItems,
             onExpandItemsChanged = onExpandItemsChanged,
-            items = items
+            items = items,
+            interactionSource = interactionSource
         )
     }
 }
@@ -726,12 +739,13 @@ fun NavigationMenuItemScope.MenuItem(
 fun NavigationMenuItemScope.MenuItem(
     selected: Boolean,
     onClick: (selected: Boolean) -> Unit,
-    expandItems: Boolean = false,
-    onExpandItemsChanged: (Boolean) -> Unit = {},
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
     header: (@Composable () -> Unit)?,
+    expandItems: Boolean = false,
+    onExpandItemsChanged: (Boolean) -> Unit = {},
     separatorVisible: Boolean = false,
+    interactionSource: MutableInteractionSource? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
     if (displayMode == NavigationDisplayMode.Top) {
@@ -744,6 +758,7 @@ fun NavigationMenuItemScope.MenuItem(
                 onExpandItemsChanged = onExpandItemsChanged,
                 text = text,
                 icon = icon,
+                interactionSource = interactionSource
             )
             if (separatorVisible) {
                 MenuItemSeparator()
@@ -759,7 +774,8 @@ fun NavigationMenuItemScope.MenuItem(
                 icon = icon,
                 expandItems = expandItems,
                 onExpandItemsChanged = onExpandItemsChanged,
-                items = items
+                items = items,
+                interactionSource = interactionSource
             )
             if (separatorVisible) {
                 MenuItemSeparator()

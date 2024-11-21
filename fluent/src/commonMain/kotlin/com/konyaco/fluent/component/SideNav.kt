@@ -13,6 +13,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -250,9 +251,10 @@ fun SideNavItem(
             color = it
         )
     },
+    interactionSource: MutableInteractionSource? = null,
     text: @Composable RowScope.() -> Unit
 ) {
-    val interaction = remember { MutableInteractionSource() }
+    val interaction = interactionSource ?: remember { MutableInteractionSource() }
 
     val color = colors.schemeFor(interaction.collectVisualState(!enabled))
 
