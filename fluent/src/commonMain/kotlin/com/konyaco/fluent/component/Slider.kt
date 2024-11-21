@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -38,6 +39,7 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -56,7 +58,7 @@ fun Slider(
     enabled: Boolean = true,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
-    onValueChangeFinished: (() -> Unit)? = null,
+    onValueChangeFinished: ((Float) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     Slider(
@@ -68,9 +70,9 @@ fun Slider(
         steps = steps,
         onValueChangeFinished = onValueChangeFinished,
         interactionSource = interactionSource,
-        rail = { _ -> SliderDefaults.Rail(enabled = enabled) },
-        track = { fraction -> SliderDefaults.Track(fraction, enabled = enabled) },
-        thumb = { fraction, dragging -> SliderDefaults.Thumb(fraction, dragging, enabled) }
+        rail = { state -> SliderDefaults.Rail(state, enabled = enabled) },
+        track = { state -> SliderDefaults.Track(state, enabled = enabled) },
+        thumb = { state -> SliderDefaults.Thumb(state, enabled = enabled) }
     )
 }
 
@@ -79,24 +81,63 @@ fun Slider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true, // TODO
+    enabled: Boolean = true,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
-    onValueChangeFinished: (() -> Unit)? = null,
+    onValueChangeFinished: ((Float) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    rail: @Composable (fraction: Float) -> Unit,
-    track: @Composable (fraction: Float) -> Unit,
-    thumb: @Composable (fraction: Float, dragging: Boolean) -> Unit,
+    rail: @Composable (SliderState) -> Unit,
+    track: @Composable (SliderState) -> Unit,
+    thumb: @Composable (SliderState) -> Unit,
 ) {
-    val fraction = valueToFraction(value, valueRange.start, valueRange.endInclusive)
+    val state = remember(steps, valueRange) { SliderState(value, steps, onValueChangeFinished, valueRange) }
+    state.value = value
+    state.onValueChangeFinished = onValueChangeFinished
+    state.onValueChange = onValueChange
+
     SliderImpl(
         modifier = modifier,
-        fraction = fraction,
-        onFractionChange = {
-            onValueChange(fractionToValue(it, valueRange.start, valueRange.endInclusive))
-        },
+        state = state,
         enabled = enabled,
-        onValueChangeFinished = onValueChangeFinished,
+        interactionSource = interactionSource,
+        rail = rail,
+        track = track,
+        thumb = thumb
+    )
+}
+
+@Composable
+fun Slider(
+    state: SliderState,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+) {
+    SliderImpl(
+        modifier = modifier,
+        state = state,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        rail = { state -> SliderDefaults.Rail(state, enabled = enabled) },
+        track = { state -> SliderDefaults.Track(state, enabled = enabled) },
+        thumb = { state -> SliderDefaults.Thumb(state, enabled = enabled) }
+    )
+}
+
+@Composable
+fun Slider(
+    state: SliderState,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rail: @Composable (SliderState) -> Unit,
+    track: @Composable (SliderState) -> Unit,
+    thumb: @Composable (SliderState) -> Unit,
+) {
+    SliderImpl(
+        modifier = modifier,
+        state = state,
+        enabled = enabled,
         interactionSource = interactionSource,
         rail = rail,
         track = track,
@@ -106,45 +147,37 @@ fun Slider(
 
 @Composable
 private fun SliderImpl(
-    fraction: Float,
-    onFractionChange: (Float) -> Unit,
+    state: SliderState,
     modifier: Modifier = Modifier,
     enabled: Boolean,
-    onValueChangeFinished: (() -> Unit)?,
     interactionSource: MutableInteractionSource,
-    rail: @Composable (fraction: Float) -> Unit,
-    track: @Composable (fraction: Float) -> Unit,
-    thumb: @Composable (fraction: Float, dragging: Boolean) -> Unit,
+    rail: @Composable (SliderState) -> Unit,
+    track: @Composable (SliderState) -> Unit,
+    thumb: @Composable (SliderState) -> Unit,
 ) {
-    // TODO: Refactor this component
     BoxWithConstraints(
         modifier = modifier.height(32.dp).defaultMinSize(minWidth = 120.dp),
         contentAlignment = Alignment.CenterStart,
         propagateMinConstraints = true
     ) {
         val width by rememberUpdatedState(minWidth)
-        var dragging by remember { mutableStateOf(false) }
+        val widthPx by rememberUpdatedState(constraints.minWidth)
 
         val density by rememberUpdatedState(LocalDensity.current)
 
-        fun calcFraction(offset: Offset): Float {
-            val radius = with(density) { (ThumbSizeWithBorder / 2).toPx() }
-            return valueToFraction(offset.x, radius, constraints.minWidth - radius).coerceIn(0f, 1f)
-        }
-
-        var offset by remember { mutableStateOf(Offset.Zero) }
         Box(
-            modifier = Modifier.width(width).pointerInput(enabled, onFractionChange) {
+            modifier = Modifier.width(width)
+                // .semantics {  } // TODO: Slider semantics
+                .pointerInput(enabled, state.onValueChange) {
                 if (enabled) awaitEachGesture {
                     val down = awaitFirstDown()
                     down.consume()
-                    dragging = true
-                    // Fluent Design Behavior: Press will immediately change the value
+
                     val press = PressInteraction.Press(down.position)
                     interactionSource.tryEmit(press)
 
-                    offset = down.position
-                    onFractionChange(calcFraction(down.position))
+                    // Fluent  Behavior: Press will immediately change the value
+                    state.startDragging(down.position, widthPx, density)
 
                     var change: PointerInputChange? = down
 
@@ -162,29 +195,83 @@ private fun SliderImpl(
                         if (change != null) {
                             val delta = change.positionChange()
                             change.consume()
-                            offset = Offset(x = offset.x + delta.x, y = offset.y)
-                            onFractionChange(calcFraction(offset))
+                            state.updateDelta(delta, widthPx, density)
                         }
                     }
                     // Notify change finished
                     interactionSource.tryEmit(PressInteraction.Release(press))
-                    onValueChangeFinished?.invoke()
-                    dragging = false
+                    state.stopDragging()
                 }
             },
             contentAlignment = Alignment.CenterStart,
             propagateMinConstraints = true
         ) {
-            rail(fraction)
-            track(fraction)
-            thumb(fraction, dragging)
+            rail(state)
+            track(state)
+            thumb(state)
         }
     }
 }
 
+class SliderState(
+    value: Float = 0f,
+    val steps: Int = 0,
+    var onValueChangeFinished: ((Float) -> Unit)? = null,
+    val valueRange: ClosedFloatingPointRange<Float>
+) {
+    private var valueState by mutableFloatStateOf(value)
+    internal var onValueChange: ((Float) -> Unit)? = null
+
+    var value: Float
+        set(newVal) {
+            val coercedValue = newVal.coerceIn(valueRange.start, valueRange.endInclusive)
+            /*val snappedValue =
+                snapValueToTick(
+                    coercedValue,
+                    tickFractions,
+                    valueRange.start,
+                    valueRange.endInclusive
+                )*/
+            valueState = coercedValue
+        }
+        get() = valueState
+
+    var isDragging by mutableStateOf(false)
+        private set
+    private var rawOffset by mutableStateOf(Offset.Zero)
+
+    internal fun startDragging(down: Offset, width: Int, density: Density) {
+        rawOffset = down
+        isDragging = true
+
+        val fraction = calcFraction(down, width, density)
+        value = scaleToUserValue(fraction, valueRange)
+        onValueChange?.invoke(value)
+    }
+
+    internal fun updateDelta(delta: Offset, width: Int, density: Density) {
+        rawOffset = Offset(x = rawOffset.x + delta.x, y = rawOffset.y)
+
+        val fraction = calcFraction(rawOffset, width, density)
+        value = scaleToUserValue(fraction, valueRange)
+        onValueChange?.invoke(value)
+    }
+
+    internal fun stopDragging() {
+        onValueChangeFinished?.invoke(value)
+        isDragging = false
+    }
+}
+
 @Stable
-private fun fractionToValue(fraction: Float, start: Float, end: Float): Float =
-    (end - start) * fraction + start
+private fun calcFraction(offset: Offset, width: Int, density: Density): Float {
+    val thumbRadius = with(density) { (ThumbSizeWithBorder / 2).toPx() }
+    return valueToFraction(offset.x, thumbRadius, width - thumbRadius).coerceIn(0f, 1f)
+}
+
+@Stable
+private fun scaleToUserValue(fraction: Float, range: ClosedFloatingPointRange<Float>): Float =
+    (range.endInclusive - range.start) * fraction + range.start
 
 @Stable
 private fun valueToFraction(
@@ -202,7 +289,7 @@ object SliderDefaults {
 
     @Composable
     fun Track(
-        fraction: Float,
+        state: SliderState,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         color: Color = FluentTheme.colors.fillAccent.default,
@@ -210,16 +297,15 @@ object SliderDefaults {
         shape: Shape = CircleShape
     ) {
         BoxWithConstraints(modifier, contentAlignment = Alignment.CenterStart) {
+            val fraction = valueToFraction(state.value, state.valueRange.start, state.valueRange.endInclusive)
             val width = ThumbRadiusWithBorder + (fraction * (maxWidth - ThumbSizeWithBorder))
-            Box(
-                Modifier.requiredSize(width, 4.dp)
-                    .background(if (enabled) color else disabledColor, shape)
-            )
+            Box(Modifier.requiredSize(width, 4.dp).background(if (enabled) color else disabledColor, shape))
         }
     }
 
     @Composable
     fun Rail(
+        state: SliderState,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         color: Color = FluentTheme.colors.controlStrong.default,
@@ -243,10 +329,9 @@ object SliderDefaults {
 
     @Composable
     fun Thumb(
-        fraction: Float,
-        dragging: Boolean,
-        enabled: Boolean = true,
+        state: SliderState,
         modifier: Modifier = Modifier,
+        enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         shape: Shape = CircleShape,
         border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
@@ -256,6 +341,7 @@ object SliderDefaults {
         disabledColor: Color = FluentTheme.colors.fillAccent.disabled
     ) {
         BoxWithConstraints(modifier, Alignment.CenterStart) {
+            val fraction = valueToFraction(state.value, state.valueRange.start, state.valueRange.endInclusive)
             val thumbOffset by rememberUpdatedState(
                 calcThumbOffset(maxWidth, ThumbSize, 1.dp, fraction)
             )
@@ -278,7 +364,7 @@ object SliderDefaults {
                         Modifier.size(
                             animateDpAsState(
                                 when {
-                                    pressed || dragging -> InnerThumbPressedSize
+                                    pressed || state.isDragging -> InnerThumbPressedSize
                                     hovered -> InnerThumbHoverSize
                                     else -> InnerThumbSize
                                 },
@@ -290,7 +376,7 @@ object SliderDefaults {
                         ).background(
                             when {
                                 !enabled -> disabledColor
-                                pressed || dragging -> draggingColor
+                                pressed || state.isDragging -> draggingColor
                                 else -> color
                             }, shape
                         )

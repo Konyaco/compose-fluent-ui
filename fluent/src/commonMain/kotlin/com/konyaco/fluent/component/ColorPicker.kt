@@ -139,12 +139,8 @@ fun ColorPicker(
                 )
             },
             track = { },
-            thumb = { fraction, dragging ->
-                SliderDefaults.Thumb(
-                    fraction = fraction,
-                    dragging = dragging,
-                    color = FluentTheme.colors.text.text.primary
-                )
+            thumb = { state ->
+                SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary)
             }
         )
         if (alphaEnabled) {
@@ -170,12 +166,8 @@ fun ColorPicker(
                     )
                 },
                 track = {},
-                thumb = { fraction, dragging ->
-                    SliderDefaults.Thumb(
-                        fraction = fraction,
-                        dragging = dragging,
-                        color = FluentTheme.colors.text.text.primary
-                    )
+                thumb = { state ->
+                    SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary)
                 }
             )
         }
