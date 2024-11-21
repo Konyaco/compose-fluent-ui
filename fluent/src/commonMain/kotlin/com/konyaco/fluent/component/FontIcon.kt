@@ -1,11 +1,25 @@
 package com.konyaco.fluent.component
 
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
@@ -17,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
+import com.konyaco.fluent.animation.FluentDuration
+import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.CaretDown
 import com.konyaco.fluent.icons.filled.CaretLeft
@@ -179,6 +195,116 @@ fun FontIconSolid8(
         size = size,
         fallbackSize = fallbackSize
     )
+}
+
+object FontIconDefaults {
+
+    @Composable
+    fun BackIcon(
+        interactionSource: InteractionSource,
+        size: FontIconSize = FontIconSize.Standard,
+        contentDescription: String? = "Back",
+        modifier: Modifier = Modifier,
+    ) {
+        val isPressed by interactionSource.collectIsPressedAsState()
+        val scaleX = animateFloatAsState(
+            targetValue = if (isPressed) 0.9f else 1f,
+            animationSpec = tween(
+                durationMillis = FluentDuration.ShortDuration,
+                easing = FluentEasing.FastInvokeEasing
+            )
+        )
+        FontIcon(
+            type = FontIconPrimitive.ChromeBack,
+            size = size,
+            contentDescription = contentDescription,
+            modifier = modifier.graphicsLayer {
+                this.scaleX = scaleX.value
+                translationX = (1f - scaleX.value) * 6.dp.toPx()
+            }
+        )
+    }
+
+    @Composable
+    fun NavigationIcon(
+        interactionSource: InteractionSource,
+        size: FontIconSize = FontIconSize.Standard,
+        contentDescription: String? = "Navigation",
+        modifier: Modifier = Modifier,
+    ) {
+        val isPressed by interactionSource.collectIsPressedAsState()
+        val scaleX = animateFloatAsState(
+            targetValue = if (isPressed) 0.6f else 1f,
+            animationSpec = tween(
+                durationMillis = FluentDuration.ShortDuration,
+                easing = FluentEasing.FastInvokeEasing
+            )
+        )
+        FontIcon(
+            type = FontIconPrimitive.GlobalNavigation,
+            size = size,
+            contentDescription = contentDescription,
+            modifier = modifier.graphicsLayer {
+                this.scaleX = scaleX.value
+            }
+        )
+    }
+
+    @Composable
+    fun SettingIcon(
+        interactionSource: InteractionSource,
+        size: FontIconSize = FontIconSize.Standard,
+        contentDescription: String? = "Settings",
+        modifier: Modifier = Modifier,
+    ) {
+        var latestPress by remember { mutableStateOf<PressInteraction?>(null) }
+        LaunchedEffect(interactionSource) {
+            interactionSource.interactions.collect { value ->
+                when (value) {
+                    is PressInteraction.Press -> latestPress = value
+                    is PressInteraction.Release -> latestPress = value
+                    is PressInteraction.Cancel -> latestPress = value
+                }
+            }
+        }
+        val transition = updateTransition(latestPress)
+        val rotation = transition.animateFloat(
+            transitionSpec = {
+                when {
+                    initialState == null && targetState is PressInteraction.Press ->
+                        tween(durationMillis = FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
+
+                    (initialState is PressInteraction.Press && targetState is PressInteraction.Release) ||
+                            (initialState is PressInteraction.Press && targetState is PressInteraction.Cancel) ->
+                        tween(durationMillis = FluentDuration.LongDuration, easing = FluentEasing.FastInvokeEasing)
+
+                    else -> snap()
+                }
+            }
+        ){
+            when(it) {
+                null -> 0f
+                is PressInteraction.Press -> -30f
+                else -> 360f
+            }
+        }
+        LaunchedEffect(transition.currentState, transition.isRunning) {
+            if (!transition.isRunning) {
+                if (transition.currentState is PressInteraction.Release || transition.currentState is PressInteraction.Cancel) {
+                    latestPress = null
+                }
+            }
+        }
+        FontIcon(
+            type = FontIconPrimitive.Settings,
+            size = size,
+            contentDescription = contentDescription,
+            modifier = modifier.graphicsLayer {
+                rotationZ = rotation.value
+            }
+        )
+
+    }
 }
 
 @Immutable
