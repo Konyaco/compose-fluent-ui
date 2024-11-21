@@ -3,6 +3,7 @@ package com.konyaco.fluent.component
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -303,11 +304,18 @@ object SliderDefaults {
         }
     }
 
+    private val TickThickness = 1.dp
+    private val TickHeight = 4.dp
+    private val TickY = 22.dp
+    private val TopTickY = 6.dp
+
     @Composable
     fun Rail(
         state: SliderState,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
+        showTick: Boolean = state.steps > 0,
+        showTopTick: Boolean = true,
         color: Color = FluentTheme.colors.controlStrong.default,
         disabledColor: Color = FluentTheme.colors.controlStrong.default,
         border: BorderStroke? = BorderStroke(
@@ -316,14 +324,49 @@ object SliderDefaults {
         ),
         shape: Shape = CircleShape
     ) {
-        Box(modifier.requiredHeight(4.dp), propagateMinConstraints = true) {
+        BoxWithConstraints(modifier, propagateMinConstraints = true) {
+            val color = if (enabled) color else disabledColor
             Layer(
+                modifier = Modifier.requiredHeight(4.dp),
                 shape = shape,
-                color = if (enabled) color else disabledColor,
+                color = color,
                 border = border,
                 backgroundSizing = BackgroundSizing.InnerBorderEdge,
                 content = {}
             )
+            val steps = state.steps
+            if (showTick && steps > 0) {
+                val ticks = steps + 2 // With start and end point
+                Canvas(Modifier.width(minWidth).requiredHeight(minHeight)) {
+                    // Start at center of the Thumb
+                    val scaledWidth = size.width - ThumbSize.toPx() // We don't need the start and end half Thumb
+                    val gap = scaledWidth / (ticks - 1)
+                    val startX = ThumbSize.toPx() / 2
+                    val tickY = TickY.toPx()
+                    val topTickY = TopTickY.toPx()
+                    val tickThickness = TickThickness.toPx()
+                    val tickHeight = TickHeight.toPx()
+
+                    for (i in 0 until ticks) {
+                        val x = gap * i + startX
+                        drawLine(
+                            color = color,
+                            start = Offset(x = x, y = tickY),
+                            end = Offset(x = x, y = tickY + tickHeight),
+                            strokeWidth = tickThickness
+                        )
+
+                        if (showTopTick) {
+                            drawLine(
+                                color = color,
+                                start = Offset(x = x, y = topTickY),
+                                end = Offset(x = x, y = topTickY + tickHeight),
+                                strokeWidth = tickThickness
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
