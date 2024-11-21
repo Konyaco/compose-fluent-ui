@@ -4,14 +4,12 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.gestures.awaitHorizontalDragOrCancellation
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -36,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -53,9 +53,9 @@ fun Slider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true, // TODO
+    enabled: Boolean = true,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
-    steps: Int = 0, // TODO
+    steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
@@ -68,9 +68,9 @@ fun Slider(
         steps = steps,
         onValueChangeFinished = onValueChangeFinished,
         interactionSource = interactionSource,
-        rail = { _ -> SliderDefaults.Rail() },
-        track = { fraction -> SliderDefaults.Track(fraction) },
-        thumb = { fraction, dragging -> SliderDefaults.Thumb(fraction, dragging) }
+        rail = { _ -> SliderDefaults.Rail(enabled = enabled) },
+        track = { fraction -> SliderDefaults.Track(fraction, enabled = enabled) },
+        thumb = { fraction, dragging -> SliderDefaults.Thumb(fraction, dragging, enabled) }
     )
 }
 
@@ -81,7 +81,7 @@ fun Slider(
     modifier: Modifier = Modifier,
     enabled: Boolean = true, // TODO
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
-    steps: Int = 0, // TODO
+    steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     rail: @Composable (fraction: Float) -> Unit,
@@ -109,7 +109,7 @@ private fun SliderImpl(
     fraction: Float,
     onFractionChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean, // TODO
+    enabled: Boolean,
     onValueChangeFinished: (() -> Unit)?,
     interactionSource: MutableInteractionSource,
     rail: @Composable (fraction: Float) -> Unit,
@@ -117,7 +117,6 @@ private fun SliderImpl(
     thumb: @Composable (fraction: Float, dragging: Boolean) -> Unit,
 ) {
     // TODO: Refactor this component
-    val currentOnFractionChange by rememberUpdatedState(onFractionChange)
     BoxWithConstraints(
         modifier = modifier.height(32.dp).defaultMinSize(minWidth = 120.dp),
         contentAlignment = Alignment.CenterStart,
@@ -127,6 +126,7 @@ private fun SliderImpl(
         var dragging by remember { mutableStateOf(false) }
 
         val density by rememberUpdatedState(LocalDensity.current)
+
         fun calcFraction(offset: Offset): Float {
             val radius = with(density) { (ThumbSizeWithBorder / 2).toPx() }
             return valueToFraction(offset.x, radius, constraints.minWidth - radius).coerceIn(0f, 1f)
@@ -134,28 +134,41 @@ private fun SliderImpl(
 
         var offset by remember { mutableStateOf(Offset.Zero) }
         Box(
-            modifier = Modifier.width(width).draggable(
-                state = rememberDraggableState {
-                    offset = Offset(x = offset.x + it, y = offset.y)
-                    currentOnFractionChange(calcFraction(offset))
-                },
-                interactionSource = interactionSource,
-                onDragStarted = {
-                    dragging = true
-                    offset = it
-                },
-                onDragStopped = {
-                    dragging = false
-                    onValueChangeFinished?.invoke()
-                },
-                orientation = Orientation.Horizontal
-            ).pointerInput(Unit) {
-                // Fluent Design Behavior: Press will immediately change the fraction
-                awaitEachGesture {
+            modifier = Modifier.width(width).pointerInput(enabled, onFractionChange) {
+                if (enabled) awaitEachGesture {
                     val down = awaitFirstDown()
+                    down.consume()
                     dragging = true
-                    currentOnFractionChange(calcFraction(down.position))
-                    waitForUpOrCancellation()
+                    // Fluent Design Behavior: Press will immediately change the value
+                    val press = PressInteraction.Press(down.position)
+                    interactionSource.tryEmit(press)
+
+                    offset = down.position
+                    onFractionChange(calcFraction(down.position))
+
+                    var change: PointerInputChange? = down
+
+                    // We don't need touch slop
+                    /*var change = awaitHorizontalTouchSlopOrCancellation(down.id) { change, overslop ->
+                        val delta = change.positionChange()
+                        change.consume()
+                        println("Slop: ${delta} $overslop")
+                        offset = Offset(x = offset.x + delta.x + overslop, y = offset.y)
+                        currentOnFractionChange(calcFraction(offset))
+                    }*/
+
+                    while (change != null && change.pressed) {
+                        change = awaitHorizontalDragOrCancellation(down.id)
+                        if (change != null) {
+                            val delta = change.positionChange()
+                            change.consume()
+                            offset = Offset(x = offset.x + delta.x, y = offset.y)
+                            onFractionChange(calcFraction(offset))
+                        }
+                    }
+                    // Notify change finished
+                    interactionSource.tryEmit(PressInteraction.Release(press))
+                    onValueChangeFinished?.invoke()
                     dragging = false
                 }
             },
@@ -191,19 +204,26 @@ object SliderDefaults {
     fun Track(
         fraction: Float,
         modifier: Modifier = Modifier,
+        enabled: Boolean = true,
         color: Color = FluentTheme.colors.fillAccent.default,
+        disabledColor: Color = FluentTheme.colors.fillAccent.disabled,
         shape: Shape = CircleShape
     ) {
         BoxWithConstraints(modifier, contentAlignment = Alignment.CenterStart) {
             val width = ThumbRadiusWithBorder + (fraction * (maxWidth - ThumbSizeWithBorder))
-            Box(Modifier.requiredSize(width, 4.dp).background(color, shape))
+            Box(
+                Modifier.requiredSize(width, 4.dp)
+                    .background(if (enabled) color else disabledColor, shape)
+            )
         }
     }
 
     @Composable
     fun Rail(
         modifier: Modifier = Modifier,
+        enabled: Boolean = true,
         color: Color = FluentTheme.colors.controlStrong.default,
+        disabledColor: Color = FluentTheme.colors.controlStrong.default,
         border: BorderStroke? = BorderStroke(
             1.dp, if (FluentTheme.colors.darkMode) FluentTheme.colors.stroke.controlStrong.default
             else FluentTheme.colors.controlStrong.default
@@ -213,7 +233,7 @@ object SliderDefaults {
         Box(modifier.requiredHeight(4.dp), propagateMinConstraints = true) {
             Layer(
                 shape = shape,
-                color = color,
+                color = if (enabled) color else disabledColor,
                 border = border,
                 backgroundSizing = BackgroundSizing.InnerBorderEdge,
                 content = {}
@@ -225,12 +245,15 @@ object SliderDefaults {
     fun Thumb(
         fraction: Float,
         dragging: Boolean,
+        enabled: Boolean = true,
         modifier: Modifier = Modifier,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         shape: Shape = CircleShape,
         border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.borders.circle),
         ringColor: Color = FluentTheme.colors.controlSolid.default,
-        color: Color = FluentTheme.colors.fillAccent.default
+        color: Color = FluentTheme.colors.fillAccent.default,
+        draggingColor: Color = FluentTheme.colors.fillAccent.tertiary,
+        disabledColor: Color = FluentTheme.colors.fillAccent.disabled
     ) {
         BoxWithConstraints(modifier, Alignment.CenterStart) {
             val thumbOffset by rememberUpdatedState(
@@ -243,7 +266,7 @@ object SliderDefaults {
             Layer(
                 modifier = Modifier.offset { IntOffset(x = thumbOffset.roundToPx(), y = 0) }
                     .requiredSize(ThumbSizeWithBorder)
-                    .clickable(interactionSource, null, onClick = {}),
+                    .hoverable(interactionSource, enabled),
                 shape = shape,
                 color = ringColor,
                 border = border,
@@ -264,7 +287,13 @@ object SliderDefaults {
                                     easing = FluentEasing.FastInvokeEasing
                                 )
                             ).value
-                        ).background(color, shape)
+                        ).background(
+                            when {
+                                !enabled -> disabledColor
+                                pressed || dragging -> draggingColor
+                                else -> color
+                            }, shape
+                        )
                     )
                 }
             }
