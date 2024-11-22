@@ -45,11 +45,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import androidx.compose.ui.util.lerp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
+import kotlin.math.abs
 
 @Composable
 fun Slider(
@@ -91,7 +93,8 @@ fun Slider(
     track: @Composable (SliderState) -> Unit,
     thumb: @Composable (SliderState) -> Unit,
 ) {
-    val state = remember(steps, valueRange) { SliderState(value, steps, onValueChangeFinished, valueRange) }
+    val state =
+        remember(steps, valueRange) { SliderState(value, steps, onValueChangeFinished, valueRange) }
     state.value = value
     state.onValueChangeFinished = onValueChangeFinished
     state.onValueChange = onValueChange
@@ -170,40 +173,40 @@ private fun SliderImpl(
             modifier = Modifier.width(width)
                 // .semantics {  } // TODO: Slider semantics
                 .pointerInput(enabled, state.onValueChange) {
-                if (enabled) awaitEachGesture {
-                    val down = awaitFirstDown()
-                    down.consume()
+                    if (enabled) awaitEachGesture {
+                        val down = awaitFirstDown()
+                        down.consume()
 
-                    val press = PressInteraction.Press(down.position)
-                    interactionSource.tryEmit(press)
+                        val press = PressInteraction.Press(down.position)
+                        interactionSource.tryEmit(press)
 
-                    // Fluent  Behavior: Press will immediately change the value
-                    state.startDragging(down.position, widthPx, density)
+                        // Fluent  Behavior: Press will immediately change the value
+                        state.startDragging(down.position, widthPx, density)
 
-                    var change: PointerInputChange? = down
+                        var change: PointerInputChange? = down
 
-                    // We don't need touch slop
-                    /*var change = awaitHorizontalTouchSlopOrCancellation(down.id) { change, overslop ->
-                        val delta = change.positionChange()
-                        change.consume()
-                        println("Slop: ${delta} $overslop")
-                        offset = Offset(x = offset.x + delta.x + overslop, y = offset.y)
-                        currentOnFractionChange(calcFraction(offset))
-                    }*/
-
-                    while (change != null && change.pressed) {
-                        change = awaitHorizontalDragOrCancellation(down.id)
-                        if (change != null) {
+                        // We don't need touch slop
+                        /*var change = awaitHorizontalTouchSlopOrCancellation(down.id) { change, overslop ->
                             val delta = change.positionChange()
                             change.consume()
-                            state.updateDelta(delta, widthPx, density)
+                            println("Slop: ${delta} $overslop")
+                            offset = Offset(x = offset.x + delta.x + overslop, y = offset.y)
+                            currentOnFractionChange(calcFraction(offset))
+                        }*/
+
+                        while (change != null && change.pressed) {
+                            change = awaitHorizontalDragOrCancellation(down.id)
+                            if (change != null) {
+                                val delta = change.positionChange()
+                                change.consume()
+                                state.updateDelta(delta, widthPx, density)
+                            }
                         }
+                        // Notify change finished
+                        interactionSource.tryEmit(PressInteraction.Release(press))
+                        state.stopDragging(widthPx, density)
                     }
-                    // Notify change finished
-                    interactionSource.tryEmit(PressInteraction.Release(press))
-                    state.stopDragging()
-                }
-            },
+                },
             contentAlignment = Alignment.CenterStart,
             propagateMinConstraints = true
         ) {
@@ -220,12 +223,15 @@ class SliderState(
     var onValueChangeFinished: ((Float) -> Unit)? = null,
     val valueRange: ClosedFloatingPointRange<Float>
 ) {
+    val stepFractions = getStepFractions(steps)
+
     private var valueState by mutableFloatStateOf(value)
     internal var onValueChange: ((Float) -> Unit)? = null
 
     var value: Float
         set(newVal) {
             val coercedValue = newVal.coerceIn(valueRange.start, valueRange.endInclusive)
+            // We snap value at dragging ending instead of each dragging delta
             /*val snappedValue =
                 snapValueToTick(
                     coercedValue,
@@ -239,35 +245,82 @@ class SliderState(
 
     var isDragging by mutableStateOf(false)
         private set
-    private var rawOffset by mutableStateOf(Offset.Zero)
 
-    internal fun startDragging(down: Offset, width: Int, density: Density) {
-        rawOffset = down
-        isDragging = true
+    // Relating to component size, for accumulating offset delta
+    var rawOffset by mutableStateOf(Offset.Zero)
+        private set
 
-        val fraction = calcFraction(down, width, density)
-        value = scaleToUserValue(fraction, valueRange)
-        onValueChange?.invoke(value)
+    // Without relating to component size
+    var rawFraction by mutableStateOf(valueToFraction(value, valueRange))
+        private set
+
+    private fun setRawOffset(offset: Offset, width: Int, density: Density) {
+        this.rawOffset = offset
+        this.rawFraction = offsetToFraction(offset, width, density)
+    }
+
+    private fun setRawFraction(fraction: Float, width: Int, density: Density) {
+        this.rawFraction = fraction
+        this.rawOffset =
+            Offset(x = fractionToOffset(fraction, width, density), y = this.rawOffset.y)
+    }
+
+    internal fun startDragging(downOffset: Offset, width: Int, density: Density) {
+        setRawOffset(downOffset, width, density)
+
+        this.isDragging = true
+
+        val fraction = offsetToFraction(downOffset, width, density)
+        this.value = scaleToUserValue(fraction, this.valueRange)
+        this.onValueChange?.invoke(this.value)
     }
 
     internal fun updateDelta(delta: Offset, width: Int, density: Density) {
-        rawOffset = Offset(x = rawOffset.x + delta.x, y = rawOffset.y)
+        setRawOffset(Offset(x = this.rawOffset.x + delta.x, y = this.rawOffset.y), width, density)
 
-        val fraction = calcFraction(rawOffset, width, density)
-        value = scaleToUserValue(fraction, valueRange)
-        onValueChange?.invoke(value)
+        val fraction = offsetToFraction(this.rawOffset, width, density)
+        this.value = scaleToUserValue(fraction, this.valueRange)
+        this.onValueChange?.invoke(this.value)
     }
 
-    internal fun stopDragging() {
-        onValueChangeFinished?.invoke(value)
-        isDragging = false
+    internal fun stopDragging(width: Int, density: Density) {
+        if (this.steps > 0) {
+            // Snap
+            // TODO: Add snap animation, maybe we should use anchoredDraggable?
+            val currentValue = this.value
+            val nearestValue = snapToNearestTickValue(currentValue)
+            val fraction = valueToFraction(nearestValue, this.valueRange)
+            this.value = nearestValue
+            setRawFraction(fraction, width, density)
+        }
+
+        this.onValueChangeFinished?.invoke(this.value)
+        this.isDragging = false
+    }
+
+    private fun snapToNearestTickValue(value: Float): Float {
+        return this.stepFractions
+            .map { lerp(this.valueRange.start, this.valueRange.endInclusive, it) }
+            .minBy { abs(it - value) }
     }
 }
 
-@Stable
-private fun calcFraction(offset: Offset, width: Int, density: Density): Float {
+private fun getStepFractions(steps: Int): FloatArray {
+    return FloatArray(steps + 2) {
+        it.toFloat() / (steps + 1)
+    }
+}
+
+private fun fractionToOffset(fraction: Float, width: Int, density: Density): Float {
     val thumbRadius = with(density) { (ThumbSizeWithBorder / 2).toPx() }
-    return valueToFraction(offset.x, thumbRadius, width - thumbRadius).coerceIn(0f, 1f)
+    return lerp(thumbRadius, width - thumbRadius, fraction)
+}
+
+@Stable
+private fun offsetToFraction(offset: Offset, width: Int, density: Density): Float {
+    val thumbRadius = with(density) { (ThumbSizeWithBorder / 2).toPx() }
+
+    return valueToFraction(offset.x, thumbRadius..(width - thumbRadius)).coerceIn(0f, 1f)
 }
 
 @Stable
@@ -276,8 +329,8 @@ private fun scaleToUserValue(fraction: Float, range: ClosedFloatingPointRange<Fl
 
 @Stable
 private fun valueToFraction(
-    value: Float, start: Float, end: Float
-): Float = (value - start) / (end - start)
+    value: Float, valueRange: ClosedFloatingPointRange<Float>
+): Float = (value - valueRange.start) / (valueRange.endInclusive - valueRange.start)
 
 @Stable
 private fun calcThumbOffset(
@@ -298,9 +351,12 @@ object SliderDefaults {
         shape: Shape = CircleShape
     ) {
         BoxWithConstraints(modifier, contentAlignment = Alignment.CenterStart) {
-            val fraction = valueToFraction(state.value, state.valueRange.start, state.valueRange.endInclusive)
-            val width = ThumbRadiusWithBorder + (fraction * (maxWidth - ThumbSizeWithBorder))
-            Box(Modifier.requiredSize(width, 4.dp).background(if (enabled) color else disabledColor, shape))
+            val width =
+                ThumbRadiusWithBorder + (state.rawFraction * (maxWidth - ThumbSizeWithBorder))
+            Box(
+                Modifier.requiredSize(width, 4.dp)
+                    .background(if (enabled) color else disabledColor, shape)
+            )
         }
     }
 
@@ -326,6 +382,7 @@ object SliderDefaults {
     ) {
         BoxWithConstraints(modifier, propagateMinConstraints = true) {
             val color = if (enabled) color else disabledColor
+
             Layer(
                 modifier = Modifier.requiredHeight(4.dp),
                 shape = shape,
@@ -334,37 +391,44 @@ object SliderDefaults {
                 backgroundSizing = BackgroundSizing.InnerBorderEdge,
                 content = {}
             )
-            val steps = state.steps
-            if (showTick && steps > 0) {
-                val ticks = steps + 2 // With start and end point
-                Canvas(Modifier.width(minWidth).requiredHeight(minHeight)) {
-                    // Start at center of the Thumb
-                    val scaledWidth = size.width - ThumbSize.toPx() // We don't need the start and end half Thumb
-                    val gap = scaledWidth / (ticks - 1)
-                    val startX = ThumbSize.toPx() / 2
-                    val tickY = TickY.toPx()
-                    val topTickY = TopTickY.toPx()
-                    val tickThickness = TickThickness.toPx()
-                    val tickHeight = TickHeight.toPx()
 
-                    for (i in 0 until ticks) {
-                        val x = gap * i + startX
-                        drawLine(
-                            color = color,
-                            start = Offset(x = x, y = tickY),
-                            end = Offset(x = x, y = tickY + tickHeight),
-                            strokeWidth = tickThickness
-                        )
+            if (showTick && state.steps > 0) Tick(
+                modifier = Modifier.width(minWidth).requiredHeight(minHeight),
+                color = color,
+                state = state,
+                showTopTick = showTopTick
+            )
+        }
+    }
 
-                        if (showTopTick) {
-                            drawLine(
-                                color = color,
-                                start = Offset(x = x, y = topTickY),
-                                end = Offset(x = x, y = topTickY + tickHeight),
-                                strokeWidth = tickThickness
-                            )
-                        }
-                    }
+    @Composable
+    fun Tick(modifier: Modifier, color: Color, state: SliderState, showTopTick: Boolean) {
+        Canvas(modifier) {
+            // Start at center of the Thumb
+            val scaledWidth =
+                size.width - ThumbSize.toPx() // We don't need the start and end half Thumb
+            val startX = ThumbSize.toPx() / 2
+            val tickY = TickY.toPx()
+            val topTickY = TopTickY.toPx()
+            val tickThickness = TickThickness.toPx()
+            val tickHeight = TickHeight.toPx()
+
+            for (stepFraction in state.stepFractions) {
+                val x = scaledWidth * stepFraction + startX
+                drawLine(
+                    color = color,
+                    start = Offset(x = x, y = tickY),
+                    end = Offset(x = x, y = tickY + tickHeight),
+                    strokeWidth = tickThickness
+                )
+
+                if (showTopTick) {
+                    drawLine(
+                        color = color,
+                        start = Offset(x = x, y = topTickY),
+                        end = Offset(x = x, y = topTickY + tickHeight),
+                        strokeWidth = tickThickness
+                    )
                 }
             }
         }
@@ -384,9 +448,8 @@ object SliderDefaults {
         disabledColor: Color = FluentTheme.colors.fillAccent.disabled
     ) {
         BoxWithConstraints(modifier, Alignment.CenterStart) {
-            val fraction = valueToFraction(state.value, state.valueRange.start, state.valueRange.endInclusive)
             val thumbOffset by rememberUpdatedState(
-                calcThumbOffset(maxWidth, ThumbSize, 1.dp, fraction)
+                calcThumbOffset(maxWidth, ThumbSize, 1.dp, state.rawFraction)
             )
 
             val hovered by interactionSource.collectIsHoveredAsState()
