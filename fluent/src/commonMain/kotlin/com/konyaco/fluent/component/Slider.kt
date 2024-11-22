@@ -14,14 +14,12 @@ import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -39,12 +37,11 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
@@ -52,6 +49,7 @@ import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 @Composable
 fun Slider(
@@ -159,62 +157,73 @@ private fun SliderImpl(
     track: @Composable (SliderState) -> Unit,
     thumb: @Composable (SliderState) -> Unit,
 ) {
-    BoxWithConstraints(
-        modifier = modifier.height(32.dp).defaultMinSize(minWidth = 120.dp),
-        contentAlignment = Alignment.CenterStart,
-        propagateMinConstraints = true
-    ) {
-        val width by rememberUpdatedState(minWidth)
-        val widthPx by rememberUpdatedState(constraints.minWidth)
+    var widthPx by remember { mutableStateOf(0) }
+    val density by rememberUpdatedState(LocalDensity.current)
 
-        val density by rememberUpdatedState(LocalDensity.current)
-
-        Box(
-            modifier = Modifier.width(width)
-                // .semantics {  } // TODO: Slider semantics
-                .pointerInput(enabled, state.onValueChange) {
-                    if (enabled) awaitEachGesture {
-                        val down = awaitFirstDown()
-                        down.consume()
-
-                        val press = PressInteraction.Press(down.position)
-                        interactionSource.tryEmit(press)
-
-                        // Fluent  Behavior: Press will immediately change the value
-                        state.startDragging(down.position, widthPx, density)
-
-                        var change: PointerInputChange? = down
-
-                        // We don't need touch slop
-                        /*var change = awaitHorizontalTouchSlopOrCancellation(down.id) { change, overslop ->
-                            val delta = change.positionChange()
-                            change.consume()
-                            println("Slop: ${delta} $overslop")
-                            offset = Offset(x = offset.x + delta.x + overslop, y = offset.y)
-                            currentOnFractionChange(calcFraction(offset))
-                        }*/
-
-                        while (change != null && change.pressed) {
-                            change = awaitHorizontalDragOrCancellation(down.id)
-                            if (change != null) {
-                                val delta = change.positionChange()
-                                change.consume()
-                                state.updateDelta(delta, widthPx, density)
-                            }
-                        }
-                        // Notify change finished
-                        interactionSource.tryEmit(PressInteraction.Release(press))
-                        state.stopDragging(widthPx, density)
-                    }
-                },
-            contentAlignment = Alignment.CenterStart,
-            propagateMinConstraints = true
-        ) {
+    Box(
+        content = {
             rail(state)
             track(state)
             thumb(state)
-        }
-    }
+        },
+        contentAlignment = Alignment.CenterStart,
+        propagateMinConstraints = true,
+        modifier = modifier
+            .height(32.dp)
+            .defaultMinSize(minWidth = 120.dp)
+            .layout { measurable, constraints ->
+                if (constraints.hasFixedWidth) {
+                    val placeable = measurable.measure(constraints)
+                    widthPx = placeable.width
+                    layout(placeable.width, placeable.height) {
+                        placeable.place(0, 0)
+                    }
+                } else {
+                    val placeable =
+                        measurable.measure(constraints.copy(maxWidth = constraints.minWidth))
+                    widthPx = placeable.width
+                    layout(placeable.width, placeable.height) {
+                        placeable.place(0, 0)
+                    }
+                }
+            }
+            // .semantics {  } // TODO: Slider semantics
+            .pointerInput(enabled, state.onValueChange) {
+                if (enabled) awaitEachGesture {
+                    val down = awaitFirstDown()
+                    down.consume()
+
+                    val press = PressInteraction.Press(down.position)
+                    interactionSource.tryEmit(press)
+
+                    // Fluent  Behavior: Press will immediately change the value
+                    state.startDragging(down.position, widthPx, density)
+
+                    var change: PointerInputChange? = down
+
+                    // We don't need touch slop
+                    /*var change = awaitHorizontalTouchSlopOrCancellation(down.id) { change, overslop ->
+                        val delta = change.positionChange()
+                        change.consume()
+                        println("Slop: ${delta} $overslop")
+                        offset = Offset(x = offset.x + delta.x + overslop, y = offset.y)
+                        currentOnFractionChange(calcFraction(offset))
+                    }*/
+
+                    while (change != null && change.pressed) {
+                        change = awaitHorizontalDragOrCancellation(down.id)
+                        if (change != null) {
+                            val delta = change.positionChange()
+                            change.consume()
+                            state.updateDelta(delta, widthPx, density)
+                        }
+                    }
+                    // Notify change finished
+                    interactionSource.tryEmit(PressInteraction.Release(press))
+                    state.stopDragging(widthPx, density)
+                }
+            }
+    )
 }
 
 class SliderState(
@@ -334,8 +343,8 @@ private fun valueToFraction(
 
 @Stable
 private fun calcThumbOffset(
-    maxWidth: Dp, thumbSize: Dp, padding: Dp, fraction: Float
-): Dp {
+    maxWidth: Int, thumbSize: Float, padding: Float, fraction: Float
+): Float {
     return (maxWidth - thumbSize) * fraction - padding
 }
 
@@ -350,14 +359,36 @@ object SliderDefaults {
         disabledColor: Color = FluentTheme.colors.fillAccent.disabled,
         shape: Shape = CircleShape
     ) {
-        BoxWithConstraints(modifier, contentAlignment = Alignment.CenterStart) {
-            val width =
-                ThumbRadiusWithBorder + (state.rawFraction * (maxWidth - ThumbSizeWithBorder))
-            Box(
-                Modifier.requiredSize(width, 4.dp)
-                    .background(if (enabled) color else disabledColor, shape)
-            )
-        }
+        Spacer(
+            modifier = modifier
+                .layout { measurable, constraints ->
+                    val placeable = if (constraints.hasBoundedWidth) {
+                        val maxWidth =
+                            (ThumbRadiusWithBorder.toPx() + (state.rawFraction * (constraints.maxWidth - ThumbSizeWithBorder.toPx())))
+                                .roundToInt()
+                                .coerceIn(0, constraints.maxWidth)
+                        val newConstraints = constraints.copy(
+                            minWidth = maxWidth,
+                            maxWidth = maxWidth
+                        )
+                        measurable.measure(newConstraints)
+                    } else {
+                        measurable.measure(constraints)
+                    }
+                    val width = maxOf(constraints.maxWidth, placeable.width)
+                    val height = maxOf(constraints.maxHeight, placeable.height)
+                    layout(width, height) {
+                        val offset = Alignment.CenterStart.align(
+                            size = IntSize(placeable.width, placeable.height),
+                            space = IntSize(width, height),
+                            layoutDirection = layoutDirection
+                        )
+                        placeable.place(offset)
+                    }
+                }
+                .requiredHeight(4.dp)
+                .background(if (enabled) color else disabledColor, shape)
+        )
     }
 
     private val TickThickness = 1.dp
@@ -380,7 +411,7 @@ object SliderDefaults {
         ),
         shape: Shape = CircleShape
     ) {
-        BoxWithConstraints(modifier, propagateMinConstraints = true) {
+        Box(modifier, propagateMinConstraints = true) {
             val color = if (enabled) color else disabledColor
 
             Layer(
@@ -393,7 +424,7 @@ object SliderDefaults {
             )
 
             if (showTick && state.steps > 0) Tick(
-                modifier = Modifier.width(minWidth).requiredHeight(minHeight),
+                modifier = Modifier.matchParentSize(),
                 color = color,
                 state = state,
                 showTopTick = showTopTick
@@ -447,47 +478,62 @@ object SliderDefaults {
         draggingColor: Color = FluentTheme.colors.fillAccent.tertiary,
         disabledColor: Color = FluentTheme.colors.fillAccent.disabled
     ) {
-        BoxWithConstraints(modifier, Alignment.CenterStart) {
-            val thumbOffset by rememberUpdatedState(
-                calcThumbOffset(maxWidth, ThumbSize, 1.dp, state.rawFraction)
-            )
+        val hovered by interactionSource.collectIsHoveredAsState()
+        val pressed by interactionSource.collectIsPressedAsState()
 
-            val hovered by interactionSource.collectIsHoveredAsState()
-            val pressed by interactionSource.collectIsPressedAsState()
-
-            Layer(
-                modifier = Modifier.offset { IntOffset(x = thumbOffset.roundToPx(), y = 0) }
-                    .requiredSize(ThumbSizeWithBorder)
-                    .hoverable(interactionSource, enabled),
-                shape = shape,
-                color = ringColor,
-                border = border,
-                backgroundSizing = BackgroundSizing.InnerBorderEdge
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    // Inner Thumb
-                    Box(
-                        Modifier.size(
-                            animateDpAsState(
-                                when {
-                                    pressed || state.isDragging -> InnerThumbPressedSize
-                                    hovered -> InnerThumbHoverSize
-                                    else -> InnerThumbSize
-                                },
-                                tween(
-                                    FluentDuration.QuickDuration,
-                                    easing = FluentEasing.FastInvokeEasing
-                                )
-                            ).value
-                        ).background(
-                            when {
-                                !enabled -> disabledColor
-                                pressed || state.isDragging -> draggingColor
-                                else -> color
-                            }, shape
+        Layer(
+            modifier = modifier
+                .layout { measurable, constraints ->
+                    val placeable = measurable.measure(constraints.copy(minWidth = 0))
+                    val width = maxOf(constraints.maxWidth, placeable.width)
+                    val height = maxOf(constraints.maxHeight, placeable.height)
+                    layout(width, height) {
+                        val offset = Alignment.CenterStart.align(
+                            size = IntSize(placeable.width, placeable.height),
+                            space = IntSize(width, height),
+                            layoutDirection = layoutDirection
                         )
-                    )
+                        placeable.place(
+                            x = offset.x + calcThumbOffset(
+                                maxWidth = width,
+                                thumbSize = ThumbSize.toPx(),
+                                padding = 1.dp.toPx(),
+                                fraction = state.rawFraction
+                            ).roundToInt(),
+                            y = offset.y + 0
+                        )
+                    }
                 }
+                .requiredSize(ThumbSizeWithBorder)
+                .hoverable(interactionSource, enabled),
+            shape = shape,
+            color = ringColor,
+            border = border,
+            backgroundSizing = BackgroundSizing.InnerBorderEdge
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                // Inner Thumb
+                Box(
+                    Modifier.size(
+                        animateDpAsState(
+                            when {
+                                pressed || state.isDragging -> InnerThumbPressedSize
+                                hovered -> InnerThumbHoverSize
+                                else -> InnerThumbSize
+                            },
+                            tween(
+                                FluentDuration.QuickDuration,
+                                easing = FluentEasing.FastInvokeEasing
+                            )
+                        ).value
+                    ).background(
+                        when {
+                            !enabled -> disabledColor
+                            pressed || state.isDragging -> draggingColor
+                            else -> color
+                        }, shape
+                    )
+                )
             }
         }
     }
