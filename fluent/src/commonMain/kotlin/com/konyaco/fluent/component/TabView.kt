@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -154,6 +155,7 @@ fun TabRow(
                 modifier = Modifier
                     .onGloballyPositioned { rowRect.value = it.boundsInParent() }
                     .weight(1f)
+                    .wrapContentWidth(Alignment.Start)
                     .height(TabViewHeight)
                     .zIndex(1f)
             )
