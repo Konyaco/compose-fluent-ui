@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
@@ -62,7 +63,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalFluentApi::class)
 @Composable
 fun App(
     navigator: ComponentNavigator = rememberComponentNavigator(components.first()),
@@ -172,7 +173,7 @@ fun App(
                     },
                     isClearable = true,
                     shape = AutoSuggestBoxDefaults.textFieldShape(expandedSuggestion),
-                    modifier = Modifier.fillMaxWidth().focusHandle().suggestFlyoutAnchor()
+                    modifier = Modifier.fillMaxWidth().focusHandle().flyoutAnchor()
                 )
                 val searchResult = remember(flatMapComponents) {
                     snapshotFlow {
@@ -190,7 +191,7 @@ fun App(
                 AutoSuggestBoxDefaults.suggestFlyout(
                     expanded = expandedSuggestion,
                     onDismissRequest = { expandedSuggestion = false },
-                    modifier = Modifier.suggestFlyoutSize(),
+                    modifier = Modifier.flyoutSize(matchAnchorWidth = true),
                     itemsContent = {
                         items(
                             items = searchResult.value,

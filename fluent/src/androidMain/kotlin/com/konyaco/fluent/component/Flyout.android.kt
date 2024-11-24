@@ -15,7 +15,7 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 @Composable
-internal actual fun rememberSuggestFlyoutCalculateMaxHeight(padding: Dp): (anchorCoordinates: LayoutCoordinates) -> Int {
+actual fun rememberFlyoutCalculateMaxHeight(padding: Dp): (LayoutCoordinates) -> Int {
     val config = LocalConfiguration.current
     val view = LocalView.current
     val verticalMargin = with(LocalDensity.current) { padding.roundToPx() }

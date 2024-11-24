@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.component.AutoSuggestBoxDefaults
 import com.konyaco.fluent.component.AutoSuggestionBox
 import com.konyaco.fluent.component.ListItem
@@ -45,6 +46,7 @@ fun AutoSuggestBoxScreen() {
 }
 
 @Sample
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 private fun BasicAutoSuggestBoxSample() {
     var expanded by remember { mutableStateOf(false) }
@@ -57,7 +59,7 @@ private fun BasicAutoSuggestBoxSample() {
             value = keyword,
             onValueChange = { keyword = it },
             shape = AutoSuggestBoxDefaults.textFieldShape(expanded),
-            modifier = Modifier.widthIn(300.dp).suggestFlyoutAnchor()
+            modifier = Modifier.widthIn(300.dp).flyoutAnchor()
         )
         val searchResult = remember(flatMapComponents) {
             snapshotFlow { keyword }.map {
@@ -82,7 +84,7 @@ private fun BasicAutoSuggestBoxSample() {
                     )
                 }
             },
-            modifier = Modifier.suggestFlyoutSize()
+            modifier = Modifier.flyoutSize(matchAnchorWidth = true)
         )
     }
 }
