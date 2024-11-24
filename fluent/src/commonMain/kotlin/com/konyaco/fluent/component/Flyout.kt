@@ -82,6 +82,7 @@ fun FlyoutContainer(
     )
 }
 
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 internal fun BasicFlyoutContainer(
     flyout: @Composable FlyoutContainerScope.() -> Unit,
@@ -92,13 +93,16 @@ internal fun BasicFlyoutContainer(
     val flyoutState = remember(initialVisible) {
         mutableStateOf(initialVisible)
     }
-    val flyoutScope = remember(flyoutState) {
-        FlyoutContainerScopeImpl(flyoutState)
+    FlyoutAnchorScope {
+        val flyoutScope = remember(flyoutState, this) {
+            FlyoutContainerScopeImpl(flyoutState, this)
+        }
+        Box(modifier = modifier) {
+            flyoutScope.content()
+            flyoutScope.flyout()
+        }
     }
-    Box(modifier = modifier) {
-        flyoutScope.content()
-        flyoutScope.flyout()
-    }
+
 }
 
 enum class FlyoutPlacement {
@@ -328,12 +332,17 @@ internal data class PaddingCornerSize(
         get() = padding
 }
 
-private class FlyoutContainerScopeImpl(visibleState: MutableState<Boolean>) : FlyoutContainerScope {
+@OptIn(ExperimentalFluentApi::class)
+private class FlyoutContainerScopeImpl(
+    visibleState: MutableState<Boolean>,
+    scope: FlyoutAnchorScope,
+) : FlyoutContainerScope, FlyoutAnchorScope by scope {
 
     override var isFlyoutVisible: Boolean by visibleState
 }
 
-interface FlyoutContainerScope {
+@OptIn(ExperimentalFluentApi::class)
+interface FlyoutContainerScope: FlyoutAnchorScope {
 
     var isFlyoutVisible: Boolean
 
@@ -348,9 +357,18 @@ interface FlyoutAnchorScope {
 }
 
 @ExperimentalFluentApi
+@Composable
+fun FlyoutAnchorScope(
+    anchorPadding: Dp = flyoutPopPaddingFixShadowRender + flyoutDefaultPadding,
+    content: @Composable FlyoutAnchorScope.() -> Unit
+) {
+    content(rememberFlyoutAnchorScope(anchorPadding))
+}
+
+@ExperimentalFluentApi
 @Stable
 @Composable
-internal fun rememberFlyoutAnchorScope(padding: Dp): FlyoutAnchorScope {
+internal fun rememberFlyoutAnchorScope(padding: Dp = flyoutPopPaddingFixShadowRender + flyoutDefaultPadding): FlyoutAnchorScope {
     val calculateMaxHeight = rememberFlyoutCalculateMaxHeight(padding)
     return remember(calculateMaxHeight) {
         FlyoutAnchorScopeImpl(calculateMaxHeight)

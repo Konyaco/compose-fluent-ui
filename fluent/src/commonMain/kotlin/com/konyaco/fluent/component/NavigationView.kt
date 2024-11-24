@@ -1441,6 +1441,7 @@ private class NavigationViewMenuInterval(
     val item: @Composable NavigationMenuItemScope.(Int) -> Unit
 ) : LazyLayoutIntervalContent.Interval
 
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 internal fun rememberNavigationItemsFlyoutScope(
     expanded: Boolean,
@@ -1448,8 +1449,9 @@ internal fun rememberNavigationItemsFlyoutScope(
 ): MenuFlyoutContainerScope {
     val expandedState = rememberUpdatedState(expanded)
     val onExpandedChangedState = rememberUpdatedState(onExpandedChanged)
-    return remember {
-        object : MenuFlyoutContainerScope, MenuFlyoutScope by MenuFlyoutScopeImpl() {
+    val anchorScope = rememberFlyoutAnchorScope()
+    return remember(anchorScope, expandedState, onExpandedChangedState) {
+        object : MenuFlyoutContainerScope, MenuFlyoutScope by MenuFlyoutScopeImpl(), FlyoutAnchorScope by anchorScope {
             override var isFlyoutVisible: Boolean
                 get() = expandedState.value
                 set(value) {

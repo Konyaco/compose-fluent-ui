@@ -536,4 +536,12 @@ internal class NavigationAutoSuggestBoxScopeImpl(
 private object FakeMenuFlyoutContainerScope : MenuFlyoutContainerScope,
     MenuFlyoutScope by MenuFlyoutScopeImpl() {
     override var isFlyoutVisible: Boolean = false
+
+    override fun Modifier.flyoutAnchor(): Modifier {
+        return this
+    }
+
+    override fun Modifier.flyoutSize(matchAnchorWidth: Boolean): Modifier {
+        return this
+    }
 }

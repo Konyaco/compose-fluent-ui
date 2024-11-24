@@ -75,28 +75,32 @@ fun TopNav(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
                 overflowAction = {
-                    Box {
-                        MenuFlyout(
-                            visible = expanded,
-                            onDismissRequest = { onExpandedChanged(false) },
-                            placement = FlyoutPlacement.Auto,
-                            content = {
-                                repeat(overflowItemCount) { index ->
-                                    overflowItem(index)
-                                }
-                            }
-                        )
-                        TopNavItem(
-                            selected = false,
-                            icon = {
-                                FontIcon(
-                                    glyph = '\uE712',
-                                    vector = Icons.Default.MoreHorizontal,
-                                    contentDescription = null,
-                                )
-                            },
-                            onClick = { onExpandedChanged(true) }
-                        )
+                    FlyoutAnchorScope {
+                        Box {
+                            MenuFlyout(
+                                visible = expanded,
+                                onDismissRequest = { onExpandedChanged(false) },
+                                placement = FlyoutPlacement.Auto,
+                                content = {
+                                    repeat(overflowItemCount) { index ->
+                                        overflowItem(index)
+                                    }
+                                },
+                                modifier = Modifier.flyoutSize()
+                            )
+                            TopNavItem(
+                                selected = false,
+                                icon = {
+                                    FontIcon(
+                                        glyph = '\uE712',
+                                        vector = Icons.Default.MoreHorizontal,
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = { onExpandedChanged(true) },
+                                modifier = Modifier.flyoutAnchor()
+                            )
+                        }
                     }
                 },
                 content = content
@@ -152,7 +156,6 @@ fun TopNavItem(
     val targetInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
     val currentColor = colors.schemeFor(targetInteractionSource.collectVisualState(!enabled))
 
-
     Layer(
         color = currentColor.fillColor,
         contentColor = currentColor.contentColor,
@@ -169,45 +172,53 @@ fun TopNavItem(
                 }
             )
     ) {
-        MenuFlyout(
-            visible = flyoutVisible && items != null,
-            onDismissRequest = {
-                onFlyoutVisibleChanged(false)
-            },
-            placement = FlyoutPlacement.Bottom
-        ) {
-            items?.invoke(rememberNavigationItemsFlyoutScope(flyoutVisible, onFlyoutVisibleChanged))
-        }
-        HorizontalIndicatorContentLayout(
-            modifier = Modifier.height(40.dp),
-            text = text,
-            icon = icon,
-            trailing = items?.let {
-                {
-                    val rotation by animateFloatAsState(
-                        if (flyoutVisible) {
-                            180f
-                        } else {
-                            00f
-                        }
+        FlyoutAnchorScope {
+            MenuFlyout(
+                visible = flyoutVisible && items != null,
+                onDismissRequest = {
+                    onFlyoutVisibleChanged(false)
+                },
+                placement = FlyoutPlacement.Bottom,
+                modifier = Modifier.flyoutSize()
+            ) {
+                items?.invoke(
+                    rememberNavigationItemsFlyoutScope(
+                        flyoutVisible,
+                        onFlyoutVisibleChanged
                     )
-                    FontIcon(
-                        glyph = '\uE972',
-                        iconSize = FontIconDefaults.fontSizeSmall,
-                        vector = Icons.Default.ChevronDown,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .graphicsLayer {
-                                rotationZ = rotation
-                            }
-                    )
-                }
-            },
-            indicator = {
-                val scope = TopNavigationIndicatorScope(indicatorState = indicatorState)
-                scope.indicator(currentColor.indicatorColor)
+                )
             }
-        )
+            HorizontalIndicatorContentLayout(
+                modifier = Modifier.height(40.dp).flyoutAnchor(),
+                text = text,
+                icon = icon,
+                trailing = items?.let {
+                    {
+                        val rotation by animateFloatAsState(
+                            if (flyoutVisible) {
+                                180f
+                            } else {
+                                00f
+                            }
+                        )
+                        FontIcon(
+                            glyph = '\uE972',
+                            iconSize = FontIconDefaults.fontSizeSmall,
+                            vector = Icons.Default.ChevronDown,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .graphicsLayer {
+                                    rotationZ = rotation
+                                }
+                        )
+                    }
+                },
+                indicator = {
+                    val scope = TopNavigationIndicatorScope(indicatorState = indicatorState)
+                    scope.indicator(currentColor.indicatorColor)
+                }
+            )
+        }
     }
 
 }

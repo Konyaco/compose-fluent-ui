@@ -35,7 +35,7 @@ fun AutoSuggestionBox(
     modifier: Modifier = Modifier,
     content: @Composable FlyoutAnchorScope.() -> Unit
 ) {
-    val flyoutAnchorScope = rememberFlyoutAnchorScope(flyoutPopPaddingFixShadowRender + flyoutDefaultPadding)
+    val flyoutAnchorScope = rememberFlyoutAnchorScope()
     val expandedState = rememberUpdatedState(expanded)
     val autoSuggestBoxScopeImpl = remember(expandedState, onExpandedChange) {
         AutoSuggestBoxScopeImpl(
