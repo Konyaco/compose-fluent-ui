@@ -12,6 +12,7 @@ import com.konyaco.fluent.gallery.window.WindowFrame
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.skiko.hostOs
 
 fun main() = application {
     val state = rememberWindowState(
@@ -34,6 +35,7 @@ fun main() = application {
             state = state,
             backButtonEnabled = navigator.canNavigateUp,
             backButtonClick = { navigator.navigateUp() },
+            backButtonVisible = hostOs.isWindows
         ) { windowInset, contentInset ->
             App(
                 windowInset = windowInset,
