@@ -1,15 +1,13 @@
 package com.konyaco.fluent.gallery.screen.basicinput
 
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.component.Slider
+import com.konyaco.fluent.component.SliderState
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
@@ -17,7 +15,6 @@ import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.gallery.component.TodoComponent
 import com.konyaco.fluent.source.generated.FluentSourceFile
-import kotlin.math.roundToInt
 
 @Component(
     index = 12,
@@ -37,15 +34,22 @@ fun SliderScreen() {
             sourceCode = sourceCodeOfSliderSample,
             content = { SliderSample(value, onValueChanged) },
             output = {
-                Text((value * 100).roundToInt().toString())
+                Text(value.toString())
             }
         )
-        Section("A Slider with range and steps specified.", "") {
+
+        val (confirmValue, setConfirmValue) = remember { mutableStateOf(0f) }
+        val stepsSliderState = remember { SliderState(0f, 4, setConfirmValue, 0f..100f) }
+
+        Section("A Slider with range, steps and tick marks.", sourceCodeOfSliderStepsSample, content = {
+            SliderStepsSample(stepsSliderState)
+        }, output = {
+            Text("value: ${stepsSliderState.value}")
+            Text("confirmValue: $confirmValue")
+        })
+        /*Section("A Slider with tick marks.", "") {
             TodoComponent()
-        }
-        Section("A Slider with tick marks.", "") {
-            TodoComponent()
-        }
+        }*/
         Section("A vertical slider with range and tick marks specified.", "") {
             TodoComponent()
         }
@@ -56,8 +60,17 @@ fun SliderScreen() {
 @Composable
 private fun SliderSample(value: Float, onValueChanged: (Float) -> Unit) {
     Slider(
-        modifier = Modifier.width(200.dp).height(32.dp),
+        modifier = Modifier.width(200.dp),
         value = value,
         onValueChange = onValueChanged
+    )
+}
+
+@Sample
+@Composable
+private fun SliderStepsSample(state: SliderState) {
+    Slider(
+        modifier = Modifier.width(200.dp),
+        state = state
     )
 }

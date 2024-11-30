@@ -110,6 +110,7 @@ fun ColorPicker(
         }
         val (hug, saturation, _) = spectrumColor.value.hsv()
         Slider(
+            modifier = Modifier.padding(top = 21.dp).width(312.dp).height(32.dp),
             value = value,
             onValueChange = {
                 onSelectedColorChanged(
@@ -137,19 +138,14 @@ fun ColorPicker(
                         )
                 )
             },
-            track = { _, _ -> },
-            thumb = { fraction, maxWidth, dragging ->
-                SliderDefaults.Thumb(
-                    fraction = fraction,
-                    maxWidth = maxWidth,
-                    dragging = dragging,
-                    color = FluentTheme.colors.text.text.primary
-                )
-            },
-            modifier = Modifier.padding(top = 21.dp).width(312.dp).height(32.dp)
+            track = { },
+            thumb = { state ->
+                SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary)
+            }
         )
         if (alphaEnabled) {
             Slider(
+                modifier = Modifier.width(312.dp),
                 value = alpha,
                 onValueChange = {
                     onSelectedColorChanged(color.copy(alpha = it))
@@ -169,16 +165,10 @@ fun ColorPicker(
                             )
                     )
                 },
-                track = { _, _ -> },
-                thumb = { fraction, maxWidth, dragging ->
-                    SliderDefaults.Thumb(
-                        fraction = fraction,
-                        maxWidth = maxWidth,
-                        dragging = dragging,
-                        color = FluentTheme.colors.text.text.primary
-                    )
-                },
-                modifier = Modifier.width(312.dp).height(32.dp)
+                track = {},
+                thumb = { state ->
+                    SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary)
+                }
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
