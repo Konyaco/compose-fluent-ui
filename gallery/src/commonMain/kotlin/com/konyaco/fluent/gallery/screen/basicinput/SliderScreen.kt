@@ -41,12 +41,15 @@ fun SliderScreen() {
         val (confirmValue, setConfirmValue) = remember { mutableStateOf(0f) }
         val stepsSliderState = remember { SliderState(0f, 4, setConfirmValue, 0f..100f) }
 
-        Section("A Slider with range, steps and tick marks.", sourceCodeOfSliderStepsSample, content = {
-            SliderStepsSample(stepsSliderState)
-        }, output = {
-            Text("value: ${stepsSliderState.value}")
-            Text("confirmValue: $confirmValue")
-        })
+        Section(
+            title = "A Slider with range, steps and tick marks.",
+            sourceCode = sourceCodeOfSliderStepsSample,
+            content = { SliderStepsSample(stepsSliderState) },
+            output = {
+                Text("value: ${stepsSliderState.value}")
+                Text("confirmValue: $confirmValue")
+            }
+        )
         /*Section("A Slider with tick marks.", "") {
             TodoComponent()
         }*/

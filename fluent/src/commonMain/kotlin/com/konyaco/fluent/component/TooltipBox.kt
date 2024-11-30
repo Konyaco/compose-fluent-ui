@@ -171,7 +171,7 @@ private fun Modifier.gestureHandle(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun rememberTooltipPositionProvider(
-    state: TooltipState,
+    state: TooltipState?,
     anchorPadding: Dp = 0.dp
 ): PopupPositionProvider {
     val anchorPadding = with(LocalDensity.current) { (anchorPadding + flyoutPopPaddingFixShadowRender + flyoutDefaultPadding).toPx().roundToInt() }
@@ -263,7 +263,7 @@ object TooltipBoxDefaults {
 
 @OptIn(ExperimentalFoundationApi::class)
 internal class TooltipPopupPositionProvider(
-    private val state: TooltipState,
+    private val state: TooltipState?,
     private val anchorPadding: Int,
     private val mouseOverflowPadding: Int,
 ) : PopupPositionProvider {
@@ -274,7 +274,7 @@ internal class TooltipPopupPositionProvider(
         popupContentSize: IntSize
     ): IntOffset {
         return Snapshot.withoutReadObservation {
-            val pointerPosition = state.pointerPosition
+            val pointerPosition = state?.pointerPosition
             val alignmentPosition = pointerPosition ?: Offset(
                 x = anchorBounds.width / 2f,
                 y = 0f
