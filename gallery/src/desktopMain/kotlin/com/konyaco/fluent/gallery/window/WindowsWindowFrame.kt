@@ -6,6 +6,7 @@ import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -48,6 +49,7 @@ import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.zIndex
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
@@ -55,6 +57,7 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.NavigationDefaults
 import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.component.TooltipBox
 import com.konyaco.fluent.gallery.jna.windows.ComposeWindowProcedure
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTCAPTION
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTCLIENT
@@ -262,6 +265,7 @@ fun Window.CaptionButtonRow(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalFluentApi::class)
 @Composable
 fun CaptionButton(
     onClick: () -> Unit,
@@ -272,33 +276,37 @@ fun CaptionButton(
     interaction: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val color = colors.schemeFor(interaction.collectVisualState(false))
-    Layer(
-        backgroundSizing = BackgroundSizing.OuterBorderEdge,
-        border = null,
-        color = if (isActive) {
-            color.background
-        } else {
-            color.inactiveBackground
-        },
-        contentColor = if (isActive) {
-            color.foreground
-        } else {
-            color.inactiveForeground
-        },
-        modifier = modifier.size(46.dp, 32.dp).clickable(
-            onClick = onClick,
-            interactionSource = interaction,
-            indication = null
-        ),
-        shape = RectangleShape
+    TooltipBox(
+        tooltip = { Text(icon.name) }
     ) {
-        Text(
-            text = icon.glyph.toString(),
-            fontFamily = windowsFontFamily(),
-            textAlign = TextAlign.Center,
-            fontSize = 10.sp,
-            modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
-        )
+        Layer(
+            backgroundSizing = BackgroundSizing.OuterBorderEdge,
+            border = null,
+            color = if (isActive) {
+                color.background
+            } else {
+                color.inactiveBackground
+            },
+            contentColor = if (isActive) {
+                color.foreground
+            } else {
+                color.inactiveForeground
+            },
+            modifier = modifier.size(46.dp, 32.dp).clickable(
+                onClick = onClick,
+                interactionSource = interaction,
+                indication = null
+            ),
+            shape = RectangleShape
+        ) {
+            Text(
+                text = icon.glyph.toString(),
+                fontFamily = windowsFontFamily(),
+                textAlign = TextAlign.Center,
+                fontSize = 10.sp,
+                modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
+            )
+        }
     }
 }
 

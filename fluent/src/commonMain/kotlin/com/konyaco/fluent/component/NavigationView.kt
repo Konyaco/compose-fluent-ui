@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
+
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.AnimatedVisibility
@@ -121,7 +123,6 @@ class NavigationState(
     val indicatorState = IndicatorState(initialOffset)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NavigationView(
     menuItems: NavigationMenuScope.() -> Unit,
@@ -217,7 +218,6 @@ fun NavigationView(
     }
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun TopLayout(
     modifier: Modifier,
@@ -269,7 +269,6 @@ private fun TopLayout(
     )
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun LeftLayout(
     menuItems: NavigationMenuScope.() -> Unit,
@@ -333,7 +332,6 @@ private fun LeftLayout(
     }
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun LeftCollapsedLayout(
     modifier: Modifier,
@@ -500,7 +498,6 @@ private fun LeftCollapsedLayout(
     }
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun LeftCompactLayout(
     modifier: Modifier,
@@ -684,7 +681,6 @@ fun NavigationMenuScope.menuItem(
     }
 }
 
-@OptIn(ExperimentalFluentApi::class)
 @Composable
 fun NavigationMenuItemScope.MenuItem(
     selected: Boolean,
@@ -719,23 +715,28 @@ fun NavigationMenuItemScope.MenuItem(
 
     if (displayMode == NavigationDisplayMode.Top) {
         var flyoutVisible by remember { mutableStateOf(false) }
-        TopNavItem(
-            selected = selected,
-            onClick = {
-                onClick(!selected)
-                flyoutVisible = !flyoutVisible
-            },
-            text = if (isFooter) null else text,
-            flyoutVisible = flyoutVisible,
-            onFlyoutVisibleChanged = { flyoutVisible = it },
-            indicatorState = indicatorState,
-            icon = icon,
-            items = items,
-            enabled = enabled,
-            interactionSource = interactionSource,
-            colors = colors,
-            indicator = indicator
-        )
+        TooltipBox(
+            tooltip = text,
+            enabled = isFooter
+        ) {
+            TopNavItem(
+                selected = selected,
+                onClick = {
+                    onClick(!selected)
+                    flyoutVisible = !flyoutVisible
+                },
+                text = if (isFooter) null else text,
+                icon = icon,
+                flyoutVisible = flyoutVisible,
+                onFlyoutVisibleChanged = { flyoutVisible = it },
+                indicatorState = indicatorState,icon = icon,
+                items = items,
+                enabled = enabled,
+                interactionSource = interactionSource,
+                colors = colors,
+                indicator = indicator
+            )
+        }
     } else {
         val isExpanded = LocalNavigationExpand.current
         var flyoutVisible by remember(isExpanded) { mutableStateOf(false) }
@@ -1025,34 +1026,44 @@ object NavigationDefaults {
         buttonColors: ButtonColorScheme = ButtonDefaults.subtleButtonColors(),
         interaction: MutableInteractionSource = remember { MutableInteractionSource() },
         animationEnabled: Boolean = true,
+        expanded: Boolean = LocalNavigationExpand.current,
     ) {
-        Button(
-            onClick = onClick,
-            interaction = interaction,
-            icon = {
-                if (animationEnabled) {
-                    val isPressed by interaction.collectIsPressedAsState()
-                    val scaleX = animateFloatAsState(
-                        targetValue = if (isPressed) 0.6f else 1f,
-                        animationSpec = tween(
-                            durationMillis = FluentDuration.ShortDuration,
-                            easing = FluentEasing.FastInvokeEasing
-                        )
-                    )
-                    Box(
-                        content = { icon() },
-                        modifier = Modifier.graphicsLayer {
-                            this.scaleX = scaleX.value
-                        }
-                    )
-                } else {
-                    icon()
-                }
+        TooltipBox(
+            tooltip = {
+                Text(
+                    text = if (expanded) "Close Navigation" else "Open Navigation"
+                )
             },
-            modifier = modifier,
-            disabled = disabled,
-            buttonColors = buttonColors
-        )
+            enabled = !disabled
+        ) {
+            Button(
+                onClick = onClick,
+                interaction = interaction,
+                icon = {
+                    if (animationEnabled) {
+                        val isPressed by interaction.collectIsPressedAsState()
+                        val scaleX = animateFloatAsState(
+                            targetValue = if (isPressed) 0.6f else 1f,
+                            animationSpec = tween(
+                                durationMillis = FluentDuration.ShortDuration,
+                                easing = FluentEasing.FastInvokeEasing
+                            )
+                        )
+                        Box(
+                            content = { icon() },
+                            modifier = Modifier.graphicsLayer {
+                                this.scaleX = scaleX.value
+                            }
+                        )
+                    } else {
+                        icon()
+                    }
+                },
+                modifier = modifier,
+                disabled = disabled,
+                buttonColors = buttonColors
+            )
+        }
     }
 
     @Composable
@@ -1093,38 +1104,45 @@ object NavigationDefaults {
         interaction: MutableInteractionSource = remember { MutableInteractionSource() },
         animationEnabled: Boolean = true,
     ) {
-        Button(
-            onClick = onClick,
-            iconOnly = true,
-            interaction = interaction,
-            content = {
-                if (animationEnabled) {
-                    val isPressed by interaction.collectIsPressedAsState()
-                    val scaleX = animateFloatAsState(
-                        targetValue = if (isPressed) 0.9f else 1f,
-                        animationSpec = tween(
-                            durationMillis = FluentDuration.ShortDuration,
-                            easing = FluentEasing.FastInvokeEasing
-                        )
-                    )
-                    Box(
-                        content = { icon() },
-                        modifier = Modifier.graphicsLayer {
-                            this.scaleX = scaleX.value
-                            translationX = (1f - scaleX.value) * 6.dp.toPx()
-                        }
-                    )
-                } else {
-                    icon()
-                }
+        TooltipBox(
+            tooltip = {
+                Text(text = "Back")
             },
-            modifier = modifier
-                .size(44.dp, 40.dp)
-                .padding(vertical = 2.dp)
-                .padding(start = 4.dp),
-            disabled = disabled,
-            buttonColors = buttonColors
-        )
+            enabled = !disabled
+        ) {
+            Button(
+                onClick = onClick,
+                iconOnly = true,
+                interaction = interaction,
+                content = {
+                    if (animationEnabled) {
+                        val isPressed by interaction.collectIsPressedAsState()
+                        val scaleX = animateFloatAsState(
+                            targetValue = if (isPressed) 0.9f else 1f,
+                            animationSpec = tween(
+                                durationMillis = FluentDuration.ShortDuration,
+                                easing = FluentEasing.FastInvokeEasing
+                            )
+                        )
+                        Box(
+                            content = { icon() },
+                            modifier = Modifier.graphicsLayer {
+                                this.scaleX = scaleX.value
+                                translationX = (1f - scaleX.value) * 6.dp.toPx()
+                            }
+                        )
+                    } else {
+                        icon()
+                    }
+                },
+                modifier = modifier
+                    .size(44.dp, 40.dp)
+                    .padding(vertical = 2.dp)
+                    .padding(start = 4.dp),
+                disabled = disabled,
+                buttonColors = buttonColors
+            )
+        }
     }
 
 }
@@ -1370,7 +1388,6 @@ private data class ValueNavigationMenuItemScope(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private inline fun <T> IntervalList<T>.forEachItem(action: T.(index: Int) -> Unit) {
     repeat(size) {
         val item = get(it)
@@ -1378,7 +1395,6 @@ private inline fun <T> IntervalList<T>.forEachItem(action: T.(index: Int) -> Uni
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun rememberNavigationMenuInterval(
     content: NavigationMenuScope.() -> Unit
@@ -1391,7 +1407,6 @@ private fun rememberNavigationMenuInterval(
     }.value
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private class NavigationMenuScopeImpl(
     content: NavigationMenuScope.() -> Unit
 ) : NavigationMenuScope, LazyLayoutIntervalContent<NavigationViewMenuInterval>() {
@@ -1434,14 +1449,12 @@ private class NavigationMenuScopeImpl(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private class NavigationViewMenuInterval(
     override val key: ((index: Int) -> Any)?,
     override val type: ((index: Int) -> Any?),
     val item: @Composable NavigationMenuItemScope.(Int) -> Unit
 ) : LazyLayoutIntervalContent.Interval
 
-@OptIn(ExperimentalFluentApi::class)
 @Composable
 internal fun rememberNavigationItemsFlyoutScope(
     expanded: Boolean,
@@ -1451,7 +1464,8 @@ internal fun rememberNavigationItemsFlyoutScope(
     val onExpandedChangedState = rememberUpdatedState(onExpandedChanged)
     val anchorScope = rememberFlyoutAnchorScope()
     return remember(anchorScope, expandedState, onExpandedChangedState) {
-        object : MenuFlyoutContainerScope, MenuFlyoutScope by MenuFlyoutScopeImpl(), FlyoutAnchorScope by anchorScope {
+        object : MenuFlyoutContainerScope, MenuFlyoutScope by MenuFlyoutScopeImpl(),
+            FlyoutAnchorScope by anchorScope {
             override var isFlyoutVisible: Boolean
                 get() = expandedState.value
                 set(value) {
