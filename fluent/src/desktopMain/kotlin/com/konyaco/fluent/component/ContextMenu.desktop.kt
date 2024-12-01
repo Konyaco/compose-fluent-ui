@@ -20,6 +20,7 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.regular.Copy
 import com.konyaco.fluent.icons.regular.Cut
 import com.konyaco.fluent.icons.regular.ClipboardPaste
+import org.jetbrains.skiko.hostOs
 
 internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
     @Composable
@@ -49,7 +50,7 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                             keyEvent.type == KeyEventType.KeyDown &&
                             it.keyData != null &&
                             it.keyData.isAltPressed == keyEvent.isAltPressed &&
-                            it.keyData.isCtrlPressed == keyEvent.isCtrlPressed &&
+                            it.keyData.isCtrlPressed == (if (hostOs.isMacOS) keyEvent.isMetaPressed else keyEvent.isCtrlPressed) &&
                             it.keyData.isShiftPressed == keyEvent.isShiftPressed &&
                             it.keyData.key == keyEvent.key
                     if (result) {
@@ -91,14 +92,26 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                             it.keyData?.let { keyData ->
                                 val keyString = remember(keyData) {
                                     buildString {
-                                        if (keyData.isAltPressed) {
-                                            append("Alt+")
-                                        }
-                                        if (keyData.isCtrlPressed) {
-                                            append("Ctrl+")
-                                        }
-                                        if (keyData.isShiftPressed) {
-                                            append("Shift+")
+                                        if (!hostOs.isMacOS) {
+                                            if (keyData.isAltPressed) {
+                                                append("Alt+")
+                                            }
+                                            if (keyData.isCtrlPressed) {
+                                                append("Ctrl+")
+                                            }
+                                            if (keyData.isShiftPressed) {
+                                                append("Shift+")
+                                            }
+                                        } else {
+                                            if (keyData.isAltPressed) {
+                                                append("⌥")
+                                            }
+                                            if (keyData.isCtrlPressed) {
+                                                append("⌘")
+                                                }
+                                            if (keyData.isShiftPressed) {
+                                                append("⇧")
+                                            }
                                         }
                                         append(keyData.key.toString().removePrefix("Key: "))
                                     }
@@ -198,8 +211,11 @@ class FluentContextMenuItem(
 ) : ContextMenuItem(label, onClick) {
     data class KeyData(
         val key: Key,
+        // option key in macOS, otherwise alt key
         val isAltPressed: Boolean = false,
+        //command[modifier is meta] key in macOS, otherwise control key
         val isCtrlPressed: Boolean = false,
+        // shift key
         val isShiftPressed: Boolean = false
     )
 }
