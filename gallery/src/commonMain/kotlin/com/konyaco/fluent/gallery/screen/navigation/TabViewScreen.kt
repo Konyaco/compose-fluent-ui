@@ -151,7 +151,7 @@ internal fun TabViewWindowContent(
 ) {
     Column(modifier = Modifier.windowInsetsPadding(paddingInsets)) {
         val selectedIndex = remember { mutableStateOf(1) }
-        val tabItems = remember { mutableStateListOf(*Array(100) { it + 1 }) }
+        val tabItems = remember { mutableStateListOf(*Array(6) { it + 1 }) }
         val state = rememberLazyListState()
         val endDividerController = rememberTabItemEndDividerController(
             selectedKey = { selectedIndex.value },
