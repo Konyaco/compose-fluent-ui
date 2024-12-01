@@ -104,13 +104,13 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                                             }
                                         } else {
                                             if (keyData.isAltPressed) {
-                                                append("⌥")
+                                                append("⌥ ")
                                             }
                                             if (keyData.isCtrlPressed) {
-                                                append("⌘")
+                                                append("⌘ ")
                                                 }
                                             if (keyData.isShiftPressed) {
-                                                append("⇧")
+                                                append("⇧ ")
                                             }
                                         }
                                         append(keyData.key.toString().removePrefix("Key: "))
