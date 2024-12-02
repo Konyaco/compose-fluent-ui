@@ -664,6 +664,7 @@ fun NavigationMenuScope.menuItem(
     key: Any? = null,
     contentType: Any? = null,
     expandItems: Boolean = false,
+    enabled: Boolean = true,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
@@ -677,7 +678,8 @@ fun NavigationMenuScope.menuItem(
             expandItems = expandItems,
             onExpandItemsChanged = onExpandItemsChanged,
             interactionSource = interactionSource,
-            items = items
+            items = items,
+            enabled = enabled
         )
     }
 }
@@ -690,8 +692,28 @@ fun NavigationMenuItemScope.MenuItem(
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
     expandItems: Boolean = false,
+    enabled: Boolean = true,
+    indicatorState: IndicatorState? = LocalIndicatorState.current,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
+    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
+        NavigationDefaults.defaultTopItemColors()
+    } else {
+        NavigationDefaults.defaultSideItemColors()
+    },
+    indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
+        { color ->
+            NavigationDefaults.HorizontalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    } else {
+        { color ->
+            NavigationDefaults.VerticalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    },
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
 
@@ -706,9 +728,13 @@ fun NavigationMenuItemScope.MenuItem(
             text = if (isFooter) null else text,
             flyoutVisible = flyoutVisible,
             onFlyoutVisibleChanged = { flyoutVisible = it },
+            indicatorState = indicatorState,
             icon = icon,
             items = items,
-            interactionSource = interactionSource
+            enabled = enabled,
+            interactionSource = interactionSource,
+            colors = colors,
+            indicator = indicator
         )
     } else {
         val isExpanded = LocalNavigationExpand.current
@@ -723,14 +749,17 @@ fun NavigationMenuItemScope.MenuItem(
                 }
             },
             text = { text() },
-            indicatorState = LocalIndicatorState.current,
+            indicatorState = indicatorState,
             flyoutVisible = flyoutVisible && !isExpanded,
             onFlyoutVisibleChanged = { flyoutVisible = it },
             icon = icon,
             expandItems = expandItems,
             onExpandItemsChanged = onExpandItemsChanged,
             items = items,
-            interactionSource = interactionSource
+            enabled = enabled,
+            interactionSource = interactionSource,
+            colors = colors,
+            indicator = indicator
         )
     }
 }
@@ -743,9 +772,29 @@ fun NavigationMenuItemScope.MenuItem(
     icon: (@Composable () -> Unit)?,
     header: (@Composable () -> Unit)?,
     expandItems: Boolean = false,
-    onExpandItemsChanged: (Boolean) -> Unit = {},
+    enabled: Boolean = true,
     separatorVisible: Boolean = false,
+    indicatorState: IndicatorState? = LocalIndicatorState.current,
+    onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
+    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
+        NavigationDefaults.defaultTopItemColors()
+    } else {
+        NavigationDefaults.defaultSideItemColors()
+    },
+    indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
+        { color ->
+            NavigationDefaults.HorizontalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    } else {
+        { color ->
+            NavigationDefaults.VerticalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    },
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
     if (displayMode == NavigationDisplayMode.Top) {
@@ -758,7 +807,12 @@ fun NavigationMenuItemScope.MenuItem(
                 onExpandItemsChanged = onExpandItemsChanged,
                 text = text,
                 icon = icon,
-                interactionSource = interactionSource
+                interactionSource = interactionSource,
+                enabled = enabled,
+                items = items,
+                indicatorState = indicatorState,
+                indicator = indicator,
+                colors = colors
             )
             if (separatorVisible) {
                 MenuItemSeparator()
@@ -773,9 +827,13 @@ fun NavigationMenuItemScope.MenuItem(
                 text = text,
                 icon = icon,
                 expandItems = expandItems,
+                enabled = enabled,
                 onExpandItemsChanged = onExpandItemsChanged,
                 items = items,
-                interactionSource = interactionSource
+                interactionSource = interactionSource,
+                indicatorState = indicatorState,
+                indicator = indicator,
+                colors = colors
             )
             if (separatorVisible) {
                 MenuItemSeparator()
