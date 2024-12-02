@@ -729,7 +729,7 @@ fun NavigationMenuItemScope.MenuItem(
                 icon = icon,
                 flyoutVisible = flyoutVisible,
                 onFlyoutVisibleChanged = { flyoutVisible = it },
-                indicatorState = indicatorState,icon = icon,
+                indicatorState = indicatorState,
                 items = items,
                 enabled = enabled,
                 interactionSource = interactionSource,
