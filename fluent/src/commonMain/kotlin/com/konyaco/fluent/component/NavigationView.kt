@@ -507,7 +507,7 @@ private fun LeftCompactLayout(
     state: NavigationState,
     contentPadding: PaddingValues,
     pane: @Composable () -> Unit,
-    autoSuggestBox: @Composable() (NavigationAutoSuggestBoxScope.() -> Unit)?,
+    autoSuggestBox: @Composable (NavigationAutoSuggestBoxScope.() -> Unit)?,
     title: @Composable () -> Unit,
     backButton: @Composable () -> Unit,
     expandedButton: @Composable () -> Unit,
@@ -659,16 +659,28 @@ interface NavigationMenuScope {
 fun NavigationMenuScope.menuItem(
     selected: Boolean,
     onClick: (selected: Boolean) -> Unit,
-    key: Any? = null,
-    contentType: Any? = null,
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
+    key: Any? = null,
+    contentType: Any? = null,
     expandItems: Boolean = false,
+    enabled: Boolean = true,
     onExpandItemsChanged: (Boolean) -> Unit = {},
+    interactionSource: MutableInteractionSource? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
     item(key, contentType) {
-        MenuItem(selected, onClick, expandItems, onExpandItemsChanged, text, icon, items)
+        MenuItem(
+            selected = selected,
+            onClick = onClick,
+            text = text,
+            icon = icon,
+            expandItems = expandItems,
+            onExpandItemsChanged = onExpandItemsChanged,
+            interactionSource = interactionSource,
+            items = items,
+            enabled = enabled
+        )
     }
 }
 
@@ -677,10 +689,31 @@ fun NavigationMenuScope.menuItem(
 fun NavigationMenuItemScope.MenuItem(
     selected: Boolean,
     onClick: (selected: Boolean) -> Unit,
-    expandItems: Boolean = false,
-    onExpandItemsChanged: (Boolean) -> Unit = {},
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
+    expandItems: Boolean = false,
+    enabled: Boolean = true,
+    indicatorState: IndicatorState? = LocalIndicatorState.current,
+    onExpandItemsChanged: (Boolean) -> Unit = {},
+    interactionSource: MutableInteractionSource? = null,
+    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
+        NavigationDefaults.defaultTopItemColors()
+    } else {
+        NavigationDefaults.defaultSideItemColors()
+    },
+    indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
+        { color ->
+            NavigationDefaults.HorizontalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    } else {
+        { color ->
+            NavigationDefaults.VerticalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    },
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
 
@@ -695,8 +728,13 @@ fun NavigationMenuItemScope.MenuItem(
             text = if (isFooter) null else text,
             flyoutVisible = flyoutVisible,
             onFlyoutVisibleChanged = { flyoutVisible = it },
+            indicatorState = indicatorState,
             icon = icon,
-            items = items
+            items = items,
+            enabled = enabled,
+            interactionSource = interactionSource,
+            colors = colors,
+            indicator = indicator
         )
     } else {
         val isExpanded = LocalNavigationExpand.current
@@ -711,13 +749,17 @@ fun NavigationMenuItemScope.MenuItem(
                 }
             },
             text = { text() },
-            indicatorState = LocalIndicatorState.current,
+            indicatorState = indicatorState,
             flyoutVisible = flyoutVisible && !isExpanded,
             onFlyoutVisibleChanged = { flyoutVisible = it },
             icon = icon,
             expandItems = expandItems,
             onExpandItemsChanged = onExpandItemsChanged,
-            items = items
+            items = items,
+            enabled = enabled,
+            interactionSource = interactionSource,
+            colors = colors,
+            indicator = indicator
         )
     }
 }
@@ -726,12 +768,33 @@ fun NavigationMenuItemScope.MenuItem(
 fun NavigationMenuItemScope.MenuItem(
     selected: Boolean,
     onClick: (selected: Boolean) -> Unit,
-    expandItems: Boolean = false,
-    onExpandItemsChanged: (Boolean) -> Unit = {},
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
     header: (@Composable () -> Unit)?,
+    expandItems: Boolean = false,
+    enabled: Boolean = true,
     separatorVisible: Boolean = false,
+    indicatorState: IndicatorState? = LocalIndicatorState.current,
+    onExpandItemsChanged: (Boolean) -> Unit = {},
+    interactionSource: MutableInteractionSource? = null,
+    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
+        NavigationDefaults.defaultTopItemColors()
+    } else {
+        NavigationDefaults.defaultSideItemColors()
+    },
+    indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
+        { color ->
+            NavigationDefaults.HorizontalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    } else {
+        { color ->
+            NavigationDefaults.VerticalIndicator(
+                color = color,
+                modifier = Modifier.indicatorOffset { selected })
+        }
+    },
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
     if (displayMode == NavigationDisplayMode.Top) {
@@ -744,6 +807,12 @@ fun NavigationMenuItemScope.MenuItem(
                 onExpandItemsChanged = onExpandItemsChanged,
                 text = text,
                 icon = icon,
+                interactionSource = interactionSource,
+                enabled = enabled,
+                items = items,
+                indicatorState = indicatorState,
+                indicator = indicator,
+                colors = colors
             )
             if (separatorVisible) {
                 MenuItemSeparator()
@@ -758,8 +827,13 @@ fun NavigationMenuItemScope.MenuItem(
                 text = text,
                 icon = icon,
                 expandItems = expandItems,
+                enabled = enabled,
                 onExpandItemsChanged = onExpandItemsChanged,
-                items = items
+                items = items,
+                interactionSource = interactionSource,
+                indicatorState = indicatorState,
+                indicator = indicator,
+                colors = colors
             )
             if (separatorVisible) {
                 MenuItemSeparator()
@@ -1118,9 +1192,9 @@ internal fun Modifier.indicatorOffsetAnimation(
     return layout { measurable, constraints ->
         val stickSize = size.toPx()
         val containerSize = if (isVertical) {
-            constraints.maxHeight
+            constraints.maxHeight.toFloat()
         } else {
-            constraints.maxWidth
+            constraints.maxWidth.toFloat()
         }
         val goBackward = if (isVertical) {
             selectedPosition.currentState.y > selectedPosition.targetState.y
@@ -1173,10 +1247,11 @@ internal fun Modifier.indicatorOffsetAnimation(
                 else -> 0f
             }
         }
+        val sizeInt = currentSize.roundToInt().coerceAtLeast(0)
         val placeable = if (isVertical) {
-            measurable.measure(Constraints.fixedHeight(currentSize.roundToInt().coerceAtLeast(0)))
+            measurable.measure(Constraints.fixedHeight(sizeInt))
         } else {
-            measurable.measure(Constraints.fixedWidth(currentSize.roundToInt().coerceAtLeast(0)))
+            measurable.measure(Constraints.fixedWidth(sizeInt))
         }
 
         layout(
@@ -1184,13 +1259,13 @@ internal fun Modifier.indicatorOffsetAnimation(
             height = if (isVertical) constraints.maxHeight else placeable.height
         ) {
             val offset = when {
-                goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> extendSize - currentSize
+                goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> extendSize - sizeInt
                 goBackward && !indicatorState.targetState -> 0f
                 !goBackward && !indicatorState.targetState && currentFraction <= 0.25f -> contentPadding
-                !goBackward && !indicatorState.targetState -> containerSize - currentSize
+                !goBackward && !indicatorState.targetState -> containerSize - sizeInt
                 goBackward && currentFraction > 0.75f -> contentPadding
-                goBackward && currentFraction > 0.5f -> containerSize - currentSize
-                !goBackward && currentFraction > 0.75f -> extendSize - currentSize
+                goBackward && currentFraction > 0.5f -> containerSize - sizeInt
+                !goBackward && currentFraction > 0.75f -> extendSize - sizeInt
                 !goBackward && currentFraction > 0.5f -> 0f
                 else -> 0f
             }

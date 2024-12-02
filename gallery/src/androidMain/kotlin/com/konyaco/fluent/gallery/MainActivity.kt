@@ -19,7 +19,11 @@ class MainActivity : ComponentActivity() {
                 componentNavigator.navigateUp()
             }
             GalleryTheme {
-                App(componentNavigator, WindowInsets.systemBars)
+                App(
+                    navigator = componentNavigator,
+                    windowInset = WindowInsets.systemBars,
+                    collapseWindowInset = WindowInsets.systemBars
+                )
             }
         }
     }
