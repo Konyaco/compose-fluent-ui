@@ -31,6 +31,8 @@ class Colors(
         internal set
     var subtleFill by mutableStateOf(generateSubtleFillColors(shades, darkMode))
         internal set
+    var controlOnImage by mutableStateOf(generateControlOnImageColors(darkMode))
+        internal set
     var fillAccent by mutableStateOf(generateFillAccentColors(shades, darkMode))
         internal set
     var background by mutableStateOf(generateBackground(shades, darkMode))
@@ -64,7 +66,7 @@ data class Shades(
 data class TextColor(
     val text: ColorCompound,
     val accent: ColorCompound,
-    val onAccent: ColorCompound
+    val onAccent: TextOnAccentColorCompound
 )
 
 data class ColorCompound(
@@ -72,6 +74,13 @@ data class ColorCompound(
     val secondary: Color,
     val tertiary: Color,
     val disabled: Color
+)
+
+data class TextOnAccentColorCompound(
+    val primary: Color,
+    val secondary: Color,
+    val disabled: Color,
+    val selectedText: Color,
 )
 
 data class ControlColors(
@@ -109,12 +118,20 @@ data class FillAccentColors(
     val selectedTextBackground: Color
 )
 
+data class ControlOnImageColors(
+    val default: Color,
+    val secondary: Color,
+    val tertiary: Color,
+    val disabled: Color
+)
+
 data class Stroke(
     val control: Control,
     val controlStrong: ControlStrong,
     val surface: Surface,
     val card: Card,
-    val divider: Divider
+    val divider: Divider,
+    val focus: Focus
 ) {
     data class Control(
         val default: Color,
@@ -122,7 +139,7 @@ data class Stroke(
         val onAccentDefault: Color,
         val onAccentSecondary: Color,
         val onAccentTertiary: Color,
-        val disabled: Color,
+        val onAccentDisabled: Color,
         val forStrongFillWhenOnImage: Color
     )
 
@@ -143,6 +160,11 @@ data class Stroke(
 
     data class Divider(
         val default: Color
+    )
+
+    data class Focus(
+        val outer: Color,
+        val inner: Color
     )
 }
 
@@ -428,8 +450,8 @@ internal fun generateTextColors(shades: Shades, darkMode: Boolean): TextColor =
     if (darkMode) TextColor(
         text = ColorCompound(
             primary = Color(0xFFFFFFFF),
-            secondary = Color(0xC5FFFFFF),
-            tertiary = Color(0x87FFFFFF),
+            secondary = Color(0xC8FFFFFF),
+            tertiary = Color(0x8BFFFFFF),
             disabled = Color(0x5DFFFFFF)
         ),
         accent = ColorCompound(
@@ -438,11 +460,11 @@ internal fun generateTextColors(shades: Shades, darkMode: Boolean): TextColor =
             tertiary = shades.light2,
             disabled = Color(0x5DFFFFFF)
         ),
-        onAccent = ColorCompound(
+        onAccent = TextOnAccentColorCompound(
             primary = Color(0xFF000000),
             secondary = Color(0x80000000),
-            tertiary = Color(0x87FFFFFF),
-            disabled = Color(0xFFFFFFFF)
+            disabled = Color(0x87FFFFFF),
+            selectedText = Color(0xFFFFFFFF)
         )
     )
     else TextColor(
@@ -458,11 +480,11 @@ internal fun generateTextColors(shades: Shades, darkMode: Boolean): TextColor =
             shades.dark1,
             Color(0x5C000000)
         ),
-        onAccent = ColorCompound(
+        onAccent = TextOnAccentColorCompound(
             primary = Color(0xFFFFFFFF),
-            secondary = Color(0x83FFFFFF),
-            tertiary = Color(0xFFFFFFFF),
-            disabled = Color(0xFFFFFFFF)
+            secondary = Color(0xB3FFFFFF),
+            disabled = Color(0xFFFFFFFF),
+            selectedText = Color(0xFFFFFFFF)
         )
     )
 
@@ -470,14 +492,14 @@ internal fun generateControlColors(shades: Shades, darkMode: Boolean): ControlCo
     if (darkMode) ControlColors(
         default = Color(0x0FFFFFFF),
         secondary = Color(0x15FFFFFF),
-        tertiary = Color(0x0BFFFFFF),
+        tertiary = Color(0x08FFFFFF),
         quaternary = Color(0x0FFFFFFF),
         disabled = Color(0x0BFFFFFF),
         transparent = Color(0x00FFFFFF),
         inputActive = Color(0xB31E1E1E)
     )
     else ControlColors(
-        default = Color(0x83FFFFFF),
+        default = Color(0xB3FFFFFF),
         secondary = Color(0x80F9F9F9),
         tertiary = Color(0x4DF9F9F9),
         quaternary = Color(0xC2F3F3F3),
@@ -519,7 +541,7 @@ internal fun generateSubtleFillColors(shades: Shades, darkMode: Boolean): Subtle
     if (darkMode) SubtleFillColors(
         transparent = Color(0x00FFFFFF),
         secondary = Color(0x0FFFFFFF),
-        tertiary = Color(0x0AFFFFFF),
+        tertiary = Color(0x0BFFFFFF),
         disabled = Color(0x00FFFFFF)
     ) else SubtleFillColors(
         transparent = Color(0x00000000),
@@ -527,6 +549,24 @@ internal fun generateSubtleFillColors(shades: Shades, darkMode: Boolean): Subtle
         tertiary = Color(0x06000000),
         disabled = Color(0x00000000)
     )
+
+internal fun generateControlOnImageColors(darkMode: Boolean): ControlOnImageColors {
+    return if (darkMode) {
+        ControlOnImageColors(
+            default = Color(0xB31C1C1C),
+            secondary = Color(0xFF1A1A1A),
+            tertiary = Color(0xFF131313),
+            disabled = Color(0xFF1E1E1E)
+        )
+    } else {
+        ControlOnImageColors(
+            default = Color(0xC9FFFFFF),
+            secondary = Color(0xFFF3F3F3),
+            tertiary = Color(0xFFEBEBEB),
+            disabled = Color(0x00FFFFFF)
+        )
+    }
+}
 
 internal fun generateFillAccentColors(shades: Shades, darkMode: Boolean): FillAccentColors =
     if (darkMode) FillAccentColors(
@@ -554,13 +594,13 @@ internal fun generateBackground(shades: Shades, darkMode: Boolean): Background =
         smoke = Background.Smoke(
             default = Color(0x4D000000)
         ),
-        layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0DFFFFFF)),
+        layer = Background.Layer(default = Color(0x4C3A3A3A), alt = Color(0x0EFFFFFF)),
         layerOnAcrylic = Background.LayerOnAcrylic(
             default = Color(0x09FFFFFF)
         ),
         layerOnMicaBaseAlt = Background.LayerOnMicaBaseAlt(
             default = Color(0x733A3A3A),
-            tertiary = Color(0xFFF9F9F9),
+            tertiary = Color(0xFF2C2C2C),
             transparent = Color.Transparent,
             secondary = Color(0x0FFFFFFF)
         ),
@@ -648,7 +688,7 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
             onAccentDefault = Color(0x14FFFFFF),
             onAccentSecondary = Color(0x23000000),
             onAccentTertiary = Color(0x37000000),
-            disabled = Color(0x33000000),
+            onAccentDisabled = Color(0x33000000),
             forStrongFillWhenOnImage = Color(0x6B000000)
         ),
         controlStrong = Stroke.ControlStrong(
@@ -665,6 +705,10 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         ),
         divider = Stroke.Divider(
             default = Color(0x15FFFFFF)
+        ),
+        focus = Stroke.Focus(
+            outer = Color(0xFFFFFFFF),
+            inner = Color(0xB3000000)
         )
     )
     else Stroke(
@@ -674,7 +718,7 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
             onAccentDefault = Color(0x14FFFFFF),
             onAccentSecondary = Color(0x66000000),
             onAccentTertiary = Color(0x37000000),
-            disabled = Color(0x0F000000),
+            onAccentDisabled = Color(0x0F000000),
             forStrongFillWhenOnImage = Color(0x59FFFFFF)
         ),
         controlStrong = Stroke.ControlStrong(
@@ -691,30 +735,34 @@ internal fun generateStroke(shades: Shades, darkMode: Boolean): Stroke =
         ),
         divider = Stroke.Divider(
             default = Color(0x14000000)
+        ),
+        focus = Stroke.Focus(
+            outer = Color(0xE4000000),
+            inner = Color(0xB3FFFFFF)
         )
     )
 
 private fun generateBorders(fillAccent: FillAccentColors, stroke: Stroke, darkMode: Boolean): Borders =
     if (darkMode) Borders(
         control = Brush.verticalGradient(
-            0.0957f to stroke.control.secondary,
-            1f to stroke.control.default
+            0.0f to stroke.control.secondary,
+            0.0957f to stroke.control.default
         ),
         accentControl = Brush.verticalGradient(
             0.9067f to stroke.control.onAccentDefault,
             1f to stroke.control.onAccentSecondary,
         ),
         circle = Brush.verticalGradient(
-            0.5002f to stroke.control.default,
-            0.9545f to stroke.control.secondary
+            0.0f to stroke.control.secondary,
+            0.5002f to stroke.control.default
         ),
         textControl = Brush.verticalGradient(
             1f to stroke.control.default,
             1f to stroke.controlStrong.default
         ),
         textControlFocused = Brush.verticalGradient(
-            0.9395f to stroke.control.default,
-            0.9414f to fillAccent.default
+            0.97f to stroke.control.default,
+            0.97f to fillAccent.default
         )
     ) else Borders(
         control = Brush.verticalGradient(
@@ -726,16 +774,16 @@ private fun generateBorders(fillAccent: FillAccentColors, stroke: Stroke, darkMo
             1f to stroke.control.onAccentSecondary,
         ),
         circle = Brush.verticalGradient(
-            0f to stroke.control.default,
-            0.5f to stroke.control.secondary
+            0.5f to stroke.control.default,
+            0.95f to stroke.control.secondary
         ),
         textControl = Brush.verticalGradient(
             1f to stroke.control.default,
             1f to stroke.controlStrong.default
         ),
         textControlFocused = Brush.verticalGradient(
-            0.9395f to stroke.control.default,
-            0.9414f to fillAccent.default
+            0.97f to stroke.control.default,
+            0.97f to fillAccent.default
         )
     )
 

@@ -110,7 +110,7 @@ fun Layer(
     color: Color = FluentTheme.colors.background.layer.default,
     contentColor: Color = FluentTheme.colors.text.text.primary,
     border: BorderStroke? = BorderStroke(1.dp, FluentTheme.colors.stroke.card.default),
-    backgroundSizing: BackgroundSizing,
+    backgroundSizing: BackgroundSizing = BackgroundSizing.OuterBorderEdge,
     clipContent: Boolean = false,
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
