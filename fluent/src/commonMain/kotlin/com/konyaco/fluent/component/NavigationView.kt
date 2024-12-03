@@ -696,10 +696,11 @@ fun NavigationMenuItemScope.MenuItem(
     indicatorState: IndicatorState? = LocalIndicatorState.current,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
-    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
-        NavigationDefaults.defaultTopItemColors()
-    } else {
-        NavigationDefaults.defaultSideItemColors()
+    colors: NavigationItemColorScheme = when {
+        displayMode == NavigationDisplayMode.Top && selected -> NavigationDefaults.selectedTopItemColors()
+        displayMode == NavigationDisplayMode.Top -> NavigationDefaults.defaultTopItemColors()
+        selected -> NavigationDefaults.selectedSideItemColors()
+        else -> NavigationDefaults.defaultSideItemColors()
     },
     indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
         { color ->
@@ -777,10 +778,11 @@ fun NavigationMenuItemScope.MenuItem(
     indicatorState: IndicatorState? = LocalIndicatorState.current,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
-    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
-        NavigationDefaults.defaultTopItemColors()
-    } else {
-        NavigationDefaults.defaultSideItemColors()
+    colors: NavigationItemColorScheme = when {
+        displayMode == NavigationDisplayMode.Top && selected -> NavigationDefaults.selectedTopItemColors()
+        displayMode == NavigationDisplayMode.Top -> NavigationDefaults.defaultTopItemColors()
+        selected -> NavigationDefaults.selectedSideItemColors()
+        else -> NavigationDefaults.defaultSideItemColors()
     },
     indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
         { color ->
