@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalFluentApi::class)
+
 package com.konyaco.fluent.gallery.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,6 +22,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.DropDownButton
@@ -29,6 +32,7 @@ import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.MenuFlyoutContainer
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.ToggleButton
+import com.konyaco.fluent.component.TooltipBox
 import com.konyaco.fluent.gallery.ProjectUrl
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.BrightnessHigh
@@ -86,92 +90,108 @@ fun GalleryHeader(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (documentPath != null) {
-                    Button(
-                        onClick = {
-                            uriHandler.openUri(ProjectUrl.documentationOf(documentPath))
-                        },
-                        content = {
-                            Icon(
-                                Icons.Default.Document,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Text("Documentation")
-                        }
-                    )
+                    TooltipBox(
+                        tooltip = { Text("Documentation") }
+                    ){
+                        Button(
+                            onClick = {
+                                uriHandler.openUri(ProjectUrl.documentationOf(documentPath))
+                            },
+                            content = {
+                                Icon(
+                                    Icons.Default.Document,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text("Documentation")
+                            }
+                        )
+                    }
                 }
                 if (componentPath != null && galleryPath != null) {
-                    MenuFlyoutContainer(
-                        flyout = {
-                            HyperlinkButton(
-                                onClick = {
-                                    uriHandler.openUri(
-                                        ProjectUrl.componentCodeOf(componentPath)
-                                    )
-                                    isFlyoutVisible = false
-                                },
-                                content = { Text("Component") },
-                                modifier = Modifier.fillMaxWidth()
-                                    .padding(horizontal = 5.dp, vertical = 2.dp)
-                            )
-                            HyperlinkButton(
-                                onClick = {
-                                    uriHandler.openUri(ProjectUrl.galleryCodeOf(galleryPath))
-                                    isFlyoutVisible = false
-                                },
-                                content = { Text("Sample") },
-                                modifier = Modifier.fillMaxWidth()
-                                    .padding(horizontal = 5.dp, vertical = 2.dp)
-                            )
-                        },
-                        content = {
-                            DropDownButton(
-                                onClick = { isFlyoutVisible = true },
-                                content = {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.github_logo),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Text("Source")
-                                }
-                            )
-                        },
-                        placement = FlyoutPlacement.Bottom,
-                        adaptivePlacement = true
-                    )
+                    TooltipBox(
+                        tooltip = { Text("Source code of this sample page") }
+                    ){
+                        MenuFlyoutContainer(
+                            flyout = {
+                                HyperlinkButton(
+                                    onClick = {
+                                        uriHandler.openUri(
+                                            ProjectUrl.componentCodeOf(componentPath)
+                                        )
+                                        isFlyoutVisible = false
+                                    },
+                                    content = { Text("Component") },
+                                    modifier = Modifier.fillMaxWidth()
+                                        .padding(horizontal = 5.dp, vertical = 2.dp)
+                                )
+                                HyperlinkButton(
+                                    onClick = {
+                                        uriHandler.openUri(ProjectUrl.galleryCodeOf(galleryPath))
+                                        isFlyoutVisible = false
+                                    },
+                                    content = { Text("Sample") },
+                                    modifier = Modifier.fillMaxWidth()
+                                        .padding(horizontal = 5.dp, vertical = 2.dp)
+                                )
+                            },
+                            content = {
+                                DropDownButton(
+                                    onClick = { isFlyoutVisible = true },
+                                    content = {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.github_logo),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Text("Source")
+                                    }
+                                )
+                            },
+                            placement = FlyoutPlacement.Bottom,
+                            adaptivePlacement = true
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 if (controlVisible) {
-                    ToggleButton(
-                        checked = themeButtonChecked,
-                        onCheckedChanged = onThemeButtonChanged,
-                        content = {
-                            Icon(
-                                Icons.Filled.BrightnessHigh,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        },
-                        iconOnly = true,
-                        modifier = Modifier.widthIn(40.dp)
-                    )
+                    TooltipBox(
+                        tooltip = { Text("Toggle theme") }
+                    ){
+                        ToggleButton(
+                            checked = themeButtonChecked,
+                            onCheckedChanged = onThemeButtonChanged,
+                            content = {
+                                Icon(
+                                    Icons.Filled.BrightnessHigh,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            iconOnly = true,
+                            modifier = Modifier.widthIn(40.dp)
+                        )
+                    }
                     Spacer(
                         modifier = Modifier.padding(2.dp).height(16.dp).width(1.dp)
                             .background(FluentTheme.colors.stroke.divider.default)
                     )
-                    Button(
-                        onClick = { uriHandler.openUri(ProjectUrl.FEED_BACK) },
-                        content = {
-                            Icon(
-                                Icons.Default.PersonFeedback,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        },
-                        iconOnly = true,
-                        modifier = Modifier.widthIn(40.dp)
-                    )
+                    TooltipBox(
+                        tooltip = { Text("Feedback") }
+                    ){
+                        Button(
+                            onClick = { uriHandler.openUri(ProjectUrl.FEED_BACK) },
+                            content = {
+                                Icon(
+                                    Icons.Default.PersonFeedback,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            iconOnly = true,
+                            modifier = Modifier.widthIn(40.dp)
+                        )
+                    }
                 }
             }
         }
@@ -182,7 +202,7 @@ fun GalleryHeader(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalTextApi::class)
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun GalleryDescription(description: AnnotatedString, modifier: Modifier = Modifier) {
     Text(

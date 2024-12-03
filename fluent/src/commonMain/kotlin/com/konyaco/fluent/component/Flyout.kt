@@ -12,7 +12,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,12 +26,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.InspectableValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.constrainHeight
+import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.konyaco.fluent.ExperimentalFluentApi
@@ -75,6 +82,7 @@ fun FlyoutContainer(
     )
 }
 
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 internal fun BasicFlyoutContainer(
     flyout: @Composable FlyoutContainerScope.() -> Unit,
@@ -85,13 +93,16 @@ internal fun BasicFlyoutContainer(
     val flyoutState = remember(initialVisible) {
         mutableStateOf(initialVisible)
     }
-    val flyoutScope = remember(flyoutState) {
-        FlyoutContainerScopeImpl(flyoutState)
+    FlyoutAnchorScope {
+        val flyoutScope = remember(flyoutState, this) {
+            FlyoutContainerScopeImpl(flyoutState, this)
+        }
+        Box(modifier = modifier) {
+            flyoutScope.content()
+            flyoutScope.flyout()
+        }
     }
-    Box(modifier = modifier) {
-        flyoutScope.content()
-        flyoutScope.flyout()
-    }
+
 }
 
 enum class FlyoutPlacement {
@@ -321,16 +332,80 @@ internal data class PaddingCornerSize(
         get() = padding
 }
 
-private class FlyoutContainerScopeImpl(visibleState: MutableState<Boolean>) : FlyoutContainerScope {
+@OptIn(ExperimentalFluentApi::class)
+private class FlyoutContainerScopeImpl(
+    visibleState: MutableState<Boolean>,
+    scope: FlyoutAnchorScope,
+) : FlyoutContainerScope, FlyoutAnchorScope by scope {
 
     override var isFlyoutVisible: Boolean by visibleState
 }
 
-interface FlyoutContainerScope {
+@OptIn(ExperimentalFluentApi::class)
+interface FlyoutContainerScope: FlyoutAnchorScope {
 
     var isFlyoutVisible: Boolean
 
 }
+
+@ExperimentalFluentApi
+interface FlyoutAnchorScope {
+
+    fun Modifier.flyoutAnchor(): Modifier
+
+    fun Modifier.flyoutSize(matchAnchorWidth: Boolean = false): Modifier
+}
+
+@ExperimentalFluentApi
+@Composable
+fun FlyoutAnchorScope(
+    anchorPadding: Dp = flyoutPopPaddingFixShadowRender + flyoutDefaultPadding,
+    content: @Composable FlyoutAnchorScope.() -> Unit
+) {
+    content(rememberFlyoutAnchorScope(anchorPadding))
+}
+
+@ExperimentalFluentApi
+@Stable
+@Composable
+internal fun rememberFlyoutAnchorScope(padding: Dp = flyoutPopPaddingFixShadowRender + flyoutDefaultPadding): FlyoutAnchorScope {
+    val calculateMaxHeight = rememberFlyoutCalculateMaxHeight(padding)
+    return remember(calculateMaxHeight) {
+        FlyoutAnchorScopeImpl(calculateMaxHeight)
+    }
+}
+
+@ExperimentalFluentApi
+private class FlyoutAnchorScopeImpl(
+    private val calculateMaxHeight: (anchorCoordinates: LayoutCoordinates) -> Int
+) : FlyoutAnchorScope {
+    private var anchorWidth by mutableIntStateOf(0)
+    private var flyoutMaxHeight by mutableIntStateOf(0)
+
+    override fun Modifier.flyoutAnchor(): Modifier = this.onGloballyPositioned {
+        anchorWidth = it.size.width
+        flyoutMaxHeight = calculateMaxHeight(it)
+    }
+
+    override fun Modifier.flyoutSize(matchAnchorWidth: Boolean): Modifier {
+        return this.layout { measurable, constraints ->
+            val flyoutWidth = constraints.constrainWidth(anchorWidth)
+            val flyoutConstraints = constraints.copy(
+                maxHeight = constraints.constrainHeight(flyoutMaxHeight),
+                minWidth = if (matchAnchorWidth) flyoutWidth else constraints.minWidth,
+                maxWidth = if (matchAnchorWidth) flyoutWidth else constraints.maxWidth,
+            )
+            val placeable = measurable.measure(flyoutConstraints)
+            layout(placeable.width, placeable.height) {
+                placeable.place(0, 0)
+            }
+        }
+    }
+
+}
+
+@Composable
+internal expect fun rememberFlyoutCalculateMaxHeight(padding: Dp): (anchorCoordinates: LayoutCoordinates) -> Int
 
 //TODO Remove when shadow can show with animated visibility
 internal val flyoutPopPaddingFixShadowRender = 0.dp

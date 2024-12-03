@@ -1,5 +1,6 @@
 package com.konyaco.fluent.component
 
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,11 +43,17 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.BackgroundSizing
@@ -482,9 +490,23 @@ object ColorPickerDefaults {
         )
     }
 
+    @OptIn(ExperimentalFluentApi::class, ExperimentalStdlibApi::class)
     @Composable
     fun label(color: Color) {
-        //TODO Tooltip label
+        val hexFormat = remember {
+            HexFormat {
+                upperCase = true
+                number {
+                    removeLeadingZeros = false
+                }
+            }
+        }
+        TooltipBoxDefaults.Tooltip(
+            visibleState = remember { MutableTransitionState(true) },
+            content = {
+                Text("#${color.value.toHexString(hexFormat).substring(2, 8)}")
+            }
+        )
     }
 }
 
@@ -534,6 +556,38 @@ sealed class ColorSpectrum {
 
     companion object {
         val Default: ColorSpectrum get() = Square
+
+        @Composable
+        internal fun LabelPopup(
+            offsetState: State<IntOffset?>,
+            label: @Composable () -> Unit
+        ) {
+            if (offsetState.value != null) {
+                val padding = with(LocalDensity.current) { 24.dp.toPx() }
+                Popup(
+                    properties = PopupProperties(focusable = false),
+                    popupPositionProvider = remember(offsetState) {
+                        object : PopupPositionProvider {
+                            override fun calculatePosition(
+                                anchorBounds: IntRect,
+                                windowSize: IntSize,
+                                layoutDirection: LayoutDirection,
+                                popupContentSize: IntSize
+                            ): IntOffset {
+                                var (offsetX, offsetY) = anchorBounds.topCenter
+                                offsetX += - popupContentSize.width / 2
+                                offsetY += - popupContentSize.height
+                                return IntOffset(
+                                    x = offsetX.coerceIn(0, windowSize.width - popupContentSize.width),
+                                    y = offsetY.minus(padding).roundToInt().coerceIn(0, windowSize.height - popupContentSize.height)
+                                )
+                            }
+                        }
+                    },
+                    content = label
+                )
+            }
+        }
     }
 
     data object Round : ColorSpectrum() {
@@ -644,6 +698,12 @@ sealed class ColorSpectrum {
                                 }
                         ) {
                             dot()
+                            LabelPopup(
+                                offsetState = offset,
+                                label = {
+                                    label(color)
+                                }
+                            )
                         }
                     }
 
@@ -688,6 +748,7 @@ sealed class ColorSpectrum {
 
     data object Square : ColorSpectrum() {
 
+        @OptIn(ExperimentalFluentApi::class)
         @Composable
         override fun content(
             modifier: Modifier,
@@ -794,6 +855,7 @@ sealed class ColorSpectrum {
                         }
                     }
 
+
                     Box {
                         Box(
                             modifier = Modifier
@@ -804,6 +866,7 @@ sealed class ColorSpectrum {
                                 }
                         ) {
                             dot()
+                            LabelPopup(offsetState = offset, label = { label(color) })
                         }
                     }
                 }

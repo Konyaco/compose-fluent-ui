@@ -14,82 +14,41 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.constrainHeight
-import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.CompactMode
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 fun AutoSuggestionBox(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable AutoSuggestBoxScope.() -> Unit
+    content: @Composable FlyoutAnchorScope.() -> Unit
 ) {
-
-    var anchorCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
-    var anchorWidth by remember { mutableIntStateOf(0) }
-    var flyoutMaxHeight by remember { mutableIntStateOf(0) }
-
-    val calculateMaxHeight = rememberSuggestFlyoutCalculateMaxHeight(flyoutPopPaddingFixShadowRender + flyoutDefaultPadding)
-
-    val focusRequester = remember { FocusRequester() }
-
-    val autoSuggestBoxScopeImpl = remember(calculateMaxHeight, onExpandedChange) {
-
-        object : AutoSuggestBoxScope {
-
-            override fun Modifier.suggestFlyoutAnchor(): Modifier = this.onGloballyPositioned {
-                anchorCoordinates = it
-                anchorWidth = it.size.width
-                flyoutMaxHeight = calculateMaxHeight(it)
-            }.pointerInput(onExpandedChange) {
-                awaitEachGesture {
-                    awaitFirstDown(pass = PointerEventPass.Initial)
-                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                    if (upEvent != null) {
-                        onExpandedChange(!expanded)
-                    }
-                }
-            }.focusRequester(focusRequester)
-
-            override fun Modifier.suggestFlyoutSize(matchTextFieldWidth: Boolean): Modifier =
-                this.layout { measurable, constraints ->
-                    val flyoutWidth = constraints.constrainWidth(anchorWidth)
-                    val flyoutConstraints = constraints.copy(
-                        maxHeight = constraints.constrainHeight(flyoutMaxHeight),
-                        minWidth = if (matchTextFieldWidth) flyoutWidth else constraints.minWidth,
-                        maxWidth = if (matchTextFieldWidth) flyoutWidth else constraints.maxWidth,
-                    )
-                    val placeable = measurable.measure(flyoutConstraints)
-                    layout(placeable.width, placeable.height) {
-                        placeable.place(0, 0)
-                    }
-                }
-
-        }
+    val flyoutAnchorScope = rememberFlyoutAnchorScope()
+    val expandedState = rememberUpdatedState(expanded)
+    val autoSuggestBoxScopeImpl = remember(expandedState, onExpandedChange) {
+        AutoSuggestBoxScopeImpl(
+            onExpandedChange = onExpandedChange,
+            expanded = { expandedState.value },
+            scope = flyoutAnchorScope
+        )
     }
     Box(modifier = modifier) {
         autoSuggestBoxScopeImpl.content()
     }
     SideEffect {
-        if (expanded) focusRequester.requestFocus()
+        if (expanded) autoSuggestBoxScopeImpl.focusRequester.requestFocus()
     }
 }
 
@@ -179,11 +138,28 @@ object AutoSuggestBoxDefaults {
 
 }
 
-interface AutoSuggestBoxScope {
-    fun Modifier.suggestFlyoutAnchor(): Modifier
+@ExperimentalFluentApi
+private class AutoSuggestBoxScopeImpl(
+    private val onExpandedChange: (Boolean) -> Unit,
+    private val expanded: () -> Boolean,
+    private val scope: FlyoutAnchorScope
+): FlyoutAnchorScope {
 
-    fun Modifier.suggestFlyoutSize(matchTextFieldWidth: Boolean = true): Modifier
+    val focusRequester = FocusRequester()
+
+    override fun Modifier.flyoutAnchor(): Modifier = with(scope) {
+        flyoutAnchor().pointerInput(onExpandedChange) {
+            awaitEachGesture {
+                awaitFirstDown(pass = PointerEventPass.Initial)
+                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                if (upEvent != null) {
+                    onExpandedChange(!expanded())
+                }
+            }
+        }.focusRequester(focusRequester)
+    }
+
+    override fun Modifier.flyoutSize(matchAnchorWidth: Boolean): Modifier {
+        return with(scope) { flyoutSize(matchAnchorWidth) }
+    }
 }
-
-@Composable
-internal expect fun rememberSuggestFlyoutCalculateMaxHeight(padding: Dp): (anchorCoordinates: LayoutCoordinates) -> Int

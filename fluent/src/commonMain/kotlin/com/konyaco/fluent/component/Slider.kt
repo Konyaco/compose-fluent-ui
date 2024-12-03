@@ -1,9 +1,11 @@
 package com.konyaco.fluent.component
 
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -43,6 +45,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import androidx.compose.ui.window.PopupProperties
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
@@ -465,9 +469,11 @@ object SliderDefaults {
         }
     }
 
+    @OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
     @Composable
     fun Thumb(
         state: SliderState,
+        label: @Composable (state: SliderState) -> Unit = { Text(state.value.toString()) },
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -481,59 +487,75 @@ object SliderDefaults {
         val hovered by interactionSource.collectIsHoveredAsState()
         val pressed by interactionSource.collectIsPressedAsState()
 
-        Layer(
-            modifier = modifier
-                .layout { measurable, constraints ->
-                    val placeable = measurable.measure(constraints.copy(minWidth = 0))
-                    val width = maxOf(constraints.maxWidth, placeable.width)
-                    val height = maxOf(constraints.maxHeight, placeable.height)
-                    layout(width, height) {
-                        val offset = Alignment.CenterStart.align(
-                            size = IntSize(placeable.width, placeable.height),
-                            space = IntSize(width, height),
-                            layoutDirection = layoutDirection
-                        )
-                        placeable.place(
-                            x = offset.x + calcThumbOffset(
-                                maxWidth = width,
-                                thumbSize = ThumbSize.toPx(),
-                                padding = 1.dp.toPx(),
-                                fraction = state.rawFraction
-                            ).roundToInt(),
-                            y = offset.y + 0
-                        )
-                    }
-                }
-                .requiredSize(ThumbSizeWithBorder)
-                .hoverable(interactionSource, enabled),
-            shape = shape,
-            color = ringColor,
-            border = border,
-            backgroundSizing = BackgroundSizing.InnerBorderEdge
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                // Inner Thumb
-                Box(
-                    Modifier.size(
-                        animateDpAsState(
-                            when {
-                                pressed || state.isDragging -> InnerThumbPressedSize
-                                hovered -> InnerThumbHoverSize
-                                else -> InnerThumbSize
-                            },
-                            tween(
-                                FluentDuration.QuickDuration,
-                                easing = FluentEasing.FastInvokeEasing
+        FlyoutAnchorScope {
+            Layer(
+                modifier = modifier
+                    .flyoutAnchor()
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints.copy(minWidth = 0))
+                        val width = maxOf(constraints.maxWidth, placeable.width)
+                        val height = maxOf(constraints.maxHeight, placeable.height)
+                        layout(width, height) {
+                            val offset = Alignment.CenterStart.align(
+                                size = IntSize(placeable.width, placeable.height),
+                                space = IntSize(width, height),
+                                layoutDirection = layoutDirection
                             )
-                        ).value
-                    ).background(
-                        when {
-                            !enabled -> disabledColor
-                            pressed || state.isDragging -> draggingColor
-                            else -> color
-                        }, shape
+                            placeable.place(
+                                x = offset.x + calcThumbOffset(
+                                    maxWidth = width,
+                                    thumbSize = ThumbSize.toPx(),
+                                    padding = 1.dp.toPx(),
+                                    fraction = state.rawFraction
+                                ).roundToInt(),
+                                y = offset.y + 0
+                            )
+                        }
+                    }
+                    .requiredSize(ThumbSizeWithBorder)
+                    .hoverable(interactionSource, enabled),
+                shape = shape,
+                color = ringColor,
+                border = border,
+                backgroundSizing = BackgroundSizing.InnerBorderEdge
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    // Inner Thumb
+                    Box(
+                        Modifier.size(
+                            animateDpAsState(
+                                when {
+                                    pressed || state.isDragging -> InnerThumbPressedSize
+                                    hovered -> InnerThumbHoverSize
+                                    else -> InnerThumbSize
+                                },
+                                tween(
+                                    FluentDuration.QuickDuration,
+                                    easing = FluentEasing.FastInvokeEasing
+                                )
+                            ).value
+                        ).background(
+                            when {
+                                !enabled -> disabledColor
+                                pressed || state.isDragging -> draggingColor
+                                else -> color
+                            }, shape
+                        )
                     )
-                )
+                }
+                if (state.isDragging) {
+                    Popup(
+                        properties = PopupProperties(focusable = false),
+                        popupPositionProvider = rememberTooltipPositionProvider(state = null),
+                        content = {
+                            TooltipBoxDefaults.Tooltip(
+                                visibleState = remember { MutableTransitionState(true) },
+                                content = { label(state) },
+                                modifier = Modifier.flyoutAnchor()
+                            )
+                        }
+                    )
+                }
             }
         }
     }
