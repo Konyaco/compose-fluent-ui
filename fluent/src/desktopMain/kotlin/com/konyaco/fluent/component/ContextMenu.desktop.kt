@@ -3,26 +3,48 @@ package com.konyaco.fluent.component
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ContextMenuArea
+import androidx.compose.foundation.ContextMenuItem
+import androidx.compose.foundation.ContextMenuRepresentation
+import androidx.compose.foundation.ContextMenuState
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.TextContextMenu
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.*
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isAltPressed
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLocalization
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.round
+import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Copy
-import com.konyaco.fluent.icons.regular.Cut
-import com.konyaco.fluent.icons.regular.ClipboardPaste
+import com.konyaco.fluent.component.FluentContextMenuItem.KeyData
 import org.jetbrains.skiko.hostOs
 
 internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
+
     @Composable
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
         var rect by remember {
@@ -76,12 +98,17 @@ internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
                         },
                         icon = if (shouldPaddingIcon) {
                             {
+
                                 if (it.glyph != null && LocalFontIconFontFamily.current != null) {
-                                    FontIcon(it.glyph, modifier = Modifier)
+                                    FontIcon(
+                                        glyph = it.glyph,
+                                        vector = it.vector?.let { vector -> { vector } },
+                                        contentDescription = it.label,
+                                    )
                                 } else if (it.vector != null) {
                                     Icon(
                                         it.vector, it.label,
-                                        modifier = Modifier.size(with(LocalDensity.current) { ((FontIconDefaults.fontSizeStandard.value + 2).sp).toDp() })
+                                        modifier = Modifier.size(with(LocalDensity.current) { ((FontIconSize.Standard.value + 2).sp).toDp() })
                                     )
                                 }
                             }
@@ -166,41 +193,52 @@ internal object FluentTextContextMenu : TextContextMenu {
                     FluentContextMenuItem(
                         label = localization.cut,
                         onClick = it,
-                        glyph = '\uE8C6',
-                        vector = Icons.Default.Cut,
-                        keyData = FluentContextMenuItem.KeyData(Key.X, isCtrlPressed = true)
+                        icon = FontIconPrimitive.Cut,
+                        keyData = KeyData(Key.X, isCtrlPressed = true)
                     )
                 },
                 textManager.copy?.let {
                     FluentContextMenuItem(
                         label = localization.copy,
                         onClick = it,
-                        glyph = '\uE8C8',
-                        vector = Icons.Default.Copy,
-                        keyData = FluentContextMenuItem.KeyData(Key.C, isCtrlPressed = true)
+                        icon = FontIconPrimitive.Copy,
+                        keyData = KeyData(Key.C, isCtrlPressed = true)
                     )
                 },
                 textManager.paste?.let {
                     FluentContextMenuItem(
                         label = localization.paste,
                         onClick = it,
-                        glyph = '\uE77F',
-                        vector = Icons.Default.ClipboardPaste,
-                        keyData = FluentContextMenuItem.KeyData(Key.V, isCtrlPressed = true)
+                        icon = FontIconPrimitive.Paste,
+                        keyData = KeyData(Key.V, isCtrlPressed = true)
                     )
                 },
                 textManager.selectAll?.let {
                     FluentContextMenuItem(
                         label = localization.selectAll,
                         onClick = it,
-                        keyData = FluentContextMenuItem.KeyData(Key.A, isCtrlPressed = true),
+                        keyData = KeyData(Key.A, isCtrlPressed = true),
                     )
                 },
             )
         }
         ContextMenuArea(items, state, content = content)
     }
+
 }
+
+fun FluentContextMenuItem(
+    label: String,
+    onClick: () -> Unit,
+    icon: FontIconPrimitive,
+    keyData: KeyData? = null,
+) = FluentContextMenuItem(
+    label = label,
+    onClick = onClick,
+    glyph = icon.glyph,
+    vector = icon.vector(),
+    keyData = keyData
+)
 
 class FluentContextMenuItem(
     label: String,

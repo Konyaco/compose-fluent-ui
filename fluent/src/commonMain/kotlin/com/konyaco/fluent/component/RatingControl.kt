@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -34,17 +33,14 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
+import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.ProvideTextStyle
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.Star
-import com.konyaco.fluent.icons.regular.Star
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
@@ -68,7 +64,7 @@ fun RatingControl(
     onValueChanged: (Float) -> Unit,
     modifier: Modifier = Modifier,
     colors: VisualStateScheme<RatingControlColor> = RatingControlDefaults.colors(),
-    width: Dp = 20.dp,
+    width: Dp = 16.dp,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     placeholderValue: Float = 0f,
     maxRating: Int = 5,
@@ -284,12 +280,12 @@ private fun drawStar(
     Row(horizontalArrangement = Arrangement.spacedBy(ratingSpacing), modifier = modifier) {
         val hasValue = value() != 0f
         val (icon, iconColor) = when {
-            selected -> Icons.Filled.Star to when {
+            selected -> FontIconPrimitive.FavoriteStarFull to when {
                 (!hasValue && isHovered) || displayPlaceholder -> color.placeholderColor
                 else -> color.selectedColor
             }
 
-            else -> Icons.Regular.Star to color.color
+            else -> FontIconPrimitive.RatingStar to color.color
         }
         repeat(maxRating) { index ->
             Box(
@@ -297,20 +293,27 @@ private fun drawStar(
                     onItemPositioned(index, it.boundsInParent())
                 }
             ) {
-                //TODO Update star icon
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = iconColor,
-                    modifier = Modifier.size(width)
-                )
-                if (isHovered && !hasValue && selected) {
-                    Icon(
-                        imageVector = Icons.Regular.Star,
+                CompositionLocalProvider(
+                    LocalContentColor provides iconColor,
+                    LocalContentAlpha provides iconColor.alpha
+                ) {
+                    FontIcon(
+                        type = icon,
                         contentDescription = null,
-                        tint = color.color,
-                        modifier = Modifier.size(width)
+                        size = FontIconSize(width.value)
                     )
+                }
+                if (isHovered && !hasValue && selected) {
+                    CompositionLocalProvider(
+                        LocalContentColor provides color.color,
+                        LocalContentAlpha provides color.color.alpha
+                    ) {
+                        FontIcon(
+                            type = FontIconPrimitive.RatingStar,
+                            contentDescription = null,
+                            size = FontIconSize(width.value)
+                        )
+                    }
                 }
             }
 

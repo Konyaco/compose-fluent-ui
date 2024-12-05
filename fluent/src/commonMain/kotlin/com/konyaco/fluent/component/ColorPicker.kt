@@ -50,9 +50,6 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ChevronDown
-import com.konyaco.fluent.icons.regular.ChevronUp
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -187,10 +184,15 @@ fun ColorPicker(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = text)
-                        Icon(
-                            imageVector = if (!expanded) Icons.Default.ChevronDown else Icons.Default.ChevronUp,
+                        FontIcon(
+                            type = if (!expanded) {
+                                FontIconPrimitive.ChevronDown
+                            } else {
+                                FontIconPrimitive.ChevronUp
+
+                            },
                             contentDescription = text,
-                            modifier = Modifier.size(12.dp)
+                            size = FontIconSize.Small
                         )
                     }
                 },

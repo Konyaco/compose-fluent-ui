@@ -53,6 +53,8 @@ import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.component.FontIconDefaults
+import com.konyaco.fluent.component.FontIconSize
 import com.konyaco.fluent.component.NavigationDefaults
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.jna.windows.ComposeWindowProcedure
@@ -61,7 +63,6 @@ import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTCLIENT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTMAXBUTTON
 import com.konyaco.fluent.gallery.jna.windows.structure.isWindows11OrLater
 import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ArrowLeft
 import com.konyaco.fluent.icons.regular.Dismiss
 import com.konyaco.fluent.icons.regular.Square
 import com.konyaco.fluent.icons.regular.SquareMultiple
@@ -148,16 +149,12 @@ fun FrameWindowScope.WindowsWindowFrame(
                 }
             ) {
                 if (it) {
+                    val interactionSource = remember { MutableInteractionSource() }
                     NavigationDefaults.BackButton(
                         onClick = backButtonClick,
                         disabled = !backButtonEnabled,
-                        icon = {
-                            Text(
-                                text = CaptionButtonIcon.Back.glyph.toString(),
-                                fontFamily = windowsFontFamily(),
-                                fontSize = 10.sp
-                            )
-                        }
+                        interaction = interactionSource,
+                        icon = { FontIconDefaults.BackIcon(interactionSource, size = FontIconSize(10f)) }
                     )
                 } else {
                     Spacer(modifier = Modifier.width(14.dp).height(36.dp))
@@ -401,10 +398,6 @@ enum class CaptionButtonIcon(
     Close(
         glyph = '\uE8BB',
         imageVector = Icons.Default.Dismiss
-    ),
-    Back(
-        glyph = '\uE830',
-        imageVector = Icons.Default.ArrowLeft
     )
 }
 

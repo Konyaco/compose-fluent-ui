@@ -19,18 +19,8 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ArrowRight
-import com.konyaco.fluent.icons.regular.ChevronDown
-import com.konyaco.fluent.icons.regular.ChevronUp
-import com.konyaco.fluent.icons.regular.Dismiss
-import com.konyaco.fluent.icons.regular.Eye
-import com.konyaco.fluent.icons.regular.Search
 import com.konyaco.fluent.scheme.VisualStateScheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -141,25 +131,25 @@ fun RepeatTextBoxButton(
             .focusProperties { canFocus = focusable }
             .pointerHoverIcon(PointerIcon.Default, !enabled)
             .combinedClickable(
-            interactionSource = interaction,
-            indication = null,
-            enabled = enabled,
-            onClick = onClick,
-            onLongClick = {
-                onClick()
-                scope.launch {
-                    delay(delay)
-                    do {
-                        onClick()
-                        delay(interval)
-                    } while (pressed.value)
+                interactionSource = interaction,
+                indication = null,
+                enabled = enabled,
+                onClick = onClick,
+                onLongClick = {
+                    onClick()
+                    scope.launch {
+                        delay(delay)
+                        do {
+                            onClick()
+                            delay(interval)
+                        } while (pressed.value)
+                    }
+                },
+                onDoubleClick = {
+                    onClick()
+                    onClick()
                 }
-            },
-            onDoubleClick = {
-                onClick()
-                onClick()
-            }
-        ),
+            ),
         interactionSource = interaction,
         enabled = enabled,
         colors = colors,
@@ -171,89 +161,81 @@ fun RepeatTextBoxButton(
 
 object TextBoxButtonDefaults {
 
-    val iconFontSmallSize = 12.sp
-
-    val iconVectorSmallSize = 12.dp
-
-    val iconFontMediumSize = 16.sp
-
-    val iconVectorMediumSize = 16.dp
-
     @Composable
-    fun SearchIcon(fontSize: TextUnit = iconFontSmallSize, vectorSize: Dp = iconVectorSmallSize) {
+    fun SearchIcon(
+        size: FontIconSize = FontIconSize.Small,
+        modifier: Modifier = Modifier,
+    ) {
         FontIcon(
-            glyph = '\uF78B',
-            vector = Icons.Default.Search,
+            type = FontIconPrimitive.Search,
             contentDescription = "Search",
-            iconSize = fontSize,
-            vectorSize = vectorSize
+            size = size,
+            modifier = modifier
         )
     }
 
     @Composable
-    fun ClearIcon(fontSize: TextUnit = iconFontSmallSize, vectorSize: Dp = iconVectorSmallSize) {
+    fun ClearIcon(
+        size: FontIconSize = FontIconSize.Small,
+        modifier: Modifier = Modifier,
+    ) {
         FontIcon(
-            glyph = '\uE624',
-            vector = Icons.Default.Dismiss,
+            type = FontIconPrimitive.Close,
             contentDescription = "Clear",
-            iconSize = fontSize,
-            vectorSize = vectorSize
+            size = size,
+            modifier = modifier
         )
     }
 
     @Composable
     fun RevealPasswordIcon(
-        fontSize: TextUnit = iconFontSmallSize,
-        vectorSize: Dp = iconVectorSmallSize
+        size: FontIconSize = FontIconSize.Small,
+        modifier: Modifier = Modifier,
     ) {
         FontIcon(
-            glyph = '\uF78D',
-            vector = Icons.Default.Eye,
+            type = FontIconPrimitive.RevealPassword,
             contentDescription = "Reveal Password",
-            iconSize = fontSize,
-            vectorSize = vectorSize
+            size = size,
+            modifier = modifier
         )
     }
 
     @Composable
     fun ArrowRightIcon(
-        fontSize: TextUnit = iconFontSmallSize,
-        vectorSize: Dp = iconVectorSmallSize
+        size: FontIconSize = FontIconSize.Small,
+        modifier: Modifier = Modifier,
     ) {
         FontIcon(
-            glyph = '\uE64D',
-            vector = Icons.Default.ArrowRight,
+            type = FontIconPrimitive.ArrowRight,
             contentDescription = "Arrow Right",
-            iconSize = fontSize,
-            vectorSize = vectorSize
+            size = size,
+            modifier = modifier
         )
     }
 
     @Composable
     fun ChevronUpIcon(
-        fontSize: TextUnit = iconFontSmallSize,
-        vectorSize: Dp = iconVectorSmallSize
+        size: FontIconSize = FontIconSize.Small,
+        modifier: Modifier = Modifier,
     ) {
         FontIcon(
-            glyph = '\uE70E',
-            vector = Icons.Default.ChevronUp,
+            type = FontIconPrimitive.ChevronUp,
             contentDescription = "Chevron Up",
-            iconSize = fontSize,
-            vectorSize = vectorSize
+            size = size,
+            modifier = modifier
         )
     }
 
     @Composable
     fun ChevronDownIcon(
-        fontSize: TextUnit = iconFontSmallSize,
-        vectorSize: Dp = iconVectorSmallSize
+        size: FontIconSize = FontIconSize.Small,
+        modifier: Modifier = Modifier,
     ) {
         FontIcon(
-            glyph = '\uE70F',
-            vector = Icons.Default.ChevronDown,
+            type = FontIconPrimitive.ChevronDown,
             contentDescription = "Chevron Down",
-            iconSize = fontSize,
-            vectorSize = vectorSize
+            size = size,
+            modifier = modifier
         )
     }
 }

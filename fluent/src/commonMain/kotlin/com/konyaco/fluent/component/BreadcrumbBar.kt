@@ -13,15 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.ChevronRight
-import com.konyaco.fluent.icons.filled.MoreHorizontal
 import com.konyaco.fluent.layout.overflow.OverflowActionScope
 import com.konyaco.fluent.layout.overflow.OverflowFlyoutContainer
 import com.konyaco.fluent.layout.overflow.OverflowPosition
@@ -140,10 +136,9 @@ object BreadcrumbBarDefaults {
             enabled = enabled
         ) {
             FontIcon(
-                glyph = '\uE712',
-                vector = Icons.Filled.MoreHorizontal,
+                type = FontIconPrimitive.More,
                 contentDescription = null,
-                iconSize = FontIconDefaults.fontSizeSmall
+                size = FontIconSize.Small
             )
         }
     }
@@ -164,10 +159,9 @@ object BreadcrumbBarDefaults {
             enabled = enabled
         ) {
             FontIcon(
-                glyph = '\uE712',
-                vector = Icons.Filled.MoreHorizontal,
+                type = FontIconPrimitive.More,
                 contentDescription = null,
-                iconSize = FontIconDefaults.fontSizeStandard
+                size = FontIconSize.Standard
             )
         }
     }
@@ -193,7 +187,7 @@ fun BreadcrumbBarItem(
         colorScheme = colorScheme,
         chevronColors = chevronColors,
         textStyle = FluentTheme.typography.body,
-        chevronSize = FontIconDefaults.fontSizeSmall,
+        chevronSize = FontIconSize.Small,
         modifier = modifier,
         chevronVisible = chevronVisible,
         enabled = enabled,
@@ -221,7 +215,7 @@ fun LargeBreadcrumbBarItem(
         colorScheme = colorScheme,
         chevronColors = chevronColors,
         textStyle = FluentTheme.typography.title,
-        chevronSize = FontIconDefaults.fontSizeStandard,
+        chevronSize = FontIconSize.Standard,
         modifier = modifier,
         chevronVisible = chevronVisible,
         enabled = enabled,
@@ -254,7 +248,7 @@ private fun BasicBreadcrumbBarItem(
     colorScheme: VisualStateScheme<Color>,
     chevronColors: VisualStateScheme<Color>,
     textStyle: TextStyle,
-    chevronSize: TextUnit,
+    chevronSize: FontIconSize,
     modifier: Modifier = Modifier,
     chevronVisible: Boolean = true,
     enabled: Boolean = true,
@@ -294,11 +288,10 @@ private fun BasicBreadcrumbBarItem(
                 LocalTextStyle provides LocalTextStyle.current.copy(chevronColor)
             ) {
                 FontIcon(
-                    glyph = '\uE974',
-                    vector = Icons.Filled.ChevronRight,
+                    type = FontIconPrimitive.ChevronRight,
                     contentDescription = null,
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    iconSize = chevronSize
+                    size = chevronSize
                 )
             }
         }

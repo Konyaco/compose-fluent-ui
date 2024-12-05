@@ -60,7 +60,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
@@ -71,18 +70,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
 import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.CaretLeft
-import com.konyaco.fluent.icons.filled.CaretRight
-import com.konyaco.fluent.icons.regular.Add
-import com.konyaco.fluent.icons.regular.Dismiss
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
@@ -141,8 +134,7 @@ fun TabRow(
             AnimatedVisibility(displayScrollController) {
                 TabScrollActionButton(
                     onClick = { coroutineScope.launch { state.animateScrollBy(-state.layoutInfo.viewportSize.width / 3f) } },
-                    glyph = '\uEDD9',
-                    vector = Icons.Filled.CaretLeft,
+                    icon = FontIconPrimitive.CaretLeft,
                     enabled = state.canScrollBackward,
                     colors = scrollActionButtonColors,
                     modifier = Modifier.padding(end = 4.dp)
@@ -162,8 +154,7 @@ fun TabRow(
             AnimatedVisibility(displayScrollController) {
                 TabScrollActionButton(
                     onClick = { coroutineScope.launch { state.animateScrollBy(state.layoutInfo.viewportSize.width / 3f) } },
-                    glyph = '\uEDDA',
-                    vector = Icons.Filled.CaretRight,
+                    icon = FontIconPrimitive.CaretRight,
                     enabled = state.canScrollForward,
                     colors = scrollActionButtonColors,
                     modifier = Modifier.padding(start = 4.dp)
@@ -430,12 +421,7 @@ object TabViewDefaults {
         Button(
             onClick = onClick,
             content = {
-                FontIcon(
-                    glyph = '\uE624',
-                    vector = Icons.Default.Dismiss,
-                    iconSize = 12.sp,
-                    contentDescription = null
-                )
+                FontIcon(type = FontIconPrimitive.Close, contentDescription = null)
             },
             iconOnly = true,
             buttonColors = colors,
@@ -459,11 +445,7 @@ object TabViewDefaults {
         Button(
             onClick = onClick,
             content = {
-                FontIcon(
-                    glyph = '\uE710',
-                    vector = Icons.Default.Add,
-                    contentDescription = null
-                )
+                FontIcon(type = FontIconPrimitive.Add, contentDescription = null)
             },
             iconOnly = true,
             buttonColors = colors,
@@ -552,8 +534,7 @@ class TabItemEndDividerController(
 @Composable
 private fun TabScrollActionButton(
     onClick: () -> Unit,
-    glyph: Char,
-    vector: ImageVector,
+    icon: FontIconPrimitive,
     modifier: Modifier = Modifier,
     enabled: Boolean = false,
     colors: VisualStateScheme<ButtonColor>
@@ -561,12 +542,9 @@ private fun TabScrollActionButton(
     RepeatButton(
         onClick = onClick,
         content = {
-            FontIcon(
-                glyph = glyph,
-                vector = vector,
+            FontIconSolid8(
+                type = icon,
                 contentDescription = null,
-                iconSize = 8.sp,
-                vectorSize = 14.dp,
                 modifier = Modifier
             )
         },
