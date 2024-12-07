@@ -17,6 +17,16 @@ Please note that there are lots of hard-coding and workarounds in our source cod
 
 Thank you for using our library. We look forward to receiving your feedback and contributions!
 
+### Supported Kotlin Targets
+| Target | Platform |
+| :--- | :--- |
+| desktop | Linux, macOS, Windows |
+| iosX64 | iPhone, iPad |
+| iosArm64 | iPhone, iPad |
+| iosSimulatorArm64 | iOS Simulator |
+| androidTarget | Android devices |
+| wasmJs | Web browsers |
+| js | Web browsers |
 
 ## Quick Start
 
