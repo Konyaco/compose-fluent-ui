@@ -141,3 +141,33 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 ### Accessibility
 
 - [ ] Accessibility Semantics
+
+## Credits
+
+This project is built upon the foundations laid by several remarkable open-source projects. We extend our sincere gratitude to the developers and maintainers of these projects for their invaluable contributions to the open-source community.
+
+### Fluent
+| Project | Description | License |
+|---|---|---|
+| **[Windows UI Kit (Figma)](https://www.figma.com/community/file/1440832812269040007/windows-ui-kit)** | Provided design mockups for controls. | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [JetBrains/compose-multiplatform](https://github.com/JetBrains/compose-multiplatform) | Provides the fundamental framework for Compose Multiplatform development. | [Apache License 2.0](https://github.com/JetBrains/compose-multiplatform/blob/master/LICENSE.txt) |
+| [Kotlin/kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime) | Provides a unified clock API. | [Apache License 2.0](https://github.com/Kotlin/kotlinx-datetime/blob/master/LICENSE.txt) |
+| [chrisbanes/haze](https://github.com/chrisbanes/haze) | Offers essential implementations for acrylic and mica effects. | [Apache License 2.0](https://github.com/chrisbanes/haze/blob/main/LICENSE) |
+
+### Fluent-Icons
+| Project | Description | License |
+|---|---|---|
+| [microsoft/fluentui-system-icons](https://github.com/microsoft/fluentui-system-icons) | Supplies the icon assets used in the project. | [MIT License](https://github.com/microsoft/fluentui-system-icons/blob/main/LICENSE) |
+| [DevSrSouza/svg-to-compose](https://github.com/DevSrSouza/svg-to-compose) | Facilitates the conversion of SVG icons to Compose icons, aiding in the implementation of Fluent icons. | [MIT License](https://github.com/DevSrSouza/svg-to-compose/blob/master/LICENSE) |
+
+### Gallery
+| Project | Description | License |
+|---|---|---|
+| [lhwdev/compose-window](https://github.com/lhwdev/compose-window) | Provides guidance on passing pointer events back to the parent window. | [Apache License 2.0](https://github.com/lhwdev/compose-window/blob/main/LICENSE) |
+| [grassator/win32-window-custom-titlebar](https://github.com/grassator/win32-window-custom-titlebar) | Demonstrates how to hide the Windows title bar. | [MIT License](https://github.com/grassator/win32-window-custom-titlebar/blob/master/LICENSE) |
+| [MayakaApps/ComposeWindowStyler](https://github.com/MayakaApps/ComposeWindowStyler) | Enables mica window backgrounds on Windows. | [MIT License](https://github.com/MayakaApps/ComposeWindowStyler/blob/main/LICENSE) |
+| [java-native-access/jna](https://github.com/java-native-access/jna) | Provides the capability to interact with Win32 APIs, enabling title bar customization. | [Apache License 2.0](https://github.com/java-native-access/jna/blob/master/LICENSE) |
+| [google/ksp](https://github.com/google/ksp) | Along with KotlinPoet, helps with source code generation for examples and navigation logic. | [Apache License 2.0](https://github.com/google/ksp/blob/main/LICENSE) |
+| [square/kotlinpoet](https://github.com/square/kotlinpoet) | Along with KSP, helps with source code generation for examples and navigation logic. | [Apache License 2.0](https://github.com/square/kotlinpoet/blob/main/LICENSE.txt) |
+| [SnipMeDev/Highlights](https://github.com/SnipMeDev/Highlights) | Enables syntax highlighting for example code. | [Apache License 2.0](https://github.com/SnipMeDev/Highlights/blob/main/LICENSE) |
+| [yshrsmz/BuildKonfig](https://github.com/yshrsmz/BuildKonfig) | Facilitates the generation of build configuration parameter classes. | [Apache License 2.0](https://github.com/yshrsmz/BuildKonfig/blob/master/LICENSE) |
