@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/Konyaco/compose-fluent-ui?include_prereleases)](https://github.com/Konyaco/compose-fluent-ui/releases)
 [![Maven Central](https://img.shields.io/maven-central/v/com.konyaco/fluent)](https://central.sonatype.com/artifact/com.konyaco/fluent/)
-
+[![Snapshot](https://img.shields.io/nexus/s/com.konyaco/fluent?server=https%3A%2F%2Fs01.oss.sonatype.org%2F&label=snapshot)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/konyaco/fluent)
 
 **Fluent Design** UI library for **Compose Multiplatform**
 
@@ -25,6 +25,17 @@ Thank you for using our library. We look forward to receiving your feedback and 
 ```kts
 implementation("com.konyaco:fluent:0.0.1-dev.8")
 implementation("com.konyaco:fluent-icons-extended:0.0.1-dev.8") // If you want to use full fluent icons.
+```
+
+### Snapshot Repository
+If you want to use the snapshot version, please add the snapshot maven repository.
+```
+dependencyResolutionManagement {
+    repositories {
+        // Add this repository
+        maven(https://s01.oss.sonatype.org/content/repositories/snapshots/)
+    }
+}
 ```
 
 ### Example
