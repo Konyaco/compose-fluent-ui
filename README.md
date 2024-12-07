@@ -105,7 +105,10 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 
 - [x] ColorPicker
 - [x] RatingControl
-- [ ] Pill Button
+- [x] Pill Button
+- [x] Segmented Button
+- [x] Lite Filter
+- [x] List Item
 
 ### Compound Components
 
@@ -115,13 +118,20 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 - [x] Color Picker
 - [ ] Navigation
   - [x] SideNav
-  - [ ] BreadcrumbBar
+  - [x] TopNav
+  - [x] NavigationView
+  - [x] BreadcrumbBar
   - [ ] Pivot
-  - [ ] TabView
-- [ ] Tooltip
+  - [x] TabView
+- [x] Tooltip
 - [ ] InfoBar
 - [ ] FilePicker
 - [ ] Menu
+- [x] MenuFlyout (Simple)
+- [x] Expander
+- [x] CommandBar
+- [x] CommandBarFlyout
+- [x] AutoSuggestBox
 
 ### Dialogs
 
