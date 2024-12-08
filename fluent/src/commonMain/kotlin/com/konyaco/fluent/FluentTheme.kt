@@ -26,37 +26,27 @@ fun FluentTheme(
     typography: Typography = FluentTheme.typography,
     cornerRadius: CornerRadius = FluentTheme.cornerRadius,
     useAcrylicPopup: Boolean = LocalAcrylicPopupEnabled.current,
-    compactMode: Boolean = true,
+    compactMode: Boolean = LocalCompactMode.current,
+    contentDialogHostState: ContentDialogHostState = remember { ContentDialogHostState() },
     content: @Composable () -> Unit
 ) {
-    val contentDialogHostState = remember { ContentDialogHostState() }
-    MaterialContainer {
-        CompositionLocalProvider(
-            LocalAcrylicPopupEnabled provides useAcrylicPopup,
-            LocalColors provides colors,
-            LocalTypography provides typography,
-            LocalWindowAcrylicContainer provides this,
-            LocalTextSelectionColors provides TextSelectionColors(
-                colors.text.onAccent.primary,
-                colors.fillAccent.selectedTextBackground.copy(0.4f)
-            ),
-            LocalContentDialog provides contentDialogHostState,
-            LocalCompactMode provides compactMode,
-            LocalCornerRadius provides cornerRadius,
-            LocalShapes provides cornerRadius.toShapes()
-        ) {
-            ContentDialogHost(contentDialogHostState)
-            Box(modifier = Modifier.behindMaterial()) {
-                ProvideFontIcon {
-                    PlatformCompositionLocalProvider(content)
-                }
-            }
-        }
+    FluentThemeConfiguration(
+        colors = colors,
+        typography = typography,
+        cornerRadius = cornerRadius,
+        useAcrylicPopup = useAcrylicPopup,
+        compactMode = compactMode,
+        contentDialogHostState = contentDialogHostState,
+    ) {
+        FluentWindowLayer(
+            contentDialogHostState = contentDialogHostState,
+            content = content
+        )
     }
 }
 
 /**
- * Uses for override theme configuration
+ * Uses for override theme configuration and application scope
  */
 @ExperimentalFluentApi
 @Composable
@@ -85,6 +75,27 @@ fun FluentThemeConfiguration(
     )
 }
 
+@ExperimentalFluentApi
+@Composable
+fun FluentWindowLayer(
+    contentDialogHostState: ContentDialogHostState = remember { ContentDialogHostState() },
+    content: @Composable () -> Unit
+) {
+    MaterialContainer {
+        ContentDialogHost(contentDialogHostState)
+        Box(modifier = Modifier.behindMaterial()) {
+            CompositionLocalProvider(
+                LocalWindowAcrylicContainer provides this@MaterialContainer,
+                LocalContentDialog provides contentDialogHostState
+            ) {
+                ProvideFontIcon {
+                    PlatformCompositionLocalProvider(content)
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalFluentApi::class)
 @Composable
 fun FluentTheme(
@@ -92,7 +103,13 @@ fun FluentTheme(
     typography: Typography = FluentTheme.typography,
     content: @Composable () -> Unit
 ) {
-    FluentTheme(colors, typography, LocalCornerRadius.current, useAcrylicPopup = false, compactMode = true, content)
+    FluentTheme(
+        colors = colors,
+        typography = typography,
+        useAcrylicPopup = false,
+        compactMode = true,
+        content = content
+    )
 }
 
 @Composable
