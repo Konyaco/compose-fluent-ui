@@ -4,12 +4,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.platform.FontLoadResult
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
 internal actual fun ProvideFontIcon(content: @Composable () -> Unit) {
-    val fontFamilyResolver = LocalFontFamilyResolver.current
+    val localFontFamilyResolver = runCatching { LocalFontFamilyResolver.current }.getOrNull()
+    val fontFamilyResolver = remember(localFontFamilyResolver) {
+        localFontFamilyResolver ?: createFontFamilyResolver()
+    }
     var fontIconFamily by remember {
         mutableStateOf<FontFamily?>(null)
     }
