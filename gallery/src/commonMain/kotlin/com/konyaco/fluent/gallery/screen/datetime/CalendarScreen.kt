@@ -8,20 +8,25 @@ import com.konyaco.fluent.component.CalendarDatePicker
 import com.konyaco.fluent.component.CalendarView
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
+import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
+import com.konyaco.fluent.source.generated.FluentSourceFile
 
-@Component
+@Component(description = "A control that presents a calendar for a user to " +
+        "choose a date from.")
 @Composable
-fun DateTimeScreen() {
+fun CalendarScreen() {
     GalleryPage(
-        title = "DateTime",
+        title = "Calendar",
         description = "Lets users pick a date value using a calendar.",
+        componentPath = FluentSourceFile.CalendarView,
+        galleryPath = ComponentPagePath.CalendarScreen
     ) {
         Section(
             title = "A CalendarDatePicker",
-            sourceCode = sourceCodeOfDatePickerSample
+            sourceCode = sourceCodeOfCalendarDatePickerSample
         ) {
-            DatePickerSample()
+            CalendarDatePickerSample()
         }
 
         Section(
@@ -35,7 +40,7 @@ fun DateTimeScreen() {
 
 @Sample
 @Composable
-private fun DatePickerSample() {
+private fun CalendarDatePickerSample() {
     CalendarDatePicker(onChoose = {})
 }
 

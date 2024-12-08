@@ -11,6 +11,7 @@ import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.gallery.component.TodoComponent
+import com.konyaco.fluent.source.generated.FluentSourceFile
 
 @Component(index = 9, description = "A drop-down list of items a user can select from.")
 @Composable
@@ -18,7 +19,8 @@ fun ComboBoxScreen() {
     GalleryPage(
         title = "ComboBox",
         description = "Use a ComboBox when you need to conserve on-screen space and when users select only one option at a time. A ComboBox shows only the currently selected item.",
-        galleryPath = ComponentPagePath.ComboBoxScreen
+        galleryPath = ComponentPagePath.ComboBoxScreen,
+        componentPath = FluentSourceFile.ComboBox
     ) {
         Section(
             title = "A ComboBox with its Items source set",
