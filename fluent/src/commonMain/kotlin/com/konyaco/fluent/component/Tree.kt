@@ -30,23 +30,23 @@ import com.konyaco.fluent.scheme.collectVisualState
 // Data structures and tree builder
 // -------------------------------------
 
-// Represents a tree composed of multiple root elements
 data class Tree<T>(val roots: List<TreeElement<T>>) {
     fun isEmpty() = roots.isEmpty()
 }
 
-// Represents an element in the tree (either a Leaf or a Node)
 sealed class TreeElement<T> {
     abstract val data: T
     abstract val id: Any
     abstract val children: List<TreeElement<T>>
     abstract val depth: Int
+    abstract val onClick: (() -> Unit)?
     val isLeaf: Boolean get() = children.isEmpty()
 
     data class Leaf<T>(
         override val data: T,
         override val id: Any,
-        override val depth: Int
+        override val depth: Int,
+        override val onClick: (() -> Unit)?
     ) : TreeElement<T>() {
         override val children: List<TreeElement<T>> = emptyList()
     }
@@ -55,29 +55,28 @@ sealed class TreeElement<T> {
         override val data: T,
         override val id: Any,
         override val depth: Int,
-        override val children: List<TreeElement<T>>
+        override val children: List<TreeElement<T>>,
+        override val onClick: (() -> Unit)?
     ) : TreeElement<T>()
 }
 
-// Builder DSL to construct trees in a declarative manner
 fun <T> buildTree(block: TreeBuilder<T>.() -> Unit): Tree<T> {
     val builder = TreeBuilder<T>()
     builder.block()
     return Tree(builder.buildRoots())
 }
 
-// Tree builder that helps create roots and their descendants
 class TreeBuilder<T> {
     private val elements = mutableListOf<BuilderElement<T>>()
 
-    fun node(data: T, id: Any = data.toString(), children: NodeBuilder<T>.() -> Unit) {
+    fun node(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null, children: NodeBuilder<T>.() -> Unit) {
         val childBuilder = NodeBuilder<T>(0)
         childBuilder.children()
-        elements.add(BuilderElement.Node(data, id, childBuilder.elements, 0))
+        elements.add(BuilderElement.Node(data, id, onClick, childBuilder.elements, 0))
     }
 
-    fun leaf(data: T, id: Any = data.toString()) {
-        elements.add(BuilderElement.Leaf(data, id, 0))
+    fun leaf(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null) {
+        elements.add(BuilderElement.Leaf(data, id, onClick, 0))
     }
 
     internal fun buildRoots(): List<TreeElement<T>> = elements.map { it.buildElement(depth = 0) }
@@ -85,38 +84,38 @@ class TreeBuilder<T> {
     sealed class BuilderElement<T> {
         abstract fun buildElement(depth: Int): TreeElement<T>
 
-        data class Leaf<T>(val data: T, val id: Any, val depthInit: Int) : BuilderElement<T>() {
+        data class Leaf<T>(val data: T, val id: Any, val onClick: (() -> Unit)?, val depthInit: Int) : BuilderElement<T>() {
             override fun buildElement(depth: Int): TreeElement<T> {
-                return TreeElement.Leaf(data, id, depth)
+                return TreeElement.Leaf(data, id, depth, onClick)
             }
         }
 
         data class Node<T>(
             val data: T,
             val id: Any,
+            val onClick: (() -> Unit)?,
             val children: List<BuilderElement<T>>,
             val depthInit: Int
         ) : BuilderElement<T>() {
             override fun buildElement(depth: Int): TreeElement<T> {
                 val builtChildren = children.map { it.buildElement(depth + 1) }
-                return TreeElement.Node(data, id, depth, builtChildren)
+                return TreeElement.Node(data, id, depth, builtChildren, onClick)
             }
         }
     }
 }
 
-// Builder for adding children under a node
 class NodeBuilder<T>(private val parentDepth: Int) {
     internal val elements = mutableListOf<TreeBuilder.BuilderElement<T>>()
 
-    fun node(data: T, id: Any = data.toString(), children: NodeBuilder<T>.() -> Unit) {
+    fun node(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null, children: NodeBuilder<T>.() -> Unit) {
         val childBuilder = NodeBuilder<T>(parentDepth + 1)
         childBuilder.children()
-        elements.add(TreeBuilder.BuilderElement.Node(data, id, childBuilder.elements, parentDepth + 1))
+        elements.add(TreeBuilder.BuilderElement.Node(data, id, onClick, childBuilder.elements, parentDepth + 1))
     }
 
-    fun leaf(data: T, id: Any = data.toString()) {
-        elements.add(TreeBuilder.BuilderElement.Leaf(data, id, parentDepth + 1))
+    fun leaf(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null) {
+        elements.add(TreeBuilder.BuilderElement.Leaf(data, id, onClick, parentDepth + 1))
     }
 }
 
@@ -185,10 +184,6 @@ fun <T> TreeNodeColorScheme.schemeFor(state: VisualState): TreeNodeColor {
 // Tree composables
 // -------------------------------------
 
-/**
- * Displays the entire tree recursively using a Column.
- * This approach removes code duplication and uses a single function to handle nodes and their children.
- */
 @Composable
 fun <T> TreeView(
     tree: Tree<T>,
@@ -202,10 +197,6 @@ fun <T> TreeView(
     }
 }
 
-/**
- * Recursively displays a tree element (node or leaf).
- * If it is a node, it can be expanded or collapsed to show its children.
- */
 @Composable
 fun <T> TreeElementView(
     element: TreeElement<T>,
@@ -214,16 +205,15 @@ fun <T> TreeElementView(
     val isNode = element is TreeElement.Node<T>
     val expandedState = if (isNode) remember { mutableStateOf(false) } else null
 
-    // Display the current node line
     TreeNodeView(
         element = element,
         colors = colors,
         onClick = {
             if (isNode) expandedState!!.value = !expandedState.value
+            element.onClick?.invoke()
         }
     )
 
-    // If it's a node and expanded, show its children with animation
     if (isNode) {
         val node = element as TreeElement.Node<T>
         AnimatedVisibility(
@@ -250,10 +240,6 @@ fun <T> TreeElementView(
     }
 }
 
-/**
- * Displays a single tree node/leaf line.
- * Handles the clickable area, indentation, and icon display.
- */
 @Composable
 fun <T> TreeNodeView(
     element: TreeElement<T>,
@@ -269,7 +255,6 @@ fun <T> TreeNodeView(
     val indentation = (element.depth * 16).dp
     val isNode = element is TreeElement.Node && element.children.isNotEmpty()
 
-    // Local expanded state for icons only (true/false), not triggering recursion here directly
     val expandedState = if (isNode) remember { mutableStateOf(false) } else null
 
     Row(
@@ -280,7 +265,7 @@ fun <T> TreeNodeView(
             .hoverable(interactionSource)
             .background(if (visualState == VisualState.Hovered) color.backgroundColor else Color.Transparent)
             .clickable(
-                enabled = enabled && isNode,
+                enabled = enabled,
                 role = Role.Button,
                 indication = null,
                 interactionSource = interactionSource

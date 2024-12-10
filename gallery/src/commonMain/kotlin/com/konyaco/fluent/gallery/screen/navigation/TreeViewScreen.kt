@@ -39,9 +39,9 @@ fun TreeViewScreen() {
 fun TreeViewSample() {
     val tree = remember {
         buildTree {
-            node("Root") {
+            node(data = "Root", onClick = { println("Root clicked") }) {
                 node("Folder 1") {
-                    leaf("File 1-1")
+                    leaf(data = "File 1-1", onClick = { println("File 1-1 clicked") })
                     leaf("File 1-2")
                     node("Folder 1-3") {
                         leaf("File 1-3-1")
