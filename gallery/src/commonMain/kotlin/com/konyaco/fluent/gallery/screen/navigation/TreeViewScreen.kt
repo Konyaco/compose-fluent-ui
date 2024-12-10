@@ -39,15 +39,23 @@ fun TreeViewScreen() {
 fun TreeViewSample() {
     val tree = remember {
         buildTree {
-            node(data = "Root", onClick = { println("Root clicked") }) {
-                node("Folder 1") {
-                    leaf(data = "File 1-1", onClick = { println("File 1-1 clicked") })
+            node(data = "Root", onClick = { isExpanded ->
+                println("Root clicked, expanded: $isExpanded")
+            }) {
+                node("Folder 1", onClick = { isExpanded ->
+                    println("Folder 1 clicked, expanded: $isExpanded")
+                }) {
+                    leaf(data = "File 1-1", onClick = { _ -> println("File 1-1 clicked") })
                     leaf("File 1-2")
-                    node("Folder 1-3") {
+                    node("Folder 1-3", onClick = { isExpanded ->
+                        println("Folder 1-3 clicked, expanded: $isExpanded")
+                    }) {
                         leaf("File 1-3-1")
                     }
                 }
-                node("Folder 2") {
+                node("Folder 2", onClick = { isExpanded ->
+                    println("Folder 2 clicked, expanded: $isExpanded")
+                }) {
                     leaf("File 2-1")
                 }
             }
@@ -58,3 +66,4 @@ fun TreeViewSample() {
         modifier = Modifier.fillMaxWidth()
     )
 }
+

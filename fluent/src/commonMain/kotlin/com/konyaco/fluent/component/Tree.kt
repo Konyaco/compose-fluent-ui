@@ -39,14 +39,14 @@ sealed class TreeElement<T> {
     abstract val id: Any
     abstract val children: List<TreeElement<T>>
     abstract val depth: Int
-    abstract val onClick: (() -> Unit)?
+    abstract val onClick: ((Boolean) -> Unit)?
     val isLeaf: Boolean get() = children.isEmpty()
 
     data class Leaf<T>(
         override val data: T,
         override val id: Any,
         override val depth: Int,
-        override val onClick: (() -> Unit)?
+        override val onClick: ((Boolean) -> Unit)?
     ) : TreeElement<T>() {
         override val children: List<TreeElement<T>> = emptyList()
     }
@@ -56,7 +56,7 @@ sealed class TreeElement<T> {
         override val id: Any,
         override val depth: Int,
         override val children: List<TreeElement<T>>,
-        override val onClick: (() -> Unit)?
+        override val onClick: ((Boolean) -> Unit)?
     ) : TreeElement<T>()
 }
 
@@ -69,13 +69,13 @@ fun <T> buildTree(block: TreeBuilder<T>.() -> Unit): Tree<T> {
 class TreeBuilder<T> {
     private val elements = mutableListOf<BuilderElement<T>>()
 
-    fun node(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null, children: NodeBuilder<T>.() -> Unit) {
+    fun node(data: T, id: Any = data.toString(), onClick: ((Boolean) -> Unit)? = null, children: NodeBuilder<T>.() -> Unit) {
         val childBuilder = NodeBuilder<T>(0)
         childBuilder.children()
         elements.add(BuilderElement.Node(data, id, onClick, childBuilder.elements, 0))
     }
 
-    fun leaf(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null) {
+    fun leaf(data: T, id: Any = data.toString(), onClick: ((Boolean) -> Unit)? = null) {
         elements.add(BuilderElement.Leaf(data, id, onClick, 0))
     }
 
@@ -84,7 +84,7 @@ class TreeBuilder<T> {
     sealed class BuilderElement<T> {
         abstract fun buildElement(depth: Int): TreeElement<T>
 
-        data class Leaf<T>(val data: T, val id: Any, val onClick: (() -> Unit)?, val depthInit: Int) : BuilderElement<T>() {
+        data class Leaf<T>(val data: T, val id: Any, val onClick: ((Boolean) -> Unit)?, val depthInit: Int) : BuilderElement<T>() {
             override fun buildElement(depth: Int): TreeElement<T> {
                 return TreeElement.Leaf(data, id, depth, onClick)
             }
@@ -93,7 +93,7 @@ class TreeBuilder<T> {
         data class Node<T>(
             val data: T,
             val id: Any,
-            val onClick: (() -> Unit)?,
+            val onClick: ((Boolean) -> Unit)?,
             val children: List<BuilderElement<T>>,
             val depthInit: Int
         ) : BuilderElement<T>() {
@@ -108,13 +108,13 @@ class TreeBuilder<T> {
 class NodeBuilder<T>(private val parentDepth: Int) {
     internal val elements = mutableListOf<TreeBuilder.BuilderElement<T>>()
 
-    fun node(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null, children: NodeBuilder<T>.() -> Unit) {
+    fun node(data: T, id: Any = data.toString(), onClick: ((Boolean) -> Unit)? = null, children: NodeBuilder<T>.() -> Unit) {
         val childBuilder = NodeBuilder<T>(parentDepth + 1)
         childBuilder.children()
         elements.add(TreeBuilder.BuilderElement.Node(data, id, onClick, childBuilder.elements, parentDepth + 1))
     }
 
-    fun leaf(data: T, id: Any = data.toString(), onClick: (() -> Unit)? = null) {
+    fun leaf(data: T, id: Any = data.toString(), onClick: ((Boolean) -> Unit)? = null) {
         elements.add(TreeBuilder.BuilderElement.Leaf(data, id, onClick, parentDepth + 1))
     }
 }
@@ -210,7 +210,7 @@ fun <T> TreeElementView(
         colors = colors,
         onClick = {
             if (isNode) expandedState!!.value = !expandedState.value
-            element.onClick?.invoke()
+            element.onClick?.invoke(expandedState?.value ?: false)
         }
     )
 
