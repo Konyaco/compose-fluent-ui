@@ -162,6 +162,9 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 
 - [ ] Accessibility Semantics
 
+## Contribution
+See [CONTRIBUTION.md](CONTRIBUTION.md)
+
 ## Credits
 
 This project is built upon the foundations laid by several remarkable open-source projects. We extend our sincere gratitude to the developers and maintainers of these projects for their invaluable contributions to the open-source community.
