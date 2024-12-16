@@ -1,13 +1,11 @@
 package com.konyaco.fluent.gallery.screen.status
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.CheckBox
 import com.konyaco.fluent.component.DropDownButton
@@ -78,7 +76,7 @@ fun InfoBarScreen() {
             },
         )
         var secondarySampleVisible by remember { mutableStateOf(true) }
-        var secondarySampleMessageLong by remember { mutableStateOf(false) }
+        var secondarySampleMessageLong by remember { mutableStateOf(true) }
         var secondarySampleActionHyperLink by remember { mutableStateOf<Boolean?>(false) }
         val secondarySampleMessage by remember {
             derivedStateOf {
@@ -262,8 +260,7 @@ private fun InfoBarSampleWithMessageAndAction(
                 false -> {
                     { Button(onClick = {}, content = { Text("Action") }) }
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
+            }
         )
     }
 }
@@ -289,8 +286,7 @@ private fun InfoBarSampleWithOptions(
                 { InfoBarDefaults.InformationalIcon() }
             } else {
                 null
-            },
-            modifier = Modifier.fillMaxWidth()
+            }
         )
     }
 }
