@@ -134,7 +134,8 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
   - [ ] Pivot
   - [x] TabView
 - [x] Tooltip
-- [ ] InfoBar
+- [x] InfoBar
+- [x] Badge 
 - [ ] FilePicker
 - [ ] Menu
 - [x] MenuFlyout (Simple)
