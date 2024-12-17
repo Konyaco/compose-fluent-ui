@@ -418,7 +418,9 @@ fun Colors.contentColorFor(backgroundColor: Color): Color {
     // TODO: Remove this
     return when (backgroundColor) {
         shades.base, shades.dark1, shades.dark2, shades.dark3,
-        shades.light1, shades.light2, shades.light3 -> text.onAccent.primary
+        shades.light1, shades.light2, shades.light3,
+        system.caution, system.attention, system.success,
+        system.critical, system.solidNeutral -> text.onAccent.primary
 
         else -> text.text.primary
     }
