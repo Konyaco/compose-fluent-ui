@@ -14,7 +14,7 @@ import com.konyaco.fluent.component.InfoBar
 import com.konyaco.fluent.component.InfoBarDefaults
 import com.konyaco.fluent.component.MenuFlyoutContainer
 import com.konyaco.fluent.component.MenuFlyoutItem
-import com.konyaco.fluent.component.Severity
+import com.konyaco.fluent.component.InfoBarSeverity
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
@@ -35,7 +35,7 @@ fun InfoBarScreen() {
         galleryPath = ComponentPagePath.InfoBarScreen
     ) {
         var basicSampleVisible by remember { mutableStateOf(true) }
-        var basicSampleSeverity by remember { mutableStateOf(Severity.Informational) }
+        var basicSampleSeverity by remember { mutableStateOf(InfoBarSeverity.Informational) }
         Section(
             title = "A closable InfoBar with options to change its Severity.",
             sourceCode = sourceCodeOfBasicInfoBarSample,
@@ -55,7 +55,7 @@ fun InfoBarScreen() {
                 Text("Severity")
                 MenuFlyoutContainer(
                     flyout = {
-                        Severity.entries.forEach { severity ->
+                        InfoBarSeverity.entries.forEach { severity ->
                             MenuFlyoutItem(
                                 selected = basicSampleSeverity == severity,
                                 onSelectedChanged = {
@@ -218,7 +218,7 @@ fun InfoBarScreen() {
 @Sample
 @Composable
 private fun BasicInfoBarSample(
-    severity: Severity = Severity.Informational,
+    severity: InfoBarSeverity = InfoBarSeverity.Informational,
     visible: Boolean = true,
     onDismiss: () -> Unit = {}
 ) {
@@ -273,17 +273,19 @@ private fun InfoBarSampleWithOptions(
     iconVisible: Boolean,
     closeVisible: Boolean
 ) {
+    val colors = InfoBarDefaults.colors()
     if (visible) {
         InfoBar(
             title = { Text("Title") },
             message = { Text(text = "Essential app message for your users to be informed of, acknowledge, or take action on.") },
+            colors = colors,
             closeAction = if (closeVisible) {
                 { InfoBarDefaults.CloseActionButton(onClick = onDismiss) }
             } else {
                 null
             },
             icon = if (iconVisible) {
-                { InfoBarDefaults.InformationalIcon() }
+                { InfoBarDefaults.Badge() }
             } else {
                 null
             }

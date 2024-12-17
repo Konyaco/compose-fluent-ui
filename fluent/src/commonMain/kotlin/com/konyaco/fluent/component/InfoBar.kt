@@ -27,9 +27,6 @@ import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.Checkmark
-import com.konyaco.fluent.icons.filled.Dismiss
-import com.konyaco.fluent.icons.filled.Info
 import com.konyaco.fluent.icons.regular.Dismiss
 
 @Composable
@@ -38,7 +35,7 @@ fun InfoBar(
     message: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     colors: InfoBarColors = InfoBarDefaults.informationalColors(),
-    icon: (@Composable () -> Unit)? = { InfoBarDefaults.InformationalIcon() },
+    icon: (@Composable () -> Unit)? = { InfoBarDefaults.Badge(severity = InfoBarSeverity.Informational) },
     action: (@Composable () -> Unit)? = null,
     closeAction: (@Composable () -> Unit)? = null,
 ) {
@@ -85,26 +82,11 @@ fun InfoBar(
 fun InfoBar(
     title: @Composable () -> Unit,
     message: @Composable () -> Unit,
-    severity: Severity,
+    severity: InfoBarSeverity,
     modifier: Modifier = Modifier,
-    icon: (@Composable () -> Unit)? = when (severity) {
-        Severity.Informational, Severity.Warning -> {
-            { InfoBarDefaults.InformationalIcon() }
-        }
-
-        Severity.Success -> {
-            { InfoBarDefaults.SuccessIcon() }
-        }
-
-        Severity.Critical -> {
-            { InfoBarDefaults.CriticalIcon() }
-        }
-    },
-    colors: InfoBarColors = when (severity) {
-        Severity.Informational -> InfoBarDefaults.informationalColors()
-        Severity.Success -> InfoBarDefaults.successColors()
-        Severity.Warning -> InfoBarDefaults.warningColors()
-        Severity.Critical -> InfoBarDefaults.criticalColors()
+    colors: InfoBarColors = InfoBarDefaults.colors(severity),
+    icon: (@Composable () -> Unit)? = {
+        InfoBarDefaults.Badge(severity = severity, backgroundColor = colors.iconColor)
     },
     action: (@Composable () -> Unit)? = null,
     closeAction: (@Composable () -> Unit)? = null,
@@ -129,32 +111,6 @@ data class InfoBarColors(
 object InfoBarDefaults {
 
     @Composable
-    fun InformationalIcon() {
-        Icon(
-            imageVector = Icons.Filled.Info,
-            contentDescription = null
-        )
-    }
-
-    @Composable
-    fun SuccessIcon() {
-        //TODO Move CheckmarkCircle icon to core
-        Icon(
-            imageVector = Icons.Filled.Checkmark,
-            contentDescription = null
-        )
-    }
-
-    @Composable
-    fun CriticalIcon() {
-        //TODO Move DismissCircle icon to core
-        Icon(
-            imageVector = Icons.Filled.Dismiss,
-            contentDescription = null
-        )
-    }
-
-    @Composable
     fun CloseActionButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
@@ -169,6 +125,46 @@ object InfoBarDefaults {
             disabled = !enabled,
             modifier = modifier.defaultMinSize(38.dp, 38.dp)
         )
+    }
+
+    @Composable
+    fun Badge(
+        modifier: Modifier = Modifier,
+        severity: InfoBarSeverity = InfoBarSeverity.Informational,
+        contentDescription: String? = severity.name,
+        backgroundColor: Color = when (severity) {
+            InfoBarSeverity.Success -> FluentTheme.colors.system.success
+            InfoBarSeverity.Warning -> FluentTheme.colors.system.caution
+            InfoBarSeverity.Critical -> FluentTheme.colors.system.critical
+            InfoBarSeverity.Informational -> FluentTheme.colors.system.attention
+        }
+    ) {
+        Badge(
+            content = {
+                BadgeDefaults.Icon(
+                    imageVector = when (severity) {
+                        InfoBarSeverity.Success -> BadgeDefaults.successIcon
+                        InfoBarSeverity.Warning -> BadgeDefaults.cautionIcon
+                        InfoBarSeverity.Critical -> BadgeDefaults.criticalIcon
+                        InfoBarSeverity.Informational -> BadgeDefaults.informationIcon
+                    },
+                    contentDescription = contentDescription
+                )
+            },
+            backgroundColor = backgroundColor,
+            modifier = modifier
+        )
+    }
+
+    @Stable
+    @Composable
+    fun colors(severity: InfoBarSeverity = InfoBarSeverity.Informational): InfoBarColors {
+        return when (severity) {
+            InfoBarSeverity.Success -> successColors()
+            InfoBarSeverity.Warning -> warningColors()
+            InfoBarSeverity.Critical -> criticalColors()
+            InfoBarSeverity.Informational -> informationalColors()
+        }
     }
 
     @Stable
@@ -218,6 +214,13 @@ object InfoBarDefaults {
         contentColor = contentColor,
         iconColor = iconColor
     )
+}
+
+enum class InfoBarSeverity {
+    Informational,
+    Success,
+    Warning,
+    Critical,
 }
 
 @Composable
@@ -272,10 +275,16 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
         )
 
         return if (isMultilineContent) {
-            val iconWidthWithSpacing = iconMeasurable?.minIntrinsicWidth(Constraints.Infinity)?.plus(IconEndSpacing.roundToPx()) ?: 0
-            val closeActionWidthWithSpacing = closeActionMeasurable?.minIntrinsicWidth(Constraints.Infinity)?.plus(CloseActionEndSpacing.roundToPx()) ?: 0
+            val iconWidthWithSpacing = iconMeasurable?.minIntrinsicWidth(Constraints.Infinity)
+                ?.plus(IconEndSpacing.roundToPx()) ?: 0
+            val closeActionWidthWithSpacing =
+                closeActionMeasurable?.minIntrinsicWidth(Constraints.Infinity)
+                    ?.plus(CloseActionEndSpacing.roundToPx()) ?: 0
             val messageEndSpacing = MessageEndSpacing.roundToPx()
-            val contentWidth = (width - iconWidthWithSpacing - messageEndSpacing - closeActionWidthWithSpacing).coerceAtLeast(0)
+            val contentWidth =
+                (width - iconWidthWithSpacing - messageEndSpacing - closeActionWidthWithSpacing).coerceAtLeast(
+                    0
+                )
             maxOf(
                 InfoBarMinHeight.roundToPx(),
                 (MultiLineTopSpacing + MultiLineBottomSpacing).roundToPx() +
@@ -547,14 +556,19 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
             ?.plus(closeActionEndSpacing) ?: 0
         val titleIntrinsicWidth =
             width - iconIntrinsicWidth - actionIntrinsicWidth - closeActionIntrinsicWidth - titleEndSpacing - messageEndSpacing
-        val titleIntrinsicHeight = titleMeasurables?.maxIntrinsicHeight(titleIntrinsicWidth.coerceAtLeast(0)) ?: 0
+        val titleIntrinsicHeight =
+            titleMeasurables?.maxIntrinsicHeight(titleIntrinsicWidth.coerceAtLeast(0)) ?: 0
         val singleLineHeight = 30.dp.roundToPx()
         val isTitleMultiline = titleIntrinsicHeight > singleLineHeight
         var isMultilineContent = isTitleMultiline
         if (!isTitleMultiline) {
             val titleWidth = titleMeasurables?.maxIntrinsicWidth(height) ?: 0
             val contentIntrinsicHeight =
-                messageMeasurables?.maxIntrinsicHeight((titleIntrinsicWidth - titleWidth).coerceAtLeast(0)) ?: 0
+                messageMeasurables?.maxIntrinsicHeight(
+                    (titleIntrinsicWidth - titleWidth).coerceAtLeast(
+                        0
+                    )
+                ) ?: 0
             isMultilineContent = contentIntrinsicHeight > singleLineHeight
         }
         return isMultilineContent
