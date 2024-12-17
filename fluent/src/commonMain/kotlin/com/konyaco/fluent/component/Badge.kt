@@ -31,10 +31,10 @@ fun Badge(
     backgroundColor: Color = BadgeDefaults.color(status),
     contentColor: Color = contentColorFor(backgroundColor),
     modifier: Modifier = Modifier,
-    content: (@Composable () -> Unit)? = null
+    content: (@Composable (status: BadgeStatus) -> Unit)? = null
 ) {
     Badge(
-        content = content,
+        content = content?.let { { it(status) } },
         backgroundColor = backgroundColor,
         contentColor = contentColor,
         modifier = modifier
