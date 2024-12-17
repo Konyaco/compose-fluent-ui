@@ -252,6 +252,7 @@ fun SideNavItem(
         )
     },
     interactionSource: MutableInteractionSource? = null,
+    badge: (@Composable () -> Unit)? = null,
     text: @Composable RowScope.() -> Unit
 ) {
     val interaction = interactionSource ?: remember { MutableInteractionSource() }
@@ -328,6 +329,20 @@ fun SideNavItem(
                                 verticalAlignment = Alignment.CenterVertically,
                                 content = text
                             )
+                            if (badge != null) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.padding(
+                                        end = if (items != null) {
+                                            4.dp
+                                        } else {
+                                            12.dp
+                                        }
+                                    )
+                                ) {
+                                    badge()
+                                }
+                            }
                             if (items != null) {
                                 val rotation by animateFloatAsState(
                                     targetValue = if (expandItems) {
@@ -366,6 +381,15 @@ fun SideNavItem(
                                         }
                                 )
                             }
+                        }
+                    }
+
+                    if (badge != null && !expand) {
+                        Box(
+                            modifier = Modifier.align(Alignment.TopEnd)
+                                .padding(top = 2.dp, end = 2.dp)
+                        ) {
+                            badge()
                         }
                     }
                 }

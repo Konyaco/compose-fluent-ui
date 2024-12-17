@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.component.Badge
 import com.konyaco.fluent.component.BadgeDefaults
 import com.konyaco.fluent.component.BadgeStatus
@@ -22,14 +24,23 @@ import com.konyaco.fluent.component.DropDownButton
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.MenuFlyoutContainer
 import com.konyaco.fluent.component.MenuFlyoutItem
+import com.konyaco.fluent.component.NavigationDefaults
+import com.konyaco.fluent.component.NavigationDisplayMode
+import com.konyaco.fluent.component.NavigationView
+import com.konyaco.fluent.component.Switcher
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.TextField
+import com.konyaco.fluent.component.menuItem
 import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.annotation.Sample
 import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.icons.filled.ArrowSync
+import com.konyaco.fluent.icons.regular.Home
+import com.konyaco.fluent.icons.regular.Mail
+import com.konyaco.fluent.icons.regular.Person
+import com.konyaco.fluent.icons.regular.Settings
 import com.konyaco.fluent.source.generated.FluentSourceFile
 
 @Component(description = "An non-intrusive UI to display notifications or bring focus to an area.")
@@ -43,10 +54,41 @@ fun BadgeScreen() {
         componentPath = FluentSourceFile.Badge,
         galleryPath = ComponentPagePath.BadgeScreen
     ) {
+
+        var badgeVisible by remember { mutableStateOf(true) }
+        var displayMode by remember { mutableStateOf(NavigationDisplayMode.Left) }
         Section(
             title = "Badge embedded in NavigationView",
             sourceCode = sourceCodeOfBadgeInsideNavigationViewSample,
-            content = { BadgeInsideNavigationViewSample() },
+            content = { BadgeInsideNavigationViewSample(badgeVisible, displayMode) },
+            options = {
+                Text("Badge Visible")
+                Switcher(
+                    checked = badgeVisible,
+                    onCheckStateChange = { badgeVisible = it }
+                )
+                Text("Display Mode")
+                MenuFlyoutContainer(
+                    flyout = {
+                        NavigationDisplayMode.entries.forEach { item ->
+                            MenuFlyoutItem(
+                                selected = item == displayMode,
+                                onSelectedChanged = {
+                                    displayMode = item
+                                    isFlyoutVisible = false
+                                },
+                                text = { Text(item.name) }
+                            )
+                        }
+                    },
+                    content = {
+                        DropDownButton(
+                            onClick = { isFlyoutVisible = true },
+                            content = { Text(displayMode.name) }
+                        )
+                    }
+                )
+            }
         )
 
         var status by remember { mutableStateOf(BadgeStatus.Attention) }
@@ -103,9 +145,52 @@ fun BadgeScreen() {
 }
 
 @Sample
+@OptIn(ExperimentalFluentApi::class)
 @Composable
-private fun BadgeInsideNavigationViewSample() {
-    //TODO NavigationView Support
+private fun BadgeInsideNavigationViewSample(
+    badgeVisible: Boolean = true,
+    displayMode: NavigationDisplayMode = NavigationDisplayMode.Left
+) {
+    var selectedIndex by remember { mutableStateOf(0) }
+    NavigationView(
+        displayMode = displayMode,
+        backButton = { NavigationDefaults.BackButton(onClick = {}, disabled = true) },
+        menuItems = {
+            menuItem(
+                selected = 0 == selectedIndex,
+                onClick = { selectedIndex = 0 },
+                text = { Text("Home") },
+                icon = { Icon(Icons.Default.Home, contentDescription = null) },
+            )
+            menuItem(
+                selected = 1 == selectedIndex,
+                onClick = { selectedIndex = 1 },
+                text = { Text("Account") },
+                icon = { Icon(Icons.Default.Person, contentDescription = null) },
+            )
+            menuItem(
+                selected = 2 == selectedIndex,
+                onClick = { selectedIndex = 2 },
+                text = { Text("Inbox") },
+                icon = { Icon(Icons.Default.Mail, contentDescription = null) },
+                badge = if (badgeVisible) {
+                    { Badge(status = BadgeStatus.Attention, content = { Text("5") }) }
+                } else {
+                    null
+                }
+            )
+        },
+        footerItems = {
+            menuItem(
+                selected = 3 == selectedIndex,
+                onClick = { selectedIndex = 3 },
+                text = { Text("Settings") },
+                icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+            )
+        },
+        pane = {},
+        modifier = Modifier.height(300.dp)
+    )
 }
 
 @Sample
