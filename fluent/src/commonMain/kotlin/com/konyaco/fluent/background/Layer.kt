@@ -172,18 +172,26 @@ private fun Modifier.layer(
 @Immutable
 @JvmInline
 internal value class BackgroundPaddingShape(private val borderShape: CornerBasedShape) : Shape {
-
     override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
         return with(density) {
-            createInnerOutline(size, density, layoutDirection, borderShape.calculateBorderPadding(density))
+            LayerShapeHelper.createInnerOutline(borderShape, size, density, layoutDirection, borderShape.calculateBorderPadding(density))
         }
     }
+}
+
+internal object LayerShapeHelper {
 
     /**
      * Fork from [CornerBasedShape.createOutline], add padding to corner size and outline rect size.
      */
-    private fun createInnerOutline(size: Size, density: Density, layoutDirection: LayoutDirection, paddingPx: Float) =
-        borderShape.run {
+    fun createInnerOutline(
+        outsideShape: CornerBasedShape,
+        size: Size,
+        density: Density,
+        layoutDirection: LayoutDirection,
+        paddingPx: Float,
+    ): Outline {
+        return outsideShape.run {
             val cornerPaddingPx = if (this is CutCornerShape) {
                 /** padding for cut corner shape */
                 (paddingPx / sqrt(2f)).toInt().toFloat()
@@ -192,10 +200,10 @@ internal value class BackgroundPaddingShape(private val borderShape: CornerBased
             }
             val innerSize = Size(size.width - 2 * paddingPx, size.height - 2 * paddingPx)
             /** add padding to corner size */
-            var topStart = (borderShape.topStart.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
-            var topEnd = (borderShape.topEnd.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
-            var bottomEnd = (borderShape.bottomEnd.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
-            var bottomStart = (borderShape.bottomStart.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            var topStart = (outsideShape.topStart.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            var topEnd = (outsideShape.topEnd.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            var bottomEnd = (outsideShape.bottomEnd.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
+            var bottomStart = (outsideShape.bottomStart.toPx(size, density) - cornerPaddingPx).coerceAtLeast(0f)
             val minDimension = innerSize.minDimension
             if (topStart + bottomStart > minDimension) {
                 val scale = minDimension / (topStart + bottomStart)
@@ -227,6 +235,7 @@ internal value class BackgroundPaddingShape(private val borderShape: CornerBased
                 is Outline.Generic -> Outline.Generic(oldOutline.path.apply { translate(Offset(paddingPx, paddingPx)) })
             }
         }
+    }
 }
 
 /**
@@ -234,33 +243,33 @@ internal value class BackgroundPaddingShape(private val borderShape: CornerBased
  * when density is not integer or `(density % 1) < 0.5`
  */
 @Stable
-private fun calcPadding(density: Density): Dp {
+private fun calcPadding(density: Density, borderSize: Dp): Dp {
     val remainder = density.density % 1f
 
     return with(density) {
         when {
-            remainder == 0f -> 1.dp
-            else -> (1.dp.toPx() - remainder + 1).toDp()
+            remainder == 0f -> borderSize
+            else -> (borderSize.toPx() - remainder + 1).toDp()
         }
     }
 }
 
 @Stable
-private fun calcCircularPadding(density: Density): Dp {
+private fun calcCircularPadding(density: Density, borderSize: Dp): Dp {
     val remainder = density.density % 1f
 
     return with(density) {
-        if (remainder == 0f) 1.dp
-        else (1.dp.toPx() - remainder + 1).toDp()
+        if (remainder == 0f) borderSize
+        else (borderSize.toPx() - remainder + 1).toDp()
     }
 }
 
-internal fun Shape.calculateBorderPadding(density: Density): Float {
+internal fun Shape.calculateBorderPadding(density: Density, borderSize: Dp = 1.dp): Float {
     val circular = this == CircleShape
     return with(density) {
         when {
-            circular -> calcCircularPadding(density)
-            else -> calcPadding(density)
+            circular -> calcCircularPadding(density, borderSize)
+            else -> calcPadding(density, borderSize)
         }.toPx()
     }
 }
