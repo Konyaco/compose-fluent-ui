@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,6 +44,9 @@ import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.FluentThemeConfiguration
 import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
+import com.konyaco.fluent.component.GridViewItem
+import com.konyaco.fluent.component.GridViewItemColor
+import com.konyaco.fluent.component.GridViewItemDefaults
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.RadioButton
 import com.konyaco.fluent.component.ScrollbarContainer
@@ -59,8 +61,6 @@ import com.konyaco.fluent.icons.Icons
 import com.konyaco.fluent.source.generated.FluentSourceFile
 import com.konyaco.fluent.source.generated.fluentIconCoreItems
 import com.konyaco.fluent.source.generated.fluentIconExtendedItems
-import com.konyaco.fluent.surface.Card
-import com.konyaco.fluent.surface.CardDefaults
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -144,21 +144,20 @@ fun IconsScreen() {
                                 adapter = adapter,
                                 modifier = Modifier.weight(1f).fillMaxHeight()
                             ) {
-                                val defaultColors = CardDefaults.cardColors()
-                                val cardColors = defaultColors.copy(
-                                    default = defaultColors.default.copy(
-                                        borderBrush = SolidColor(Color.Transparent)
-                                    ),
-                                    hovered = defaultColors.hovered.copy(
-                                        borderBrush = SolidColor(Color.Transparent)
-                                    ),
-                                    pressed = defaultColors.pressed.copy(
-                                        borderBrush = SolidColor(Color.Transparent)
-                                    ),
-                                    focused = defaultColors.focused.copy(
-                                        borderBrush = defaultColors.default.borderBrush
+
+                                val selectedColors = GridViewItemDefaults.selectedColors(
+                                    default = GridViewItemColor(
+                                        borderColor = FluentTheme.colors.fillAccent.default,
+                                        backgroundColor = FluentTheme.colors.subtleFill.transparent
                                     )
                                 )
+                                val defaultColors = GridViewItemDefaults.defaultColors(
+                                    hovered= GridViewItemColor(
+                                        borderColor = Color.Transparent,
+                                        backgroundColor = FluentTheme.colors.subtleFill.secondary
+                                    ),
+                                )
+
                                 LazyVerticalGrid(
                                     state = listState,
                                     columns = GridCells.Adaptive(96.dp),
@@ -173,20 +172,23 @@ fun IconsScreen() {
                                         key = { (name, _) -> name }
                                     ) { item ->
                                         val (name, icon) = item
-                                        val interactionSource =
-                                            remember { MutableInteractionSource() }
-                                        Card(
-                                            onClick = {
-                                                selectedItem.value = item
-                                            },
-                                            cardColors = if (selectedItem.value == item) {
-                                                defaultColors
-                                            } else {
-                                                cardColors
-                                            },
+                                        val interactionSource = remember { MutableInteractionSource() }
+                                        GridViewItem(
+                                            selected = selectedItem.value == item,
+                                            onSelectedChange = { selectedItem.value = item },
                                             interactionSource = interactionSource,
-                                            modifier = Modifier.fillMaxWidth()
+                                            colors = if (selectedItem.value == item) {
+                                                selectedColors
+                                            } else {
+                                                defaultColors
+                                            },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
                                                 .aspectRatio(1f)
+                                                .background(
+                                                    color = FluentTheme.colors.background.card.default,
+                                                    shape = FluentTheme.shapes.control
+                                                )
                                         ) {
                                             val isHovered by interactionSource.collectIsHoveredAsState()
                                             Box(
@@ -216,7 +218,6 @@ fun IconsScreen() {
                                                         )
                                                 )
                                             }
-
                                         }
                                     }
                                 }
