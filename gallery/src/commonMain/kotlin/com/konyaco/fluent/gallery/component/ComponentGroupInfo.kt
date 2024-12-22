@@ -41,7 +41,7 @@ object ComponentGroupInfo {
     @ComponentGroup("Navigation", index = 10, packageMap = "$screenPackage.navigation")
     const val Navigation = "Navigation"
 
-    @ComponentGroup("ArrowSort", index = 11)
+    @ComponentGroup("ArrowSort", index = 11, packageMap = "$screenPackage.scrolling")
     const val Scrolling = "Scrolling"
 
     @ComponentGroup("ChatMultiple", index = 12, packageMap = "$screenPackage.status")
