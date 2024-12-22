@@ -95,59 +95,63 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 
 - [x] Buttons
   - [x] Button
-  - [x] AccentButton
-  - [x] SubtleButton
-  - [x] DropdownButton
-  - [x] HyperlinkButton
-  - [x] RepeatButton
-  - [x] ToggleButton
-  - [x] SplitButton
-  - [x] ToggleSplitButton
-- [x] RadioButton
-- [x] ToggleSwitch
-- [x] CheckBox
-  - [ ] TriStateCheckBox
-- [x] ComboBox (Simple)
+  - [x] Accent Button
+  - [x] Subtle Button
+  - [x] Dropdown Button
+  - [x] Hyperlink Button
+  - [x] Repeat Button
+  - [x] Toggle Button
+  - [x] Split Button
+  - [x] Toggle Split Button
+- [x] Radio Button
+- [x] Toggle Switch
+- [x] Check Box
+  - [ ] TriState Check Box
+- [x] Combo Box (Simple)
 - [x] ProgressBar
 - [x] ProgressRing
 - [x] Slider
 - [x] TextField
 
-- [x] ColorPicker
-- [x] RatingControl
+- [x] Color Picker
+- [x] Rating Control
 - [x] Pill Button
 - [x] Segmented Button
 - [x] Lite Filter
 - [x] List Item
+- [x] Grid View Item
+- [x] Flip View
+- [x] Pips Pager 
 
 ### Compound Components
 
-- [x] CalendarView (Simple)
+- [x] Calendar View (Simple)
   > If you need running on the Android 7.1 and below, you should enable [core library desugar](https://developer.android.com/studio/write/java8-support#library-desugaring) to avoid crash.
-- [x] DateTimePicker (Simple)
+- [x] Date Time Picker (Simple)
 - [x] Color Picker
 - [ ] Navigation
-  - [x] SideNav
-  - [x] TopNav
-  - [x] NavigationView
-  - [x] BreadcrumbBar
+  - [x] Side Nav
+  - [x] Top Nav
+  - [x] Navigation View
+  - [x] Breadcrumb Bar
   - [ ] Pivot
-  - [x] TabView
+  - [x] Tab View
+  - [x] Selector Bar 
 - [x] Tooltip
-- [x] InfoBar
+- [x] Info Bar
 - [x] Badge 
-- [ ] FilePicker
-- [ ] Menu
+- [ ] File Picker
+- [ ] Menu Bar
 - [x] MenuFlyout (Simple)
 - [x] Expander
-- [x] CommandBar
-- [x] CommandBarFlyout
-- [x] AutoSuggestBox
+- [x] Command Bar
+- [x] Command Bar Flyout
+- [x] Auto Suggest Box
 
 ### Dialogs
 
-- [x] FluentDialog
-- [x] ContentDialog
+- [x] Fluent Dialog
+- [x] Content Dialog
 - [x] Flyout (Simple)
 
 ### Animations
