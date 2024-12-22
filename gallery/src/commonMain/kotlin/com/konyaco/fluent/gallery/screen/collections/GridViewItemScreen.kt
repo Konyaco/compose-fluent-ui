@@ -29,6 +29,8 @@ import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.GalleryPage
 import com.konyaco.fluent.source.generated.FluentSourceFile
 import kotlin.random.Random
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Component(description = "Selectable item template in grids.")
 @Composable
@@ -56,7 +58,7 @@ fun GridViewItemScreen() {
 @Sample
 @Composable
 private fun BasicGridViewItemSample() {
-    val items = items()
+    val items = randomBrushItems()
     var selectedIndex by remember { mutableStateOf(-1) }
     LazyVerticalGrid(
         columns = GridCells.Adaptive(112.dp),
@@ -84,7 +86,7 @@ private fun BasicGridViewItemSample() {
 @Sample
 @Composable
 private fun MultiSelectGridViewItemSample() {
-    val items = items()
+    val items = randomBrushItems()
     val selectedIndices = remember { mutableStateListOf<Int>() }
     LazyVerticalGrid(
         columns = GridCells.Adaptive(112.dp),
@@ -113,9 +115,10 @@ private fun MultiSelectGridViewItemSample() {
     }
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @Composable
-private fun items(): List<Brush> {
-    val random = remember { Random(3840) }
+internal fun randomBrushItems(): List<Brush> {
+    val random = remember { Random(Uuid.random().toLongs { a, b -> a + b }) }
     return List(12) {
         Brush.linearGradient(
             colors = randomColor(random)
