@@ -244,7 +244,7 @@ fun HorizontalFlipViewContainer(
 
 @ExperimentalFluentApi
 @Composable
-internal fun FlipViewContainer(
+private fun FlipViewContainer(
     onNextPageClick: () -> Unit,
     onPreviousPageClick: () -> Unit,
     nextPageVisible: Boolean,

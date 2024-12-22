@@ -281,8 +281,13 @@ private fun PipsPager(
         if (item == null) {
             listState.animateScrollToItem(selectedIndex)
         } else {
-            val itemWidth = item.size
-            val centerOffset = (listState.layoutInfo.viewportSize.width - itemWidth) / 2f
+            val itemSize = item.size
+            val viewportSize = if (isVertical) {
+                listState.layoutInfo.viewportSize.height
+            } else {
+                listState.layoutInfo.viewportSize.width
+            }
+            val centerOffset = (viewportSize - itemSize) / 2f
             val scrollOffset = item.offset - centerOffset
             listState.animateScrollBy(
                 scrollOffset,
