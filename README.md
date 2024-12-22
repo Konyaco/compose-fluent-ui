@@ -81,14 +81,22 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 ## Components
 
 ### Layers
-
+- Materials
+  - [x] App Layer Mica
+  - [x] App Layer Mica Alt
+  - [x] App Layer Acrylic Default
+  - [x] App Layer Acrylic Base
+  - [x] App Layer Accent Acrylic Default
+  - [x] App Layer Accent Acrylic Base
+  - [x] App Layer Thin Acrylic
+  - [ ] Window Layer Mica
+  - [ ] Window Layer Acrylic
 - Mica
   - [x] Simple Mica
   - [ ] Real Mica
 - Layer
   - [x] Simple Layer
   - [ ] Real Layer
-- [x] Acrylic
 - [x] Card
 
 ### Basic Components
@@ -108,10 +116,11 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 - [x] Check Box
   - [ ] TriState Check Box
 - [x] Combo Box (Simple)
-- [x] ProgressBar
-- [x] ProgressRing
+- [x] Progress Bar
+- [x] Progress Ring
 - [x] Slider
-- [x] TextField
+- [x] Text Field
+- [X] Text
 
 - [x] Color Picker
 - [x] Rating Control
