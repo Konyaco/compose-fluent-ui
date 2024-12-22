@@ -358,9 +358,6 @@ private fun Pips(
                 }
             )
             .bringIntoViewRequester(bringIntoViewRequester)
-            .wrapContentSize(Alignment.Center)
-            .size(size.value)
-            .background(currentColor, shape = CircleShape)
             .selectable(
                 selected = selected,
                 indication = null,
@@ -368,6 +365,9 @@ private fun Pips(
                 enabled = enabled,
                 onClick = { onSelectedChange(!selected) }
             )
+            .wrapContentSize(Alignment.Center)
+            .size(size.value)
+            .background(currentColor, shape = CircleShape)
     )
 }
 
