@@ -3,6 +3,8 @@ package com.konyaco.fluent.gallery.window
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.WindowState
 import com.konyaco.fluent.component.NavigationDisplayMode
@@ -21,6 +23,7 @@ fun FrameWindowScope.WindowFrame(
     backButtonVisible: Boolean = true,
     backButtonEnabled: Boolean = false,
     backButtonClick: () -> Unit = {},
+    captionBarHeight: Dp = 48.dp,
     content: @Composable (windowInset: WindowInsets, captionBarInset: WindowInsets) -> Unit
 ) {
     val supportBackdrop = hostOs.isWindows && isWindows11OrLater()
@@ -37,7 +40,8 @@ fun FrameWindowScope.WindowFrame(
                     state = state,
                     backButtonVisible = backButtonVisible && !isCollapsed,
                     backButtonEnabled = backButtonEnabled,
-                    backButtonClick = backButtonClick
+                    backButtonClick = backButtonClick,
+                    captionBarHeight = captionBarHeight
                 )
             }
 
@@ -47,6 +51,9 @@ fun FrameWindowScope.WindowFrame(
                     backButtonVisible = backButtonVisible && !isCollapsed,
                     backButtonEnabled = backButtonEnabled,
                     onBackButtonClick = backButtonClick,
+                    captionBarHeight = captionBarHeight,
+                    icon = if (isCollapsed) null else icon,
+                    title = if (isCollapsed) "" else title,
                     state = state
                 )
             }

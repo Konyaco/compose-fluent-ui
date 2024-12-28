@@ -26,6 +26,7 @@ import com.konyaco.fluent.gallery.window.WindowFrame
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.skiko.hostOs
 
 @OptIn(ExperimentalFluentApi::class)
 @Composable
@@ -61,7 +62,8 @@ internal actual fun GalleryPageScope.PlatformTabViewSection() {
                     WindowFrame(
                         onCloseRequest = { windowVisible.value = false },
                         state = windowState,
-                        backButtonVisible = false
+                        backButtonVisible = false,
+                        captionBarHeight = 40.dp,
                     ) { _, captionBarInset ->
                         val windowStore = LocalStore.current
                         LaunchedEffect(colors.darkMode) {
@@ -76,7 +78,7 @@ internal actual fun GalleryPageScope.PlatformTabViewSection() {
                                     ).windowInsetsPadding(
                                         captionBarInset.only(
                                             WindowInsetsSides.Left
-                                        ).add(WindowInsets(right = 8.dp))
+                                        ).add(WindowInsets(right = if (!hostOs.isMacOS ) 8.dp else 0.dp))
                                     )
                                 )
                             },
