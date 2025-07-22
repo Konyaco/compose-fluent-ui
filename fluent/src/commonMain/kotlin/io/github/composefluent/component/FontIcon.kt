@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.layout
@@ -67,13 +68,14 @@ internal fun FontIcon(
     modifier: Modifier = Modifier,
     iconSize: TextUnit = FontIconSize.Standard.value.sp,
     fallback: (@Composable () -> Unit)? = null,
+    tint: Color = LocalContentColor.current.copy(LocalContentAlpha.current)
 ) {
     if (LocalFontIconFontFamily.current != null || fallback == null) {
         Text(
             text = glyph.toString(),
             fontFamily = LocalFontIconFontFamily.current,
             fontSize = iconSize,
-            color = LocalContentColor.current.copy(LocalContentAlpha.current),
+            color = tint,
             modifier = Modifier.then(modifier)
                 .height(with(LocalDensity.current) { iconSize.toDp() }),
             onTextLayout = {
@@ -91,7 +93,8 @@ internal fun FontIcon(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     iconSize: FontIconSize = FontIconSize.Standard,
-    fallbackSize: FontIconSize = iconSize
+    fallbackSize: FontIconSize = iconSize,
+    tint: Color = LocalContentColor.current.copy(LocalContentAlpha.current)
 ) {
     FontIcon(
         glyph = glyph,
@@ -104,6 +107,7 @@ internal fun FontIcon(
                 Icon(
                     imageVector = vector(),
                     contentDescription = contentDescription,
+                    tint = tint,
                     modifier = modifier
                         .layout { measurable, constraints ->
                             val size = fallbackSize.value.dp.roundToPx()
@@ -120,7 +124,8 @@ internal fun FontIcon(
                         }
                 )
             }
-        }
+        },
+        tint = tint
     )
 }
 
@@ -196,7 +201,8 @@ fun FontIcon(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     size: FontIconSize = FontIconSize.Standard,
-    fallbackSize: FontIconSize = FontIconSize(size.value + 2f)
+    fallbackSize: FontIconSize = FontIconSize(size.value + 2f),
+    tint: Color = LocalContentColor.current.copy(LocalContentAlpha.current)
 ) {
     FontIcon(
         glyph = type.glyph,
@@ -204,7 +210,8 @@ fun FontIcon(
         contentDescription = contentDescription,
         iconSize = size,
         fallbackSize = fallbackSize,
-        modifier = modifier
+        modifier = modifier,
+        tint = tint
     )
 }
 
