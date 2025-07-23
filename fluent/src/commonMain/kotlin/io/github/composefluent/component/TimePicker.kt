@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
+import kotlin.math.roundToInt
 
 @Composable
 expect fun TimePicker(
@@ -65,10 +67,11 @@ internal fun TimePickerImpl(
                 var candidateSeconds by remember { mutableStateOf(0) }
                 var candidateAmPm by remember { mutableStateOf("AM") }
 
-                Column(Modifier.width(300.dp)
-                    // TODO[optimize](time-picker): Should we use acrylic effect?
-                    // If we use acrylic effect, it would be difficult to hide the text below caret buttons
-                    .background(FluentTheme.colors.background.acrylic.default)
+                Column(
+                    Modifier.width(300.dp)
+                        // TODO[optimize](time-picker): Should we use acrylic effect?
+                        // If we use acrylic effect, it would be difficult to hide the text below caret buttons
+                        .background(FluentTheme.colors.background.acrylic.default)
                 ) {
                     Box {
                         // Base indicator
@@ -129,7 +132,13 @@ internal fun TimePickerImpl(
                                 if (is12hour) {
                                     onValueChange(LocalTime(candidateHour, candidateMinutes, candidateSeconds))
                                 } else {
-                                    onValueChange(LocalTime(hour12to24(candidateHour, candidateAmPm == "AM"), candidateMinutes, candidateSeconds))
+                                    onValueChange(
+                                        LocalTime(
+                                            hour12to24(candidateHour, candidateAmPm == "AM"),
+                                            candidateMinutes,
+                                            candidateSeconds
+                                        )
+                                    )
                                 }
                                 open = false
                             }) {
@@ -168,10 +177,12 @@ private fun BoxScope.BaseIndicator(is24Hour: Boolean) {
     Box(
         Modifier.height(40.dp).fillMaxWidth().align(Alignment.Center)
     ) {
-        Box(Modifier.fillMaxSize().padding(horizontal = 6.dp).background(
-            color = FluentTheme.colors.fillAccent.default,
-            shape = FluentTheme.shapes.control
-        ))
+        Box(
+            Modifier.fillMaxSize().padding(horizontal = 6.dp).background(
+                color = FluentTheme.colors.fillAccent.default,
+                shape = FluentTheme.shapes.control
+            )
+        )
         Row {
             Spacer(Modifier.weight(1f))
             Box(
@@ -191,13 +202,19 @@ private fun BoxScope.BaseIndicator(is24Hour: Boolean) {
 }
 
 @Composable
-private fun TimePickerButton(modifier: Modifier, value: LocalTime?, is12Hour: Boolean, disabled: Boolean, onClick: () -> Unit) {
+private fun TimePickerButton(
+    modifier: Modifier,
+    value: LocalTime?,
+    is12Hour: Boolean,
+    disabled: Boolean,
+    onClick: () -> Unit
+) {
     Button(
         modifier = modifier.width(300.dp),
         onClick = onClick,
         disabled = disabled
     ) {
-        val labelColor = when  {
+        val labelColor = when {
             disabled -> FluentTheme.colors.text.text.tertiary
             value == null -> FluentTheme.colors.text.text.secondary
             else -> FluentTheme.colors.text.text.primary
@@ -254,14 +271,15 @@ private fun InfiniteWheelPicker(
         else 0
     }
     val centerOffset = (visibleItemsCount - 1) / 2
+    val actualCenterOffset = if (ring) centerOffset else 0
     val contentPadding = if (items.size < visibleItemsCount) itemHeight * (visibleItemsCount / 2) else 0.dp
 
     // Set the initial position to the center of the list
     val listState = rememberLazyListState(
         initialFirstVisibleItemIndex =
-        if (ring)
-            (virtualListSize / 2 - centerOffset + initialValueIndex).coerceAtLeast(0)
-        else initialValueIndex
+            if (ring)
+                (virtualListSize / 2 - centerOffset + initialValueIndex).coerceAtLeast(0)
+            else initialValueIndex
     )
 
     // 当前选中的值
@@ -295,10 +313,21 @@ private fun InfiniteWheelPicker(
             }
         }
 
-        fun next() { scroll(1) }
-        fun previous() { scroll(-1) }
-        fun nextPage() { scroll(visibleItemsCount) }
-        fun previousPage() { scroll(-visibleItemsCount) }
+        fun next() {
+            scroll(1)
+        }
+
+        fun previous() {
+            scroll(-1)
+        }
+
+        fun nextPage() {
+            scroll(visibleItemsCount)
+        }
+
+        fun previousPage() {
+            scroll(-visibleItemsCount)
+        }
 
         val focusRequester = remember { FocusRequester() }
 
@@ -370,9 +399,17 @@ private fun InfiniteWheelPicker(
                     }
                 ) {
                     // TODO[optimize](time-picker): Use brush to implement color inversion?
-                    val textColor =
-                        if (selectedValue == itemValue) FluentTheme.colors.text.onAccent.primary
-                        else FluentTheme.colors.text.text.primary
+
+                    // Inverse color after scrolling half of the item
+                    val firstOffset = with(LocalDensity.current) {
+                        listState.firstVisibleItemScrollOffset.toDp()
+                    }
+                    val offset = if (firstOffset >= itemHeight / 2) 1 else 0
+                    val isCentered = (listState.firstVisibleItemIndex + actualCenterOffset + offset) == index
+
+                    val textColor = if (isCentered) FluentTheme.colors.text.onAccent.primary
+                    else FluentTheme.colors.text.text.primary
+
                     Text(
                         text = itemValue,
                         style = FluentTheme.typography.body,
