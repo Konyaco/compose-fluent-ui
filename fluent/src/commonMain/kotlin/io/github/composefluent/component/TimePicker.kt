@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastCoerceAtLeast
+import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
@@ -35,6 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
 
 @Composable
+@ExperimentalFluentApi
 expect fun TimePicker(
     value: LocalTime?,
     onValueChange: (LocalTime?) -> Unit,
