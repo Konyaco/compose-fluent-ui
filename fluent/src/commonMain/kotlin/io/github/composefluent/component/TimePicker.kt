@@ -394,7 +394,7 @@ private fun InfiniteWheelPicker(
                     onClick = {
                         // Select this item
                         scrollScope.launch {
-                            listState.animateScrollToItem(index - centerOffset)
+                            listState.animateScrollToItem(index - actualCenterOffset)
                         }
                     }
                 ) {
