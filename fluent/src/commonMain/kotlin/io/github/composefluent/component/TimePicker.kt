@@ -166,7 +166,7 @@ private fun BoxScope.BaseIndicator(is24Hour: Boolean) {
                     .background(FluentTheme.colors.stroke.control.onAccentTertiary)
             )
             Spacer(Modifier.weight(1f))
-            if (!is24Hour) {
+            if (is24Hour) {
                 Box(
                     Modifier.width(1.dp).height(40.dp)
                         .background(FluentTheme.colors.stroke.control.onAccentTertiary)
