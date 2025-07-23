@@ -33,7 +33,6 @@ import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
-import kotlin.math.roundToInt
 
 @Composable
 expect fun TimePicker(
@@ -83,7 +82,10 @@ internal fun TimePickerImpl(
                             Box(Modifier.weight(1f)) {
                                 InfiniteWheelPicker(
                                     items = if (is12hour) hours12 else hours24,
-                                    initialValue = value?.hour?.toString(),
+                                    initialValue = value?.let {
+                                        if (is12hour) hour24to12(it.hour)
+                                        else it.hour
+                                    }?.toString(),
                                     onSelectedValueChange = { candidateHour = it.toInt() },
                                     visibleItemsCount = 9,
                                     ring = true,
@@ -130,8 +132,6 @@ internal fun TimePickerImpl(
                             modifier = Modifier.padding(4.dp).height(36.dp).weight(1f),
                             onClick = {
                                 if (is12hour) {
-                                    onValueChange(LocalTime(candidateHour, candidateMinutes, candidateSeconds))
-                                } else {
                                     onValueChange(
                                         LocalTime(
                                             hour12to24(candidateHour, candidateAmPm == "AM"),
@@ -139,6 +139,8 @@ internal fun TimePickerImpl(
                                             candidateSeconds
                                         )
                                     )
+                                } else {
+                                    onValueChange(LocalTime(candidateHour, candidateMinutes, candidateSeconds))
                                 }
                                 open = false
                             }) {
@@ -285,7 +287,7 @@ private fun InfiniteWheelPicker(
     // 当前选中的值
     val selectedValue by remember {
         derivedStateOf {
-            val centerIndex = listState.firstVisibleItemIndex + centerOffset
+            val centerIndex = listState.firstVisibleItemIndex + actualCenterOffset
             items[centerIndex % items.size]
         }
     }
