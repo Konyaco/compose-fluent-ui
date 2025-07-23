@@ -24,11 +24,10 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastCoerceAtLeast
 import io.github.composefluent.FluentTheme
-import io.github.composefluent.LocalAcrylicPopupEnabled
-import io.github.composefluent.LocalContentAlpha
-import io.github.composefluent.LocalContentColor
 import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
 import kotlinx.coroutines.launch
@@ -39,9 +38,9 @@ fun TimePicker(
     value: LocalTime?,
     onValueChange: (LocalTime?) -> Unit,
     modifier: Modifier = Modifier,
+    is12hour: Boolean = false,
     disabled: Boolean = false
 ) {
-    val is24Hour: Boolean = true // TODO[feat]: Support 12-hours
     var open by remember { mutableStateOf(false) }
 
     BasicFlyoutContainer(
@@ -54,39 +53,28 @@ fun TimePicker(
                 var candidateHour by remember { mutableStateOf(0) }
                 var candidateMinutes by remember { mutableStateOf(0) }
                 var candidateSeconds by remember { mutableStateOf(0) }
+                var candidateAmPm by remember { mutableStateOf("AM") }
 
                 Column(Modifier.width(300.dp)
                     // TODO[optimize](time-picker): Should we use acrylic effect?
-                    // If we use acrylic effect, it would be a trouble to hide the text below caret buttons
+                    // If we use acrylic effect, it would be difficult to hide the text below caret buttons
                     .background(FluentTheme.colors.background.acrylic.default)
                 ) {
-                    Box(Modifier) {
+                    Box {
                         // Base indicator
-                        Box(
-                            Modifier.height(40.dp).fillMaxWidth().padding(horizontal = 6.dp).background(
-                                color = FluentTheme.colors.fillAccent.default,
-                                shape = FluentTheme.shapes.control
-                            ).align(Alignment.Center)
-                        ) {
-                            Row {
-                                Spacer(Modifier.weight(1f))
-                                Box(
-                                    Modifier.width(1.dp).height(40.dp)
-                                        .background(FluentTheme.colors.stroke.control.onAccentTertiary)
-                                )
-                                Spacer(Modifier.weight(1f))
-                            }
-                        }
+                        BaseIndicator(is12hour)
+
                         // Wheels
                         Row(Modifier.height(360.dp)) {
                             // Hour
                             Box(Modifier.weight(1f)) {
                                 InfiniteWheelPicker(
-                                    hours24,
+                                    items = if (is12hour) hours12 else hours24,
                                     initialValue = value?.hour?.toString(),
-                                    onSelectedValueChange = {
-                                        candidateHour = it.toInt()
-                                    })
+                                    onSelectedValueChange = { candidateHour = it.toInt() },
+                                    visibleItemsCount = 9,
+                                    ring = true
+                                )
                             }
                             Box(
                                 Modifier.width(1.dp).fillMaxHeight()
@@ -95,11 +83,28 @@ fun TimePicker(
                             // Minute
                             Box(Modifier.weight(1f)) {
                                 InfiniteWheelPicker(
-                                    minutes,
-                                    initialValue = value?.minute?.toString(),
-                                    onSelectedValueChange = {
-                                        candidateMinutes = it.toInt()
-                                    })
+                                    items = minutes,
+                                    initialValue = value?.minute?.let(::formatMinute),
+                                    onSelectedValueChange = { candidateMinutes = it.toInt() },
+                                    visibleItemsCount = 9,
+                                    ring = true
+                                )
+                            }
+                            if (is12hour) {
+                                Box(
+                                    Modifier.width(1.dp).fillMaxHeight()
+                                        .background(FluentTheme.colors.stroke.divider.default)
+                                )
+                                // AM/PM
+                                Box(Modifier.weight(1f)) {
+                                    InfiniteWheelPicker(
+                                        items = amPm,
+                                        initialValue = if ((value?.hour ?: 0) < 12) "AM" else "PM",
+                                        onSelectedValueChange = { candidateAmPm = it },
+                                        visibleItemsCount = 9,
+                                        ring = false
+                                    )
+                                }
                             }
                         }
                     }
@@ -108,7 +113,11 @@ fun TimePicker(
                         SubtleButton(
                             modifier = Modifier.padding(4.dp).height(36.dp).weight(1f),
                             onClick = {
-                                onValueChange(LocalTime(candidateHour, candidateMinutes, candidateSeconds))
+                                if (is12hour) {
+                                    onValueChange(LocalTime(candidateHour, candidateMinutes, candidateSeconds))
+                                } else {
+                                    onValueChange(LocalTime(hour12to24(candidateHour, candidateAmPm == "AM"), candidateMinutes, candidateSeconds))
+                                }
                                 open = false
                             }) {
                             FontIcon(
@@ -134,7 +143,7 @@ fun TimePicker(
         TimePickerButton(
             modifier = modifier,
             value = value,
-            is24Hour = is24Hour,
+            is12Hour = is12hour,
             disabled = disabled,
             onClick = { open = true }
         )
@@ -142,7 +151,34 @@ fun TimePicker(
 }
 
 @Composable
-private fun TimePickerButton(modifier: Modifier, value: LocalTime?, is24Hour: Boolean, disabled: Boolean, onClick: () -> Unit) {
+private fun BoxScope.BaseIndicator(is24Hour: Boolean) {
+    Box(
+        Modifier.height(40.dp).fillMaxWidth().align(Alignment.Center)
+    ) {
+        Box(Modifier.fillMaxSize().padding(horizontal = 6.dp).background(
+            color = FluentTheme.colors.fillAccent.default,
+            shape = FluentTheme.shapes.control
+        ))
+        Row {
+            Spacer(Modifier.weight(1f))
+            Box(
+                Modifier.width(1.dp).height(40.dp)
+                    .background(FluentTheme.colors.stroke.control.onAccentTertiary)
+            )
+            Spacer(Modifier.weight(1f))
+            if (!is24Hour) {
+                Box(
+                    Modifier.width(1.dp).height(40.dp)
+                        .background(FluentTheme.colors.stroke.control.onAccentTertiary)
+                )
+                Spacer(Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun TimePickerButton(modifier: Modifier, value: LocalTime?, is12Hour: Boolean, disabled: Boolean, onClick: () -> Unit) {
     Button(
         modifier = modifier.width(300.dp),
         onClick = onClick,
@@ -154,12 +190,8 @@ private fun TimePickerButton(modifier: Modifier, value: LocalTime?, is24Hour: Bo
             else -> FluentTheme.colors.text.text.primary
         }
         val hour = value?.let {
-            when {
-                is24Hour -> value.hour
-                value.hour == 0 -> 12 // 0 -> 12AM
-                value.hour <= 12 -> value.hour
-                else -> value.hour - 12
-            }
+            if (is12Hour) hour24to12(value.hour)
+            else value.hour
         }
         Text(
             modifier = Modifier.weight(1f),
@@ -174,12 +206,8 @@ private fun TimePickerButton(modifier: Modifier, value: LocalTime?, is24Hour: Bo
             text = value?.minute?.let { formatMinute(it) } ?: "minute",
             color = labelColor
         )
-        if (!is24Hour) {
-            val isAm = if (value != null) {
-                value.hour < 12
-            } else {
-                true
-            }
+        if (is12Hour) {
+            val isAm = value == null || value.hour < 12
 
             // TODO[i18n](TimePicker)
             Box(Modifier.size(1.dp, 30.dp).background(FluentTheme.colors.stroke.control.default))
@@ -193,37 +221,33 @@ private fun TimePickerButton(modifier: Modifier, value: LocalTime?, is24Hour: Bo
     }
 }
 
-private val hours24 = (0..23).map { it.toString() }
-
-private val minutes = (0..59).map(::formatMinute)
-
-private fun formatMinute(value: Int): String =
-    if (value < 10) "0$value"
-    else value.toString()
-
-
 @Composable
 private fun InfiniteWheelPicker(
     items: List<String>,
-    visibleItemsCount: Int = 9,
+    visibleItemsCount: Int,
     initialValue: String?,
     onSelectedValueChange: (String) -> Unit,
+    ring: Boolean,
+    itemHeight: Dp = 40.dp,
     modifier: Modifier = Modifier
 ) {
     require(visibleItemsCount % 2 == 1) { "visibleItemsCount must be odd" }
 
-    val itemHeight = 40.dp
     // Creates a virtual list (big enough to simulate infinite scroll)
-    val virtualListSize = items.size * 100
+    val virtualListSize = if (ring) items.size * 100 else items.size
     val initialValueIndex = remember(items, initialValue) {
         if (initialValue != null) items.indexOf(initialValue)
         else 0
     }
     val centerOffset = (visibleItemsCount - 1) / 2
+    val contentPadding = if (items.size < visibleItemsCount) itemHeight * (visibleItemsCount / 2) else 0.dp
 
     // Set the initial position to the center of the list
     val listState = rememberLazyListState(
-        initialFirstVisibleItemIndex = virtualListSize / 2 - centerOffset + initialValueIndex
+        initialFirstVisibleItemIndex =
+        if (ring)
+            (virtualListSize / 2 - centerOffset + initialValueIndex).coerceAtLeast(0)
+        else initialValueIndex
     )
 
     // 当前选中的值
@@ -238,78 +262,40 @@ private fun InfiniteWheelPicker(
         onSelectedValueChange(selectedValue)
     }
 
-    val snapBehavior = rememberSnapFlingBehavior(
-        lazyListState = listState,
-    )
-
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
 
-    Box(
-        modifier
-            .hoverable(interactionSource)
-    ) {
+    Box(modifier.hoverable(interactionSource)) {
         val scrollScope = rememberCoroutineScope()
         var currentTargetScrollIndex by remember { mutableStateOf(0) }
 
-        fun next() {
+        fun scroll(offset: Int) {
             scrollScope.launch {
                 val target = if (listState.isScrollInProgress) {
-                    currentTargetScrollIndex + 1
+                    currentTargetScrollIndex + offset
                 } else {
-                    listState.firstVisibleItemIndex + 1
+                    listState.firstVisibleItemIndex + offset
                 }
                 currentTargetScrollIndex = target
-                listState.animateScrollToItem(target)
+                listState.animateScrollToItem(target.fastCoerceAtLeast(0))
             }
         }
 
-        fun previous() {
-            scrollScope.launch {
-                val target = if (listState.isScrollInProgress) {
-                    currentTargetScrollIndex - 1
-                } else {
-                    listState.firstVisibleItemIndex - 1
-                }
-                currentTargetScrollIndex = target
-                listState.animateScrollToItem(target)
-            }
-        }
-
-        fun nextPage() {
-            scrollScope.launch {
-                val target = if (listState.isScrollInProgress) {
-                    currentTargetScrollIndex + visibleItemsCount
-                } else {
-                    listState.firstVisibleItemIndex + visibleItemsCount
-                }
-                currentTargetScrollIndex = target
-                listState.animateScrollToItem(target)
-            }
-        }
-
-        fun previousPage() {
-            scrollScope.launch {
-                val target = if (listState.isScrollInProgress) {
-                    currentTargetScrollIndex - visibleItemsCount
-                } else {
-                    listState.firstVisibleItemIndex - visibleItemsCount
-                }
-                currentTargetScrollIndex = target
-                listState.animateScrollToItem(target)
-            }
-        }
+        fun next() { scroll(1) }
+        fun previous() { scroll(-1) }
+        fun nextPage() { scroll(visibleItemsCount) }
+        fun previousPage() { scroll(-visibleItemsCount) }
 
         val focusRequester = remember { FocusRequester() }
 
         LazyColumn(
             state = listState,
-            flingBehavior = snapBehavior, // Only use fling behavior for touchpad gesture.
+            flingBehavior = rememberSnapFlingBehavior(listState), // Only use fling behavior for touchpad gesture.
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(vertical = 0.dp),
+            contentPadding = PaddingValues(vertical = contentPadding),
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(itemHeight * visibleItemsCount)
+                .fillMaxSize()
                 .pointerInput(Unit) {
                     awaitEachGesture {
                         val event = awaitPointerEvent()
@@ -326,27 +312,14 @@ private fun InfiniteWheelPicker(
                         }
                     }
                 }
-                .focusable()
-                .focusRequester(focusRequester)
+                .focusable().focusRequester(focusRequester)
                 .onKeyEvent {
                     if (it.type == KeyEventType.KeyDown) {
                         when (it.key) {
-                            Key.DirectionUp -> {
-                                previous()
-                            }
-
-                            Key.DirectionDown -> {
-                                next()
-                            }
-
-                            Key.PageUp -> {
-                                previousPage()
-                            }
-
-                            Key.PageDown -> {
-                                nextPage()
-                            }
-
+                            Key.DirectionUp -> previous()
+                            Key.DirectionDown -> next()
+                            Key.PageUp -> previousPage()
+                            Key.PageDown -> nextPage()
                             else -> return@onKeyEvent false
                         }
                         return@onKeyEvent true
@@ -359,7 +332,8 @@ private fun InfiniteWheelPicker(
                 val actualIndex = index % items.size
                 val itemValue = items[actualIndex]
                 // Hide to leave space for caret buttons
-                val hide = false/*if (hovered) {
+                val hide = false
+                /*val hide = if (hovered) {
                     if (listState.isScrollInProgress) {
                         index <= listState.firstVisibleItemScrollOffset || index >= currentTargetScrollIndex + visibleItemsCount - 1
                     } else {
@@ -370,7 +344,7 @@ private fun InfiniteWheelPicker(
                 }*/
 
                 SubtleButton(
-                    modifier = Modifier.height(40.dp).fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp)
+                    modifier = Modifier.height(itemHeight).fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp)
                         .graphicsLayer {
                             alpha = if (hide) 0f else 1f
                         },
@@ -439,3 +413,28 @@ private fun CaretButton(
         FontIcon(type, contentDescription, size = FontIconSize(size), tint = color)
     }
 }
+
+private fun hour24to12(value: Int): Int = when {
+    value == 0 -> 12 // 0 -> 12AM
+    value <= 12 -> value
+    else -> value - 12
+}
+
+private fun hour12to24(value: Int, isAm: Boolean): Int {
+    val value = when {
+        value == 12 -> 0
+        else -> value
+    }
+    return if (isAm) value else value + 12
+}
+
+private val hours24 = (0..23).map { it.toString() }
+private val hours12 = (1..12).map { it.toString() }
+
+private val minutes = (0..59).map(::formatMinute)
+private val amPm = listOf("AM", "PM")
+
+private fun formatMinute(value: Int): String =
+    if (value < 10) "0$value"
+    else value.toString()
+
