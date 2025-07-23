@@ -34,12 +34,22 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
 
 @Composable
-fun TimePicker(
+expect fun TimePicker(
     value: LocalTime?,
     onValueChange: (LocalTime?) -> Unit,
     modifier: Modifier = Modifier,
     is12hour: Boolean = false,
     disabled: Boolean = false
+)
+
+@Composable
+internal fun TimePickerImpl(
+    value: LocalTime?,
+    onValueChange: (LocalTime?) -> Unit,
+    modifier: Modifier = Modifier,
+    is12hour: Boolean = false,
+    disabled: Boolean = false,
+    userScrollEnabled: Boolean
 ) {
     var open by remember { mutableStateOf(false) }
 
@@ -73,7 +83,8 @@ fun TimePicker(
                                     initialValue = value?.hour?.toString(),
                                     onSelectedValueChange = { candidateHour = it.toInt() },
                                     visibleItemsCount = 9,
-                                    ring = true
+                                    ring = true,
+                                    userScrollEnabled = userScrollEnabled
                                 )
                             }
                             Box(
@@ -87,7 +98,8 @@ fun TimePicker(
                                     initialValue = value?.minute?.let(::formatMinute),
                                     onSelectedValueChange = { candidateMinutes = it.toInt() },
                                     visibleItemsCount = 9,
-                                    ring = true
+                                    ring = true,
+                                    userScrollEnabled = userScrollEnabled
                                 )
                             }
                             if (is12hour) {
@@ -102,7 +114,8 @@ fun TimePicker(
                                         initialValue = if ((value?.hour ?: 0) < 12) "AM" else "PM",
                                         onSelectedValueChange = { candidateAmPm = it },
                                         visibleItemsCount = 9,
-                                        ring = false
+                                        ring = false,
+                                        userScrollEnabled = userScrollEnabled
                                     )
                                 }
                             }
@@ -229,6 +242,7 @@ private fun InfiniteWheelPicker(
     onSelectedValueChange: (String) -> Unit,
     ring: Boolean,
     itemHeight: Dp = 40.dp,
+    userScrollEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     require(visibleItemsCount % 2 == 1) { "visibleItemsCount must be odd" }
@@ -326,7 +340,7 @@ private fun InfiniteWheelPicker(
                     }
                     return@onKeyEvent false
                 },
-            userScrollEnabled = false // TODO[optimize](time-picker): Detect gesture scroll
+            userScrollEnabled = userScrollEnabled // TODO[optimize](time-picker): Detect gesture scroll
         ) {
             items(virtualListSize) { index ->
                 val actualIndex = index % items.size
