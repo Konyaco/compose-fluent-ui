@@ -17,6 +17,7 @@ import androidx.compose.ui.text.platform.FontLoadResult
 import androidx.compose.ui.text.platform.SystemFont
 
 @Composable
+@OptIn(ExperimentalTextApi::class)
 internal actual fun ProvideFontIcon(content: @Composable () -> Unit) {
     val fontFamilyResolver = LocalFontFamilyResolver.current
     var fontIconFamily by remember {
