@@ -187,7 +187,7 @@ jobs:
            # 2. concat new name
           $extension = $artifact.Extension
           $buildType = "${{ matrix.type }}".ToLower()
-          $asset_name = "compose-fluent-design-gallery-{0}-${{ needs.prepare-release.outputs.release_tag }}{1}" -f $buildType, $extension
+          $asset_name = "compose-fluent-design-gallery-${{ needs.prepare-release.outputs.release_tag }}-{0}{1}" -f $buildType, $extension
           
           Write-Host "Found artifact path: $asset_path"
           Write-Host "Final asset name: $asset_name"
