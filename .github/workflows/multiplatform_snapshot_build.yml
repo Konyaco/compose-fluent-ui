@@ -11,7 +11,6 @@ on:
   push:
     branches:
       - dev
-      - support_macos_native
     paths-ignore:
       - 'assets/**'
       - '**.md'
