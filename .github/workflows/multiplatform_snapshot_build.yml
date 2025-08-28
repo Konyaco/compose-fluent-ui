@@ -47,7 +47,7 @@ jobs:
             os: macos-latest
           - type: macosX64
             native: dmg
-            os: macos-15
+            os: macos-13
           - type: iOS
             iOS: ipa
             # workaround runner version for iPhoneOS sdk 18.2
