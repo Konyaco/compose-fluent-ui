@@ -12,6 +12,7 @@ import androidx.compose.ui.window.WindowScope
 import io.github.composefluent.component.NavigationDisplayMode
 import io.github.composefluent.gallery.GalleryTheme
 import io.github.composefluent.gallery.LocalStore
+import io.github.composefluent.gallery.applyBackdrop
 import io.github.composefluent.gallery.window.manager.WindowManager
 import platform.AppKit.NSWindowWillEnterFullScreenNotification
 import platform.AppKit.NSWindowWillExitFullScreenNotification
@@ -28,7 +29,7 @@ fun WindowScope.WindowFrame(
     onBackButtonClick: () -> Unit,
     content: @Composable (windowInset: WindowInsets, captionBarInset: WindowInsets) -> Unit
 ) {
-    GalleryTheme {
+    GalleryTheme( displayMicaLayer = false) {
         val isCollapsed = LocalStore.current.navigationDisplayMode == NavigationDisplayMode.LeftCollapsed
 
         WindowFrameInternal(
@@ -56,6 +57,7 @@ private fun WindowScope.WindowFrameInternal(
     val windowManager = remember(window) { WindowManager(window) }
     LaunchedEffect(window, captionBarHeight) {
         windowManager.disableTitlebar(captionBarHeight.value.toDouble())
+        window.applyBackdrop()
     }
 
     val isFullScreen = remember(windowManager) { mutableStateOf(windowManager.isFullScreen()) }
