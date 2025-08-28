@@ -185,9 +185,10 @@ jobs:
           $asset_path = $artifact.FullName
 
            # 2. concat new name
-          $baseName = [System.IO.Path]::GetFileNameWithoutExtension($artifact.Name)
           $extension = $artifact.Extension
-          $asset_name = "{0}_${{matrix.type}}{1}" -f $baseName, $extension
+          $buildType = "${{ matrix.type }}"
+          $lowerBuildType = "$buildType.Substring(0, 1).ToLower() + $buildType.Substring(1)
+          $asset_name = "compose-fluent-design-gallery-{0}-${{ needs.prepare-release.outputs.release_tag }}{1}" -f $lowerBuildType, $extension
           
           Write-Host "Found artifact path: $asset_path"
           Write-Host "Final asset name: $asset_name"
