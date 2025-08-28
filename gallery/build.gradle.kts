@@ -2,6 +2,7 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import io.github.composefluent.plugin.build.BuildConfig
 import io.github.composefluent.plugin.build.applyTargets
+import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.jetbrains.compose.desktop.application.dsl.AbstractDistributions
 import org.jetbrains.compose.desktop.application.dsl.AbstractMacOSPlatformSettings
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -235,4 +236,38 @@ fun AbstractDistributions.applyDistributions(
 
 fun AbstractMacOSPlatformSettings.applyCommonSetup() {
     iconFile.set(project.file("icons/icon.icns"))
+}
+
+tasks.register("desktopNativeRun") {
+    group = "run"
+    dependsOn(tasks.named("runDebugExecutable${getTarget().uppercaseFirstChar()}"))
+}
+
+listOf("Release", "Debug").forEach { buildType ->
+    listOf("createDistributable", "packageDistribution").forEach { name ->
+        tasks.register("${name}Native${buildType.uppercaseFirstChar()}ForCurrentOS") {
+            group = "compose desktop (native)"
+            val target = getTarget()
+            val taskName = if (name == "packageDistribution") {
+                val targetFormat = compose.desktop.nativeApplication.distributions.targetFormats.first { it.isCompatibleWithCurrentOS }
+                "package${targetFormat.name}Native${buildType}${target.uppercaseFirstChar()}"
+            } else {
+                "${name}Native${buildType}${target.uppercaseFirstChar()}"
+            }
+            dependsOn(tasks.named(taskName))
+        }
+    }
+}
+
+fun getTarget(): String {
+    // 1. 动态确定当前平台对应的 Kotlin/Native 目标名称
+    val os = System.getProperty("os.name")
+    val arch = System.getProperty("os.arch")
+    val currentTargetName = when {
+        os.startsWith("Mac OS X") -> if (arch == "aarch64") "macosArm64" else "macosX64"
+        os.startsWith("Windows") -> "windowsX64"
+        os.startsWith("Linux") -> "linuxX64"
+        else -> throw GradleException("Unsupported OS for native distribution: '$os'")
+    }
+    return currentTargetName
 }

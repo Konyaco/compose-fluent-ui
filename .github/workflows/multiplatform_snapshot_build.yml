@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - dev
+      - support_macos_native
     paths-ignore:
       - 'assets/**'
       - '**.md'
@@ -41,6 +42,12 @@ jobs:
           - type: macOS
             desktop: dmg
             os: macos-latest
+          - type: macosArm64
+            native: dmg
+            os: macos-latest
+          - type: macosX64
+            native: dmg
+            os: macos-15
           - type: iOS
             iOS: ipa
             # workaround runner version for iPhoneOS sdk 18.2
@@ -126,6 +133,18 @@ jobs:
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
           path: ${{github.workspace}}/gallery/build/compose/binaries/main-release/${{ matrix.desktop }}/*.${{ matrix.desktop }}
+
+      # Desktop Native Build Action
+      - name: Build Gallery for ${{ matrix.type }}
+        if: ${{ matrix.native }}
+        run: |
+            ./gradlew :gallery:packageDistributionNativeReleaseForCurrentOS
+      - name: Upload desktop native build artifacts
+        if: ${{ matrix.native }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gallery-${{ matrix.type }}-${{ github.run_id }}
+          path: ${{github.workspace}}/gallery/build/compose/binaries/main/**/*.${{ matrix.native }}
 
       # iOS Build Action, Note: Due to the long build time, the iOS build only build the debug version.
       - name: Set up Xcode
