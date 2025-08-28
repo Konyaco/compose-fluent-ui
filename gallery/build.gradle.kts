@@ -2,6 +2,8 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import io.github.composefluent.plugin.build.BuildConfig
 import io.github.composefluent.plugin.build.applyTargets
+import org.jetbrains.compose.desktop.application.dsl.AbstractDistributions
+import org.jetbrains.compose.desktop.application.dsl.AbstractMacOSPlatformSettings
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
@@ -158,11 +160,9 @@ compose.desktop {
             )
         }
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Compose Fluent Design Gallery"
-            packageVersion = BuildConfig.integerVersionName
+            applyDistributions()
             macOS {
-                iconFile.set(project.file("icons/icon.icns"))
+                applyCommonSetup()
                 jvmArgs(
                     "-Dapple.awt.application.appearance=system"
                 )
@@ -187,6 +187,13 @@ compose.desktop {
                                 it.name.contains("macos")
                     }.toTypedArray()
         )
+
+        distributions {
+            applyDistributions(TargetFormat.Dmg)
+            macOS {
+                applyCommonSetup()
+            }
+        }
     }
 }
 
@@ -215,4 +222,17 @@ tasks.withType<KotlinCompilationTask<*>>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
+}
+
+fun AbstractDistributions.applyDistributions(
+    vararg formats: TargetFormat = arrayOf(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+) {
+    targetFormats(formats = formats)
+    packageName = "Compose Fluent Design Gallery"
+    packageVersion = BuildConfig.integerVersionName
+
+}
+
+fun AbstractMacOSPlatformSettings.applyCommonSetup() {
+    iconFile.set(project.file("icons/icon.icns"))
 }
