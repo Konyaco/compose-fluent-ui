@@ -26,21 +26,31 @@ fun KotlinMultiplatformExtension.applyTargets(namespaceModule: String = "") {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+    macosArm64()
+    macosX64()
 
     applyHierarchyTemplate {
         sourceSetTrees(KotlinSourceSetTree.main, KotlinSourceSetTree.test)
 
         common {
             group("skiko") {
-                withCompilations {
-                    it.target.name != "android"
-                }
+                group("jvm")
+                group("native")
+                group("web")
+            }
+
+            group("android") {
+                withAndroidTarget()
+                withCompilations { it.target.name == "android" }
             }
 
             group("jvm") {
                 withJvm()
-                withAndroidTarget()
-                withCompilations { it.target.name == "android" }
+            }
+
+            group("jvmCommon") {
+                group("jvm")
+                group("android")
             }
 
             group("web") {
@@ -48,12 +58,48 @@ fun KotlinMultiplatformExtension.applyTargets(namespaceModule: String = "") {
                 withWasmJs()
             }
 
+            group("native") {
+                group("apple")
+                group("mingw")
+                group("linux")
+            }
+
             group("apple") {
-                withApple()
+                group("ios")
+                group("macos")
+                group("tvos")
+                group("watchos")
+            }
+
+            group("tvos") {
+                withTvos()
+            }
+
+            group("watchos") {
+                withWatchos()
             }
 
             group("ios") {
                 withIos()
+            }
+
+            group("macos") {
+                withMacos()
+            }
+
+            group("mingw") {
+                withMingw()
+            }
+
+            group("linux") {
+                withLinux()
+            }
+
+            group("desktopCommon") {
+                group("macos")
+                group("mingw")
+                group("linux")
+                group("jvm")
             }
         }
     }

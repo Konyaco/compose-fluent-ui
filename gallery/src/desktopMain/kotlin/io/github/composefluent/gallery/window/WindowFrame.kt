@@ -46,6 +46,7 @@ fun FrameWindowScope.WindowFrame(
             }
 
             hostOs.isMacOS -> {
+
                 MacOSWindowFrame(
                     content = content,
                     backButtonVisible = backButtonVisible && !isCollapsed,

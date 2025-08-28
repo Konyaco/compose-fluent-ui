@@ -21,15 +21,14 @@ Thank you for using our library. We look forward to receiving your feedback and 
 
 ### Supported Kotlin Targets
 
-| Target            | Platform              |
-|:------------------|:----------------------|
-| desktop           | Linux, macOS, Windows |
-| iosX64            | iPhone, iPad          |
-| iosArm64          | iPhone, iPad          |
-| iosSimulatorArm64 | iOS Simulator         |
-| androidTarget     | Android Devices       |
-| wasmJs            | Web Browsers          |
-| js                | Web Browsers          |
+| Target           | Platform                   |
+|:-----------------|:---------------------------|
+| desktop          | Linux, macOS, Windows      |
+| macos            | macOS                      |
+| ios              | iPhone, iPad, iOS Simulator|
+| android          | Android Devices            |
+| wasmJs           | Web Browsers               |
+| js               | Web Browsers               |
 
 ## Quick Start
 

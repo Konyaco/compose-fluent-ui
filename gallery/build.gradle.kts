@@ -3,6 +3,7 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec
 import io.github.composefluent.plugin.build.BuildConfig
 import io.github.composefluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
@@ -28,6 +29,22 @@ kotlin {
         it.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+        }
+    }
+
+    listOf(
+        macosX64(),
+        macosArm64()
+    ).forEach {
+        it.binaries {
+            executable {
+                entryPoint = "io.github.composefluent.gallery.main"
+                freeCompilerArgs += listOf(
+                    "-linker-option", "-framework", "-linker-option", "Metal"
+                )
+                // TODO: the current release binary surprises LLVM, so disable checks for now.
+                freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
+            }
         }
     }
 
@@ -161,6 +178,15 @@ compose.desktop {
                 iconFile.set(project.file("icons/icon.png"))
             }
         }
+    }
+
+    nativeApplication {
+        targets(
+            targets = kotlin.targets.filter {
+                        it.platformType == KotlinPlatformType.native &&
+                                it.name.contains("macos")
+                    }.toTypedArray()
+        )
     }
 }
 
