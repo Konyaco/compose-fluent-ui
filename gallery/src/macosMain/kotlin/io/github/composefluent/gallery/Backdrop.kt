@@ -3,6 +3,9 @@ package io.github.composefluent.gallery
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
+import platform.AppKit.NSAppearance
+import platform.AppKit.NSAppearanceNameAqua
+import platform.AppKit.NSAppearanceNameDarkAqua
 import platform.AppKit.NSColor
 import platform.AppKit.NSView
 import platform.AppKit.NSViewHeightSizable
@@ -22,7 +25,7 @@ import platform.darwin.dispatch_get_main_queue
 private object Backdrop {
 
     @OptIn(ExperimentalForeignApi::class)
-    fun applyBackdrop(window: NSWindow, material: NSVisualEffectMaterial, blendingMode: NSVisualEffectBlendingMode, state: NSVisualEffectState) {
+    fun applyBackdrop(window: NSWindow, material: NSVisualEffectMaterial, blendingMode: NSVisualEffectBlendingMode, state: NSVisualEffectState, isDark: Boolean) {
         val applyBlock = apply@ {
             val contentView = window.contentView ?: return@apply
             if (window.opaque) {
@@ -48,6 +51,10 @@ private object Backdrop {
                 this.material = material
                 this.blendingMode = blendingMode
                 this.state = state
+                appearance = when(isDark) {
+                    true -> NSAppearance.appearanceNamed(NSAppearanceNameDarkAqua)
+                    false -> NSAppearance.appearanceNamed(NSAppearanceNameAqua)
+                }
                 wantsLayer = true
             }
         }
@@ -74,12 +81,14 @@ private object Backdrop {
 fun NSWindow.applyBackdrop(
     material: NSVisualEffectMaterial = NSVisualEffectMaterialSidebar,
     blendingMode: NSVisualEffectBlendingMode = NSVisualEffectBlendingMode.NSVisualEffectBlendingModeBehindWindow,
-    state: NSVisualEffectState = NSVisualEffectState.NSVisualEffectStateActive
+    state: NSVisualEffectState = NSVisualEffectState.NSVisualEffectStateActive,
+    isDark: Boolean = false
 ) {
     Backdrop.applyBackdrop(
         window = this,
         material = material,
         blendingMode = blendingMode,
-        state = state
+        state = state,
+        isDark = isDark
     )
 }

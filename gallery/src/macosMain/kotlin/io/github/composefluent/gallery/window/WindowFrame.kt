@@ -55,9 +55,13 @@ private fun WindowScope.WindowFrameInternal(
     content: @Composable (windowInset: WindowInsets, captionBarInset: WindowInsets) -> Unit
 ) {
     val windowManager = remember(window) { WindowManager(window) }
+    val isDark = LocalStore.current.darkMode
     LaunchedEffect(window, captionBarHeight) {
         windowManager.disableTitlebar(captionBarHeight.value.toDouble())
-        window.applyBackdrop()
+    }
+
+    LaunchedEffect(window, isDark) {
+        window.applyBackdrop(isDark = isDark)
     }
 
     val isFullScreen = remember(windowManager) { mutableStateOf(windowManager.isFullScreen()) }
