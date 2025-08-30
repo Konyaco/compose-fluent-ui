@@ -282,9 +282,7 @@ kotlin.targets.withType<KotlinNativeTarget> {
                     }
                 )
                 inputs.files(allResourceFiles)
-                val composeResourceFiles = project.layout.files("src/commonMain/composeResources")
                 val injected = project.objects.newInstance<Injected>()
-                inputs.files(composeResourceFiles)
                 doLast {
                     val bundleResourceDir = packageTask.destinationDir.dir("${packageName.get()}.app/Contents/Resources")
                     val targetPath = bundleResourceDir.get().dir("compose-resources")
