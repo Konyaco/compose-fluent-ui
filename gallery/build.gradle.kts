@@ -2,17 +2,23 @@ import com.android.build.api.variant.impl.VariantOutputImpl
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import io.github.composefluent.plugin.build.BuildConfig
 import io.github.composefluent.plugin.build.applyTargets
+import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.compose.desktop.application.dsl.AbstractDistributions
 import org.jetbrains.compose.desktop.application.dsl.AbstractMacOSPlatformSettings
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.desktop.application.tasks.AbstractNativeMacApplicationPackageAppDirTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.mpp.Executable
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import org.jetbrains.kotlin.konan.target.KonanTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.compose)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.hotReload)
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
@@ -259,29 +265,37 @@ listOf("Release", "Debug").forEach { buildType ->
     }
 }
 
-// This is a workaround to include resources into the macOS native target
-afterEvaluate {
-    val appName = "Compose Fluent Design Gallery"
-    val projectDir = projectDir
+interface Injected {
+    @get:Inject val fs: FileSystemOperations
+}
 
-    listOf("Release", "Debug").forEach { buildType ->
-        val target = getTarget()
-        val taskName = "createDistributableNative${buildType}${target.uppercaseFirstChar()}"
-        val appImageDirname = "native-${target.lowercase()}-${buildType.lowercase()}-app-image"
-        val bundleResourceDir = projectDir.resolve("build/compose/binaries/main/${appImageDirname}/${appName}.app/Contents/Resources")
+// Resource processor for macos arm64 target
+kotlin.targets.withType<KotlinNativeTarget> {
+    if (konanTarget === KonanTarget.MACOS_X64 || konanTarget === KonanTarget.MACOS_ARM64) {
+        binaries.withType<Executable> {
+            val packageTasks = tasks.withType<AbstractNativeMacApplicationPackageAppDirTask>()
+            packageTasks.configureEach {
+                val packageTask = this
+                val allResourceFiles: FileCollection = project.files(
+                    (compilation.associatedCompilations + compilation).flatMap { compilation ->
+                        compilation.allKotlinSourceSets.map { it.resources }
+                    }
+                )
+                inputs.files(allResourceFiles)
+                val composeResourceFiles = project.layout.files("src/commonMain/composeResources")
+                val injected = project.objects.newInstance<Injected>()
+                inputs.files(composeResourceFiles)
+                doLast {
+                    val bundleResourceDir = packageTask.destinationDir.dir("${packageName.get()}.app/Contents/Resources")
+                    val targetPath = bundleResourceDir.get().dir("compose-resources")
+                    injected.fs.copy {
+                        from(allResourceFiles)
+                        into(targetPath)
+                    }
+                    val oldIconFile = bundleResourceDir.get().file("${packageName.get()}.icns")
+                    oldIconFile.asFile.renameTo(bundleResourceDir.get().file(iconFile.get().asFile.name).asFile)
+                }
 
-        val iconFile = bundleResourceDir.resolve("${appName}.icns")
-        val resourcesSrcDir = projectDir.resolve("build/generated/compose/resourceGenerator/preparedResources/commonMain/composeResources")
-        // See macosMain/org/jetbrains/compose/resources/ResourceReader.macos.kt:46
-        val resourcesTargetDir = bundleResourceDir.resolve("compose-resources/composeResources/fluentdesign.gallery.generated.resources")
-
-        tasks.named(taskName) {
-            doLast {
-                // Rename the icon file because the default Info.plist uses `icon.icns`
-                iconFile.renameTo(bundleResourceDir.resolve("icon.icns"))
-                // Copy resources to the specified resources dir
-                resourcesTargetDir.mkdirs()
-                resourcesSrcDir.copyRecursively(resourcesTargetDir)
             }
         }
     }

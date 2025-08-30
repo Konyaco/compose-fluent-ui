@@ -14,6 +14,7 @@ dependencies {
     implementation(kotlin("gradle-plugin", libs.versions.kotlin.get()))
     gradlePluginImplementation(libs.plugins.android.kotlin.multiplatform.library.get())
     gradlePluginImplementation(libs.plugins.maven.publish.get())
+    gradlePluginImplementation(libs.plugins.compose.multiplatform.get())
 }
 
 fun DependencyHandler.gradlePluginImplementation(plugin: PluginDependency) {
