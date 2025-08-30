@@ -259,6 +259,34 @@ listOf("Release", "Debug").forEach { buildType ->
     }
 }
 
+// This is a workaround to include resources into the macOS native target
+afterEvaluate {
+    val appName = "Compose Fluent Design Gallery"
+    val projectDir = projectDir
+
+    listOf("Release", "Debug").forEach { buildType ->
+        val target = getTarget()
+        val taskName = "createDistributableNative${buildType}${target.uppercaseFirstChar()}"
+        val appImageDirname = "native-${target.lowercase()}-${buildType.lowercase()}-app-image"
+        val bundleResourceDir = projectDir.resolve("build/compose/binaries/main/${appImageDirname}/${appName}.app/Contents/Resources")
+
+        val iconFile = bundleResourceDir.resolve("${appName}.icns")
+        val resourcesSrcDir = projectDir.resolve("build/generated/compose/resourceGenerator/preparedResources/commonMain/composeResources")
+        // See macosMain/org/jetbrains/compose/resources/ResourceReader.macos.kt:46
+        val resourcesTargetDir = bundleResourceDir.resolve("compose-resources/composeResources/fluentdesign.gallery.generated.resources")
+
+        tasks.named(taskName) {
+            doLast {
+                // Rename the icon file because the default Info.plist uses `icon.icns`
+                iconFile.renameTo(bundleResourceDir.resolve("icon.icns"))
+                // Copy resources to the specified resources dir
+                resourcesTargetDir.mkdirs()
+                resourcesSrcDir.copyRecursively(resourcesTargetDir)
+            }
+        }
+    }
+}
+
 fun getTarget(): String {
     // 1. 动态确定当前平台对应的 Kotlin/Native 目标名称
     val os = System.getProperty("os.name")
