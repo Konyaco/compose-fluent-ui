@@ -372,7 +372,7 @@ private fun ColorTextField(
     suffix: String = "",
     range: IntRange = 0..255,
     parse: (Int) -> String = { it.toString() },
-    parseBack: (String) -> Int? = { it.toInt() }
+    parseBack: (String) -> Int? = { it.toIntOrNull() }
 ) {
     //TODO TextField clean button
     var colorTextValue by remember {
