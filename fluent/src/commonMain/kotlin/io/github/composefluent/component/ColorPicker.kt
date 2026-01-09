@@ -304,7 +304,7 @@ fun ColorPicker(
                         onSelectedColorChanged(color.copy(green = (it.toFloat() / 255f)))
                         spectrumColor.value = color
                     },
-                    label = "Blue"
+                    label = "Green"
                 )
                 ColorTextField(
                     value = (color.blue * 255).toInt(),
@@ -312,7 +312,7 @@ fun ColorPicker(
                         onSelectedColorChanged(color.copy(blue = (it.toFloat() / 255f)))
                         spectrumColor.value = color
                     },
-                    label = "Green"
+                    label = "Blue"
                 )
             } else {
                 ColorTextField(
