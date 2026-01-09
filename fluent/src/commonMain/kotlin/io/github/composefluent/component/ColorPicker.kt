@@ -407,7 +407,7 @@ private fun ColorTextField(
 
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
-fun HexColorTextField(
+private fun HexColorTextField(
     color: Color,
     onValueChanged: (color: Color) -> Unit,
     alphaEnabled: Boolean,
