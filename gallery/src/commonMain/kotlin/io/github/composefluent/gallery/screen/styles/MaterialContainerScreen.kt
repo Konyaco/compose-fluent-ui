@@ -35,6 +35,7 @@ import io.github.composefluent.component.FlyoutContainer
 import io.github.composefluent.component.RadioButton
 import io.github.composefluent.component.Slider
 import io.github.composefluent.component.Text
+import io.github.composefluent.component.rememberColorPickerState
 import io.github.composefluent.gallery.annotation.Component
 import io.github.composefluent.gallery.annotation.Sample
 import io.github.composefluent.gallery.component.ComponentPagePath
@@ -96,14 +97,14 @@ fun MaterialContainerScreen() {
 
         val tintOpacity = remember { mutableStateOf(0.8f) }
         val luminosityOpacity = remember { mutableStateOf(0.8f) }
-        val color = remember { mutableStateOf(Color.White) }
+        val colorPickerState = rememberColorPickerState(Color.White)
 
         Section(
             title = "Custom Acrylic Material",
             sourceCode = sourceCodeOfCustomMaterialSample,
             content = {
                 CustomMaterialSample(
-                    color = color.value,
+                    color = colorPickerState.color,
                     tintOpacity = tintOpacity.value,
                     luminosityOpacity = luminosityOpacity.value
                 )
@@ -114,7 +115,11 @@ fun MaterialContainerScreen() {
                     content = {
                         DropDownButton(
                             content = {
-                                Box(modifier = Modifier.size(16.dp).background(color.value))
+                                Box(
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .background(colorPickerState.color)
+                                )
                                 val hexFormat = remember {
                                     HexFormat {
                                         number {
@@ -124,8 +129,9 @@ fun MaterialContainerScreen() {
                                     }
                                 }
                                 Text(
-                                    color.value.value.toHexString(hexFormat).substring(0..8),
-                                    modifier = Modifier.widthIn(90.dp)
+                                    text = colorPickerState.color.value.toHexString(hexFormat).substring(0..8),
+                                    modifier = Modifier
+                                        .widthIn(90.dp)
                                 )
                             },
                             onClick = {
@@ -135,10 +141,7 @@ fun MaterialContainerScreen() {
                     },
                     flyout = {
                         ColorPicker(
-                            color = color.value,
-                            onSelectedColorChanged = {
-                                color.value = it
-                            }
+                            state = colorPickerState
                         )
                     }
                 )

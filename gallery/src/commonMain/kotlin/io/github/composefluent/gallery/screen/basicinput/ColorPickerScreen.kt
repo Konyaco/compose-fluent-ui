@@ -9,11 +9,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.component.CheckBox
 import io.github.composefluent.component.ColorPicker
 import io.github.composefluent.component.ColorSpectrum
 import io.github.composefluent.component.RadioButton
 import io.github.composefluent.component.Text
+import io.github.composefluent.component.rememberColorPickerState
 import io.github.composefluent.gallery.annotation.Component
 import io.github.composefluent.gallery.annotation.Sample
 import io.github.composefluent.gallery.component.ComponentPagePath
@@ -78,11 +80,12 @@ private fun ColorPickerSample(
     alphaEnabled: Boolean = false,
     moreButtonVisible: Boolean = false
 ) {
-    val (color, setColor) = remember { mutableStateOf(Color.White) }
+    @OptIn(ExperimentalFluentApi::class)
     ColorPicker(
+        state = rememberColorPickerState(
+            color = Color.White
+        ),
         colorSpectrum = colorSpectrum,
-        color = color,
-        onSelectedColorChanged = setColor,
         alphaEnabled = alphaEnabled,
         moreButtonVisible = moreButtonVisible
     )
