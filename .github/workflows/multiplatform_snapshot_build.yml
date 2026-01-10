@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - dev
+      - fix_ci
     paths-ignore:
       - 'assets/**'
       - '**.md'
@@ -46,7 +47,7 @@ jobs:
             os: macos-latest
           - type: macosX64
             native: dmg
-            os: macos-13
+            os: macos-15-intel
           - type: iOS
             iOS: ipa
             # workaround runner version for iPhoneOS sdk 18.2
