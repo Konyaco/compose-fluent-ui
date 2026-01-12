@@ -7,7 +7,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
@@ -42,7 +58,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -813,54 +828,66 @@ private fun HexColorTextField(
     alphaEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    //TODO TextField clean button
     val hexFormat = remember {
         HexFormat {
             upperCase = true
             number.removeLeadingZeros = false
         }
     }
-    val textFieldValue = remember {
-        mutableStateOf(TextFieldValue("#"))
+
+    fun Color.toHexString(
+        hexFormat: HexFormat,
+        alphaEnabled: Boolean
+    ): String {
+        val hexString = value.toHexString(hexFormat)
+        return "#" +
+            if (alphaEnabled) {
+                hexString.take(8)
+            } else {
+                hexString.substring(2, 8)
+            }
     }
 
-    val isTextFieldInput = remember { mutableStateOf(false) }
-    LaunchedEffect(color) {
-        if (color.toArgb() != textFieldValue.value.text.removePrefix("#").toIntOrNull(16)) {
-            val hexString = color.value.toHexString(hexFormat)
-            textFieldValue.value = textFieldValue.value.copy(
-                text = "#" + hexString.substring(
-                    minOf(
-                        if (!alphaEnabled) 2 else 0,
-                        color.value.toHexString(hexFormat).lastIndex
-                    ),
-                    minOf(8, color.value.toHexString(hexFormat).length)
-                )
+    fun String.toColor(): Color? {
+        val value = this
+            .removePrefix("#")
+            .toLongOrNull(16)
+            ?: return null
+
+        if (value !in 0L..0xFFFFFFFFL) {
+            return null
+        }
+
+        return Color(value)
+    }
+
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(color.toHexString(hexFormat, alphaEnabled)))
+    }
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    LaunchedEffect(color, alphaEnabled, isFocused) {
+        if (!isFocused) {
+            textFieldValue = textFieldValue.copy(
+                text = color.toHexString(hexFormat, alphaEnabled)
             )
         }
     }
+
     TextField(
-        value = textFieldValue.value,
+        value = textFieldValue,
         onValueChange = {
-            isTextFieldInput.value = true
-            val updateColor = textFieldValue.value.text != it.text
-            textFieldValue.value = it
-            if (updateColor) {
-                val newValueText = it.text.removePrefix("#")
-                val count = 8 - newValueText.length
-                val formatNewValueText = if (count > 0) {
-                    "FF00000000".substring(0, count) + newValueText
-                } else {
-                    newValueText
-                }
-                val newValue = formatNewValueText.toLongOrNull(16)
-                if (newValue != null && newValue in 0L..0xFFFFFFFFL) {
-                    onValueChanged(Color(newValue))
-                }
+            textFieldValue = it
+
+            val newColor = it.text.toColor()
+            if (newColor != null) {
+                onValueChanged(newColor)
             }
-            isTextFieldInput.value = false
         },
-        modifier = modifier
+        modifier = modifier,
+        interactionSource = interactionSource
     )
 }
 
