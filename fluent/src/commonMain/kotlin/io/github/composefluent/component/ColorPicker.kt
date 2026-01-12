@@ -160,7 +160,7 @@ fun ColorPicker(
                 .width(312.dp)
                 .height(32.dp),
             onValueChangeFinished = {
-                state.onValueChangeFinished?.invoke()
+                state.onValueChangeFinished?.invoke(state.color)
             },
             rail = {
                 Box(
@@ -202,7 +202,7 @@ fun ColorPicker(
                 modifier = Modifier
                     .width(312.dp),
                 onValueChangeFinished = {
-                    state.onValueChangeFinished?.invoke()
+                    state.onValueChangeFinished?.invoke(state.color)
                 },
                 rail = {
                     Spacer(
@@ -319,7 +319,7 @@ fun ColorPicker(
                     color = state.color,
                     onValueChanged = {
                         state.updateColor(it)
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     alphaEnabled = alphaEnabled,
                     modifier = Modifier
@@ -331,7 +331,7 @@ fun ColorPicker(
                     value = (state.color.red * 255).toInt(),
                     onValueChanged = {
                         state.updateColor(state.color.copy(red = (it.toFloat() / 255f)))
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     label = "Red"
                 )
@@ -339,7 +339,7 @@ fun ColorPicker(
                     value = (state.color.green * 255).toInt(),
                     onValueChanged = {
                         state.updateColor(state.color.copy(green = (it.toFloat() / 255f)))
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     label = "Green"
                 )
@@ -347,7 +347,7 @@ fun ColorPicker(
                     value = (state.color.blue * 255).toInt(),
                     onValueChanged = {
                         state.updateColor(state.color.copy(blue = (it.toFloat() / 255f)))
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     label = "Blue"
                 )
@@ -357,7 +357,7 @@ fun ColorPicker(
                     onValueChanged = {
                         val hue = it.toFloat()
                         state.updateHsvColor(hue = hue)
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     range = 0..360,
                     label = "Hue"
@@ -367,7 +367,7 @@ fun ColorPicker(
                     onValueChanged = {
                         val saturation = it.toFloat() / 100f
                         state.updateHsvColor(saturation = saturation)
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     range = 0..100,
                     label = "Saturation"
@@ -377,7 +377,7 @@ fun ColorPicker(
                     onValueChanged = {
                         val value = it.toFloat()
                         state.updateHsvColor(value = value)
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     range = 0..100,
                     label = "Value"
@@ -390,7 +390,7 @@ fun ColorPicker(
                     onValueChanged = {
                         val alpha = it.toFloat() / 100f
                         state.updateHsvColor(alpha = alpha)
-                        state.onValueChangeFinished?.invoke()
+                        state.onValueChangeFinished?.invoke(state.color)
                     },
                     range = 0..100,
                     label = "Opacity",
@@ -704,11 +704,11 @@ fun ColorPicker(
 @Immutable
 class ColorPickerState private constructor(
     hsvColor: HsvColor,
-    var onValueChangeFinished: (() -> Unit)? = null
+    var onValueChangeFinished: ((Color) -> Unit)? = null
 ) {
     constructor(
         color: Color,
-        onValueChangeFinished: (() -> Unit)? = null
+        onValueChangeFinished: ((Color) -> Unit)? = null
     ) : this(
         hsvColor = color.toHsvColor(),
         onValueChangeFinished = onValueChangeFinished
@@ -744,7 +744,7 @@ class ColorPickerState private constructor(
 
     companion object {
         fun Saver(
-            onValueChangeFinished: (() -> Unit)?
+            onValueChangeFinished: ((Color) -> Unit)?
         ): Saver<ColorPickerState, *> = listSaver(
             save = {
                 listOf(
@@ -773,7 +773,7 @@ class ColorPickerState private constructor(
 @Composable
 fun rememberColorPickerState(
     color: Color,
-    onValueChangeFinished: (() -> Unit)? = null
+    onValueChangeFinished: ((Color) -> Unit)? = null
 ): ColorPickerState =
     rememberSaveable(
         saver = ColorPickerState.Saver(onValueChangeFinished)
@@ -1159,7 +1159,7 @@ sealed class ColorSpectrum {
                         .pointerInput(Unit) {
                             detectDragGestures(
                                 onDragEnd = {
-                                    state.onValueChangeFinished?.invoke()
+                                    state.onValueChangeFinished?.invoke(state.color)
                                 }
                             ) { change, _ ->
                                 getColorFromPosition(
@@ -1432,7 +1432,7 @@ sealed class ColorSpectrum {
                         .pointerInput(Unit) {
                             detectDragGestures(
                                 onDragEnd = {
-                                    state.onValueChangeFinished?.invoke()
+                                    state.onValueChangeFinished?.invoke(state.color)
                                 }
                             ) { change, _ ->
                                 latestPressPosition.value = change.position
