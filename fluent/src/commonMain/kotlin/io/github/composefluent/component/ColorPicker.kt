@@ -301,6 +301,8 @@ fun ColorPicker(
                         state.onValueChangeFinished?.invoke()
                     },
                     alphaEnabled = alphaEnabled,
+                    modifier = Modifier
+                        .width(132.dp)
                 )
             }
             if (isRGBTextField) {
@@ -796,7 +798,8 @@ private fun ColorTextField(
                 }
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.width(120.dp).fillMaxWidth()
+            modifier = Modifier
+                .width(120.dp)
         )
         Text(label, color = FluentTheme.colors.text.text.secondary)
     }
