@@ -1077,22 +1077,6 @@ sealed class ColorSpectrum {
                 shape = CircleShape,
                 backgroundSizing = BackgroundSizing.OuterBorderEdge
             ) {
-                val interactionSource = remember { MutableInteractionSource() }
-                LaunchedEffect(interactionSource) {
-                    interactionSource.interactions
-                        .collectLatest {
-                            if (it is PressInteraction.Release) {
-                                val position = it.press.pressPosition
-                                val color =
-                                    getColorFromPosition(
-                                        rect = colorPanelRect.value,
-                                        position = position
-                                    )
-                                        ?: return@collectLatest
-                                state.updateColor(color)
-                            }
-                        }
-                }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1105,24 +1089,28 @@ sealed class ColorSpectrum {
                             )
                         }
                         .clickable(
-                            interactionSource = interactionSource,
+                            interactionSource = remember { MutableInteractionSource() },
                             onClick = {},
                             indication = null
                         )
                         .pointerInput(Unit) {
-                            detectDragGestures { change, _ ->
-                                val color =
-                                    getColorFromPosition(
-                                        rect = colorPanelRect.value,
-                                        position = change.position,
-                                        excludeRadius = false
-                                    )
-                                        ?: return@detectDragGestures
-                                state.updateColor(color)
+                            detectDragGestures(
+                                onDragEnd = {
+                                    state.onValueChangeFinished?.invoke()
+                                }
+                            ) { change, _ ->
+                                getColorFromPosition(
+                                    rect = colorPanelRect.value,
+                                    position = change.position,
+                                    excludeRadius = false
+                                )
+                                    ?.let { color ->
+                                        state.updateColor(color)
+                                    }
                             }
                         }
                         .background(
-                            Brush.sweepGradient(
+                            brush = Brush.sweepGradient(
                                 colors = listOf(
                                     Color.Red,
                                     Color.Yellow,
@@ -1132,7 +1120,8 @@ sealed class ColorSpectrum {
                                     Color.Magenta,
                                     Color.Red
                                 )
-                            ), CircleShape
+                            ),
+                            shape = CircleShape
                         )
                         .background(
                             Brush.radialGradient(
@@ -1197,20 +1186,6 @@ sealed class ColorSpectrum {
                 backgroundSizing = BackgroundSizing.OuterBorderEdge
             ) {
                 val interactionSource = remember { MutableInteractionSource() }
-                LaunchedEffect(interactionSource) {
-                    interactionSource.interactions
-                        .collectLatest {
-                            if (it is PressInteraction.Release) {
-                                val position = it.press.pressPosition
-                                onSelectedColorChanged(
-                                    getColorFromPosition(
-                                        colorPanelRect.value,
-                                        position
-                                    ) ?: return@collectLatest
-                                )
-                            }
-                        }
-                }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1360,20 +1335,7 @@ sealed class ColorSpectrum {
             ) {
                 val latestPressPosition = remember { mutableStateOf<Offset?>(null) }
                 val colorPanelRect = remember { mutableStateOf(Rect.Zero) }
-                val interactionSource = remember { MutableInteractionSource() }
-                LaunchedEffect(interactionSource) {
-                    interactionSource.interactions.collectLatest {
-                        if (it is PressInteraction.Release) {
-                            latestPressPosition.value = it.press.pressPosition
-                            val color =
-                                getColorFromPosition(
-                                    colorPanelRect.value,
-                                    it.press.pressPosition
-                                ) ?: return@collectLatest
-                            state.updateColor(color)
-                        }
-                    }
-                }
+
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1401,23 +1363,28 @@ sealed class ColorSpectrum {
                         )
                         .clickable(
                             onClick = {},
-                            interactionSource = interactionSource,
+                            interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         )
                         .pointerInput(Unit) {
-                            detectDragGestures { change, _ ->
+                            detectDragGestures(
+                                onDragEnd = {
+                                    state.onValueChangeFinished?.invoke()
+                                }
+                            ) { change, _ ->
                                 latestPressPosition.value = change.position
-                                val color =
-                                    getColorFromPosition(
-                                        colorPanelRect.value,
-                                        change.position,
-                                        false
-                                    )
-                                        ?: return@detectDragGestures
-                                state.updateColor(color)
+                                getColorFromPosition(
+                                    rect = colorPanelRect.value,
+                                    position = change.position,
+                                    excludeRadius = false
+                                )
+                                    ?.let { color ->
+                                        state.updateColor(color)
+                                    }
                             }
                         }
                 )
+
                 if (state.color != Color.Unspecified) {
                     val dotSize = remember { mutableStateOf(IntSize.Zero) }
                     val offset = remember {
