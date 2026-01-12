@@ -65,8 +65,12 @@ import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -842,17 +846,19 @@ private fun HexColorTextField(
         alphaEnabled: Boolean
     ): String {
         val hexString = value.toHexString(hexFormat)
-        return "#" +
-            if (alphaEnabled) {
-                hexString.take(8)
-            } else {
-                hexString.substring(2, 8)
-            }
+        return if (alphaEnabled) {
+            hexString.take(8)
+        } else {
+            hexString.substring(2, 8)
+        }
     }
 
     fun String.toColor(): Color? {
+        if (isBlank()) {
+            return Color.Black
+        }
+
         val value = this
-            .removePrefix("#")
             .toLongOrNull(16)
             ?: return null
 
@@ -884,13 +890,36 @@ private fun HexColorTextField(
             textFieldValue = it
 
             val newColor = it.text.toColor()
-            if (newColor != null) {
+            if (newColor != null && newColor != color) {
                 onValueChanged(newColor)
             }
         },
         modifier = modifier,
+        visualTransformation = HexVisualTransformation,
         interactionSource = interactionSource
     )
+}
+
+private object HexVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val out = "#" + text.text
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return offset + 1
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                if (offset <= 0) return 0
+                return offset - 1
+            }
+        }
+
+        return TransformedText(
+            text = AnnotatedString(out),
+            offsetMapping = offsetMapping
+        )
+    }
 }
 
 private fun Modifier.alphaBackground(shape: Shape = RectangleShape, enabled: Boolean = true) =
