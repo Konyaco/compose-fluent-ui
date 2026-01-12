@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.github.composefluent.component
 
 import androidx.compose.animation.core.MutableTransitionState
@@ -987,6 +989,7 @@ object ColorPickerDefaults {
  * @param dot The composable to draw as the indicator of the selected color. Defaults to [ColorPickerDefaults.dot].
  * @param label The composable to draw as the label of the selected color. Defaults to [ColorPickerDefaults.label].
  */
+@Deprecated("Use ColorSpectrum.Square.Content in ColorPicker with ColorPickerState")
 @Composable
 fun SquareColorSpectrum(
     color: Color,
@@ -1016,6 +1019,7 @@ fun SquareColorSpectrum(
  * @param label A composable function to display the label of the selected color.
  *   Defaults to [ColorPickerDefaults.label].
  */
+@Deprecated("Use ColorSpectrum.Round.Content in ColorPicker with ColorPickerState")
 @Composable
 fun RoundColorSpectrum(
     color: Color,
