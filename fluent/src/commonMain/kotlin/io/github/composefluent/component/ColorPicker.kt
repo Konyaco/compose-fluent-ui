@@ -888,7 +888,7 @@ private fun HexColorTextField(
                 when (value) {
                     null -> null
                     !in 0L..0xFFFFFFFFL -> null
-                    else -> Color(value)
+                    else -> Color(value or 0xFF000000L)
                 }
             }
         },
