@@ -116,7 +116,6 @@ fun ColorPicker(
     alphaEnabled: Boolean = false,
     moreButtonVisible: Boolean = false
 ) {
-    var expanded by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .width(312.dp)
@@ -193,6 +192,7 @@ fun ColorPicker(
                 )
             }
         )
+
         if (alphaEnabled) {
             BasicSlider(
                 value = state.hsvColor.alpha,
@@ -230,7 +230,11 @@ fun ColorPicker(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(20.dp))
+
+        Spacer(Modifier.height(20.dp))
+
+        var expanded by remember { mutableStateOf(false) }
+
         if (moreButtonVisible) {
             val defaultColor = ButtonColor(
                 fillColor = FluentTheme.colors.subtleFill.transparent,
@@ -266,12 +270,17 @@ fun ColorPicker(
                 modifier = Modifier.align(Alignment.End)
             )
         }
+
         if (moreButtonVisible && !expanded) return@Column
+
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            var isRGBTextField by remember { mutableStateOf(true) }
-            Row(horizontalArrangement = Arrangement.SpaceAround) {
+            var isRgbTextField by remember { mutableStateOf(true) }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
                 BasicFlyoutContainer(
                     flyout = {
                         MenuFlyout(
@@ -282,18 +291,18 @@ fun ColorPicker(
                             adaptivePlacement = true
                         ) {
                             MenuFlyoutItem(
-                                selected = isRGBTextField,
+                                selected = isRgbTextField,
                                 onSelectedChanged = {
-                                    isRGBTextField = true
+                                    isRgbTextField = true
                                     isFlyoutVisible = false
                                 },
                                 text = { Text("RGB") },
                                 modifier = Modifier.defaultMinSize(120.dp)
                             )
                             MenuFlyoutItem(
-                                selected = !isRGBTextField,
+                                selected = !isRgbTextField,
                                 onSelectedChanged = {
-                                    isRGBTextField = false
+                                    isRgbTextField = false
                                     isFlyoutVisible = false
                                 },
                                 text = { Text("HSV") },
@@ -301,23 +310,25 @@ fun ColorPicker(
                             )
                         }
                     },
-                    modifier = Modifier.width(120.dp)
+                    modifier = Modifier
+                        .width(120.dp)
                 ) {
                     DropDownButton(
                         onClick = { isFlyoutVisible = !isFlyoutVisible },
                         content = {
                             Text(
-                                text = if (isRGBTextField) "RGB" else "HSV",
+                                text = if (isRgbTextField) "RGB" else "HSV",
                                 modifier = Modifier.weight(1f)
                             )
                         },
-                        modifier = Modifier.width(120.dp)
+                        modifier = Modifier
+                            .width(120.dp)
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
                 HexColorTextField(
                     color = state.color,
-                    onValueChanged = {
+                    onValueChange = {
                         state.updateColor(it)
                         state.onValueChangeFinished?.invoke(state.color)
                     },
@@ -326,75 +337,121 @@ fun ColorPicker(
                         .width(132.dp)
                 )
             }
-            if (isRGBTextField) {
-                ColorTextField(
-                    value = (state.color.red * 255).toInt(),
-                    onValueChanged = {
-                        state.updateColor(state.color.copy(red = (it.toFloat() / 255f)))
+
+            if (isRgbTextField) {
+                fun parseRgb(text: String): Float? {
+                    if (text.isBlank()) {
+                        return 0f
+                    }
+
+                    return when (val value = text.toIntOrNull()) {
+                        null -> null
+                        !in 0..255 -> null
+                        else -> value.toFloat() / 255f
+                    }
+                }
+
+                ValueLabelTextField(
+                    value = state.color.red,
+                    onValueChange = {
+                        state.updateColor(state.color.copy(red = it))
                         state.onValueChangeFinished?.invoke(state.color)
                     },
+                    format = { (it * 255).toInt().toString() },
+                    parse = { parseRgb(it) },
                     label = "Red"
                 )
-                ColorTextField(
-                    value = (state.color.green * 255).toInt(),
-                    onValueChanged = {
-                        state.updateColor(state.color.copy(green = (it.toFloat() / 255f)))
+                ValueLabelTextField(
+                    value = state.color.green,
+                    onValueChange = {
+                        state.updateColor(state.color.copy(green = it))
                         state.onValueChangeFinished?.invoke(state.color)
                     },
+                    format = { (it * 255).toInt().toString() },
+                    parse = { parseRgb(it) },
                     label = "Green"
                 )
-                ColorTextField(
-                    value = (state.color.blue * 255).toInt(),
-                    onValueChanged = {
-                        state.updateColor(state.color.copy(blue = (it.toFloat() / 255f)))
+                ValueLabelTextField(
+                    value = state.color.blue,
+                    onValueChange = {
+                        state.updateColor(state.color.copy(blue = it))
                         state.onValueChangeFinished?.invoke(state.color)
                     },
+                    format = { (it * 255).toInt().toString() },
+                    parse = { parseRgb(it) },
                     label = "Blue"
                 )
             } else {
-                ColorTextField(
-                    value = state.hsvColor.hue.toInt(),
-                    onValueChanged = {
-                        val hue = it.toFloat()
-                        state.updateHsvColor(hue = hue)
+                ValueLabelTextField(
+                    value = state.hsvColor.hue,
+                    onValueChange = {
+                        state.updateHsvColor(hue = it)
                         state.onValueChangeFinished?.invoke(state.color)
                     },
-                    range = 0..360,
+                    format = { it.toInt().toString() },
+                    parse = {
+                        if (it.isBlank()) {
+                            0f
+                        } else {
+                            when (val value = it.toFloatOrNull()) {
+                                null -> 0f
+                                !in 0f..360f -> 0f
+                                else -> value
+                            }
+                        }
+                    },
                     label = "Hue"
                 )
-                ColorTextField(
-                    value = (state.hsvColor.saturation * 100).toInt(),
-                    onValueChanged = {
-                        val saturation = it.toFloat() / 100f
-                        state.updateHsvColor(saturation = saturation)
+                ValueLabelTextField(
+                    value = state.hsvColor.saturation,
+                    onValueChange = {
+                        state.updateHsvColor(saturation = it)
                         state.onValueChangeFinished?.invoke(state.color)
                     },
-                    range = 0..100,
+                    format = { (it * 100).toInt().toString() },
+                    parse = {
+                        if (it.isBlank()) {
+                            0f
+                        } else {
+                            when (val value = it.toFloatOrNull()) {
+                                null -> 0f
+                                !in 0f..100f -> 0f
+                                else -> value / 100f
+                            }
+                        }
+                    },
                     label = "Saturation"
                 )
-                ColorTextField(
-                    value = (state.hsvColor.value * 100).toInt(),
-                    onValueChanged = {
-                        val value = it.toFloat()
-                        state.updateHsvColor(value = value)
+                ValueLabelTextField(
+                    value = state.hsvColor.value,
+                    onValueChange = {
+                        state.updateHsvColor(value = it)
                         state.onValueChangeFinished?.invoke(state.color)
                     },
-                    range = 0..100,
+                    format = { (it * 100).toInt().toString() },
+                    parse = {
+                        if (it.isBlank()) {
+                            // Same logic as HexColorTextField clearing to #FF000000
+                            100f
+                        } else {
+                            when (val value = it.toFloatOrNull()) {
+                                null -> 0f
+                                !in 0f..100f -> 0f
+                                else -> value / 100f
+                            }
+                        }
+                    },
                     label = "Value"
                 )
             }
 
             if (alphaEnabled) {
-                ColorTextField(
-                    value = (state.hsvColor.alpha * 100).toInt(),
-                    onValueChanged = {
-                        val alpha = it.toFloat() / 100f
-                        state.updateHsvColor(alpha = alpha)
+                AlphaTextField(
+                    value = state.hsvColor.alpha,
+                    onValueChange = {
+                        state.updateHsvColor(alpha = it)
                         state.onValueChangeFinished?.invoke(state.color)
-                    },
-                    range = 0..100,
-                    label = "Opacity",
-                    suffix = "%"
+                    }
                 )
             }
         }
@@ -417,6 +474,7 @@ fun ColorPicker(
  * @param moreButtonVisible Whether to show a "More" button to expand advanced color settings. Defaults to false.
  */
 @Deprecated("Use ColorPicker with ColorPickerState instead")
+@Suppress("DEPRECATION")
 @Composable
 fun ColorPicker(
     color: Color = Color.White,
@@ -618,7 +676,7 @@ fun ColorPicker(
                 Spacer(modifier = Modifier.weight(1f))
                 HexColorTextField(
                     color = color,
-                    onValueChanged = {
+                    onValueChange = {
                         onSelectedColorChanged(it)
                         spectrumColor.value = it.copy(1f)
                     },
@@ -785,6 +843,75 @@ fun rememberColorPickerState(
     }
 
 @Composable
+private fun HexColorTextField(
+    color: Color,
+    onValueChange: (color: Color) -> Unit,
+    alphaEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val hexFormat = remember {
+        HexFormat {
+            upperCase = true
+            number.removeLeadingZeros = false
+        }
+    }
+
+    ValueTextField(
+        value = color,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        format =
+            if (alphaEnabled) {
+                {
+                    it.value.toHexString(hexFormat).take(8)
+                }
+            } else {
+                {
+                    it.value.toHexString(hexFormat).substring(2, 8)
+                }
+            },
+        parse = {
+            if (it.isBlank()) {
+                Color.Black
+            } else {
+                val value = it
+                    .toLongOrNull(16)
+
+                when (value) {
+                    null -> null
+                    !in 0L..0xFFFFFFFFL -> null
+                    else -> Color(value)
+                }
+            }
+        },
+        visualTransformation = HexVisualTransformation
+    )
+}
+
+private object HexVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val out = "#" + text.text
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return offset + 1
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                if (offset <= 0) return 0
+                return offset - 1
+            }
+        }
+
+        return TransformedText(
+            text = AnnotatedString(out),
+            offsetMapping = offsetMapping
+        )
+    }
+}
+
+@Deprecated("Use ValueLabelTextField instead")
+@Composable
 private fun ColorTextField(
     value: Int,
     onValueChanged: (Int) -> Unit,
@@ -826,60 +953,82 @@ private fun ColorTextField(
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
+@ExperimentalFluentApi
 @Composable
-private fun HexColorTextField(
-    color: Color,
-    onValueChanged: (color: Color) -> Unit,
-    alphaEnabled: Boolean,
+private fun AlphaTextField(
+    value: Float,
+    onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val hexFormat = remember {
-        HexFormat {
-            upperCase = true
-            number.removeLeadingZeros = false
-        }
+    ValueLabelTextField(
+        value = value,
+        onValueChange = onValueChange,
+        format = { (value * 100).toInt().toString() },
+        parse = {
+            when (val value = it.toIntOrNull()) {
+                null -> null
+                !in 0..100 -> null
+                else -> value / 100f
+            }
+        },
+        label = "Opacity"
+    )
+}
+
+@Composable
+private fun <T> ValueLabelTextField(
+    value: T,
+    onValueChange: (T) -> Unit,
+    format: (T) -> String,
+    parse: (String) -> T?,
+    label: String,
+    modifier: Modifier = Modifier,
+    visualTransformation: VisualTransformation = VisualTransformation.None
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        ValueTextField(
+            value = value,
+            onValueChange = onValueChange,
+            format = format,
+            parse = parse,
+            modifier = Modifier
+                .width(120.dp),
+            visualTransformation = visualTransformation
+        )
+        Text(
+            text = label,
+            color = FluentTheme.colors.text.text.secondary
+        )
     }
+}
 
-    fun Color.toHexString(
-        hexFormat: HexFormat,
-        alphaEnabled: Boolean
-    ): String {
-        val hexString = value.toHexString(hexFormat)
-        return if (alphaEnabled) {
-            hexString.take(8)
-        } else {
-            hexString.substring(2, 8)
-        }
-    }
-
-    fun String.toColor(): Color? {
-        if (isBlank()) {
-            return Color.Black
-        }
-
-        val value = this
-            .toLongOrNull(16)
-            ?: return null
-
-        if (value !in 0L..0xFFFFFFFFL) {
-            return null
-        }
-
-        return Color(value)
-    }
+@Composable
+private fun <T> ValueTextField(
+    value: T,
+    onValueChange: (T) -> Unit,
+    format: (T) -> String,
+    parse: (String) -> T?,
+    modifier: Modifier = Modifier,
+    visualTransformation: VisualTransformation = VisualTransformation.None
+) {
+    val currentFormat by rememberUpdatedState(format)
+    val currentParse by rememberUpdatedState(parse)
 
     var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(color.toHexString(hexFormat, alphaEnabled)))
+        mutableStateOf(TextFieldValue(format(value)))
     }
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    LaunchedEffect(color, alphaEnabled, isFocused) {
+    LaunchedEffect(value, currentFormat, isFocused) {
         if (!isFocused) {
             textFieldValue = textFieldValue.copy(
-                text = color.toHexString(hexFormat, alphaEnabled)
+                text = currentFormat(value)
             )
         }
     }
@@ -889,37 +1038,15 @@ private fun HexColorTextField(
         onValueChange = {
             textFieldValue = it
 
-            val newColor = it.text.toColor()
-            if (newColor != null && newColor != color) {
-                onValueChanged(newColor)
+            val newValue = currentParse(it.text)
+            if (newValue != null && newValue != value) {
+                onValueChange(newValue)
             }
         },
         modifier = modifier,
-        visualTransformation = HexVisualTransformation,
+        visualTransformation = visualTransformation,
         interactionSource = interactionSource
     )
-}
-
-private object HexVisualTransformation : VisualTransformation {
-    override fun filter(text: AnnotatedString): TransformedText {
-        val out = "#" + text.text
-
-        val offsetMapping = object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
-                return offset + 1
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                if (offset <= 0) return 0
-                return offset - 1
-            }
-        }
-
-        return TransformedText(
-            text = AnnotatedString(out),
-            offsetMapping = offsetMapping
-        )
-    }
 }
 
 private fun Modifier.alphaBackground(shape: Shape = RectangleShape, enabled: Boolean = true) =
@@ -963,7 +1090,6 @@ private fun Modifier.alphaBackground(shape: Shape = RectangleShape, enabled: Boo
  * Contains the default values used by [ColorPicker].
  */
 object ColorPickerDefaults {
-
     /**
      * A composable function that renders a small circular dot, indicating the currently selected color.
      *
@@ -1077,6 +1203,7 @@ sealed class ColorSpectrum {
     )
 
     @Deprecated("Use content with ColorPickerState instead")
+    @Suppress("ComposableNaming")
     @Composable
     internal abstract fun content(
         modifier: Modifier,
@@ -1596,6 +1723,7 @@ sealed class ColorSpectrum {
                                 }
 
                                 else -> {
+                                    @Suppress("DEPRECATION")
                                     getPositionFromColor(
                                         colorState.value,
                                         colorPanelRect.value
