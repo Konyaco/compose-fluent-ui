@@ -149,15 +149,15 @@ fun ColorPicker(
             ) {}
         }
 
+        Spacer(Modifier.height(22.dp))
+
         BasicSlider(
             value = state.hsvColor.value,
             onValueChange = {
                 state.updateHsvColor(value = it)
             },
             modifier = Modifier
-                .padding(top = 21.dp)
-                .width(312.dp)
-                .height(32.dp),
+                .width(312.dp),
             onValueChangeFinished = {
                 state.onValueChangeFinished?.invoke(state.color)
             },
@@ -194,6 +194,7 @@ fun ColorPicker(
         )
 
         if (alphaEnabled) {
+            Spacer(Modifier.height(10.dp))
             BasicSlider(
                 value = state.hsvColor.alpha,
                 onValueChange = {
@@ -680,6 +681,8 @@ fun ColorPicker(
                         spectrumColor.value = it.copy(1f)
                     },
                     alphaEnabled = alphaEnabled,
+                    modifier = Modifier
+                        .width(132.dp)
                 )
             }
             if (isRGBTextField) {
