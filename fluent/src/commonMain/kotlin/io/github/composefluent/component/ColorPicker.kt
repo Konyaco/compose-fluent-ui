@@ -888,7 +888,14 @@ private fun HexColorTextField(
                 when (value) {
                     null -> null
                     !in 0L..0xFFFFFFFFL -> null
-                    else -> Color(value or 0xFF000000L)
+                    else ->
+                        if (alphaEnabled) {
+                            // Use as is (Input includes Alpha)
+                            Color(value)
+                        } else {
+                            // Make opaque (Input is RGB only)
+                            Color(value or 0xFF000000L)
+                        }
                 }
             }
         },
