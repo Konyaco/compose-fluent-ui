@@ -360,7 +360,8 @@ fun ColorPicker(
                     },
                     format = { (it * 255).toInt().toString() },
                     parse = { parseRgb(it) },
-                    label = "Red"
+                    label = "Red",
+                    maxTextLength = 3
                 )
                 ValueLabelTextField(
                     value = state.color.green,
@@ -370,7 +371,8 @@ fun ColorPicker(
                     },
                     format = { (it * 255).toInt().toString() },
                     parse = { parseRgb(it) },
-                    label = "Green"
+                    label = "Green",
+                    maxTextLength = 3
                 )
                 ValueLabelTextField(
                     value = state.color.blue,
@@ -380,7 +382,8 @@ fun ColorPicker(
                     },
                     format = { (it * 255).toInt().toString() },
                     parse = { parseRgb(it) },
-                    label = "Blue"
+                    label = "Blue",
+                    maxTextLength = 3
                 )
             } else {
                 ValueLabelTextField(
@@ -401,7 +404,8 @@ fun ColorPicker(
                             }
                         }
                     },
-                    label = "Hue"
+                    label = "Hue",
+                    maxTextLength = 3
                 )
                 ValueLabelTextField(
                     value = state.hsvColor.saturation,
@@ -421,7 +425,8 @@ fun ColorPicker(
                             }
                         }
                     },
-                    label = "Saturation"
+                    label = "Saturation",
+                    maxTextLength = 3
                 )
                 ValueLabelTextField(
                     value = state.hsvColor.value,
@@ -441,7 +446,8 @@ fun ColorPicker(
                             }
                         }
                     },
-                    label = "Value"
+                    label = "Value",
+                    maxTextLength = 3
                 )
             }
 
@@ -886,6 +892,7 @@ private fun HexColorTextField(
                 }
             }
         },
+        maxTextLength = if (alphaEnabled) 8 else 6,
         visualTransformation = HexVisualTransformation
     )
 }
@@ -979,6 +986,7 @@ private fun AlphaTextField(
             }
         },
         label = "Opacity",
+        maxTextLength = 3,
         visualTransformation = AlphaVisualTransformation
     )
 }
@@ -1013,6 +1021,7 @@ private fun <T> ValueLabelTextField(
     parse: (String) -> T?,
     label: String,
     modifier: Modifier = Modifier,
+    maxTextLength: Int = Int.MAX_VALUE,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Row(
@@ -1027,6 +1036,7 @@ private fun <T> ValueLabelTextField(
             parse = parse,
             modifier = Modifier
                 .width(120.dp),
+            maxTextLength = maxTextLength,
             visualTransformation = visualTransformation
         )
         Text(
@@ -1043,6 +1053,7 @@ private fun <T> ValueTextField(
     format: (T) -> String,
     parse: (String) -> T?,
     modifier: Modifier = Modifier,
+    maxTextLength: Int = Int.MAX_VALUE,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     val currentFormat by rememberUpdatedState(format)
@@ -1066,6 +1077,10 @@ private fun <T> ValueTextField(
     TextField(
         value = textFieldValue,
         onValueChange = {
+            if (it.text.length > maxTextLength) {
+                return@TextField
+            }
+
             textFieldValue = it
 
             val newValue = currentParse(it.text)
@@ -1074,6 +1089,7 @@ private fun <T> ValueTextField(
             }
         },
         modifier = modifier,
+        singleLine = true,
         visualTransformation = visualTransformation,
         interactionSource = interactionSource
     )
