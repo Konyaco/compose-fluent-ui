@@ -1341,7 +1341,7 @@ sealed class ColorSpectrum {
                                     excludeRadius = false
                                 )
                                     ?.let { color ->
-                                        state.updateColor(color)
+                                        state.updateColor(color.copy(alpha = state.color.alpha))
                                     }
                             }
                         }
@@ -1615,7 +1615,7 @@ sealed class ColorSpectrum {
                                     excludeRadius = false
                                 )
                                     ?.let { color ->
-                                        state.updateColor(color)
+                                        state.updateColor(color.copy(alpha = state.color.alpha))
                                     }
                             }
                         }
