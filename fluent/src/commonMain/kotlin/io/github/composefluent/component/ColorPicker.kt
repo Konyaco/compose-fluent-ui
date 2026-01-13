@@ -431,8 +431,7 @@ fun ColorPicker(
                     format = { (it * 100).toInt().toString() },
                     parse = {
                         if (it.isBlank()) {
-                            // Same logic as HexColorTextField clearing to #FF000000
-                            100f
+                            0f
                         } else {
                             when (val value = it.toFloatOrNull()) {
                                 null -> 0f
@@ -965,14 +964,42 @@ private fun AlphaTextField(
         onValueChange = onValueChange,
         format = { (value * 100).toInt().toString() },
         parse = {
-            when (val value = it.toIntOrNull()) {
-                null -> null
-                !in 0..100 -> null
-                else -> value / 100f
+            if (it.isBlank()) {
+                // Same logic as HexColorTextField clearing to #FF000000
+                1f
+            } else {
+                when (val value = it.toIntOrNull()) {
+                    null -> null
+                    !in 0..100 -> null
+                    else -> value / 100f
+                }
             }
         },
-        label = "Opacity"
+        label = "Opacity",
+        visualTransformation = AlphaVisualTransformation
     )
+}
+
+private object AlphaVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val out = text.text + "%"
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return offset
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                if (offset > text.length) return text.length
+                return offset
+            }
+        }
+
+        return TransformedText(
+            text = AnnotatedString(out),
+            offsetMapping = offsetMapping
+        )
+    }
 }
 
 @Composable
