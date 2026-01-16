@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.PopupPositionProvider
 import kotlin.jvm.JvmInline
+import kotlin.math.roundToInt
 
 /**
  * Creates and remembers a [FlyoutPositionProvider] that can be used to position a flyout relative to an anchor.
@@ -146,7 +147,10 @@ open class FlyoutPositionProvider(
                     popupActualSize,
                     popupActualCenter,
                     windowSize
-                ) - popupPadding).toInt(),
+                ) - popupPadding).roundToInt().coerceIn(
+                    0,
+                    windowSize.width - popupContentSize.width
+                ),
                 y = (getOffsetY(
                     verticalPlacement,
                     anchorBounds,
@@ -154,7 +158,10 @@ open class FlyoutPositionProvider(
                     popupActualSize,
                     popupActualCenter,
                     windowSize
-                ) - popupPadding).toInt()
+                ) - popupPadding).roundToInt().coerceIn(
+                    0,
+                    windowSize.height - popupContentSize.height
+                )
             )
         }
     }

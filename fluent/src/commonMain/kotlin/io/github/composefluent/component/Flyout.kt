@@ -219,7 +219,7 @@ fun Flyout(
 }
 
 @Composable
-internal fun BasicFlyout(
+fun BasicFlyout(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,

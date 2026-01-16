@@ -7,7 +7,7 @@ import androidx.compose.ui.window.PopupProperties
 
 //Remove when compose common source support key event parameter
 @Composable
-internal expect fun Popup(
+expect fun Popup(
     popupPositionProvider: PopupPositionProvider,
     onDismissRequest: (() -> Unit)? = null,
     properties: PopupProperties = PopupProperties(),

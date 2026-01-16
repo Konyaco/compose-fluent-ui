@@ -156,17 +156,24 @@ internal fun DropdownMenuContent(
 
             with(LocalWindowAcrylicContainer.current) {
                 FlyoutContentLayout(
-                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
+                    contentPadding = PaddingValues(),
                     material = MaterialDefaults.acrylicDefault(),
                     shape = shape,
                     content = {
-                        Column(
-                            modifier = modifier
-                                .width(IntrinsicSize.Max)
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            content = content
-                        )
+                        val state = rememberScrollState()
+                        ScrollbarContainer(
+                            adapter = rememberScrollbarAdapter(state),
+                            isVertical = true,
+                        ) {
+                            Column(
+                                modifier = modifier
+                                    .width(IntrinsicSize.Max)
+                                    .padding(PaddingValues(horizontal = 4.dp, vertical = 4.dp))
+                                    .verticalScroll(state),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                                content = content
+                            )
+                        }
                     }
                 )
             }

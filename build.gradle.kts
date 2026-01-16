@@ -23,3 +23,11 @@ allprojects {
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
 }
+
+tasks.register("publishAllToLocalRepo") {
+    subprojects.forEach { subproject ->
+        subproject.tasks.findByName("publishToMavenLocal")?.also { task ->
+            dependsOn(task)
+        }
+    }
+}

@@ -10,7 +10,7 @@ import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 
 @Composable
-internal actual fun Popup(
+actual fun Popup(
     popupPositionProvider: PopupPositionProvider,
     onDismissRequest: (() -> Unit)?,
     properties: PopupProperties,
