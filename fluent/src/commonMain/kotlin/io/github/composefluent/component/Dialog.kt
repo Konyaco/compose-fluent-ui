@@ -86,6 +86,7 @@ class DialogSize(
  * @param visible Controls the visibility of the dialog. When `true`, the dialog is shown; otherwise, it's hidden.
  * @param size The size of the dialog, defining its minimum and maximum width. Defaults to [DialogSize.Standard].
  * @param properties Additional properties for the dialog's popup, such as focusability.
+ * @param onDismissRequest Executes when the user clicks outside of the popup.
  * @param content The composable content to display within the dialog.
  */
 @Composable
@@ -93,6 +94,7 @@ fun FluentDialog(
     visible: Boolean,
     size: DialogSize = DialogSize.Standard,
     properties: PopupProperties = PopupProperties(focusable = true),
+    onDismissRequest: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     val visibleState = remember { MutableTransitionState(false) }
@@ -103,7 +105,8 @@ fun FluentDialog(
 
     if (visibleState.currentState || visibleState.targetState) Popup(
         properties = properties,
-        popupPositionProvider = DialogPopupPositionProvider
+        popupPositionProvider = DialogPopupPositionProvider,
+        onDismissRequest = onDismissRequest
     ) {
         val scrim by animateColorAsState(
             if (visible) Color.Black.copy(0.3f) else Color.Transparent, animationSpec = tween(
