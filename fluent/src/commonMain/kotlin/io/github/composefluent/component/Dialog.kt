@@ -93,6 +93,7 @@ fun FluentDialog(
     visible: Boolean,
     size: DialogSize = DialogSize.Standard,
     properties: PopupProperties = PopupProperties(focusable = true),
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     val visibleState = remember { MutableTransitionState(false) }
@@ -116,7 +117,7 @@ fun FluentDialog(
             durationMillis = FluentDuration.ShortDuration
         )
         Box(
-            Modifier.fillMaxSize()
+            modifier.fillMaxSize()
                 .background(scrim)
                 .pointerInput(Unit) {},
             Alignment.Center
