@@ -292,7 +292,8 @@ internal fun rememberOverflowRowItemMeasurePolicy(
             maxWidth = (constraints.maxWidth - leftPadding - rightPadding).toInt(),
             maxHeight = (constraints.maxHeight - topPadding - bottomPadding).toInt()
         )
-        val overflowPlaceable = measure(itemProvider.itemCount - 1, itemConstraints)[0]
+        val overflowPlaceable =
+            compose(itemProvider.itemCount - 1).map { it.measure(itemConstraints) }[0]
 
         if (constraints.hasBoundedWidth) {
             when (overflow) {
@@ -378,7 +379,7 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseStart(
     val measuredItems = buildList<Placeable> {
         do {
             remainingLastIndex -= 1
-            val item = measure(remainingLastIndex, itemConstraints)[0]
+            val item = compose(remainingLastIndex).map { it.measure(itemConstraints) }[0]
             width -= item.width + if (remainingLastIndex == 0) 0 else spacingPx
             add(0, item)
             height = maxOf(height, item.height)
@@ -452,7 +453,7 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseEnd(
     val measuredItems = buildList<Placeable> {
         do {
             remainingLastIndex += 1
-            val item = measure(remainingLastIndex, itemConstraints)[0]
+            val item = compose(remainingLastIndex).map { it.measure(itemConstraints) }[0]
             width -= item.width + if (remainingLastIndex == itemCount - 1) 0 else spacingPx
             add(remainingLastIndex, item)
             height = maxOf(height, item.height)
@@ -528,13 +529,13 @@ private fun LazyLayoutMeasureScope.measureItemsEllipseCenter(
     do {
         if (measuredStartItems.size == measuredEndItems.size) {
             remainingLastStartIndex += 1
-            val item = measure(remainingLastStartIndex, itemConstraints)[0]
+            val item = compose(remainingLastStartIndex).map { it.measure(itemConstraints) }[0]
             width -= item.width + spacingPx
             measuredStartItems.add(remainingLastStartIndex, item)
             height = maxOf(height, item.height)
         } else {
             remainingLastEndIndex -= 1
-            val item = measure(remainingLastEndIndex, itemConstraints)[0]
+            val item = compose(remainingLastEndIndex).map { it.measure(itemConstraints) }[0]
             width -= item.width + spacingPx
             measuredEndItems.add(0, item)
             height = maxOf(height, item.height)

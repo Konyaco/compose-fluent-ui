@@ -1,22 +1,30 @@
 [versions]
-activityCompose = "1.10.1"
-haze = "1.6.6"
-kotlin = "2.2.0"
-ksp = "2.2.0-2.0.2"
-compose = "1.8.2"
-androidGradlePlugin = "8.10.0"
+activityCompose = "1.12.2"
+haze = "1.7.1"
+kotlin = "2.3.0"
+ksp = "2.3.4"
+compose = "1.10.0"
+androidGradlePlugin = "9.0.0"
 androidBuildTools = "31.7.2"
 windowStyler = "0.3.3-SNAPSHOT"
-highlights = "1.0.0"
+highlights = "1.1.0"
 kotlinx-datetime = "0.7.1"
 jna = "5.16.0"
 buildKonfig = "0.17.1"
-mavenPublish = "0.33.0"
-hot-reload = "1.0.0-beta03"
+mavenPublish = "0.35.0"
+navigationEvent = "1.0.0"
+navigation3="1.0.0-alpha06"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
-androidx-test-junit = "androidx.test.ext:junit:1.2.1"
+androidx-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+androidx-navigationevent-compose = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "navigationEvent" }
+
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
+compose-ui-util = { module = "org.jetbrains.compose.ui:ui-util", version.ref = "compose" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose" }
 
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 
@@ -34,12 +42,13 @@ jna = { module = "net.java.dev.jna:jna-jpms", version.ref = "jna" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
-compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hot-reload" }
 
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidGradlePlugin" }

@@ -22,7 +22,7 @@ object BuildConfig {
         internal set
 
     object Android {
-        const val compileSdkVersion = 35
+        const val compileSdkVersion = 36
 
         const val minSdkVersion = 24
     }

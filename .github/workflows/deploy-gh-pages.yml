@@ -36,14 +36,14 @@ jobs:
       - name: Build wasm target
         env:
           PROJECT_BUILD_TYPE: release
-        run: ./gradlew :gallery:wasmJsBrowserDistribution
+        run: ./gradlew :gallery:webApp:wasmJsBrowserDistribution
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist
-          path: ./gallery/build/dist/wasmJs/productionExecutable
+          path: ./gallery/webApp/build/dist/wasmJs/productionExecutable
 
   # Single deploy job since we're just deploying
   deploy:

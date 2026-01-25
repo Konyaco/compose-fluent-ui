@@ -269,7 +269,7 @@ fun TextField(
         cursorBrush = color.cursorBrush,
         keyboardOptions = keyboardOptions,
         interactionSource = interactionSource,
-        decorator = { innerTextField ->
+        decorator = decorationBoxWorkaround { innerTextField ->
             TextFieldDefaults.DecorationBox(
                 state = state,
                 color = color,
@@ -322,7 +322,7 @@ fun SecureTextField(
         cursorBrush = color.cursorBrush,
         keyboardOptions = keyboardOptions,
         interactionSource = interactionSource,
-        decorator = { innerTextField ->
+        decorator = decorationBoxWorkaround { innerTextField ->
             TextFieldDefaults.DecorationBox(
                 state = state,
                 color = color,
@@ -476,7 +476,7 @@ object TextFieldDefaults {
         placeholder: (@Composable () -> Unit)?,
         leadingIcon: (@Composable () -> Unit)?,
         trailing: (@Composable RowScope.() -> Unit)?,
-        container: TextFieldDecorator = TextFieldDecorator {
+        container: TextFieldDecorator = decorationBoxWorkaround {
             Container(
                 shape = shape,
                 interactionSource = interactionSource,
@@ -558,7 +558,7 @@ object TextFieldDefaults {
         placeholder: (@Composable () -> Unit)?,
         leadingIcon: (@Composable () -> Unit)?,
         trailing: (@Composable RowScope.() -> Unit)?,
-        container: TextFieldDecorator = TextFieldDecorator {
+        container: TextFieldDecorator = decorationBoxWorkaround {
             Container(
                 shape = shape,
                 interactionSource = interactionSource,
@@ -790,3 +790,15 @@ private val SecureTextFieldKeyboardOptions =
     KeyboardOptions(autoCorrectEnabled = false, keyboardType = KeyboardType.Password)
 
 private const val DefaultObfuscationCharacter: Char = '\u2022'
+
+//TODO Remove, https://youtrack.jetbrains.com/issue/CMP-9456
+@Composable
+internal inline fun decorationBoxWorkaround(crossinline content: @Composable (innerTextField: @Composable () -> Unit) -> Unit): TextFieldDecorator {
+    return object : TextFieldDecorator {
+        @Composable
+        override fun Decoration(innerTextField: @Composable () -> Unit) {
+            content(innerTextField)
+        }
+    }
+}
+

@@ -13,7 +13,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":fluent-icons-core"))
             implementation(project(":fluent-icons-extended"))
-            implementation(compose.ui)
+            implementation(libs.compose.ui)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))

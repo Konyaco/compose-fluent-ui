@@ -23,46 +23,67 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        type: [PublishLibrary, Android, Windows, Linux, macOS, iOS, WasmJs, Js]
+        type: [PublishLibrary, Android, Windows, Linux, macOS, macosArm64, macosX64, iOS, WasmJs, Js]
         include:
           - type: PublishLibrary
             publish: release
             os: macos-latest
+
           - type: Android
             android: apk
             os: ubuntu-latest
+            module: androidApp
+
           - type: Windows
             desktop: msi
             os: windows-latest
+            module: jvmApp
+
           - type: Linux
             desktop: deb
             os: ubuntu-latest
+            module: jvmApp
+
           - type: macOS
             desktop: dmg
             os: macos-latest
+            module: jvmApp
+
           - type: macosArm64
             native: dmg
             os: macos-latest
+            module: macosApp
+
           - type: macosX64
             native: dmg
             os: macos-15-intel
+            module: macosApp
+
           - type: iOS
             iOS: ipa
             # workaround runner version for iPhoneOS sdk 18.2
             os: macos-15
+            module: iosApp
+
           - type: WasmJs
             js: wasmJs
             os: windows-latest
+            module: webApp
+
           - type: Js
             js: js
             os: ubuntu-latest
+            module: webApp
 
     runs-on: ${{ matrix.os }}
     if: ${{ github.event_name != 'pull_request_review' || github.event.review.state == 'approved' }}
     permissions:
       contents: read
       packages: write
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle-${{ matrix.type }}
 
     steps:
       - uses: actions/checkout@v4
@@ -105,7 +126,7 @@ jobs:
         if: ${{ matrix.android }}
         run: |
           echo "$ANDROID_KEYSTORE" | base64 --decode > ${{ github.workspace }}/android_sign_key.jks
-          ./gradlew :gallery:assembleRelease
+          ./gradlew :gallery:${{ matrix.module }}:assembleRelease
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
           ANDROID_SIGNING_FILE: ${{ github.workspace }}/android_sign_key.jks
@@ -118,32 +139,32 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
-          path: ${{github.workspace}}/gallery/build/outputs/**/*.${{ matrix.android }}
+          path: ${{github.workspace}}/gallery/${{ matrix.module }}/build/outputs/**/*.${{ matrix.android }}
 
       # Desktop Build Action
       - name: Build Gallery for ${{ matrix.type }}
         if: ${{ matrix.desktop }}
         run: |
-          ./gradlew :gallery:packageReleaseDistributionForCurrentOS
+          ./gradlew :gallery:${{ matrix.module }}:packageReleaseDistributionForCurrentOS
 
       - name: Upload desktop build artifacts
         if: ${{ matrix.desktop }}
         uses: actions/upload-artifact@v4
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
-          path: ${{github.workspace}}/gallery/build/compose/binaries/main-release/${{ matrix.desktop }}/*.${{ matrix.desktop }}
+          path: ${{github.workspace}}/gallery/${{ matrix.module }}/build/compose/binaries/main-release/${{ matrix.desktop }}/*.${{ matrix.desktop }}
 
       # Desktop Native Build Action
       - name: Build Gallery for ${{ matrix.type }}
         if: ${{ matrix.native }}
         run: |
-            ./gradlew :gallery:packageDistributionNativeReleaseForCurrentOS
+            ./gradlew :gallery:${{ matrix.module }}:packageDistributionNativeReleaseForCurrentOS
       - name: Upload desktop native build artifacts
         if: ${{ matrix.native }}
         uses: actions/upload-artifact@v4
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
-          path: ${{github.workspace}}/gallery/build/compose/binaries/main/**/*.${{ matrix.native }}
+          path: ${{github.workspace}}/gallery/${{ matrix.module }}/build/compose/binaries/main/**/*.${{ matrix.native }}
 
       # iOS Build Action, Note: Due to the long build time, the iOS build only build the debug version.
       - name: Set up Xcode
@@ -155,24 +176,24 @@ jobs:
       - name: Build Gallery for iOS
         if: ${{ matrix.iOS }}
         run: |
-          xcodebuild -scheme iosApp -configuration Debug -sdk iphoneos -archivePath gallery/iosApp/build/Gallery.xcarchive archive -workspace gallery/iosApp/iosApp.xcodeproj/project.xcworkspace CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          xcodebuild -scheme iosApp -configuration Debug -sdk iphoneos -archivePath gallery/${{ matrix.module }}/build/Gallery.xcarchive archive -workspace gallery/${{ matrix.module }}/iosApp.xcodeproj/project.xcworkspace CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Upload iOS Artifact
         if: ${{ matrix.iOS }}
         uses: actions/upload-artifact@v4
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
-          path: ${{ github.workspace }}/gallery/iosApp/build/
+          path: ${{ github.workspace }}/gallery/${{ matrix.module }}/build/
 
       # Js and WasmJs Build Action
       - name: Build Gallery for ${{ matrix.type }}
         if: ${{ matrix.js }}
         run: |
-          ./gradlew :gallery:${{ matrix.js }}BrowserDistribution
+          ./gradlew :gallery:${{ matrix.module }}:${{ matrix.js }}BrowserDistribution
 
       - name: Upload ${{ matrix.type }} build artifacts
         if: ${{ matrix.js }}
         uses: actions/upload-artifact@v4
         with:
           name: Gallery-${{ matrix.type }}-${{ github.run_id }}
-          path: ./gallery/build/dist/${{ matrix.js }}/productionExecutable
+          path: ./gallery/${{ matrix.module }}/build/dist/${{ matrix.js }}/productionExecutable

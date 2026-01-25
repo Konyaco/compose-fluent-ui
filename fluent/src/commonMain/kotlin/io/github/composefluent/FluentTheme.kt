@@ -45,23 +45,21 @@ fun FluentTheme(
     val contentDialogHostState = remember { ContentDialogHostState() }
     MaterialContainer {
         CompositionLocalProvider(
-            LocalAcrylicPopupEnabled provides useAcrylicPopup,
-            LocalColors provides colors,
-            LocalTypography provides typography,
             LocalWindowAcrylicContainer provides this,
-            LocalTextSelectionColors provides TextSelectionColors(
-                colors.text.onAccent.primary,
-                colors.fillAccent.selectedTextBackground.copy(0.4f)
-            ),
-            LocalContentDialog provides contentDialogHostState,
-            LocalCompactMode provides compactMode,
-            LocalCornerRadius provides cornerRadius,
-            LocalShapes provides cornerRadius.toShapes()
         ) {
-            ContentDialogHost(contentDialogHostState)
-            Box(modifier = Modifier.behindMaterial()) {
-                ProvideFontIcon {
-                    PlatformCompositionLocalProvider(content)
+            FluentThemeConfiguration(
+                colors = colors,
+                typography = typography,
+                cornerRadius = cornerRadius,
+                useAcrylicPopup = useAcrylicPopup,
+                compactMode = compactMode,
+                contentDialogHostState = contentDialogHostState
+            ) {
+                ContentDialogHost(contentDialogHostState)
+                Box(modifier = Modifier.behindMaterial()) {
+                    ProvideFontIcon {
+                        PlatformCompositionLocalProvider(content)
+                    }
                 }
             }
         }
