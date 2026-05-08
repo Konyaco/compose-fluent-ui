@@ -26,6 +26,8 @@ on:
 jobs:
   check_inactivity:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       should_run: ${{ steps.inactivity.outputs.should_run }}
     steps:
@@ -39,9 +41,9 @@ jobs:
             }
 
             const pushedAt = context.payload.repository?.pushed_at;
-            const pushedAtMs = typeof pushedAt === 'number' ? pushedAt * 1000 : Date.parse(pushedAt ?? '');
+            const pushedAtMs = Date.parse(pushedAt ?? '');
             const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-            const shouldRun = Number.isFinite(pushedAtMs) ? (Date.now() - pushedAtMs) >= sevenDaysMs : true;
+            const shouldRun = Number.isFinite(pushedAtMs) ? (Date.now() - pushedAtMs) >= sevenDaysMs : false;
 
             core.setOutput('should_run', shouldRun ? 'true' : 'false');
 
