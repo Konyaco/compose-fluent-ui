@@ -20,8 +20,33 @@ on:
   pull_request_review:
     types: submitted
 
+  schedule:
+    - cron: '0 3 * * *'
+
 jobs:
+  check_inactivity:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.inactivity.outputs.should_run }}
+    steps:
+      - id: inactivity
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if (context.eventName !== 'schedule') {
+              core.setOutput('should_run', 'true');
+              return;
+            }
+
+            const pushedAt = context.payload.repository?.pushed_at;
+            const pushedAtMs = typeof pushedAt === 'number' ? pushedAt * 1000 : Date.parse(pushedAt ?? '');
+            const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+            const shouldRun = Number.isFinite(pushedAtMs) ? (Date.now() - pushedAtMs) >= sevenDaysMs : true;
+
+            core.setOutput('should_run', shouldRun ? 'true' : 'false');
+
   build:
+    needs: check_inactivity
     strategy:
       matrix:
         type: [PublishLibrary, Android, Windows, Linux, macOS, iOS, WasmJs, Js]
@@ -53,7 +78,7 @@ jobs:
             os: ubuntu-latest
 
     runs-on: ${{ matrix.os }}
-    if: ${{ github.event_name != 'pull_request_review' || github.event.review.state == 'approved' }}
+    if: ${{ (github.event_name != 'pull_request_review' || github.event.review.state == 'approved') && needs.check_inactivity.outputs.should_run == 'true' }}
     permissions:
       contents: read
       packages: write
