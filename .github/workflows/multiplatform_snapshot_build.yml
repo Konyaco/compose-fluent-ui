@@ -21,7 +21,7 @@ on:
     types: submitted
 
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 3 * * 1'
 
 jobs:
   check_inactivity:
@@ -40,21 +40,21 @@ jobs:
               return;
             }
 
-            // `repository.pushed_at` is the repository's last push timestamp in event payload.
-            const pushedAt = context.payload.repository?.pushed_at;
-            let pushedAtMs = Number.NaN;
-            if (typeof pushedAt === 'number') {
-              pushedAtMs = pushedAt * 1000;
-            } else if (typeof pushedAt === 'string') {
-              pushedAtMs = Date.parse(pushedAt);
-            }
+            // Query the last commit date on the dev branch via the GitHub API.
+            const { data: branch } = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'dev',
+            });
+            const lastCommitAt = branch?.commit?.commit?.author?.date;
+            const lastCommitMs = Date.parse(lastCommitAt ?? '');
             const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-            if (!Number.isFinite(pushedAtMs)) {
-              core.warning('Unable to parse repository.pushed_at, proceeding with workflow execution.');
+            if (!Number.isFinite(lastCommitMs)) {
+              core.warning('Unable to parse last commit date on dev branch, proceeding with workflow execution.');
               core.setOutput('should_run', 'true');
               return;
             }
-            const shouldRun = (Date.now() - pushedAtMs) >= sevenDaysMs;
+            const shouldRun = (Date.now() - lastCommitMs) >= sevenDaysMs;
 
             core.setOutput('should_run', shouldRun ? 'true' : 'false');
 
