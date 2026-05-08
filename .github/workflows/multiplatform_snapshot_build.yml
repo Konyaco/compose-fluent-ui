@@ -40,6 +40,7 @@ jobs:
               return;
             }
 
+            // `repository.pushed_at` is the repository's last push timestamp in event payload.
             const pushedAt = context.payload.repository?.pushed_at;
             let pushedAtMs = Number.NaN;
             if (typeof pushedAt === 'number') {
@@ -49,7 +50,7 @@ jobs:
             }
             const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
             if (!Number.isFinite(pushedAtMs)) {
-              core.warning('Unable to parse repository.pushed_at, defaulting to run scheduled build.');
+              core.warning('Unable to parse repository.pushed_at, proceeding with workflow execution.');
               core.setOutput('should_run', 'true');
               return;
             }
