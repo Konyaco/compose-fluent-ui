@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.FluentTheme
@@ -416,14 +417,24 @@ private fun Content() {
             TabItem(
                 selected = index == selectedKey.value,
                 onSelectedChanged = { selectedKey.value = index },
-                content = { Text(index.toString()) },
+                text = {
+                    val content = if (index == tabItems.lastIndex) {
+                        "long title item ${index + 1}"
+                    } else {
+                        "item ${index + 1}"
+                    }
+                    Text(text = content, overflow = TextOverflow.Ellipsis)
+                },
+                trailing = {
+                    TabViewDefaults.TabCloseButton(onClick = {})
+                },
                 colors = if (index == selectedKey.value) {
                     TabViewDefaults.selectedItemTitleBarColors()
                 } else {
                     TabViewDefaults.defaultItemTitleBarColors()
                 },
                 endDividerVisible = index != selectedKey.value - 1,
-                modifier = Modifier.widthIn(60.dp)
+                modifier = Modifier.widthIn(80.dp, 120.dp)
             )
         }
         item {

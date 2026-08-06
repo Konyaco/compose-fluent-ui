@@ -250,7 +250,7 @@ fun TabItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 icon()
-                text()
+                Box(modifier = Modifier.weight(1f, fill = false)) { text() }
                 trailing()
             }
         }
