@@ -47,7 +47,6 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.window.styler)
             implementation(libs.jna.platform)
             implementation(libs.jna)
         }

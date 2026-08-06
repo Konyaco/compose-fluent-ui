@@ -70,7 +70,6 @@ import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCLIE
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCLOSE
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTMAXBUTTON
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTMINBUTTON
-import io.github.composefluent.gallery.jna.windows.structure.isWindows11OrLater
 import io.github.composefluent.icons.Icons
 import io.github.composefluent.icons.regular.Dismiss
 import io.github.composefluent.icons.regular.Square
@@ -79,8 +78,6 @@ import io.github.composefluent.icons.regular.Subtract
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
-import com.mayakapps.compose.windowstyler.WindowBackdrop
-import com.mayakapps.compose.windowstyler.WindowStyle
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef.HWND
 import com.sun.jna.platform.win32.WinUser
@@ -99,16 +96,8 @@ fun FrameWindowScope.WindowsWindowFrame(
     captionBarHeight: Dp = 48.dp,
     content: @Composable (windowInset: WindowInsets, captionBarInset: WindowInsets) -> Unit
 ) {
-    LaunchedEffect(window) {
-        window.findSkiaLayer()?.transparency = true
-    }
-    WindowStyle(
-        isDarkTheme = FluentTheme.colors.darkMode,
-        backdropType = when {
-            isWindows11OrLater() -> WindowBackdrop.Mica
-            else -> WindowBackdrop.Solid(FluentTheme.colors.background.mica.baseAlt)
-        }
-    )
+
+    //TODO implement mica backdrop
 
     val paddingInset = remember { MutableWindowInsets() }
     val maxButtonRect = remember { mutableStateOf(Rect.Zero) }
