@@ -1,6 +1,7 @@
 package io.github.composefluent.gallery.screen.scrolling
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,12 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.github.composefluent.component.DropDownButton
+import io.github.composefluent.component.ComboBox
 import io.github.composefluent.component.HorizontalFlipView
 import io.github.composefluent.component.HorizontalPipsPager
-import io.github.composefluent.component.MenuFlyoutContainer
-import io.github.composefluent.component.MenuFlyoutItem
 import io.github.composefluent.component.PageButtonVisibleStrategy
 import io.github.composefluent.component.Text
 import io.github.composefluent.component.VerticalPipsPager
@@ -60,52 +60,22 @@ fun PipsPagerScreen() {
                 )
             },
             options = {
-                Text("Orientation")
-                MenuFlyoutContainer(
-                    flyout = {
-                        MenuFlyoutItem(
-                            selected = isVertical.value,
-                            onSelectedChanged = {
-                                isVertical.value = true
-                                isFlyoutVisible = false
-                            },
-                            text = { Text("Vertical") },
-                        )
-                        MenuFlyoutItem(
-                            selected = !isVertical.value,
-                            onSelectedChanged = {
-                                isVertical.value = false
-                                isFlyoutVisible = false
-                            },
-                            text = { Text("Horizontal") }
-                        )
-                    },
-                    content = {
-                        DropDownButton(
-                            onClick = { isFlyoutVisible = true },
-                            content = { Text(if (isVertical.value) "Vertical" else "Horizontal") }
-                        )
+                ComboBox(
+                    items = remember { listOf(true, false) },
+                    selected = if (isVertical.value) 0 else 1,
+                    onSelectionChange = { _, item -> isVertical.value = item },
+                    header = { Text("Orientation") },
+                    content = { _, item ->
+                        Text(text = if (item) "Vertical" else "Horizontal", overflow = TextOverflow.Ellipsis)
                     }
                 )
-                Text("Page button visibility")
-                MenuFlyoutContainer(
-                    flyout = {
-                        PageButtonVisibleStrategy.entries.forEach { item ->
-                            MenuFlyoutItem(
-                                selected = pageButtonVisibleStrategy.value == item,
-                                onSelectedChanged = {
-                                    pageButtonVisibleStrategy.value = item
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text(item.name) }
-                            )
-                        }
-                    },
-                    content = {
-                        DropDownButton(
-                            onClick = { isFlyoutVisible = true },
-                            content = { Text(pageButtonVisibleStrategy.value.name) }
-                        )
+                ComboBox(
+                    items = PageButtonVisibleStrategy.entries,
+                    selected = pageButtonVisibleStrategy.value.ordinal,
+                    onSelectionChange = { _, item -> pageButtonVisibleStrategy.value = item },
+                    header = { Text("Page button visibility") },
+                    content = { _, item ->
+                        Text(text = item.name, overflow = TextOverflow.Ellipsis)
                     }
                 )
             }
