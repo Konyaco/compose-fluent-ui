@@ -224,12 +224,14 @@ internal fun BasicFlyout(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
+    exitTransition: ExitTransition = fadeOut(flyoutExitSpec()),
     shape: Shape = FluentTheme.shapes.overlay,
     contentPadding: PaddingValues = PaddingValues(12.dp),
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     focusable: Boolean = true,
+    elevation: Dp = ElevationDefaults.flyout,
     content: @Composable () -> Unit
 ) {
     val visibleState = remember {
@@ -255,7 +257,9 @@ internal fun BasicFlyout(
                     shape = shape,
                     content = content,
                     contentPadding = contentPadding,
-                    enterPlacementAnimation = enterPlacementAnimation
+                    enterPlacementAnimation = enterPlacementAnimation,
+                    exitTransition = exitTransition,
+                    elevation = elevation
                 )
             } else {
                 /* this is the workaround for placement animation */
@@ -277,17 +281,19 @@ internal fun FlyoutContent(
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
+    exitTransition: ExitTransition = fadeOut(flyoutExitSpec()),
     shape: Shape = FluentTheme.shapes.overlay,
     contentPadding: PaddingValues = PaddingValues(12.dp),
+    elevation: Dp = ElevationDefaults.flyout,
     content: @Composable () -> Unit
 ) {
     AcrylicPopupContent(
         visibleState = visibleState,
         enterTransition = enterPlacementAnimation(placement),
-        exitTransition = fadeOut(flyoutExitSpec()),
+        exitTransition = exitTransition,
         content = content,
         contentPadding = contentPadding,
-        elevation = ElevationDefaults.flyout,
+        elevation = elevation,
         shape = shape,
         modifier = modifier
     )

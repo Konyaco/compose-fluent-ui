@@ -51,12 +51,12 @@ open class FlyoutPositionProvider(
 ) : PopupPositionProvider {
 
     var applyAnimation by mutableStateOf(false)
-        private set
+        protected set
 
     var targetPlacement by mutableStateOf(initialPlacement)
-        private set
+        protected set
 
-    override fun calculatePosition(
+    override open fun calculatePosition(
         anchorBounds: IntRect,
         windowSize: IntSize,
         layoutDirection: LayoutDirection,

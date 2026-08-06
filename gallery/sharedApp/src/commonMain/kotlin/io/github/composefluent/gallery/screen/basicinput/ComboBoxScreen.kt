@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.github.composefluent.component.ComboBox
+import io.github.composefluent.component.Text
 import io.github.composefluent.gallery.annotation.Component
 import io.github.composefluent.gallery.annotation.Sample
 import io.github.composefluent.gallery.component.ComponentPagePath
@@ -53,10 +54,11 @@ private fun ItemsSourceComboBoxSample() {
     var selected by remember { mutableStateOf<Int?>(null) }
 
     ComboBox(
-        header = "Color",
-        placeholder = "Pick a color",
+        header = { Text("Color") },
+        placeholder = { Text("Pick a color") },
         selected = selected,
         items = itemsList,
-        onSelectionChange = { i, s -> selected = i }
+        onSelectionChange = { i, _ -> selected = i },
+        content = { _, item -> Text(item) }
     )
 }

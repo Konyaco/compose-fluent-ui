@@ -1,25 +1,15 @@
 package io.github.composefluent.component
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,52 +17,109 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import io.github.composefluent.FluentTheme
-import io.github.composefluent.animation.FluentDuration
-import io.github.composefluent.animation.FluentEasing
-import io.github.composefluent.background.BackgroundSizing
-import io.github.composefluent.background.Layer
-import io.github.composefluent.scheme.PentaVisualScheme
-import io.github.composefluent.scheme.collectVisualState
-
-/**
- * Use a combo box (also known as a drop-down list) to present a list of items that a user can select from. A combo box starts in a compact state and expands to show a list of selectable items.
- */
-/*
-@Composable
-fun <T> ComboBox(
-    header: (@Composable () -> Unit)? = null,
-    placeholder: (@Composable () -> Unit)? = null,
-    open: Boolean,
-    editable: Boolean,
-    items: List<T>,
-    selected: T?,
-    onSelectionChange: (T) -> Unit,
-    contentScope: ComboBoxScope<T>.() -> Unit
-) {
-}
-*/
+import io.github.composefluent.LocalCompactMode
+import io.github.composefluent.scheme.VisualStateScheme
 
 /**
  * Use a combo box (also known as a drop-down list) to present a list of items that a user can select from.
  * A combo box starts in a compact state, displaying either a selected item or a placeholder, and expands to show a list of selectable items when interacted with.
  *
  * @param modifier Modifier to apply to the component.
- * @param header Optional header text to display above the combo box.
- * @param placeholder Optional placeholder text to display when no item is selected.
+ * @param header Optional header content displayed above the combo box.
+ * @param placeholder Optional content displayed when no item is selected.
  * @param disabled Whether the combo box is disabled.
  * @param items The list of items to display in the combo box.
  * @param selected The index of the currently selected item, or null if no item is selected.
- * @param onSelectionChange Callback function triggered when a new item is selected. Provides the index and the item's string value.
+ * @param onSelectionChange Callback invoked when a new item is selected.
+ * @param content Content used to represent an item in both the closed control and popup.
  *
  * TODO: Editable ComboBox
  */
+@Composable
+fun <T> ComboBox(
+    items: List<T>,
+    selected: Int?,
+    onSelectionChange: (index: Int, item: T) -> Unit,
+    modifier: Modifier = Modifier,
+    header: (@Composable () -> Unit)? = null,
+    placeholder: (@Composable () -> Unit)? = null,
+    disabled: Boolean = false,
+    content: @Composable (index: Int, item: T) -> Unit
+) {
+    var open by remember { mutableStateOf(false) }
+    var size by remember { mutableStateOf<IntSize>(IntSize(0, 0)) }
+    var popupMaxHeight by remember { mutableStateOf(Dp.Infinity) }
+    val density = LocalDensity.current
+    val calculatePopupMaxHeight = rememberFlyoutCalculateMaxHeight(flyoutDefaultPadding)
+    Column(modifier) {
+        if (header != null) {
+            header()
+            Spacer(Modifier.height(8.dp))
+        }
+        Box {
+            DropDownButton(
+                modifier = Modifier
+                    .defaultMinSize(128.dp)
+                    .onSizeChanged { size = it }
+                    .onGloballyPositioned {
+                        popupMaxHeight = with(density) {
+                            calculatePopupMaxHeight(it).toDp()
+                        }
+                    },
+                onClick = { open = true },
+                disabled = disabled,
+                contentArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (selected != null) {
+                        content(selected, items[selected])
+                    } else {
+                        placeholder?.invoke()
+                    }
+                }
+            }
+
+            CompositionLocalProvider(
+                LocalCompactMode provides false
+            ) {
+                ComboBoxPopup(
+                    minWidth = with(LocalDensity.current) { size.width.toDp() },
+                    maxHeight = popupMaxHeight,
+                    expanded = open,
+                    onDismissRequest = { open = false }
+                ) {
+                    items.fastForEachIndexed { i, s ->
+                        item(selected = i == selected) {
+                            ComboBoxItem(
+                                selected = i == selected,
+                                onSelectedChanged = {
+                                    onSelectionChange(i, s)
+                                    open = false
+                                },
+                                text = { content(i, s) },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * String-based convenience overload retained for source compatibility.
+ */
+@Deprecated(
+    message = "Use the generic ComboBox overload with composable header, placeholder, and item content."
+)
 @Composable
 fun ComboBox(
     modifier: Modifier = Modifier,
@@ -83,47 +130,16 @@ fun ComboBox(
     selected: Int?,
     onSelectionChange: (index: Int, item: String) -> Unit
 ) {
-    var open by remember { mutableStateOf(false) }
-    var size by remember { mutableStateOf<IntSize>(IntSize(0, 0)) }
-    Column(modifier) {
-        if (header != null) {
-            Text(text = header)
-            Spacer(Modifier.height(8.dp))
-        }
-        DropDownButton(
-            modifier = Modifier.defaultMinSize(128.dp).onSizeChanged { size = it },
-            onClick = { open = true },
-            disabled = disabled,
-            contentArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                val text = if (selected != null) items[selected]
-                else placeholder ?: ""
-
-                Text(
-                    modifier = Modifier.padding(end = 8.dp),
-                    text = text,
-                    color = if (selected != null) FluentTheme.colors.text.text.primary
-                    else FluentTheme.colors.text.text.secondary
-                )
-            }
-        }
-        // TODO: Use new flyout popup
-        // TODO: Set transform center to currently selected item
-        DropdownMenu(
-            modifier = Modifier.width(with(LocalDensity.current) { size.width.toDp() + 4.dp }),
-            expanded = open,
-            onDismissRequest = { open = false },
-            offset = DpOffset(x = 0.dp, y = with(LocalDensity.current) { -(size.height.toDp() + 6.dp) })
-        ) {
-            items.fastForEachIndexed { i, s ->
-                ComboBoxItem(selected = i == selected, label = s, onClick = {
-                    onSelectionChange(i, s)
-                    open = false
-                })
-            }
-        }
-    }
+    ComboBox(
+        items = items,
+        selected = selected,
+        onSelectionChange = onSelectionChange,
+        modifier = modifier,
+        header = header?.let { value -> { Text(value) } },
+        placeholder = placeholder?.let { value -> { Text(value) } },
+        disabled = disabled,
+        content = { _, item -> Text(item, overflow = TextOverflow.Ellipsis) }
+    )
 }
 
 /**
@@ -132,97 +148,69 @@ fun ComboBox(
  * @property fillColor The background color of the item.
  * @property contentColor The color of the text or other content within the item.
  */
+@Deprecated(
+    message = "Use ListItemColor instead.",
+    replaceWith = ReplaceWith(
+        expression = "ListItemColor",
+        imports = ["io.github.composefluent.component.ListItemColor"]
+    )
+)
 data class ItemColor(
     val fillColor: Color,
     val contentColor: Color
 )
 
-
-private val unselectedItemColors: PentaVisualScheme<ItemColor>
-    @Composable
-    get() = PentaVisualScheme<ItemColor>(
-        default = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.transparent,
-            contentColor = FluentTheme.colors.text.text.primary
-        ),
-        hovered = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.secondary,
-            contentColor = FluentTheme.colors.text.text.primary
-        ),
-        pressed = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.tertiary,
-            contentColor = FluentTheme.colors.text.text.primary
-        ),
-        disabled = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.transparent,
-            contentColor = FluentTheme.colors.text.text.disabled
-        )
+/**
+ * A selectable item used by [ComboBox]. This overload is equivalent to [ListItem].
+ */
+@Composable
+fun ComboBoxItem(
+    selected: Boolean,
+    onSelectedChanged: (Boolean) -> Unit,
+    text: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    selectionType: ListItemSelectionType = ListItemSelectionType.Standard,
+    icon: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    interaction: MutableInteractionSource? = null,
+    enabled: Boolean = true,
+    colors: VisualStateScheme<ListItemColor> = if (selected) {
+        ListItemDefaults.selectedListItemColors()
+    } else {
+        ListItemDefaults.defaultListItemColors()
+    },
+) {
+    ListItem(
+        selected = selected,
+        onSelectedChanged = onSelectedChanged,
+        text = text,
+        modifier = modifier,
+        selectionType = selectionType,
+        icon = icon,
+        trailing = trailing,
+        interaction = interaction,
+        enabled = enabled,
+        colors = colors
     )
-
-private val selectedItemColors: PentaVisualScheme<ItemColor>
-    @Composable
-    get() = PentaVisualScheme<ItemColor>(
-        default = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.secondary,
-            contentColor = FluentTheme.colors.text.text.primary
-        ),
-        hovered = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.tertiary,
-            contentColor = FluentTheme.colors.text.text.primary
-        ),
-        pressed = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.secondary,
-            contentColor = FluentTheme.colors.text.text.primary
-        ),
-        disabled = ItemColor(
-            fillColor = FluentTheme.colors.subtleFill.transparent,
-            contentColor = FluentTheme.colors.text.text.disabled
-        )
-    )
-
+}
 
 /**
- * Composable function that represents a single item within a ComboBox dropdown.
- *
- * @param selected Indicates whether the item is currently selected.
- * @param label The text label to display for the item.
- * @param onClick Callback function invoked when the item is clicked.
+ * String-based ComboBox item retained for source compatibility.
  */
+@Deprecated(
+    message = "Use the ComboBoxItem overload with composable text content."
+)
 @Composable
 fun ComboBoxItem(
     selected: Boolean,
     label: String,
     onClick: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
-    val colors = if (selected) selectedItemColors else unselectedItemColors
-    val color = colors.schemeFor(interactionSource.collectVisualState(false))
-
-    Layer(
-        modifier = Modifier.fillMaxWidth().height(36.dp)
-            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
-        shape = FluentTheme.shapes.control,
-        color = animateColorAsState(
-            color.fillColor,
-            tween(FluentDuration.QuickDuration, easing = FluentEasing.FastInvokeEasing)
-        ).value,
-        contentColor = color.contentColor,
-        border = null,
-        backgroundSizing = BackgroundSizing.OuterBorderEdge
-    ) {
-        Box(contentAlignment = Alignment.CenterStart) {
-            val pressed by interactionSource.collectIsPressedAsState()
-            val height by animateDpAsState(if (pressed) 12.dp else 16.dp)
-            // Indicator
-            if (selected) Box(
-                Modifier.size(height = height, width = 3.dp)
-                    .align(Alignment.CenterStart)
-                    .background(FluentTheme.colors.fillAccent.default, CircleShape)
-            )
-            Text(modifier = Modifier.padding(horizontal = 12.dp), text = label)
-        }
-    }
+    ComboBoxItem(
+        selected = selected,
+        onSelectedChanged = { onClick() },
+        text = { Text(label) }
+    )
 }
 
 /**
