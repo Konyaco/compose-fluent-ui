@@ -116,7 +116,7 @@ fun InfoBarScreen() {
                             text = when(item) {
                                 null -> "None"
                                 false -> "Button"
-                                true -> "HyperLink"
+                                true -> "Hyperlink"
                             },
                             overflow = TextOverflow.Ellipsis
                         )
