@@ -653,7 +653,7 @@ object TextFieldDefaults {
             shape = shape,
             color = color.fillColor,
             border = BorderStroke(1.dp, color.borderBrush),
-            backgroundSizing = BackgroundSizing.OuterBorderEdge,
+            backgroundSizing = color.backgroundSizing,
             content = content
         )
     }
@@ -670,6 +670,7 @@ typealias TextFieldColorScheme = PentaVisualScheme<TextFieldColor>
  * @property bottomLineFillColor The color of the bottom line of the text field.
  * @property borderBrush The brush used to draw the border around the text field.
  * @property cursorBrush The brush used to draw the cursor within the text field.
+ * @property backgroundSizing Controls whether the fill is inset by the border.
  */
 @Immutable
 data class TextFieldColor(
@@ -678,7 +679,8 @@ data class TextFieldColor(
     val placeholderColor: Color,
     val bottomLineFillColor: Color,
     val borderBrush: Brush,
-    val cursorBrush: Brush
+    val cursorBrush: Brush,
+    val backgroundSizing: BackgroundSizing = BackgroundSizing.OuterBorderEdge
 )
 
 @Composable
@@ -801,4 +803,3 @@ internal inline fun decorationBoxWorkaround(crossinline content: @Composable (in
         }
     }
 }
-

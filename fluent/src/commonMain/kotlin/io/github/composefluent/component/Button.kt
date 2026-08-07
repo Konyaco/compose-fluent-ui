@@ -1020,8 +1020,15 @@ object ButtonDefaults {
     )
 }
 
+/**
+ * Displays the shared drop-down chevron used by button-based selection controls.
+ *
+ * The chevron shifts down briefly while [interaction] is pressed.
+ *
+ * @param interaction Interaction source whose pressed state drives the animation.
+ */
 @Composable
-private fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
+internal fun AnimatedDropDownIcon(interaction: MutableInteractionSource) {
     val isPressed by interaction.collectIsPressedAsState()
     val animatedOffset = animateDpAsState(
         targetValue = if (isPressed) 2.dp else 0.dp,

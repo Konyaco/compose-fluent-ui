@@ -12,4 +12,5 @@ local.properties
 xcuserdata/
 Pods/
 *.jks
+docs/superpowers
 *yarn.lock

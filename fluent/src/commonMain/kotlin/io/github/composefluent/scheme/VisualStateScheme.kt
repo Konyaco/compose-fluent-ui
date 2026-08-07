@@ -166,3 +166,40 @@ data class PentaVisualScheme<T>(
         VisualState.Focused -> focused
     }
 }
+
+/**
+ * Transforms every state value in this visual scheme while preserving its state mapping.
+ *
+ * @param T Type of the values in this scheme.
+ * @param R Type of the transformed values.
+ * @param transform Transformation applied to each value. The receiver is the value for the
+ * corresponding state and [VisualState] identifies that state.
+ * @return A five-state scheme containing the transformed values.
+ */
+inline fun <T, R> VisualStateScheme<T>.map(transform: T.(state: VisualState) -> R): PentaVisualScheme<R> {
+    if (this is PentaVisualScheme<T>) return map(transform)
+    return PentaVisualScheme(
+        default = transform(schemeFor(VisualState.Default), VisualState.Default),
+        hovered = transform(schemeFor(VisualState.Hovered), VisualState.Hovered),
+        pressed = transform(schemeFor(VisualState.Pressed), VisualState.Pressed),
+        disabled = transform(schemeFor(VisualState.Disabled), VisualState.Disabled),
+        focused = transform(schemeFor(VisualState.Focused), VisualState.Focused),
+    )
+}
+
+/**
+ * Transforms every value in this [PentaVisualScheme] while preserving its state mapping.
+ *
+ * @param T Type of the values in this scheme.
+ * @param R Type of the transformed values.
+ * @param transform Transformation applied to each value. The receiver is the value for the
+ * corresponding state and [VisualState] identifies that state.
+ * @return A five-state scheme containing the transformed values.
+ */
+inline fun <T, R> PentaVisualScheme<T>.map(transform: T.(state: VisualState) -> R) = PentaVisualScheme(
+    default = transform(default, VisualState.Default),
+    hovered = transform(hovered, VisualState.Hovered),
+    pressed = transform(pressed, VisualState.Pressed),
+    disabled = transform(disabled, VisualState.Disabled),
+    focused = transform(focused, VisualState.Focused),
+)

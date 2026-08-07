@@ -75,20 +75,64 @@ object AutoSuggestBoxDefaults {
     /**
      * Provides the shape for the text field in the AutoSuggestBox.
      *
-     * When the suggestion flyout is expanded, the text field will have rounded corners
-     * on the top edges. When the flyout is not expanded, the text field will use the
+     * When the suggestion flyout is expanded, the text field keeps rounded corners on the
+     * edge away from the flyout. When the flyout is not expanded, the text field uses the
      * default control shape defined in [FluentTheme.shapes.control].
      *
      * @param expanded Whether the suggestion flyout is currently expanded.
+     * @param placement The current placement of the suggestion flyout relative to the text field.
      * @return The [Shape] to be used for the text field.
      */
     @Composable
     @Stable
-    fun textFieldShape(expanded: Boolean): Shape {
-        return if (expanded) RoundedCornerShape(
-            topStart = FluentTheme.cornerRadius.control,
-            topEnd = FluentTheme.cornerRadius.control,
-        ) else FluentTheme.shapes.control
+    fun textFieldShape(
+        expanded: Boolean,
+        placement: FlyoutPlacement = FlyoutPlacement.BottomAlignedStart
+    ): Shape {
+        if (!expanded) return FluentTheme.shapes.control
+
+        return if (placement.opensAboveAnchor) {
+            RoundedCornerShape(
+                topStart = 0.dp,
+                topEnd = 0.dp,
+                bottomStart = FluentTheme.cornerRadius.control,
+                bottomEnd = FluentTheme.cornerRadius.control
+            )
+        } else {
+            RoundedCornerShape(
+                topStart = FluentTheme.cornerRadius.control,
+                topEnd = FluentTheme.cornerRadius.control,
+                bottomStart = 0.dp,
+                bottomEnd = 0.dp
+            )
+        }
+    }
+
+    /**
+     * Provides the shape for a suggestion flyout that is attached to a text field.
+     * The corners touching the text field are removed for the current placement.
+     *
+     * @param placement The current placement of the suggestion flyout relative to the text field.
+     * @return The shape to use for the attached suggestion flyout.
+     */
+    @Composable
+    @Stable
+    fun suggestFlyoutShape(placement: FlyoutPlacement): Shape {
+        return if (placement.opensAboveAnchor) {
+            RoundedCornerShape(
+                topStart = FluentTheme.cornerRadius.overlay,
+                topEnd = FluentTheme.cornerRadius.overlay,
+                bottomStart = 0.dp,
+                bottomEnd = 0.dp
+            )
+        } else {
+            RoundedCornerShape(
+                topStart = 0.dp,
+                topEnd = 0.dp,
+                bottomStart = FluentTheme.cornerRadius.overlay,
+                bottomEnd = FluentTheme.cornerRadius.overlay
+            )
+        }
     }
 
     /**
@@ -108,22 +152,17 @@ object AutoSuggestBoxDefaults {
         contentPadding: PaddingValues = PaddingValues(vertical = 3.dp),
         content: @Composable () -> Unit
     ) {
-        //TODO Flyout animation
+        val positionProvider = rememberFlyoutPositionProvider(
+            initialPlacement = FlyoutPlacement.Bottom,
+            paddingToAnchor = PaddingValues()
+        )
         BasicFlyout(
             visible = expanded,
             onDismissRequest = onDismissRequest,
             modifier = modifier,
             enterPlacementAnimation = { expandVertically(flyoutEnterSpec()) { it } },
-            shape = RoundedCornerShape(
-                topStart = 0.dp,
-                topEnd = 0.dp,
-                bottomStart = 8.dp,
-                bottomEnd = 8.dp
-            ),
-            positionProvider = rememberFlyoutPositionProvider(
-                initialPlacement = FlyoutPlacement.Bottom,
-                paddingToAnchor = PaddingValues()
-            ),
+            shape = suggestFlyoutShape(positionProvider.targetPlacement),
+            positionProvider = positionProvider,
             contentPadding = contentPadding,
             content = content
         )
@@ -151,21 +190,17 @@ object AutoSuggestBoxDefaults {
         compactMode: Boolean = false,
         itemsContent: LazyListScope.() -> Unit
     ) {
+        val positionProvider = rememberFlyoutPositionProvider(
+            initialPlacement = FlyoutPlacement.Bottom,
+            paddingToAnchor = PaddingValues()
+        )
         BasicFlyout(
             visible = expanded,
             onDismissRequest = onDismissRequest,
             modifier = modifier,
             enterPlacementAnimation = { expandVertically(flyoutEnterSpec()) { it } },
-            shape = RoundedCornerShape(
-                topStart = 0.dp,
-                topEnd = 0.dp,
-                bottomStart = FluentTheme.cornerRadius.overlay,
-                bottomEnd = FluentTheme.cornerRadius.overlay
-            ),
-            positionProvider = rememberFlyoutPositionProvider(
-                initialPlacement = FlyoutPlacement.Bottom,
-                paddingToAnchor = PaddingValues()
-            ),
+            shape = suggestFlyoutShape(positionProvider.targetPlacement),
+            positionProvider = positionProvider,
             contentPadding = PaddingValues(),
             focusable = false,
             content = {
@@ -183,6 +218,11 @@ object AutoSuggestBoxDefaults {
     }
 
 }
+
+private val FlyoutPlacement.opensAboveAnchor: Boolean
+    get() = this == FlyoutPlacement.Top ||
+        this == FlyoutPlacement.TopAlignedStart ||
+        this == FlyoutPlacement.TopAlignedEnd
 
 @ExperimentalFluentApi
 private class AutoSuggestBoxScopeImpl(
