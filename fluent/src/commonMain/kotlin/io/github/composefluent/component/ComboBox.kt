@@ -271,6 +271,7 @@ fun <T> ComboBox(
                 minWidth = with(LocalDensity.current) { size.width.toDp() },
                 maxHeight = popupMaxHeight,
                 expanded = open,
+                hasSelectedItem = selected != null,
                 onDismissRequest = { open = false }
             ) {
                 items.fastForEachIndexed { i, s ->
@@ -651,6 +652,7 @@ internal fun ComboBoxPopup(
     expanded: Boolean,
     minWidth: Dp,
     maxHeight: Dp,
+    hasSelectedItem: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable ComboBoxPopupScope.() -> Unit
@@ -659,16 +661,27 @@ internal fun ComboBoxPopup(
 
     val density = LocalDensity.current
     val scrollState = rememberScrollState()
-    val positionProvider = remember(density, scrollState) {
+    val positionProvider = remember(density, scrollState, hasSelectedItem) {
         ComboBoxPopupPositionProvider(
             density = density,
-            scrollState = scrollState
+            scrollState = scrollState,
+            hasSelectedItem = hasSelectedItem
         )
     }
     val scope = remember(positionProvider, scrollState) {
-        ComboBoxPopupScopeImpl { center ->
+        ComboBoxPopupScopeImpl { top, bottom ->
             if (scrollState.value == 0) {
-                positionProvider.selectedItemCenter = center
+                positionProvider.selectedItemTop = top
+                positionProvider.selectedItemBottom = bottom
+            }
+        }
+    }
+
+    LaunchedEffect(positionProvider) {
+        snapshotFlow { positionProvider.requestedScrollDelta }.collect { requestedDelta ->
+            if (requestedDelta != 0) {
+                val delta = positionProvider.consumeScrollRequest(requestedDelta)
+                if (delta != 0) scrollState.scrollBy(delta.toFloat())
             }
         }
     }
@@ -705,7 +718,7 @@ internal interface ComboBoxPopupScope {
 }
 
 private class ComboBoxPopupScopeImpl(
-    private val onSelectedItemPositioned: (center: Int) -> Unit
+    private val onSelectedItemPositioned: (top: Int, bottom: Int) -> Unit
 ) : ComboBoxPopupScope {
     @Composable
     override fun Item(
@@ -718,10 +731,8 @@ private class ComboBoxPopupScopeImpl(
                 .then(
                     if (selected) {
                         Modifier.onGloballyPositioned { coordinates ->
-                            onSelectedItemPositioned(
-                                coordinates.positionInParent().y.roundToInt() +
-                                    coordinates.size.height / 2
-                            )
+                            val top = coordinates.positionInParent().y.roundToInt()
+                            onSelectedItemPositioned(top, top + coordinates.size.height)
                         }
                     } else {
                         Modifier
@@ -736,7 +747,8 @@ private class ComboBoxPopupScopeImpl(
 @Stable
 private class ComboBoxPopupPositionProvider(
     density: Density,
-    private val scrollState: ScrollState
+    private val scrollState: ScrollState,
+    private val hasSelectedItem: Boolean
 ) : FlyoutPositionProvider(density) {
     private val contentPadding = with(density) { ComboBoxPopupContentPadding.roundToPx() }
     private val windowPadding = with(density) { flyoutDefaultPadding.roundToPx() }
@@ -744,10 +756,19 @@ private class ComboBoxPopupPositionProvider(
     var revealOriginY by mutableIntStateOf(0)
         private set
 
-    var requestedScrollOffset by mutableIntStateOf(0)
+    var requestedScrollDelta by mutableIntStateOf(0)
         private set
 
-    var selectedItemCenter by mutableIntStateOf(Int.MIN_VALUE)
+    var selectedItemTop by mutableIntStateOf(Int.MIN_VALUE)
+    var selectedItemBottom by mutableIntStateOf(Int.MIN_VALUE)
+
+    private var lockedPopupY by mutableIntStateOf(Int.MIN_VALUE)
+
+    fun consumeScrollRequest(requestedDelta: Int): Int {
+        if (requestedScrollDelta != requestedDelta) return 0
+        requestedScrollDelta = 0
+        return requestedDelta
+    }
 
     override fun calculatePosition(
         anchorBounds: IntRect,
@@ -755,8 +776,20 @@ private class ComboBoxPopupPositionProvider(
         layoutDirection: LayoutDirection,
         popupContentSize: IntSize
     ): IntOffset {
-        val selectedItemCenter = if (this.selectedItemCenter != Int.MIN_VALUE) {
-            this.selectedItemCenter + contentPadding
+        val selectedItemMeasured = this.selectedItemTop != Int.MIN_VALUE
+        val selectedItemPositioned = !hasSelectedItem || selectedItemMeasured
+        val selectedItemTop = if (selectedItemMeasured) {
+            this.selectedItemTop
+        } else {
+            0
+        }
+        val selectedItemBottom = if (selectedItemMeasured) {
+            this.selectedItemBottom
+        } else {
+            popupContentSize.height
+        }
+        val selectedItemCenter = if (selectedItemMeasured) {
+            (selectedItemTop + selectedItemBottom) / 2 + contentPadding
         } else {
             popupContentSize.height / 2
         }
@@ -768,21 +801,63 @@ private class ComboBoxPopupPositionProvider(
         )
         val anchorCenterY = anchorBounds.center.y
 
-        val unscrolledY = anchorCenterY - selectedItemCenter
-        val boundedY = unscrolledY.coerceIn(popupVerticalRange)
-        val scrollOffset = (selectedItemCenter - (anchorCenterY - boundedY)).coerceIn(0, maxScroll)
-        val selectedItemCenterInPopup = selectedItemCenter - scrollOffset
-        val popupY = (anchorCenterY - selectedItemCenterInPopup).coerceIn(popupVerticalRange)
+        val popupY = if (lockedPopupY != Int.MIN_VALUE) {
+            lockedPopupY.coerceIn(popupVerticalRange)
+        } else {
+            val unscrolledY = anchorCenterY - selectedItemCenter
+            val viewportHeight = (popupContentSize.height - contentPadding * 2).coerceAtLeast(0)
+            val minScrollForVisibility = if (selectedItemMeasured) {
+                (selectedItemBottom - viewportHeight).coerceAtLeast(0)
+            } else {
+                0
+            }
+            val maxScrollForVisibility = if (selectedItemMeasured) {
+                selectedItemTop.coerceAtMost(maxScroll)
+            } else {
+                maxScroll
+            }
+            val minScrollForPosition = popupVerticalRange.first - unscrolledY
+            val maxScrollForPosition = popupVerticalRange.last - unscrolledY
+            val minScroll = maxOf(0, minScrollForVisibility, minScrollForPosition)
+            val maxScrollForConstraints = minOf(maxScroll, maxScrollForVisibility, maxScrollForPosition)
+            val desiredScrollOffset = if (minScroll <= maxScrollForConstraints) {
+                minScroll
+            } else if (minScrollForVisibility > maxScrollForConstraints) {
+                minScrollForVisibility.coerceIn(0, maxScroll)
+            } else {
+                minScrollForPosition.coerceIn(0, maxScroll)
+            }
+            val initialPopupY = (unscrolledY + desiredScrollOffset).coerceIn(popupVerticalRange)
+            val scrollDelta = desiredScrollOffset - scrollState.value
+
+            when {
+                !selectedItemPositioned || scrollState.viewportSize == 0 -> {
+                    requestedScrollDelta = 0
+                    applyAnimation = false
+                }
+
+                scrollDelta != 0 -> {
+                    if (requestedScrollDelta == 0) requestedScrollDelta = scrollDelta
+                    applyAnimation = false
+                }
+
+                else -> {
+                    requestedScrollDelta = 0
+                    lockedPopupY = initialPopupY
+                    applyAnimation = true
+                }
+            }
+            initialPopupY
+        }
 
         val popupX = (anchorBounds.center.x - popupContentSize.width / 2).let { idealX ->
             if (popupContentSize.width >= windowSize.width) 0
             else idealX.coerceIn(0, windowSize.width - popupContentSize.width)
         }
 
-        requestedScrollOffset = scrollOffset
         revealOriginY = (anchorCenterY - popupY).coerceIn(0, popupContentSize.height)
         targetPlacement = FlyoutPlacement.Full
-        applyAnimation = true
+        if (lockedPopupY != Int.MIN_VALUE) applyAnimation = true
 
         return IntOffset(popupX, popupY)
     }
