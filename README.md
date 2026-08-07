@@ -119,7 +119,7 @@ See [`gallery`](gallery) module for more details.
 - [x] Radio Button
 - [x] Toggle Switch
 - [x] Check Box
-  - [ ] TriState Check Box
+  - [x] TriState Check Box
 - [x] Combo Box (Simple)
 - [x] Progress Bar
 - [x] Progress Ring
