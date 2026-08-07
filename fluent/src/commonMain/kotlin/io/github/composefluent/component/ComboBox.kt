@@ -409,9 +409,9 @@ private fun ComboBoxLayout(
 @Composable
 fun ComboBox(
     modifier: Modifier = Modifier,
-    header: String?,
-    placeholder: String?,
-    disabled: Boolean,
+    header: String? = null,
+    placeholder: String? = null,
+    disabled: Boolean = false,
     items: List<String>,
     selected: Int?,
     onSelectionChange: (index: Int, item: String) -> Unit
