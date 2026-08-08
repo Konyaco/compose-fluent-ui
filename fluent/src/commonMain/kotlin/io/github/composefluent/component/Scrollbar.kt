@@ -69,9 +69,12 @@ import io.github.composefluent.LocalContentColor
 import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -109,6 +112,23 @@ fun Modifier.scrollbar(
     onThumbDrag: ((positionFraction: Float) -> Unit)? = null,
     onTrackPress: ((positionFraction: Float) -> Unit)? = null,
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
+): Modifier = scrollbarNode(
+    state = state,
+    orientation = orientation,
+    onThumbDrag = onThumbDrag,
+    onThumbDragDelta = null,
+    onTrackPress = onTrackPress,
+    colors = colors,
+)
+
+@Composable
+private fun Modifier.scrollbarNode(
+    state: ScrollIndicatorState?,
+    orientation: Orientation,
+    onThumbDrag: ((positionFraction: Float) -> Unit)?,
+    onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
+    onTrackPress: ((positionFraction: Float) -> Unit)?,
+    colors: ScrollbarColors,
 ): Modifier {
     val fontIconFamily = LocalFontIconFontFamily.current
     val textMeasurer = rememberTextMeasurer()
@@ -129,6 +149,7 @@ fun Modifier.scrollbar(
         state = state,
         orientation = orientation,
         onThumbDrag = onThumbDrag,
+        onThumbDragDelta = onThumbDragDelta,
         onTrackPress = onTrackPress,
         colors = colors,
         layoutDirection = layoutDirection,
@@ -138,6 +159,45 @@ fun Modifier.scrollbar(
         endIndicator = endIndicator,
         startIndicatorPainter = rememberVectorPainter(startIndicator.vector()),
         endIndicatorPainter = rememberVectorPainter(endIndicator.vector()),
+    )
+}
+
+@Composable
+private fun Modifier.scrollbarForState(
+    state: ScrollIndicatorState?,
+    orientation: Orientation,
+    scrollableState: ScrollableState,
+    coroutineScope: CoroutineScope,
+    colors: ScrollbarColors,
+): Modifier {
+    val scrollMutex = remember(scrollableState) { Mutex() }
+    return scrollbarNode(
+        state = state,
+        orientation = orientation,
+        onThumbDrag = null,
+        onThumbDragDelta = { positionDeltaFraction ->
+            coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+                scrollMutex.withLock {
+                    scrollByIndicatorDelta(
+                        state = scrollableState,
+                        indicatorState = state,
+                        positionDeltaFraction = positionDeltaFraction,
+                    )
+                }
+            }
+        },
+        onTrackPress = { positionFraction ->
+            coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+                scrollMutex.withLock {
+                    scrollToIndicatorPosition(
+                        state = scrollableState,
+                        indicatorState = state,
+                        positionFraction = positionFraction,
+                    )
+                }
+            }
+        },
+        colors = colors,
     )
 }
 
@@ -162,19 +222,11 @@ fun Modifier.scrollbar(
     orientation: Orientation,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
-): Modifier = scrollbar(
+): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
-    onThumbDrag = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
-    onTrackPress = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
+    scrollableState = state,
+    coroutineScope = coroutineScope,
     colors = colors,
 )
 
@@ -200,19 +252,11 @@ fun Modifier.scrollbar(
     orientation: Orientation = remember(state) { derivedStateOf { state.layoutInfo.orientation } }.value,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
-): Modifier = scrollbar(
+): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
-    onThumbDrag = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
-    onTrackPress = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
+    scrollableState = state,
+    coroutineScope = coroutineScope,
     colors = colors,
 )
 
@@ -238,19 +282,11 @@ fun Modifier.scrollbar(
     orientation: Orientation = remember(state) { derivedStateOf { state.layoutInfo.orientation } }.value,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
-): Modifier = scrollbar(
+): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
-    onThumbDrag = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
-    onTrackPress = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
+    scrollableState = state,
+    coroutineScope = coroutineScope,
     colors = colors,
 )
 
@@ -276,21 +312,35 @@ fun Modifier.scrollbar(
     orientation: Orientation = remember(state) { derivedStateOf { state.layoutInfo.orientation } }.value,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
-): Modifier = scrollbar(
+): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
-    onThumbDrag = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
-    onTrackPress = { positionFraction ->
-        coroutineScope.launch {
-            scrollToIndicatorPosition(state, state.scrollIndicatorState, positionFraction)
-        }
-    },
+    scrollableState = state,
+    coroutineScope = coroutineScope,
     colors = colors,
 )
+
+@PublishedApi
+internal suspend fun scrollByIndicatorDelta(
+    state: ScrollableState,
+    indicatorState: ScrollIndicatorState?,
+    positionDeltaFraction: Float,
+) {
+    val indicator = indicatorState ?: return
+    val contentSize = indicator.contentSize
+    val viewportSize = indicator.viewportSize
+    if (contentSize == Int.MAX_VALUE ||
+        viewportSize == Int.MAX_VALUE ||
+        contentSize <= viewportSize ||
+        viewportSize <= 0
+    ) {
+        return
+    }
+    val scrollRange = contentSize.toLong() - viewportSize.toLong()
+    state.scroll {
+        scrollBy(scrollRange * positionDeltaFraction)
+    }
+}
 
 @PublishedApi
 internal suspend fun scrollToIndicatorPosition(
@@ -323,6 +373,7 @@ private data class ScrollbarElement(
     val state: ScrollIndicatorState?,
     val orientation: Orientation,
     val onThumbDrag: ((positionFraction: Float) -> Unit)?,
+    val onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
     val onTrackPress: ((positionFraction: Float) -> Unit)?,
     val colors: ScrollbarColors,
     val layoutDirection: LayoutDirection,
@@ -337,6 +388,7 @@ private data class ScrollbarElement(
         state = state,
         orientation = orientation,
         onThumbDrag = onThumbDrag,
+        onThumbDragDelta = onThumbDragDelta,
         onTrackPress = onTrackPress,
         colors = colors,
         layoutDirection = layoutDirection,
@@ -353,6 +405,7 @@ private data class ScrollbarElement(
             state = state,
             orientation = orientation,
             onThumbDrag = onThumbDrag,
+            onThumbDragDelta = onThumbDragDelta,
             onTrackPress = onTrackPress,
             colors = colors,
             layoutDirection = layoutDirection,
@@ -370,6 +423,7 @@ private data class ScrollbarElement(
         properties["state"] = state
         properties["orientation"] = orientation
         properties["onThumbDrag"] = onThumbDrag
+        properties["onThumbDragDelta"] = onThumbDragDelta
         properties["onTrackPress"] = onTrackPress
         properties["colors"] = colors
     }
@@ -379,6 +433,7 @@ private class ScrollbarNode(
     state: ScrollIndicatorState?,
     orientation: Orientation,
     onThumbDrag: ((positionFraction: Float) -> Unit)?,
+    onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
     onTrackPress: ((positionFraction: Float) -> Unit)?,
     colors: ScrollbarColors,
     layoutDirection: LayoutDirection,
@@ -392,6 +447,7 @@ private class ScrollbarNode(
     private var state = state
     private var orientation = orientation
     private var onThumbDrag = onThumbDrag
+    private var onThumbDragDelta = onThumbDragDelta
     private var onTrackPress = onTrackPress
     private var colors = colors
     private var layoutDirection = layoutDirection
@@ -405,6 +461,9 @@ private class ScrollbarNode(
     private var highlightTarget = false
     private var pressedPart = ScrollbarPart.None
     private var dragGrabOffset = 0f
+    private var dragLastPosition = 0f
+    private var dragGeometry: ScrollbarGeometry? = null
+    private var dragThumbOffset = 0f
     private val highlight = Animatable(0f)
     private val indicatorScale = Animatable(1f)
     private var highlightJob: Job? = null
@@ -415,6 +474,7 @@ private class ScrollbarNode(
         state: ScrollIndicatorState?,
         orientation: Orientation,
         onThumbDrag: ((positionFraction: Float) -> Unit)?,
+        onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
         onTrackPress: ((positionFraction: Float) -> Unit)?,
         colors: ScrollbarColors,
         layoutDirection: LayoutDirection,
@@ -432,6 +492,7 @@ private class ScrollbarNode(
         this.state = state
         this.orientation = orientation
         this.onThumbDrag = onThumbDrag
+        this.onThumbDragDelta = onThumbDragDelta
         this.onTrackPress = onTrackPress
         this.colors = colors
         this.layoutDirection = layoutDirection
@@ -443,6 +504,9 @@ private class ScrollbarNode(
         this.endIndicatorPainter = endIndicatorPainter
         if (state == null) {
             pressedPart = ScrollbarPart.None
+            dragGeometry = null
+            dragThumbOffset = 0f
+            dragLastPosition = 0f
             animateIndicatorScale(false)
             repeatPressJob?.cancel()
             animateHighlight(false)
@@ -484,6 +548,9 @@ private class ScrollbarNode(
                 when (part) {
                     ScrollbarPart.Thumb -> {
                         dragGrabOffset = position.axisPosition() - geometry.thumbOffset
+                        dragLastPosition = position.axisPosition()
+                        dragGeometry = geometry
+                        dragThumbOffset = geometry.thumbOffset
                     }
                     ScrollbarPart.StartIndicator -> pressTrack(
                         geometry.positionFraction - geometry.indicatorStepFraction,
@@ -520,16 +587,41 @@ private class ScrollbarNode(
                 invalidateDraw()
             }
             change.pressed && pressedPart == ScrollbarPart.Thumb -> {
-                val fraction = geometry.fractionForThumbPosition(
-                    position.axisPosition() - dragGrabOffset,
+                val axisPosition = position.axisPosition()
+                val pointerDelta = axisPosition - dragLastPosition
+                dragLastPosition = axisPosition
+                dragGeometry?.let { dragGeometry ->
+                    dragThumbOffset = (dragThumbOffset + pointerDelta)
+                        .coerceIn(
+                            dragGeometry.trackStart,
+                            dragGeometry.trackStart + dragGeometry.travel,
+                        )
+                }
+                val dragTravel = dragGeometry?.travel ?: geometry.travel
+                if (onThumbDragDelta != null && dragTravel > 0f) {
+                    val direction = if (isHorizontalRtl) -1f else 1f
+                    onThumbDragDelta?.invoke(pointerDelta / dragTravel * direction)
+                }
+                val fractionGeometry = dragGeometry ?: geometry
+                val fractionThumbPosition = if (dragGeometry != null) {
+                    dragThumbOffset
+                } else {
+                    axisPosition - dragGrabOffset
+                }
+                val fraction = fractionGeometry.fractionForThumbPosition(
+                    fractionThumbPosition,
                     reverse = orientation == Orientation.Horizontal &&
                             layoutDirection == LayoutDirection.Rtl,
                 )
                 onThumbDrag?.invoke(fraction)
                 change.consume()
+                invalidateDraw()
             }
             !change.pressed && change.previousPressed -> {
                 pressedPart = ScrollbarPart.None
+                dragLastPosition = 0f
+                dragGeometry = null
+                dragThumbOffset = 0f
                 animateIndicatorScale(false)
                 repeatPressJob?.cancel()
                 animateHighlight(pointerHovered)
@@ -540,6 +632,9 @@ private class ScrollbarNode(
 
     override fun onCancelPointerInput() {
         pressedPart = ScrollbarPart.None
+        dragLastPosition = 0f
+        dragGeometry = null
+        dragThumbOffset = 0f
         animateIndicatorScale(false)
         repeatPressJob?.cancel()
         setPointerHovered(false)
@@ -626,7 +721,11 @@ private class ScrollbarNode(
 
     private fun hitTest(axisPosition: Float, geometry: ScrollbarGeometry): ScrollbarPart = when {
         axisPosition in geometry.thumbOffset..(geometry.thumbOffset + geometry.thumbLength) ->
-            if (onThumbDrag != null) ScrollbarPart.Thumb else ScrollbarPart.None
+            if (onThumbDrag != null || onThumbDragDelta != null) {
+                ScrollbarPart.Thumb
+            } else {
+                ScrollbarPart.None
+            }
         axisPosition < geometry.trackStart -> if (onTrackPress != null) {
             if (isHorizontalRtl) {
                 ScrollbarPart.EndIndicator
@@ -716,9 +815,14 @@ private class ScrollbarNode(
             minimumThumbLength = ScrollbarDefaults.minimumThumbLength.toPx(),
         ) ?: return
         val fraction = highlight.value
+        val drawGeometry = if (pressedPart == ScrollbarPart.Thumb) {
+            dragGeometry?.copy(thumbOffset = dragThumbOffset) ?: geometry
+        } else {
+            geometry
+        }
         drawTrack(fraction)
-        drawThumb(geometry, fraction)
-        drawIndicators(geometry, fraction)
+        drawThumb(drawGeometry, fraction)
+        drawIndicators(drawGeometry, fraction)
     }
 
     private fun calculateGeometry(
