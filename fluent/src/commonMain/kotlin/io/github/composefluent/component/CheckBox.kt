@@ -1,11 +1,13 @@
 package io.github.composefluent.component
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.triStateToggleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -24,6 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.animation.FluentDuration
@@ -57,18 +65,69 @@ fun CheckBox(
     },
     onCheckStateChange: (checked: Boolean) -> Unit
 ) {
-    // TODO: Animation, TripleStateCheckbox
+    TriStateCheckBox(
+        state = if (checked) ToggleableState.On else ToggleableState.Off,
+        label = label,
+        modifier = modifier,
+        enabled = enabled,
+        colors = colors,
+        onClick = { onCheckStateChange(!checked) }
+    )
+}
+
+/**
+ * A composable function that renders a tri-state CheckBox with an optional label.
+ *
+ * [onClick] is responsible for updating [state]. This allows callers to decide how an
+ * indeterminate state should transition instead of treating it as a third selectable option.
+ *
+ * @param state The current state of the checkbox.
+ * @param label The optional label to display next to the checkbox.
+ * @param modifier Modifier to be applied to the row containing the checkbox and label.
+ * @param enabled Whether the checkbox is enabled.
+ * @param colors The color scheme to use for the checkbox.
+ * @param onClick Callback invoked when the checkbox is clicked, or `null` for a non-interactive checkbox.
+ */
+@Composable
+fun TriStateCheckBox(
+    state: ToggleableState,
+    label: String? = null,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    colors: VisualStateScheme<CheckBoxColor> = if (state == ToggleableState.Off) {
+        CheckBoxDefaults.defaultCheckBoxColors()
+    } else {
+        CheckBoxDefaults.selectedCheckBoxColors()
+    },
+    onClick: (() -> Unit)?
+) {
     val interactionSource = remember { MutableInteractionSource() }
     val color = colors.schemeFor(interactionSource.collectVisualState(!enabled))
+    val iconTransition = remember { CheckBoxIconTransition(state) }
+    iconTransition.update(state)
+
+    val interactionModifier = if (onClick != null) {
+        Modifier.triStateToggleable(
+            state = state,
+            enabled = enabled,
+            role = Role.Checkbox,
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick
+        )
+    } else {
+        Modifier.semantics(mergeDescendants = true) {
+            toggleableState = state
+            role = Role.Checkbox
+            if (!enabled) disabled()
+        }
+    }
+
     Row(
         modifier = modifier.then(
             if (label != null) Modifier.defaultMinSize(minWidth = 120.dp)
             else Modifier
-        ).clickable(
-            role = Role.Checkbox,
-            indication = null,
-            interactionSource = interactionSource
-        ) { onCheckStateChange(!checked) },
+        ).then(interactionModifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val fillColor by animateColorAsState(color.fillColor,
@@ -80,16 +139,41 @@ fun CheckBox(
             color = fillColor,
             contentColor = color.contentColor,
             border = BorderStroke(1.dp, color.borderColor),
-            backgroundSizing = if (!checked) BackgroundSizing.InnerBorderEdge else BackgroundSizing.OuterBorderEdge
+            backgroundSizing = if (state == ToggleableState.Off) {
+                BackgroundSizing.InnerBorderEdge
+            } else {
+                BackgroundSizing.OuterBorderEdge
+            }
         ) {
             Box(contentAlignment = Alignment.CenterStart) {
+                if (state == ToggleableState.Indeterminate) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Box(
+                            Modifier
+                                .size(width = 8.dp, height = 1.dp)
+                                .background(
+                                    color = color.contentColor,
+                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(50)
+                                )
+                        )
+                    }
+                }
                 androidx.compose.animation.AnimatedVisibility(
-                    visible = checked,
-                    enter = expandHorizontally(
-                        expandFrom = Alignment.Start
-                    ), exit = fadeOut(
-                        tween(durationMillis = FluentDuration.QuickDuration, easing = FluentEasing.FadeInFadeOutEasing)
-                    )
+                    visible = state == ToggleableState.On,
+                    enter = if (iconTransition.animate) {
+                        expandHorizontally(
+                            expandFrom = Alignment.Start
+                        )
+                    } else {
+                        EnterTransition.None
+                    },
+                    exit = if (iconTransition.animate) {
+                        fadeOut(
+                            tween(durationMillis = FluentDuration.QuickDuration, easing = FluentEasing.FadeInFadeOutEasing)
+                        )
+                    } else {
+                        ExitTransition.None
+                    }
                 ) {
                     Box(Modifier.fillMaxSize(), Alignment.Center) {
                         FontIcon(
@@ -110,6 +194,19 @@ fun CheckBox(
                 style = FluentTheme.typography.body.copy(color = color.labelTextColor)
             )
         }
+    }
+}
+
+private class CheckBoxIconTransition(initialState: ToggleableState) {
+    private var state = initialState
+    var animate = initialState != ToggleableState.Indeterminate
+        private set
+
+    fun update(newState: ToggleableState) {
+        if (newState == state) return
+        animate = state != ToggleableState.Indeterminate &&
+                newState != ToggleableState.Indeterminate
+        state = newState
     }
 }
 
