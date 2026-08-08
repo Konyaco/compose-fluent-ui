@@ -49,10 +49,9 @@ import io.github.composefluent.component.GridViewItemColor
 import io.github.composefluent.component.GridViewItemDefaults
 import io.github.composefluent.component.Icon
 import io.github.composefluent.component.RadioButton
-import io.github.composefluent.component.ScrollbarContainer
+import io.github.composefluent.component.scrollbar
 import io.github.composefluent.component.Text
 import io.github.composefluent.component.TextField
-import io.github.composefluent.component.rememberScrollbarAdapter
 import io.github.composefluent.gallery.annotation.Component
 import io.github.composefluent.gallery.component.ComponentPagePath
 import io.github.composefluent.gallery.component.CopyButton
@@ -138,86 +137,82 @@ fun IconsScreen() {
                         color = FluentTheme.colors.background.solid.base
                     ) {
                         val listState = rememberLazyGridState()
-                        val adapter = rememberScrollbarAdapter(listState)
                         Row(modifier = Modifier.height(650.dp)) {
-                            ScrollbarContainer(
-                                adapter = adapter,
-                                modifier = Modifier.weight(1f).fillMaxHeight()
+                            val selectedColors = GridViewItemDefaults.selectedColors(
+                                default = GridViewItemColor(
+                                    borderColor = FluentTheme.colors.fillAccent.default,
+                                    backgroundColor = FluentTheme.colors.subtleFill.transparent
+                                )
+                            )
+                            val defaultColors = GridViewItemDefaults.defaultColors(
+                                hovered= GridViewItemColor(
+                                    borderColor = Color.Transparent,
+                                    backgroundColor = FluentTheme.colors.subtleFill.secondary
+                                ),
+                            )
+
+                            LazyVerticalGrid(
+                                state = listState,
+                                columns = GridCells.Adaptive(96.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                contentPadding = PaddingValues(12.dp),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .scrollbar(state = listState)
                             ) {
-
-                                val selectedColors = GridViewItemDefaults.selectedColors(
-                                    default = GridViewItemColor(
-                                        borderColor = FluentTheme.colors.fillAccent.default,
-                                        backgroundColor = FluentTheme.colors.subtleFill.transparent
-                                    )
-                                )
-                                val defaultColors = GridViewItemDefaults.defaultColors(
-                                    hovered= GridViewItemColor(
-                                        borderColor = Color.Transparent,
-                                        backgroundColor = FluentTheme.colors.subtleFill.secondary
-                                    ),
-                                )
-
-                                LazyVerticalGrid(
-                                    state = listState,
-                                    columns = GridCells.Adaptive(96.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    contentPadding = PaddingValues(12.dp),
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    items(
-                                        items = filterList.value,
-                                        contentType = { "icon" },
-                                        key = { (name, _) -> name }
-                                    ) { item ->
-                                        val (name, icon) = item
-                                        val interactionSource = remember { MutableInteractionSource() }
-                                        GridViewItem(
-                                            selected = selectedItem.value == item,
-                                            onSelectedChange = { selectedItem.value = item },
-                                            interactionSource = interactionSource,
-                                            colors = if (selectedItem.value == item) {
-                                                selectedColors
-                                            } else {
-                                                defaultColors
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .aspectRatio(1f)
-                                                .background(
-                                                    color = FluentTheme.colors.background.card.default,
-                                                    shape = FluentTheme.shapes.control
-                                                )
+                                items(
+                                    items = filterList.value,
+                                    contentType = { "icon" },
+                                    key = { (name, _) -> name }
+                                ) { item ->
+                                    val (name, icon) = item
+                                    val interactionSource = remember { MutableInteractionSource() }
+                                    GridViewItem(
+                                        selected = selectedItem.value == item,
+                                        onSelectedChange = { selectedItem.value = item },
+                                        interactionSource = interactionSource,
+                                        colors = if (selectedItem.value == item) {
+                                            selectedColors
+                                        } else {
+                                            defaultColors
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .aspectRatio(1f)
+                                            .background(
+                                                color = FluentTheme.colors.background.card.default,
+                                                shape = FluentTheme.shapes.control
+                                            )
+                                    ) {
+                                        val isHovered by interactionSource.collectIsHoveredAsState()
+                                        Box(
+                                            modifier = Modifier.fillMaxSize()
                                         ) {
-                                            val isHovered by interactionSource.collectIsHoveredAsState()
-                                            Box(
-                                                modifier = Modifier.fillMaxSize()
-                                            ) {
-                                                Icon(
-                                                    imageVector = icon,
-                                                    contentDescription = name,
-                                                    modifier = Modifier.padding(bottom = 8.dp)
-                                                        .size(28.dp).align(Alignment.Center)
-                                                )
-                                                Text(
-                                                    text = name,
-                                                    style = FluentTheme.typography.caption,
-                                                    color = FluentTheme.colors.text.text.secondary,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier
-                                                        .align(Alignment.BottomCenter)
-                                                        .padding(8.dp)
-                                                        .then(
-                                                            if (isHovered) {
-                                                                Modifier.basicMarquee()
-                                                            } else {
-                                                                Modifier
-                                                            }
-                                                        )
-                                                )
-                                            }
+                                            Icon(
+                                                imageVector = icon,
+                                                contentDescription = name,
+                                                modifier = Modifier.padding(bottom = 8.dp)
+                                                    .size(28.dp).align(Alignment.Center)
+                                            )
+                                            Text(
+                                                text = name,
+                                                style = FluentTheme.typography.caption,
+                                                color = FluentTheme.colors.text.text.secondary,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier
+                                                    .align(Alignment.BottomCenter)
+                                                    .padding(8.dp)
+                                                    .then(
+                                                        if (isHovered) {
+                                                            Modifier.basicMarquee()
+                                                        } else {
+                                                            Modifier
+                                                        }
+                                                    )
+                                            )
                                         }
                                     }
                                 }

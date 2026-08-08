@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -46,10 +47,9 @@ import io.github.composefluent.background.Layer
 import io.github.composefluent.component.ExpanderItem
 import io.github.composefluent.component.ExpanderItemSeparator
 import io.github.composefluent.component.Icon
-import io.github.composefluent.component.Scrollbar
 import io.github.composefluent.component.SubtleButton
 import io.github.composefluent.component.Text
-import io.github.composefluent.component.rememberScrollbarAdapter
+import io.github.composefluent.component.scrollbar
 import io.github.composefluent.icons.Icons
 import io.github.composefluent.icons.regular.ChevronDown
 
@@ -186,18 +186,14 @@ fun GallerySection(
                         val scrollState = rememberScrollState()
                         Box(Modifier.padding(horizontal = 16.dp).fillMaxWidth().wrapContentHeight()) {
                             SourceCode(
-                                modifier = Modifier.horizontalScroll(scrollState),
+                                modifier = Modifier
+                                    .scrollbar(
+                                        state = scrollState,
+                                        orientation = Orientation.Horizontal,
+                                    )
+                                    .horizontalScroll(scrollState),
                                 code = sourceCode
                             )
-                            Box(Modifier.fillMaxWidth().align(Alignment.BottomCenter)) {
-                                Scrollbar(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    isVertical = false,
-                                    adapter = rememberScrollbarAdapter(
-                                        scrollState
-                                    )
-                                )
-                            }
                         }
                     }
                 }

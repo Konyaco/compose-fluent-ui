@@ -14,6 +14,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -183,18 +184,14 @@ fun SideNav(
                 }
             }
             val scrollState = rememberScrollState()
-            ScrollbarContainer(
-                adapter = rememberScrollbarAdapter(scrollState),
-                modifier = Modifier.weight(1f),
-                content = {
-                    Column(
-                        content = { content() },
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .verticalScroll(scrollState)
-                            .padding(bottom = 8.dp)
-                    )
-                }
+            Column(
+                content = { content() },
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .scrollbar(state = scrollState, orientation = Orientation.Vertical)
+                    .verticalScroll(scrollState)
+                    .padding(bottom = 8.dp)
             )
             footer?.let {
                 // Divider

@@ -1,6 +1,7 @@
 package io.github.composefluent.gallery.screen.settings
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,10 +34,9 @@ import io.github.composefluent.component.Icon
 import io.github.composefluent.component.MenuFlyoutContainer
 import io.github.composefluent.component.MenuFlyoutItem
 import io.github.composefluent.component.NavigationDisplayMode
-import io.github.composefluent.component.ScrollbarContainer
 import io.github.composefluent.component.Switcher
 import io.github.composefluent.component.Text
-import io.github.composefluent.component.rememberScrollbarAdapter
+import io.github.composefluent.component.scrollbar
 import io.github.composefluent.gallery.LocalStore
 import io.github.composefluent.gallery.ProjectUrl
 import io.github.composefluent.gallery.component.ComponentItem
@@ -63,18 +63,16 @@ fun SettingsScreen(componentNavigator: ComponentNavigator) {
             modifier = Modifier.alignHorizontalSpace()
                 .padding(top = 36.dp)
         )
-        ScrollbarContainer(
-            adapter = rememberScrollbarAdapter(scrollState)
+        val store = LocalStore.current
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .scrollbar(state = scrollState, orientation = Orientation.Vertical)
+                .verticalScroll(scrollState)
+                .alignHorizontalSpace()
+                .padding(top = 8.dp)
+                .padding(bottom = 24.dp)
         ) {
-            val store = LocalStore.current
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .alignHorizontalSpace()
-                    .padding(top = 8.dp)
-                    .padding(bottom = 24.dp)
-            ) {
                 Header("Appearance & behavior")
                 CardExpanderItem(
                     heading = {
@@ -272,7 +270,6 @@ fun SettingsScreen(componentNavigator: ComponentNavigator) {
                         )
                     }
                 )
-            }
         }
     }
 }

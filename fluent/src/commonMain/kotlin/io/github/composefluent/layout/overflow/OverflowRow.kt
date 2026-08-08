@@ -1,6 +1,7 @@
 package io.github.composefluent.layout.overflow
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -30,7 +31,7 @@ import androidx.compose.ui.util.fastForEachIndexed
 import io.github.composefluent.component.BasicFlyout
 import io.github.composefluent.component.BasicFlyoutContainer
 import io.github.composefluent.component.FlyoutContainerScope
-import io.github.composefluent.component.ScrollbarContainer
+import io.github.composefluent.component.scrollbar
 import kotlin.math.roundToInt
 
 /**
@@ -166,17 +167,15 @@ fun OverflowActionScope.OverflowFlyoutContainer(
                 contentPadding = PaddingValues(),
                 content = {
                     val scrollState = rememberScrollState()
-                    ScrollbarContainer(
-                        adapter = io.github.composefluent.component.rememberScrollbarAdapter(scrollState)
+                    Column(
+                        modifier = Modifier
+                            .scrollbar(state = scrollState, orientation = Orientation.Vertical)
+                            .verticalScroll(scrollState)
+                            .width(IntrinsicSize.Max)
+                            .padding(vertical = 3.dp)
                     ) {
-                        Column(
-                            modifier = Modifier.verticalScroll(scrollState)
-                                .width(IntrinsicSize.Max)
-                                .padding(vertical = 3.dp)
-                        ) {
-                            repeat(overflowItemCount) {
-                                overflowItem(it)
-                            }
+                        repeat(overflowItemCount) {
+                            overflowItem(it)
                         }
                     }
                 }
@@ -208,21 +207,18 @@ fun OverflowActionScope.LazyOverflowFlyoutContainer(
                 contentPadding = PaddingValues(),
                 content = {
                     val listState = rememberLazyListState()
-                    ScrollbarContainer(
-                        adapter = io.github.composefluent.component.rememberScrollbarAdapter(listState)
+                    LazyColumn(
+                        state = listState,
+                        contentPadding = PaddingValues(vertical = 3.dp),
+                        modifier = Modifier.scrollbar(state = listState)
+                            .widthIn(max = 120.dp)
                     ) {
-                        LazyColumn(
-                            state = listState,
-                            contentPadding = PaddingValues(vertical = 3.dp),
-                            modifier = Modifier.widthIn(max = 120.dp)
+                        items(
+                            count = overflowItemCount,
+                            key = ::overflowItemKey,
+                            contentType = ::overflowItemContentType,
                         ) {
-                            items(
-                                count = overflowItemCount,
-                                key = ::overflowItemKey,
-                                contentType = ::overflowItemContentType,
-                            ) {
-                                overflowItem(it)
-                            }
+                            overflowItem(it)
                         }
                     }
                 }

@@ -888,7 +888,17 @@ private class ScrollbarNode(
             Orientation.Vertical -> Size(thickness, size.height)
             Orientation.Horizontal -> Size(size.width, thickness)
         }
-        val trackOffset = Offset(size.width - trackSize.width, size.height - trackSize.height)
+        val trackEndPadding = TrackEndPadding.toPx()
+        val trackOffset = when (orientation) {
+            Orientation.Vertical -> Offset(
+                x = (size.width - trackSize.width - trackEndPadding).coerceAtLeast(0f),
+                y = 0f,
+            )
+            Orientation.Horizontal -> Offset(
+                x = 0f,
+                y = (size.height - trackSize.height - trackEndPadding).coerceAtLeast(0f),
+            )
+        }
         val outline = ScrollbarDefaults.shape.createOutline(trackSize, layoutDirection, this)
         translate(trackOffset.x, trackOffset.y) {
             drawOutline(
@@ -1092,6 +1102,7 @@ private val IndicatorLength = 16.dp
 private val IndicatorEdgePadding = 2.dp
 private val IndicatorIconSize = 8.dp
 private val IndicatorEndPadding = 3.dp
+private val TrackEndPadding = 1.dp
 private val ScrollbarEndPadding = 4.dp
 private const val RepeatPressDelayMillis = 200L
 private const val RepeatPressIntervalMillis = 50L
