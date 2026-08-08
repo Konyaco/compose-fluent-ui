@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,8 +18,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.Colors
 import io.github.composefluent.FluentTheme
-import io.github.composefluent.component.ScrollbarContainer
-import io.github.composefluent.component.rememberScrollbarAdapter
+import io.github.composefluent.component.scrollbar
 import io.github.composefluent.darkColors
 import io.github.composefluent.gallery.LocalStore
 import io.github.composefluent.lightColors
@@ -67,21 +67,18 @@ fun GalleryPage(
         ) { inverseTheme.value = !inverseTheme.value }
 
         val scrollState = rememberScrollState()
-        ScrollbarContainer(
-            adapter = rememberScrollbarAdapter(scrollState),
-            modifier = Modifier.weight(1f)
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .scrollbar(state = scrollState, orientation = Orientation.Vertical)
+                .verticalScroll(scrollState)
+                .padding(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .verticalScroll(scrollState)
-                    .padding(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(32.dp)
-            ) {
-                val scope = remember { GalleryPageScope(this) { inverseTheme.value } }
-                GalleryDescription(description)
-                scope.content()
-            }
+            val scope = remember { GalleryPageScope(this) { inverseTheme.value } }
+            GalleryDescription(description)
+            scope.content()
         }
     }
 }

@@ -2,6 +2,7 @@ package io.github.composefluent.gallery.screen.test
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,7 +53,7 @@ import io.github.composefluent.component.ProgressBar
 import io.github.composefluent.component.ProgressRing
 import io.github.composefluent.component.ProgressRingSize
 import io.github.composefluent.component.RadioButton
-import io.github.composefluent.component.ScrollbarContainer
+import io.github.composefluent.component.scrollbar
 import io.github.composefluent.component.Slider
 import io.github.composefluent.component.SubtleButton
 import io.github.composefluent.component.Switcher
@@ -61,7 +62,6 @@ import io.github.composefluent.component.TabRow
 import io.github.composefluent.component.TabViewDefaults
 import io.github.composefluent.component.Text
 import io.github.composefluent.component.TextField
-import io.github.composefluent.component.rememberScrollbarAdapter
 import io.github.composefluent.gallery.LocalStore
 import io.github.composefluent.icons.Icons
 import io.github.composefluent.icons.regular.Add
@@ -304,11 +304,12 @@ private fun Content() {
     Controls()
 
     val layerScrollState = rememberScrollState()
-    ScrollbarContainer(
-        adapter = rememberScrollbarAdapter(layerScrollState),
-        isVertical = false
+    Row(
+        modifier = Modifier
+            .scrollbar(state = layerScrollState, orientation = Orientation.Horizontal)
+            .padding(bottom = 8.dp)
+            .horizontalScroll(layerScrollState)
     ) {
-        Row(modifier = Modifier.padding(bottom = 8.dp).horizontalScroll(layerScrollState)) {
             Box {
                 Box(Modifier.size(32.dp).background(FluentTheme.colors.fillAccent.default))
             }
@@ -374,7 +375,6 @@ private fun Content() {
                 Box(Modifier.size(32.dp))
             }
         }
-    }
     var value by remember { mutableStateOf(TextFieldValue("Hello Fluent!")) }
     TextField(value, onValueChange = { value = it })
     TextField(

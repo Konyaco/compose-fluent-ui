@@ -91,7 +91,7 @@ internal actual fun PlatformScrollBar(
         },
         hoverDurationMillis = FluentDuration.ShortDuration,
         shape = ScrollbarDefaults.shape,
-        minimalHeight = 16.dp
+        minimalHeight = ScrollbarDefaults.minimumThumbLength
     )
 
     val scrollScope = rememberCoroutineScope()
@@ -106,7 +106,7 @@ internal actual fun PlatformScrollBar(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.hoverable(containerInteraction)
-                .width(12.dp)
+                .width(ScrollbarDefaults.containerThickness)
                 .background(
                     color = trackColor,
                     shape = CircleShape
@@ -145,7 +145,7 @@ internal actual fun PlatformScrollBar(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.hoverable(containerInteraction)
-                .height(12.dp)
+                .height(ScrollbarDefaults.containerThickness)
                 .background(
                     color = trackColor,
                     shape = CircleShape

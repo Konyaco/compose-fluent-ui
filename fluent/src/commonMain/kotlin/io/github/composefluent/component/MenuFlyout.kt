@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -165,16 +166,14 @@ internal fun MenuFlyout(
         focusable = false
     ) {
         val state = rememberScrollState()
-        ScrollbarContainer(
-            adapter = rememberScrollbarAdapter(state)
+        Column(
+            modifier = Modifier
+                .scrollbar(state = state, orientation = Orientation.Vertical)
+                .width(IntrinsicSize.Max)
+                .verticalScroll(state)
         ) {
-            Column(
-                modifier = Modifier.width(IntrinsicSize.Max)
-                    .verticalScroll(state)
-            ) {
-                val scope = remember { MenuFlyoutScopeImpl() }
-                scope.content()
-            }
+            val scope = remember { MenuFlyoutScopeImpl() }
+            scope.content()
         }
 
     }

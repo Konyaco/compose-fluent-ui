@@ -10,6 +10,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,8 +59,6 @@ import io.github.composefluent.component.ButtonColor
 import io.github.composefluent.component.ButtonColorScheme
 import io.github.composefluent.component.InfoBar
 import io.github.composefluent.component.InfoBarSeverity
-import io.github.composefluent.component.Scrollbar
-import io.github.composefluent.component.ScrollbarContainer
 import io.github.composefluent.component.Slider
 import io.github.composefluent.component.Switcher
 import io.github.composefluent.component.TabItem
@@ -67,7 +66,7 @@ import io.github.composefluent.component.TabViewDefaults
 import io.github.composefluent.component.Text
 import io.github.composefluent.component.TopNav
 import io.github.composefluent.component.TopNavItem
-import io.github.composefluent.component.rememberScrollbarAdapter
+import io.github.composefluent.component.scrollbar
 import io.github.composefluent.gallery.annotation.Component
 import io.github.composefluent.gallery.component.ComponentPagePath
 import io.github.composefluent.gallery.component.CopyButton
@@ -448,22 +447,14 @@ private fun FillColorPage() {
         sample = {
 
             val scrollState = rememberScrollState()
-            ScrollbarContainer(
-                isVertical = false,
-                scrollbar = {
-                    Scrollbar(
-                        isVertical = false,
-                        adapter = rememberScrollbarAdapter(scrollState),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                },
-                modifier = Modifier.width(160.dp)
+            Box(
+                modifier = Modifier
+                    .width(160.dp)
+                    .scrollbar(state = scrollState, orientation = Orientation.Horizontal)
+                    .horizontalScroll(scrollState)
+                    .height(28.dp)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(scrollState).height(28.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(1.dp).width(700.dp))
-                }
+                Spacer(modifier = Modifier.height(1.dp).width(700.dp))
             }
         },
         group = arrayOf(

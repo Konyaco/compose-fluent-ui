@@ -170,16 +170,12 @@ object AutoSuggestBoxDefaults {
             focusable = false,
             content = {
                 CompactMode(enabled = compactMode) {
-                    val adapter = rememberScrollbarAdapter(state)
-                    ScrollbarContainer(
-                        adapter = adapter
-                    ) {
-                        LazyColumn(
-                            contentPadding = contentPadding,
-                            content = itemsContent,
-                            state = state,
-                        )
-                    }
+                    LazyColumn(
+                        modifier = Modifier.scrollbar(state = state),
+                        contentPadding = contentPadding,
+                        content = itemsContent,
+                        state = state,
+                    )
 
                 }
             }
