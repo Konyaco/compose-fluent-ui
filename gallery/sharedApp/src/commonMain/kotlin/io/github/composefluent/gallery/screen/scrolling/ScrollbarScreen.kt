@@ -67,6 +67,11 @@ fun ScrollbarScreen() {
             content = { LazyListScrollbarSample() }
         )
         Section(
+            title = "Reverse layout scrollbar",
+            sourceCode = sourceCodeOfReverseLayoutScrollbarSample,
+            content = { ReverseLayoutScrollbarSample() }
+        )
+        Section(
             title = "LazyGrid scrollbar",
             sourceCode = sourceCodeOfLazyGridScrollbarSample,
             content = { LazyGridScrollbarSample() }
@@ -147,6 +152,34 @@ private fun LazyListScrollbarSample() {
         lazyListItems(items = items) { index ->
             Text(
                 text = "Lazy list item ${index + 1}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(FluentTheme.colors.background.layer.alt)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            )
+        }
+    }
+}
+
+@Sample
+@Composable
+private fun ReverseLayoutScrollbarSample() {
+    val items = remember { List(30) { it } }
+    val state = rememberLazyListState()
+
+    LazyColumn(
+        state = state,
+        reverseLayout = true,
+        modifier = Modifier
+            .size(width = 280.dp, height = 180.dp)
+            .background(FluentTheme.colors.background.layer.default)
+            .scrollbar(state = state, reverseLayout = true),
+        contentPadding = PaddingValues(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        lazyListItems(items = items) { index ->
+            Text(
+                text = "Reverse layout item ${index + 1}",
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(FluentTheme.colors.background.layer.alt)

@@ -99,6 +99,9 @@ import kotlin.math.roundToInt
  * @param state state supplied by the scrollable container, or `null` to hide and disable the
  *   scrollbar.
  * @param orientation axis of the associated scrollable container.
+ * @param reverseLayout whether the associated scrollable container uses a reversed layout or
+ *   scrolling direction. The value is combined with horizontal RTL layout direction when
+ *   resolving the visual direction of the scrollbar.
  * @param onThumbDrag callback invoked continuously while the thumb is dragged, or `null` to
  *   disable thumb dragging. The fraction is in `0f..1f`, where zero is the visual start.
  * @param onTrackPress callback invoked for a track or end-indicator press, or `null` to disable
@@ -112,6 +115,7 @@ fun Modifier.scrollbar(
     onThumbDrag: ((positionFraction: Float) -> Unit)? = null,
     onTrackPress: ((positionFraction: Float) -> Unit)? = null,
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
+    reverseLayout: Boolean = false,
 ): Modifier = scrollbarNode(
     state = state,
     orientation = orientation,
@@ -119,6 +123,7 @@ fun Modifier.scrollbar(
     onThumbDragDelta = null,
     onTrackPress = onTrackPress,
     colors = colors,
+    reverseLayout = reverseLayout,
 )
 
 @Composable
@@ -129,20 +134,24 @@ private fun Modifier.scrollbarNode(
     onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
     onTrackPress: ((positionFraction: Float) -> Unit)?,
     colors: ScrollbarColors,
+    reverseLayout: Boolean,
 ): Modifier {
     val fontIconFamily = LocalFontIconFontFamily.current
     val textMeasurer = rememberTextMeasurer()
     val layoutDirection = LocalLayoutDirection.current
     val horizontalRtl = orientation == Orientation.Horizontal &&
             layoutDirection == LayoutDirection.Rtl
+    val isReversed = reverseLayout != horizontalRtl
     val startIndicator = when {
+        orientation == Orientation.Vertical && isReversed -> FontIconPrimitive.CaretDown
         orientation == Orientation.Vertical -> FontIconPrimitive.CaretUp
-        horizontalRtl -> FontIconPrimitive.CaretRight
+        isReversed -> FontIconPrimitive.CaretRight
         else -> FontIconPrimitive.CaretLeft
     }
     val endIndicator = when {
+        orientation == Orientation.Vertical && isReversed -> FontIconPrimitive.CaretUp
         orientation == Orientation.Vertical -> FontIconPrimitive.CaretDown
-        horizontalRtl -> FontIconPrimitive.CaretLeft
+        isReversed -> FontIconPrimitive.CaretLeft
         else -> FontIconPrimitive.CaretRight
     }
     return this then ScrollbarElement(
@@ -152,6 +161,7 @@ private fun Modifier.scrollbarNode(
         onThumbDragDelta = onThumbDragDelta,
         onTrackPress = onTrackPress,
         colors = colors,
+        reverseLayout = reverseLayout,
         layoutDirection = layoutDirection,
         fontIconFamily = fontIconFamily,
         textMeasurer = textMeasurer,
@@ -169,6 +179,7 @@ private fun Modifier.scrollbarForState(
     scrollableState: ScrollableState,
     coroutineScope: CoroutineScope,
     colors: ScrollbarColors,
+    reverseLayout: Boolean,
 ): Modifier {
     val scrollMutex = remember(scrollableState) { Mutex() }
     return scrollbarNode(
@@ -198,6 +209,7 @@ private fun Modifier.scrollbarForState(
             }
         },
         colors = colors,
+        reverseLayout = reverseLayout,
     )
 }
 
@@ -212,6 +224,8 @@ private fun Modifier.scrollbarForState(
  *
  * @param state scroll state used by the scrollable container.
  * @param orientation axis of the scrollable container backed by [state].
+ * @param reverseScrolling whether the associated scroll modifier uses reversed scrolling. When
+ *   `true`, zero in [ScrollState.value] represents the visual end of the content.
  * @param coroutineScope scope used to launch scroll operations from thumb drags and track
  *   presses. Defaults to the composition's remembered scope.
  * @param colors colors used to draw the scrollbar.
@@ -222,12 +236,14 @@ fun Modifier.scrollbar(
     orientation: Orientation,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
+    reverseScrolling: Boolean = false,
 ): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
     scrollableState = state,
     coroutineScope = coroutineScope,
     colors = colors,
+    reverseLayout = reverseScrolling,
 )
 
 /**
@@ -242,6 +258,7 @@ fun Modifier.scrollbar(
  * @param state lazy list state used by the scrollable container.
  * @param orientation axis of the lazy list; defaults to the measured orientation in
  *   [LazyListState.layoutInfo].
+ * @param reverseLayout whether the lazy list uses reversed layout.
  * @param coroutineScope scope used to launch scroll operations from thumb drags and track
  *   presses. Defaults to the composition's remembered scope.
  * @param colors colors used to draw the scrollbar.
@@ -252,12 +269,14 @@ fun Modifier.scrollbar(
     orientation: Orientation = remember(state) { derivedStateOf { state.layoutInfo.orientation } }.value,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
+    reverseLayout: Boolean = false,
 ): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
     scrollableState = state,
     coroutineScope = coroutineScope,
     colors = colors,
+    reverseLayout = reverseLayout,
 )
 
 /**
@@ -272,6 +291,7 @@ fun Modifier.scrollbar(
  * @param state lazy grid state used by the scrollable container.
  * @param orientation axis of the lazy grid; defaults to the measured orientation in
  *   [LazyGridState.layoutInfo].
+ * @param reverseLayout whether the lazy grid uses reversed layout.
  * @param coroutineScope scope used to launch scroll operations from thumb drags and track
  *   presses. Defaults to the composition's remembered scope.
  * @param colors colors used to draw the scrollbar.
@@ -282,12 +302,14 @@ fun Modifier.scrollbar(
     orientation: Orientation = remember(state) { derivedStateOf { state.layoutInfo.orientation } }.value,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
+    reverseLayout: Boolean = false,
 ): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
     scrollableState = state,
     coroutineScope = coroutineScope,
     colors = colors,
+    reverseLayout = reverseLayout,
 )
 
 /**
@@ -302,6 +324,7 @@ fun Modifier.scrollbar(
  * @param state lazy staggered grid state used by the scrollable container.
  * @param orientation axis of the lazy staggered grid; defaults to the measured orientation in
  *   [LazyStaggeredGridState.layoutInfo].
+ * @param reverseLayout whether the lazy staggered grid uses reversed layout.
  * @param coroutineScope scope used to launch scroll operations from thumb drags and track
  *   presses. Defaults to the composition's remembered scope.
  * @param colors colors used to draw the scrollbar.
@@ -312,12 +335,14 @@ fun Modifier.scrollbar(
     orientation: Orientation = remember(state) { derivedStateOf { state.layoutInfo.orientation } }.value,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     colors: ScrollbarColors = ScrollbarDefaults.colors(),
+    reverseLayout: Boolean = false,
 ): Modifier = scrollbarForState(
     state = state.scrollIndicatorState,
     orientation = orientation,
     scrollableState = state,
     coroutineScope = coroutineScope,
     colors = colors,
+    reverseLayout = reverseLayout,
 )
 
 @PublishedApi
@@ -372,6 +397,7 @@ internal suspend fun scrollToIndicatorPosition(
 private data class ScrollbarElement(
     val state: ScrollIndicatorState?,
     val orientation: Orientation,
+    val reverseLayout: Boolean,
     val onThumbDrag: ((positionFraction: Float) -> Unit)?,
     val onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
     val onTrackPress: ((positionFraction: Float) -> Unit)?,
@@ -387,6 +413,7 @@ private data class ScrollbarElement(
     override fun create() = ScrollbarNode(
         state = state,
         orientation = orientation,
+        reverseLayout = reverseLayout,
         onThumbDrag = onThumbDrag,
         onThumbDragDelta = onThumbDragDelta,
         onTrackPress = onTrackPress,
@@ -404,6 +431,7 @@ private data class ScrollbarElement(
         node.update(
             state = state,
             orientation = orientation,
+            reverseLayout = reverseLayout,
             onThumbDrag = onThumbDrag,
             onThumbDragDelta = onThumbDragDelta,
             onTrackPress = onTrackPress,
@@ -422,6 +450,7 @@ private data class ScrollbarElement(
         name = "scrollbar"
         properties["state"] = state
         properties["orientation"] = orientation
+        properties["reverseLayout"] = reverseLayout
         properties["onThumbDrag"] = onThumbDrag
         properties["onThumbDragDelta"] = onThumbDragDelta
         properties["onTrackPress"] = onTrackPress
@@ -432,6 +461,7 @@ private data class ScrollbarElement(
 private class ScrollbarNode(
     state: ScrollIndicatorState?,
     orientation: Orientation,
+    reverseLayout: Boolean,
     onThumbDrag: ((positionFraction: Float) -> Unit)?,
     onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
     onTrackPress: ((positionFraction: Float) -> Unit)?,
@@ -446,6 +476,7 @@ private class ScrollbarNode(
 ) : Modifier.Node(), DrawModifierNode, PointerInputModifierNode {
     private var state = state
     private var orientation = orientation
+    private var reverseLayout = reverseLayout
     private var onThumbDrag = onThumbDrag
     private var onThumbDragDelta = onThumbDragDelta
     private var onTrackPress = onTrackPress
@@ -473,6 +504,7 @@ private class ScrollbarNode(
     fun update(
         state: ScrollIndicatorState?,
         orientation: Orientation,
+        reverseLayout: Boolean,
         onThumbDrag: ((positionFraction: Float) -> Unit)?,
         onThumbDragDelta: ((positionDeltaFraction: Float) -> Unit)?,
         onTrackPress: ((positionFraction: Float) -> Unit)?,
@@ -488,9 +520,11 @@ private class ScrollbarNode(
         val stateChanged = this.state !== state
         val geometryChanged = stateChanged ||
                 this.orientation != orientation ||
+                this.reverseLayout != reverseLayout ||
                 this.layoutDirection != layoutDirection
         this.state = state
         this.orientation = orientation
+        this.reverseLayout = reverseLayout
         this.onThumbDrag = onThumbDrag
         this.onThumbDragDelta = onThumbDragDelta
         this.onTrackPress = onTrackPress
@@ -503,12 +537,7 @@ private class ScrollbarNode(
         this.startIndicatorPainter = startIndicatorPainter
         this.endIndicatorPainter = endIndicatorPainter
         if (state == null) {
-            pressedPart = ScrollbarPart.None
-            dragGeometry = null
-            dragThumbOffset = 0f
-            dragLastPosition = 0f
-            animateIndicatorScale(false)
-            repeatPressJob?.cancel()
+            resetPressedInteraction()
             animateHighlight(false)
         } else if (stateChanged) {
             animateHighlight(pointerHovered)
@@ -533,13 +562,26 @@ private class ScrollbarNode(
         }
         setPointerHovered(isInScrollbar)
 
+        if (!change.pressed && change.previousPressed) {
+            resetPressedInteraction()
+            animateHighlight(pointerHovered)
+            invalidateDraw()
+            return
+        }
+
         val geometry = calculateGeometry(
             state = state ?: return,
             axisLength = bounds.axisLength(),
             minimumThumbLength = with(requireDensity()) {
                 ScrollbarDefaults.minimumThumbLength.toPx()
             },
-        ) ?: return
+        )
+        if (geometry == null) {
+            resetPressedInteraction()
+            animateHighlight(pointerHovered)
+            invalidateDraw()
+            return
+        }
 
         when {
             change.pressed && !change.previousPressed && isInScrollbar -> {
@@ -561,13 +603,13 @@ private class ScrollbarNode(
                     ScrollbarPart.TrackBefore -> pressTrack(
                         geometry.positionAfterTrackPress(
                             pointerPosition = position.axisPosition(),
-                            reverse = isHorizontalRtl,
+                            reverse = isReversed,
                         ),
                     )
                     ScrollbarPart.TrackAfter -> pressTrack(
                         geometry.positionAfterTrackPress(
                             pointerPosition = position.axisPosition(),
-                            reverse = isHorizontalRtl,
+                            reverse = isReversed,
                         ),
                     )
                     ScrollbarPart.None -> Unit
@@ -599,7 +641,7 @@ private class ScrollbarNode(
                 }
                 val dragTravel = dragGeometry?.travel ?: geometry.travel
                 if (onThumbDragDelta != null && dragTravel > 0f) {
-                    val direction = if (isHorizontalRtl) -1f else 1f
+                    val direction = if (isReversed) -1f else 1f
                     onThumbDragDelta?.invoke(pointerDelta / dragTravel * direction)
                 }
                 val fractionGeometry = dragGeometry ?: geometry
@@ -610,39 +652,32 @@ private class ScrollbarNode(
                 }
                 val fraction = fractionGeometry.fractionForThumbPosition(
                     fractionThumbPosition,
-                    reverse = orientation == Orientation.Horizontal &&
-                            layoutDirection == LayoutDirection.Rtl,
+                    reverse = isReversed,
                 )
                 onThumbDrag?.invoke(fraction)
                 change.consume()
-                invalidateDraw()
-            }
-            !change.pressed && change.previousPressed -> {
-                pressedPart = ScrollbarPart.None
-                dragLastPosition = 0f
-                dragGeometry = null
-                dragThumbOffset = 0f
-                animateIndicatorScale(false)
-                repeatPressJob?.cancel()
-                animateHighlight(pointerHovered)
                 invalidateDraw()
             }
         }
     }
 
     override fun onCancelPointerInput() {
-        pressedPart = ScrollbarPart.None
-        dragLastPosition = 0f
-        dragGeometry = null
-        dragThumbOffset = 0f
-        animateIndicatorScale(false)
-        repeatPressJob?.cancel()
+        resetPressedInteraction()
         setPointerHovered(false)
     }
 
     override fun onDetach() {
         highlightJob?.cancel()
         indicatorScaleJob?.cancel()
+        repeatPressJob?.cancel()
+    }
+
+    private fun resetPressedInteraction() {
+        pressedPart = ScrollbarPart.None
+        dragLastPosition = 0f
+        dragGeometry = null
+        dragThumbOffset = 0f
+        animateIndicatorScale(false)
         repeatPressJob?.cancel()
     }
 
@@ -684,7 +719,7 @@ private class ScrollbarNode(
                 geometry.positionFraction + geometry.indicatorStepFraction
             ScrollbarPart.TrackBefore,
             ScrollbarPart.TrackAfter,
-                -> geometry.fractionForTrackPosition(pointerPosition, reverse = isHorizontalRtl)
+                -> geometry.fractionForTrackPosition(pointerPosition, reverse = isReversed)
             else -> return false
         }.coerceIn(0f, 1f)
         val distanceToTarget = targetPosition - geometry.positionFraction
@@ -727,30 +762,33 @@ private class ScrollbarNode(
                 ScrollbarPart.None
             }
         axisPosition < geometry.trackStart -> if (onTrackPress != null) {
-            if (isHorizontalRtl) {
+            if (isReversed) {
                 ScrollbarPart.EndIndicator
             } else {
                 ScrollbarPart.StartIndicator
             }
         } else ScrollbarPart.None
         axisPosition > geometry.trackEnd -> if (onTrackPress != null) {
-            if (isHorizontalRtl) {
+            if (isReversed) {
                 ScrollbarPart.StartIndicator
             } else {
                 ScrollbarPart.EndIndicator
             }
         } else ScrollbarPart.None
         axisPosition < geometry.thumbOffset -> if (onTrackPress != null) {
-            if (isHorizontalRtl) ScrollbarPart.TrackAfter else ScrollbarPart.TrackBefore
+            if (isReversed) ScrollbarPart.TrackAfter else ScrollbarPart.TrackBefore
         } else ScrollbarPart.None
         axisPosition > geometry.thumbOffset + geometry.thumbLength -> if (onTrackPress != null) {
-            if (isHorizontalRtl) ScrollbarPart.TrackBefore else ScrollbarPart.TrackAfter
+            if (isReversed) ScrollbarPart.TrackBefore else ScrollbarPart.TrackAfter
         } else ScrollbarPart.None
         else -> ScrollbarPart.None
     }
 
     private val isHorizontalRtl
         get() = orientation == Orientation.Horizontal && layoutDirection == LayoutDirection.Rtl
+
+    private val isReversed
+        get() = reverseLayout != isHorizontalRtl
 
     private fun Offset.axisPosition() = when (orientation) {
         Orientation.Vertical -> y
@@ -766,12 +804,17 @@ private class ScrollbarNode(
         val targetThickness = with(requireDensity()) {
             ScrollbarDefaults.containerThickness.toPx()
         }
+        val trackEndPadding = with(requireDensity()) {
+            TrackEndPadding.toPx()
+        }
         return when (orientation) {
             Orientation.Vertical ->
-                x in (bounds.width - targetThickness)..bounds.width.toFloat() &&
+                x in (bounds.width - targetThickness - trackEndPadding)..
+                        (bounds.width - trackEndPadding) &&
                         y in 0f..bounds.height.toFloat()
             Orientation.Horizontal ->
-                y in (bounds.height - targetThickness)..bounds.height.toFloat() &&
+                y in (bounds.height - targetThickness - trackEndPadding)..
+                        (bounds.height - trackEndPadding) &&
                         x in 0f..bounds.width.toFloat()
         }
     }
@@ -857,10 +900,10 @@ private class ScrollbarNode(
         val travel = (trackLength - thumbLength).coerceAtLeast(0f)
         val positionFraction = scrollOffset.coerceIn(0, scrollRange).toFloat() / scrollRange
         val visualOffset = positionFraction * travel
-        val canvasOffset = when {
-            orientation == Orientation.Horizontal && layoutDirection == LayoutDirection.Rtl ->
-                trackStart + travel - visualOffset
-            else -> trackStart + visualOffset
+        val canvasOffset = if (isReversed) {
+            trackStart + travel - visualOffset
+        } else {
+            trackStart + visualOffset
         }
         return ScrollbarGeometry(
             thumbOffset = canvasOffset,
@@ -965,12 +1008,16 @@ private class ScrollbarNode(
             Orientation.Horizontal -> size.width - lowCenter
         }
         val startCenter = when {
-            isHorizontalRtl -> Offset(highCenter, indicatorCrossAxisCenter)
+            isReversed && orientation == Orientation.Horizontal ->
+                Offset(highCenter, indicatorCrossAxisCenter)
+            isReversed -> Offset(indicatorCrossAxisCenter, highCenter)
             orientation == Orientation.Vertical -> Offset(indicatorCrossAxisCenter, lowCenter)
             else -> Offset(lowCenter, indicatorCrossAxisCenter)
         }
         val endCenter = when {
-            isHorizontalRtl -> Offset(lowCenter, indicatorCrossAxisCenter)
+            isReversed && orientation == Orientation.Horizontal ->
+                Offset(lowCenter, indicatorCrossAxisCenter)
+            isReversed -> Offset(indicatorCrossAxisCenter, lowCenter)
             orientation == Orientation.Vertical -> Offset(indicatorCrossAxisCenter, highCenter)
             else -> Offset(highCenter, indicatorCrossAxisCenter)
         }
