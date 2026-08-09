@@ -6,14 +6,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.style.TextOverflow
 import io.github.composefluent.component.Button
 import io.github.composefluent.component.CheckBox
-import io.github.composefluent.component.DropDownButton
+import io.github.composefluent.component.ComboBox
 import io.github.composefluent.component.HyperlinkButton
 import io.github.composefluent.component.InfoBar
 import io.github.composefluent.component.InfoBarDefaults
-import io.github.composefluent.component.MenuFlyoutContainer
-import io.github.composefluent.component.MenuFlyoutItem
 import io.github.composefluent.component.InfoBarSeverity
 import io.github.composefluent.component.Text
 import io.github.composefluent.gallery.annotation.Component
@@ -52,26 +51,12 @@ fun InfoBarScreen() {
                     onCheckStateChange = { basicSampleVisible = it },
                     label = "Is Open"
                 )
-                Text("Severity")
-                MenuFlyoutContainer(
-                    flyout = {
-                        InfoBarSeverity.entries.forEach { severity ->
-                            MenuFlyoutItem(
-                                selected = basicSampleSeverity == severity,
-                                onSelectedChanged = {
-                                    basicSampleSeverity = severity
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text(severity.name) }
-                            )
-                        }
-                    },
-                    content = {
-                        DropDownButton(
-                            content = { Text(basicSampleSeverity.name) },
-                            onClick = { isFlyoutVisible = true },
-                        )
-                    }
+                ComboBox(
+                    items = InfoBarSeverity.entries,
+                    selected = basicSampleSeverity.ordinal,
+                    onSelectionChange = { _, item -> basicSampleSeverity = item },
+                    header = { Text("Severity") },
+                    content = { _, item -> Text(text = item.name, overflow = TextOverflow.Ellipsis) }
                 )
             },
         )
@@ -106,74 +91,34 @@ fun InfoBarScreen() {
                     onCheckStateChange = { secondarySampleVisible = it },
                     label = "Is Open"
                 )
-                Text("Message Length")
-                MenuFlyoutContainer(
-                    flyout = {
-                        MenuFlyoutItem(
-                            selected = secondarySampleMessageLong,
-                            onSelectedChanged = {
-                                secondarySampleMessageLong = true
-                                isFlyoutVisible = false
-                            },
-                            text = { Text("Long") }
-                        )
 
-                        MenuFlyoutItem(
-                            selected = !secondarySampleMessageLong,
-                            onSelectedChanged = {
-                                secondarySampleMessageLong = false
-                                isFlyoutVisible = false
-                            },
-                            text = { Text("Short") }
-                        )
-                    },
-                    content = {
-                        DropDownButton(
-                            content = { Text(if (secondarySampleMessageLong) "Long" else "Short") },
-                            onClick = { isFlyoutVisible = true },
-                        )
+                ComboBox(
+                    items = remember { listOf(true, false) },
+                    selected = if (secondarySampleMessageLong) 0 else 1,
+                    onSelectionChange = { _, item -> secondarySampleMessageLong = item },
+                    header = { Text("Message Length") },
+                    content = { _, item ->
+                        Text(text = if (item) "Long" else "Short", overflow = TextOverflow.Ellipsis)
                     }
                 )
-                Text("Action Button")
-                MenuFlyoutContainer(
-                    flyout = {
-                        MenuFlyoutItem(
-                            selected = secondarySampleActionHyperLink == null,
-                            onSelectedChanged = {
-                                secondarySampleActionHyperLink = null
-                                isFlyoutVisible = false
-                            },
-                            text = { Text("None") }
-                        )
-                        MenuFlyoutItem(
-                            selected = secondarySampleActionHyperLink == false,
-                            onSelectedChanged = {
-                                secondarySampleActionHyperLink = false
-                                isFlyoutVisible = false
-                            },
-                            text = { Text("Button") }
-                        )
-                        MenuFlyoutItem(
-                            selected = secondarySampleActionHyperLink == true,
-                            onSelectedChanged = {
-                                secondarySampleActionHyperLink = true
-                                isFlyoutVisible = false
-                            },
-                            text = { Text("Hyperlink") }
-                        )
+
+                ComboBox(
+                    items = remember { listOf(null, false, true) },
+                    selected = when(secondarySampleActionHyperLink) {
+                        null -> 0
+                        false -> 1
+                        else -> 2
                     },
-                    content = {
-                        DropDownButton(
-                            content = {
-                                Text(
-                                    when (secondarySampleActionHyperLink) {
-                                        null -> "None"
-                                        true -> "Hyperlink"
-                                        false -> "Button"
-                                    }
-                                )
+                    onSelectionChange = { _, item -> secondarySampleActionHyperLink = item },
+                    header = { Text("Action Button") },
+                    content = { _, item ->
+                        Text(
+                            text = when(item) {
+                                null -> "None"
+                                false -> "Button"
+                                true -> "Hyperlink"
                             },
-                            onClick = { isFlyoutVisible = true },
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 )

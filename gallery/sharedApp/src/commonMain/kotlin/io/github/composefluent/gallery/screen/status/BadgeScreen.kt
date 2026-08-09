@@ -14,16 +14,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.component.Badge
 import io.github.composefluent.component.BadgeDefaults
 import io.github.composefluent.component.BadgeStatus
 import io.github.composefluent.component.Button
-import io.github.composefluent.component.DropDownButton
+import io.github.composefluent.component.ComboBox
 import io.github.composefluent.component.Icon
-import io.github.composefluent.component.MenuFlyoutContainer
-import io.github.composefluent.component.MenuFlyoutItem
 import io.github.composefluent.component.NavigationDefaults
 import io.github.composefluent.component.NavigationDisplayMode
 import io.github.composefluent.component.NavigationView
@@ -67,25 +66,14 @@ fun BadgeScreen() {
                     checked = badgeVisible,
                     onCheckStateChange = { badgeVisible = it }
                 )
-                Text("Display Mode")
-                MenuFlyoutContainer(
-                    flyout = {
-                        NavigationDisplayMode.entries.forEach { item ->
-                            MenuFlyoutItem(
-                                selected = item == displayMode,
-                                onSelectedChanged = {
-                                    displayMode = item
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text(item.name) }
-                            )
-                        }
-                    },
-                    content = {
-                        DropDownButton(
-                            onClick = { isFlyoutVisible = true },
-                            content = { Text(displayMode.name) }
-                        )
+
+                ComboBox(
+                    items = NavigationDisplayMode.entries,
+                    selected = displayMode.ordinal,
+                    onSelectionChange = { _, item -> displayMode = item },
+                    header = { Text("Display Mode") },
+                    content = { _, item ->
+                        Text(text = item.name, overflow = TextOverflow.Ellipsis)
                     }
                 )
             }
@@ -97,25 +85,13 @@ fun BadgeScreen() {
             sourceCode = sourceCodeOfBadgeStatusSample,
             content = { BadgeStatusSample(status) },
             options = {
-                Text("Status")
-                MenuFlyoutContainer(
-                    flyout = {
-                        BadgeStatus.entries.forEach { item ->
-                            MenuFlyoutItem(
-                                selected = item == status,
-                                onSelectedChanged = {
-                                    status = item
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text(item.name) }
-                            )
-                        }
-                    },
-                    content = {
-                        DropDownButton(
-                            onClick = { isFlyoutVisible = true },
-                            content = { Text(status.name) }
-                        )
+                ComboBox(
+                    items = BadgeStatus.entries,
+                    selected = status.ordinal,
+                    onSelectionChange = { _, item -> status = item },
+                    header = { Text("Status") },
+                    content = { _, item ->
+                        Text(text = item.name, overflow = TextOverflow.Ellipsis)
                     }
                 )
             }

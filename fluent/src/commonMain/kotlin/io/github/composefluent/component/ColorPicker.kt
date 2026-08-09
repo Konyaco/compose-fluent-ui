@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -71,6 +70,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -282,50 +282,18 @@ fun ColorPicker(
             Row(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                BasicFlyoutContainer(
-                    flyout = {
-                        MenuFlyout(
-                            onDismissRequest = { isFlyoutVisible = false },
-                            visible = isFlyoutVisible,
-                            modifier = Modifier.width(120.dp),
-                            placement = FlyoutPlacement.Bottom,
-                            adaptivePlacement = true
-                        ) {
-                            MenuFlyoutItem(
-                                selected = isRgbTextField,
-                                onSelectedChanged = {
-                                    isRgbTextField = true
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text("RGB") },
-                                modifier = Modifier.defaultMinSize(120.dp)
-                            )
-                            MenuFlyoutItem(
-                                selected = !isRgbTextField,
-                                onSelectedChanged = {
-                                    isRgbTextField = false
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text("HSV") },
-                                modifier = Modifier.defaultMinSize(120.dp)
-                            )
-                        }
+                val colorTypes = remember { listOf(true, false) }
+                ComboBox(
+                    selected = if (isRgbTextField) 0 else 1,
+                    items = colorTypes,
+                    onSelectionChange = { _, item ->
+                        isRgbTextField = item
                     },
-                    modifier = Modifier
-                        .width(120.dp)
-                ) {
-                    DropDownButton(
-                        onClick = { isFlyoutVisible = !isFlyoutVisible },
-                        content = {
-                            Text(
-                                text = if (isRgbTextField) "RGB" else "HSV",
-                                modifier = Modifier.weight(1f)
-                            )
-                        },
-                        modifier = Modifier
-                            .width(120.dp)
-                    )
-                }
+                    content = { _, item ->
+                        Text(if (item) "RGB" else "HSV", overflow = TextOverflow.Ellipsis)
+                    },
+                    modifier = Modifier.width(120.dp)
+                )
                 Spacer(Modifier.weight(1f))
                 HexColorTextField(
                     color = state.color,
@@ -637,48 +605,13 @@ fun ColorPicker(
         ) {
             var isRGBTextField by remember { mutableStateOf(true) }
             Row(horizontalArrangement = Arrangement.SpaceAround) {
-                BasicFlyoutContainer(
-                    flyout = {
-                        MenuFlyout(
-                            onDismissRequest = { isFlyoutVisible = false },
-                            visible = isFlyoutVisible,
-                            modifier = Modifier.width(120.dp),
-                            placement = FlyoutPlacement.Bottom,
-                            adaptivePlacement = true
-                        ) {
-                            MenuFlyoutItem(
-                                selected = isRGBTextField,
-                                onSelectedChanged = {
-                                    isRGBTextField = true
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text("RGB") },
-                                modifier = Modifier.defaultMinSize(120.dp)
-                            )
-                            MenuFlyoutItem(
-                                selected = !isRGBTextField,
-                                onSelectedChanged = {
-                                    isRGBTextField = false
-                                    isFlyoutVisible = false
-                                },
-                                text = { Text("HSV") },
-                                modifier = Modifier.defaultMinSize(120.dp)
-                            )
-                        }
-                    },
+                ComboBox(
+                    items = remember { listOf(true, false) },
+                    selected = if (isRGBTextField) 0 else 1,
+                    onSelectionChange = { _, item -> isRGBTextField = item },
+                    content = { _, item -> Text(text = if (item) "RGB" else "HSV", overflow = TextOverflow.Ellipsis) },
                     modifier = Modifier.width(120.dp)
-                ) {
-                    DropDownButton(
-                        onClick = { isFlyoutVisible = !isFlyoutVisible },
-                        content = {
-                            Text(
-                                text = if (isRGBTextField) "RGB" else "HSV",
-                                modifier = Modifier.weight(1f)
-                            )
-                        },
-                        modifier = Modifier.width(120.dp)
-                    )
-                }
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 HexColorTextField(
                     color = color,

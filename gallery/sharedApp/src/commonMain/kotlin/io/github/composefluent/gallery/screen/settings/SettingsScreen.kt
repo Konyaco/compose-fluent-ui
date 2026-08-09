@@ -22,17 +22,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.build.BuildKonfig
 import io.github.composefluent.component.CardExpanderItem
-import io.github.composefluent.component.DropDownButton
+import io.github.composefluent.component.ComboBox
 import io.github.composefluent.component.Expander
 import io.github.composefluent.component.ExpanderItem
 import io.github.composefluent.component.ExpanderItemSeparator
 import io.github.composefluent.component.Icon
-import io.github.composefluent.component.MenuFlyoutContainer
-import io.github.composefluent.component.MenuFlyoutItem
 import io.github.composefluent.component.NavigationDisplayMode
 import io.github.composefluent.component.Switcher
 import io.github.composefluent.component.Text
@@ -151,31 +150,16 @@ fun SettingsScreen(componentNavigator: ComponentNavigator) {
                         Text("Choose the Navigation View Layout")
                     },
                     trailing = {
-                        MenuFlyoutContainer(
-                            flyout = {
-                                NavigationDisplayMode.entries.forEach { item ->
-                                    MenuFlyoutItem(
-                                        selected = item == store.navigationDisplayMode,
-                                        onSelectedChanged = {
-                                            store.navigationDisplayMode = item
-                                            isFlyoutVisible = false
-                                        },
-                                        text = {
-                                            Text(item.name)
-                                        }
-                                    )
-                                }
+                        ComboBox(
+                            items = NavigationDisplayMode.entries,
+                            onSelectionChange = { _, item ->
+                                store.navigationDisplayMode = item
                             },
-                            content = {
-                                DropDownButton(
-                                    onClick = {
-                                        isFlyoutVisible = true
-                                    },
-                                    content = {
-                                        Text(store.navigationDisplayMode.name)
-                                    }
-                                )
-                            }
+                            selected = store.navigationDisplayMode.ordinal,
+                            content = { _, item ->
+                                Text(item.name, overflow = TextOverflow.Ellipsis)
+                            },
+                            modifier = Modifier.widthIn(80.dp)
                         )
                     }
                 )
