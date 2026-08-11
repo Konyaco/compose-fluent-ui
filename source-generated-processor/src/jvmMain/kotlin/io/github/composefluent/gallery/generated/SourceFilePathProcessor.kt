@@ -25,7 +25,7 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
 
     private val objectName = "${componentName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}SourceFile"
     private val sourceFileSpecBuilder = TypeSpec.objectBuilder(objectName)
-    private var rootPath = environment.options["fluent.projects.current.path"] ?: ""
+    private var rootPath = environment.options["fluent.projects.root.path"] ?: ""
 
     private val sourceGeneratedModule = "source-generated"
 
