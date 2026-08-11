@@ -45,5 +45,7 @@ tasks.withType<KotlinCompilationTask<*>>().configureEach {
 }
 
 ksp {
-    arg("source.generated.module.name", project.name)
+    arg("fluent.projects.root.path", rootDir.absolutePath)
+    arg("fluent.projects.current.path", projectDir.absolutePath)
+    arg("fluent.projects.current.name", project.name)
 }

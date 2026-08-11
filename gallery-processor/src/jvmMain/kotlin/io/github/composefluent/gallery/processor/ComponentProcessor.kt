@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.impl.symbol.kotlin.KSPropertyDeclarationImpl
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
@@ -20,10 +21,11 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.withIndent
 import ksp.org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.util.prefixIfNot
+import java.io.File
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
-class ComponentProcessor(private val logger: KSPLogger, private val codeGenerator: CodeGenerator) : IProcessor {
+class ComponentProcessor(private val logger: KSPLogger, private val codeGenerator: CodeGenerator, environment: SymbolProcessorEnvironment) : IProcessor {
 
     private val componentAnnotation = "Component"
     private val componentGroupAnnotation = "ComponentGroup"
@@ -45,6 +47,8 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
     private val propertyNameRegex = Regex("^[a-zA-Z_]*\\w")
 
     private val componentPagePathType = TypeSpec.objectBuilder("ComponentPagePath")
+
+    private val rootPath = environment.options["fluent.projects.root.path"] ?: error("please set ksp args: fluent.projects.current.name")
 
     override fun finish() {
         super.finish()
@@ -287,7 +291,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                 ?: functionDeclaration.simpleName.asString().removeSuffix("Screen")
         val sourceFile = functionDeclaration.containingFile
         if (sourceFile != null) {
-            val relativePath = sourceFile.filePath.substringAfterLast("gallery/src/")
+            val relativePath = sourceFile.filePath.substringAfterLast("$rootPath/")
             componentPagePathType
                 .addModifiers(KModifier.INTERNAL)
                 .addProperty(

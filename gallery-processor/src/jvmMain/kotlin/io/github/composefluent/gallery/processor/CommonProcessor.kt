@@ -8,7 +8,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 
-class CommonProcessor(logger: KSPLogger, codeGenerator: CodeGenerator): SymbolProcessor {
+class CommonProcessor(logger: KSPLogger, codeGenerator: CodeGenerator, environment: SymbolProcessorEnvironment): SymbolProcessor {
 
     private val visitor = Visitor(
         onPropertyNode = { property ->
@@ -21,7 +21,7 @@ class CommonProcessor(logger: KSPLogger, codeGenerator: CodeGenerator): SymbolPr
 
     private val processors = listOf(
         SampleCodeProcessor(logger, codeGenerator),
-        ComponentProcessor(logger, codeGenerator)
+        ComponentProcessor(logger, codeGenerator, environment)
     )
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
@@ -46,6 +46,6 @@ class CommonProcessor(logger: KSPLogger, codeGenerator: CodeGenerator): SymbolPr
 
 class CommonProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return CommonProcessor(environment.logger, environment.codeGenerator)
+        return CommonProcessor(environment.logger, environment.codeGenerator, environment)
     }
 }

@@ -14,12 +14,8 @@ object ProjectUrl {
 
     private const val BRANCH = BuildKonfig.CURRENT_BRANCH
 
-    fun componentCodeOf(path: String): String {
+    fun sourceCodeOf(path: String): String {
         return "$ROOT/tree/$BRANCH/$path"
-    }
-
-    fun galleryCodeOf(path: String): String {
-        return "$ROOT/tree/$BRANCH/gallery/src/$path"
     }
 
     //TODO documentation redirection

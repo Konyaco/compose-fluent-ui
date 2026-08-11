@@ -20,12 +20,14 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
     private val packageName = "io.github.composefluent.source.generated"
     private val packagePath = packageName.replace(".", "/")
 
-    private val componentName = environment.options["source.generated.module.name"] ?: ""
+    private val componentName = environment.options["fluent.projects.current.name"] ?: ""
     private val enabled = environment.options["source.generated.module.enabled"]?.toBooleanStrictOrNull() != false
 
     private val objectName = "${componentName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}SourceFile"
     private val sourceFileSpecBuilder = TypeSpec.objectBuilder(objectName)
-    private var rootPath = ""
+    private var rootPath = environment.options["fluent.projects.current.path"] ?: ""
+
+    private val sourceGeneratedModule = "source-generated"
 
     private val logger = environment.logger
 
@@ -35,17 +37,16 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
     override fun process(resolver: Resolver): List<KSAnnotated> {
         if (!enabled) return emptyList()
         if (componentName.isEmpty()) {
-            logger.error("please set module name by ksp arg `source.generated.module.name`")
+            logger.error("please set module name by ksp arg `fluent.projects.current.name`")
+        }
+        if (rootPath.isEmpty()) {
+            logger.error("please set root path by ksp arg `fluent.projects.root.path`")
         }
         resolver.getAllFiles().forEach {
             val hasPublicDeclaration = it.declarations.any { declaration ->
                 !declaration.modifiers.any { modifier -> modifier == Modifier.INTERNAL || modifier == Modifier.PRIVATE }
             }
             if (hasPublicDeclaration) {
-                if (rootPath.isEmpty()) {
-                    val file = File(it.filePath.substringBefore("/src/"))
-                    rootPath = file.parentFile.path
-                }
                 sourceFileSpecBuilder
                     .addProperty(
                         PropertySpec.builder(
@@ -66,7 +67,7 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
     override fun finish() {
         super.finish()
         if (rootPath.isNotBlank()) {
-            val targetDir = File(rootPath, "source-generated/src/commonMain/kotlin/$packagePath")
+            val targetDir = File(rootPath, "${sourceGeneratedModule}/src/commonMain/kotlin/$packagePath")
             if (!targetDir.exists()) targetDir.mkdirs()
             val targetFile = File(targetDir, "$objectName.kt")
             if (!targetFile.exists()) targetFile.createNewFile()

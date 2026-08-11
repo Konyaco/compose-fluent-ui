@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets
 
 class IconSourceProcessor(environment: SymbolProcessorEnvironment) : IProcessor {
 
-    private val componentName = environment.options["source.generated.module.name"] ?: ""
+    private val componentName = environment.options["fluent.projects.current.name"] ?: ""
 
     private val iconSourceEnabled =
         environment.options["source.generated.icon.enabled"]?.toBooleanStrictOrNull() ?: false

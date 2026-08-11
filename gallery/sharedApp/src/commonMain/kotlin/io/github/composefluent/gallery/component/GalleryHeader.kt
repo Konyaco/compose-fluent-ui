@@ -117,7 +117,7 @@ fun GalleryHeader(
                                 HyperlinkButton(
                                     onClick = {
                                         uriHandler.openUri(
-                                            ProjectUrl.componentCodeOf(componentPath)
+                                            ProjectUrl.sourceCodeOf(componentPath)
                                         )
                                         isFlyoutVisible = false
                                     },
@@ -127,7 +127,7 @@ fun GalleryHeader(
                                 )
                                 HyperlinkButton(
                                     onClick = {
-                                        uriHandler.openUri(ProjectUrl.galleryCodeOf(galleryPath))
+                                        uriHandler.openUri(ProjectUrl.sourceCodeOf(galleryPath))
                                         isFlyoutVisible = false
                                     },
                                     content = { Text("Sample") },

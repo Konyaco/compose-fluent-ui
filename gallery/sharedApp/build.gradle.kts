@@ -67,6 +67,12 @@ buildkonfig {
     }
 }
 
+ksp {
+    arg("fluent.projects.root.path", rootDir.absolutePath)
+    arg("fluent.projects.current.path", projectDir.absolutePath)
+    arg("fluent.projects.current.name", project.name)
+}
+
 dependencies {
     val processor = project(":gallery-processor")
     add("kspCommonMainMetadata", processor)

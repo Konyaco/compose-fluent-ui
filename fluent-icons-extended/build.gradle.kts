@@ -39,7 +39,7 @@ tasks.withType<KotlinCompilationTask<*>>().configureEach {
 }
 
 ksp {
-    arg("source.generated.module.name", "FluentIconExtended")
+    arg("fluent.projects.current.name", "FluentIconExtended")
     arg("source.generated.module.enabled", false.toString())
     arg("source.generated.icon.enabled", true.toString())
 }
