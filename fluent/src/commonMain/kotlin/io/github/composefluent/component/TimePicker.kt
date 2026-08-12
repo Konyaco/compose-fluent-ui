@@ -56,7 +56,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.withSaveLayer
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -247,7 +246,7 @@ internal fun TimePickerImpl(
                     Box(Modifier.height(1.dp).fillMaxWidth().background(FluentTheme.colors.stroke.divider.default))
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         SubtleButton(
-                            modifier = Modifier.padding(4.dp).height(36.dp).weight(1f),
+                            modifier = Modifier.padding(4.dp).weight(1f),
                             onClick = {
                                 if (is12hour) {
                                     onValueChange(
@@ -268,7 +267,7 @@ internal fun TimePickerImpl(
                             )
                         }
                         SubtleButton(
-                            modifier = Modifier.padding(4.dp).height(38.dp).weight(1f),
+                            modifier = Modifier.padding(4.dp).weight(1f),
                             onClick = {
                                 open = false
                             }) {
