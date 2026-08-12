@@ -1,5 +1,6 @@
 package io.github.composefluent.component
 
+import androidx.annotation.IntRange
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.MutatePriority
@@ -90,10 +91,25 @@ import kotlinx.datetime.LocalTime
 import kotlin.math.abs
 
 /**
- * Displays a control that lets the user select a time.
+ * Displays a control that lets the user select an hour and minute.
  *
- * @param minuteIncrement An integer from 0 to 59 that controls the values shown by the minute picker.
- * A value of 0 displays only 00.
+ * When [is12hour] is `true`, the picker also displays an AM/PM selector and uses the 12-hour
+ * clock. Otherwise, it uses the 24-hour clock.
+ *
+ * @param value The currently selected time, or `null` when no time is selected.
+ * @param onValueChange Callback invoked when the selected time changes. The callback receives
+ * `null` when the selection is cancelled.
+ * @param modifier The [Modifier] to be applied to the TimePicker container, including its
+ * selection button.
+ * @param is12hour Whether to use the 12-hour clock and display an AM/PM selector. When `false`,
+ * the picker uses the 24-hour clock.
+ * @param disabled Whether this picker is disabled. A disabled picker does not respond to user
+ * input.
+ * @param minuteIncrement The increment used to generate the values shown by the minute picker.
+ * The value must be in the range `0..59`. Values start at `00` and continue by this increment
+ * while they are less than `60`; for example, `8` displays `00`, `08`, `16`, `24`, `32`, `40`,
+ * `48`, and `56`. A value of `0` displays only `00`.
+ * @throws IllegalArgumentException If [minuteIncrement] is not in the range `0..59`.
  */
 @Composable
 @ExperimentalFluentApi
@@ -103,6 +119,7 @@ fun TimePicker(
     modifier: Modifier = Modifier,
     is12hour: Boolean = false,
     disabled: Boolean = false,
+    @IntRange(from = 0, to = 59)
     minuteIncrement: Int = 1
 ) = TimePickerImpl(
     value = value,
@@ -120,6 +137,7 @@ internal fun TimePickerImpl(
     modifier: Modifier = Modifier,
     is12hour: Boolean = false,
     disabled: Boolean = false,
+    @IntRange(from = 0, to = 59)
     minuteIncrement: Int = 1
 ) {
     require(minuteIncrement in 0..59) { "minuteIncrement must be in the range 0..59" }
@@ -145,6 +163,7 @@ internal fun TimePickerImpl(
     }
 
     BasicFlyoutContainer(
+        modifier = modifier,
         flyout = {
             SelectionPopupSurface(
                 expanded = open,
@@ -264,7 +283,7 @@ internal fun TimePickerImpl(
         }
     ) {
         TimePickerButton(
-            modifier = modifier.onGloballyPositioned { coordinates ->
+            modifier = Modifier.onGloballyPositioned { coordinates ->
                 popupAvailableSpace = calculatePopupAvailableSpace(coordinates)
             },
             value = value,
