@@ -194,6 +194,8 @@ enum class FontIconPrimitive(
  * @param size The desired [FontIconSize] of the icon. Defaults to [FontIconSize.Standard].
  * @param fallbackSize The [FontIconSize] to use when displaying the fallback vector icon if the font is not loaded.
  *    Defaults to [FontIconSize] with 2f added to the value of [size].
+ * @param tint The color used to tint the icon. Defaults to the current content color with its
+ *    current content alpha.
  */
 @Composable
 fun FontIcon(
