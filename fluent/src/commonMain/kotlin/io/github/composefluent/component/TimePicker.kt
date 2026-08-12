@@ -2,47 +2,115 @@ package io.github.composefluent.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListItemInfo
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.key.*
+import androidx.compose.ui.graphics.withSaveLayer
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastCoerceAtLeast
 import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
+import io.github.composefluent.background.MaterialContainer
+import io.github.composefluent.background.MaterialDefaults
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
+import kotlin.math.abs
 
+/**
+ * Displays a control that lets the user select a time.
+ *
+ * @param minuteIncrement An integer from 0 to 59 that controls the values shown by the minute picker.
+ * A value of 0 displays only 00.
+ */
 @Composable
 @ExperimentalFluentApi
-expect fun TimePicker(
+fun TimePicker(
     value: LocalTime?,
     onValueChange: (LocalTime?) -> Unit,
     modifier: Modifier = Modifier,
     is12hour: Boolean = false,
-    disabled: Boolean = false
+    disabled: Boolean = false,
+    minuteIncrement: Int = 1
+) = TimePickerImpl(
+    value = value,
+    onValueChange = onValueChange,
+    modifier = modifier,
+    is12hour = is12hour,
+    disabled = disabled,
+    minuteIncrement = minuteIncrement,
 )
 
 @Composable
@@ -52,47 +120,74 @@ internal fun TimePickerImpl(
     modifier: Modifier = Modifier,
     is12hour: Boolean = false,
     disabled: Boolean = false,
-    userScrollEnabled: Boolean
+    minuteIncrement: Int = 1
 ) {
+    require(minuteIncrement in 0..59) { "minuteIncrement must be in the range 0..59" }
+
     var open by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
+    val minuteOptions = remember(minuteIncrement) {
+        createMinuteOptions(minuteIncrement)
+    }
+    val calculatePopupAvailableSpace = rememberFlyoutAvailableSpace(flyoutDefaultPadding)
+    var popupAvailableSpace by remember {
+        mutableStateOf(
+            FlyoutAvailableSpace(
+                above = Dp.Infinity,
+                below = Dp.Infinity,
+                anchorHeight = 0.dp
+            )
+        )
+    }
+    val visibleItemsCount = timePickerVisibleItemsCount(popupAvailableSpace)
+    val popupPositionProvider = remember(density, visibleItemsCount, open) {
+        TimePickerPopupPositionProvider(density, visibleItemsCount)
+    }
 
     BasicFlyoutContainer(
         flyout = {
-            BasicFlyout(
-                visible = open,
+            SelectionPopupSurface(
+                expanded = open,
+                positionProvider = popupPositionProvider,
                 onDismissRequest = { open = false },
-                contentPadding = PaddingValues(0.dp)
+                contentPadding = PaddingValues(0.dp),
+                revealOriginY = { popupPositionProvider.revealOriginY },
+                placement = { popupPositionProvider.placement }
             ) {
-                var candidateHour by remember { mutableStateOf(0) }
-                var candidateMinutes by remember { mutableStateOf(0) }
+                var candidateHour by remember {
+                    mutableIntStateOf(
+                        value?.let { if (is12hour) hour24to12(it.hour) else it.hour }
+                            ?: if (is12hour) 1 else 0
+                    )
+                }
+                var candidateMinutes by remember(value, minuteIncrement) {
+                    mutableIntStateOf(alignMinuteToIncrement(value?.minute ?: 0, minuteIncrement))
+                }
                 var candidateSeconds by remember { mutableStateOf(0) }
-                var candidateAmPm by remember { mutableStateOf("AM") }
+                var candidateAmPm by remember {
+                    mutableStateOf(if ((value?.hour ?: 0) < 12) "AM" else "PM")
+                }
 
                 Column(
                     Modifier.width(300.dp)
-                        // TODO[optimize](time-picker): Should we use acrylic effect?
-                        // If we use acrylic effect, it would be difficult to hide the text below caret buttons
-                        .background(FluentTheme.colors.background.acrylic.default)
                 ) {
                     Box {
                         // Base indicator
                         BaseIndicator(is12hour)
 
                         // Wheels
-                        Row(Modifier.height(360.dp)) {
+                        Row(Modifier.height(TimePickerItemHeight * visibleItemsCount)) {
                             // Hour
                             Box(Modifier.weight(1f)) {
-                                InfiniteWheelPicker(
-                                    items = if (is12hour) hours12 else hours24,
-                                    initialValue = value?.let {
-                                        if (is12hour) hour24to12(it.hour)
-                                        else it.hour
-                                    }?.toString(),
-                                    onSelectedValueChange = { candidateHour = it.toInt() },
-                                    visibleItemsCount = 9,
-                                    ring = true,
-                                    userScrollEnabled = userScrollEnabled
-                                )
+                                key(visibleItemsCount) {
+                                    InfiniteWheelPicker(
+                                        items = if (is12hour) hours12 else hours24,
+                                        initialValue = candidateHour.toString(),
+                                        onSelectedValueChange = { candidateHour = it.toInt() },
+                                        visibleItemsCount = visibleItemsCount,
+                                        ring = true
+                                    )
+                                }
                             }
                             Box(
                                 Modifier.width(1.dp).fillMaxHeight()
@@ -100,14 +195,15 @@ internal fun TimePickerImpl(
                             )
                             // Minute
                             Box(Modifier.weight(1f)) {
-                                InfiniteWheelPicker(
-                                    items = minutes,
-                                    initialValue = value?.minute?.let(::formatMinute),
-                                    onSelectedValueChange = { candidateMinutes = it.toInt() },
-                                    visibleItemsCount = 9,
-                                    ring = true,
-                                    userScrollEnabled = userScrollEnabled
-                                )
+                                key(visibleItemsCount, minuteIncrement) {
+                                    InfiniteWheelPicker(
+                                        items = minuteOptions,
+                                        initialValue = formatMinute(candidateMinutes),
+                                        onSelectedValueChange = { candidateMinutes = it.toInt() },
+                                        visibleItemsCount = visibleItemsCount,
+                                        ring = minuteOptions.size > 1
+                                    )
+                                }
                             }
                             if (is12hour) {
                                 Box(
@@ -116,14 +212,15 @@ internal fun TimePickerImpl(
                                 )
                                 // AM/PM
                                 Box(Modifier.weight(1f)) {
-                                    InfiniteWheelPicker(
-                                        items = amPm,
-                                        initialValue = if ((value?.hour ?: 0) < 12) "AM" else "PM",
-                                        onSelectedValueChange = { candidateAmPm = it },
-                                        visibleItemsCount = 9,
-                                        ring = false,
-                                        userScrollEnabled = userScrollEnabled
-                                    )
+                                    key(visibleItemsCount) {
+                                        InfiniteWheelPicker(
+                                            items = amPm,
+                                            initialValue = candidateAmPm,
+                                            onSelectedValueChange = { candidateAmPm = it },
+                                            visibleItemsCount = visibleItemsCount,
+                                            ring = false
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -167,7 +264,9 @@ internal fun TimePickerImpl(
         }
     ) {
         TimePickerButton(
-            modifier = modifier,
+            modifier = modifier.onGloballyPositioned { coordinates ->
+                popupAvailableSpace = calculatePopupAvailableSpace(coordinates)
+            },
             value = value,
             is12Hour = is12hour,
             disabled = disabled,
@@ -255,6 +354,7 @@ private fun TimePickerButton(
     }
 }
 
+@OptIn(ExperimentalFluentApi::class)
 @Composable
 private fun InfiniteWheelPicker(
     items: List<String>,
@@ -262,8 +362,7 @@ private fun InfiniteWheelPicker(
     initialValue: String?,
     onSelectedValueChange: (String) -> Unit,
     ring: Boolean,
-    itemHeight: Dp = 40.dp,
-    userScrollEnabled: Boolean,
+    itemHeight: Dp = TimePickerItemHeight,
     modifier: Modifier = Modifier
 ) {
     require(visibleItemsCount % 2 == 1) { "visibleItemsCount must be odd" }
@@ -276,7 +375,11 @@ private fun InfiniteWheelPicker(
     }
     val centerOffset = (visibleItemsCount - 1) / 2
     val actualCenterOffset = if (ring) centerOffset else 0
-    val contentPadding = if (items.size < visibleItemsCount) itemHeight * (visibleItemsCount / 2) else 0.dp
+    val contentPadding = if (virtualListSize < visibleItemsCount) {
+        itemHeight * (visibleItemsCount / 2)
+    } else {
+        0.dp
+    }
 
     // Set the initial position to the center of the list
     val listState = rememberLazyListState(
@@ -287,7 +390,7 @@ private fun InfiniteWheelPicker(
     )
 
     // 当前选中的值
-    val selectedValue by remember {
+    val selectedValue by remember(items, listState, actualCenterOffset) {
         derivedStateOf {
             val centerIndex = listState.firstVisibleItemIndex + actualCenterOffset
             items[centerIndex % items.size]
@@ -300,62 +403,94 @@ private fun InfiniteWheelPicker(
 
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
+    val scrollScope = rememberCoroutineScope()
+    var currentTargetScrollIndex by remember { mutableStateOf(0) }
+    val focusRequester = remember { FocusRequester() }
+    val itemSizePx = with(LocalDensity.current) { itemHeight.toPx() }
+    val mouseWheelSnapLayoutInfoProvider = remember(listState, itemSizePx) {
+        MouseWheelSnapLayoutInfoProvider(listState, itemSizePx)
+    }
+    val mouseWheelFlingBehavior = rememberSnapFlingBehavior(mouseWheelSnapLayoutInfoProvider)
+    val mouseWheelSnapController = remember(
+        listState,
+        mouseWheelSnapLayoutInfoProvider,
+        mouseWheelFlingBehavior,
+        scrollScope,
+        itemSizePx
+    ) {
+        MouseWheelSnapController(
+            listState = listState,
+            snapLayoutInfoProvider = mouseWheelSnapLayoutInfoProvider,
+            flingBehavior = mouseWheelFlingBehavior,
+            coroutineScope = scrollScope,
+            itemSizePx = itemSizePx
+        )
+    }
+    DisposableEffect(mouseWheelSnapController) {
+        onDispose { mouseWheelSnapController.cancel() }
+    }
 
-    Box(modifier.hoverable(interactionSource)) {
-        val scrollScope = rememberCoroutineScope()
-        var currentTargetScrollIndex by remember { mutableStateOf(0) }
-
-        fun scroll(offset: Int) {
-            scrollScope.launch {
-                val target = if (listState.isScrollInProgress) {
-                    currentTargetScrollIndex + offset
-                } else {
-                    listState.firstVisibleItemIndex + offset
-                }
-                currentTargetScrollIndex = target
-                listState.animateScrollToItem(target.fastCoerceAtLeast(0))
+    fun scroll(offset: Int) {
+        scrollScope.launch {
+            mouseWheelSnapController.cancelAndJoin()
+            val target = if (listState.isScrollInProgress) {
+                currentTargetScrollIndex + offset
+            } else {
+                listState.firstVisibleItemIndex + offset
             }
+            currentTargetScrollIndex = target
+            listState.animateScrollToItem(target.fastCoerceAtLeast(0))
         }
+    }
 
-        fun next() {
-            scroll(1)
-        }
+    fun next() {
+        scroll(1)
+    }
 
-        fun previous() {
-            scroll(-1)
-        }
+    fun previous() {
+        scroll(-1)
+    }
 
-        fun nextPage() {
-            scroll(visibleItemsCount)
-        }
+    fun nextPage() {
+        scroll(visibleItemsCount)
+    }
 
-        fun previousPage() {
-            scroll(-visibleItemsCount)
-        }
+    fun previousPage() {
+        scroll(-visibleItemsCount)
+    }
 
-        val focusRequester = remember { FocusRequester() }
-
+    MaterialContainer(modifier.hoverable(interactionSource)) {
         LazyColumn(
             state = listState,
-            flingBehavior = rememberSnapFlingBehavior(listState), // Only use fling behavior for touchpad gesture.
+            flingBehavior = rememberSnapFlingBehavior(listState),
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = PaddingValues(vertical = contentPadding),
             verticalArrangement = Arrangement.Center,
+            userScrollEnabled = true,
             modifier = Modifier
+                .behindMaterial()
                 .fillMaxSize()
-                .pointerInput(Unit) {
-                    awaitEachGesture {
-                        val event = awaitPointerEvent()
-                        if (event.type == PointerEventType.Scroll) {
-                            val change = event.changes.first()
-                            // TODO[optimize](time-picker): Detect gesture scroll
-                            if (change.scrollDelta.y > 0F) {
-                                next()
-                            } else if (change.scrollDelta.y < 0F) {
-                                previous()
+                .pointerInput(mouseWheelSnapController) {
+                    while (true) {
+                        val event = awaitPointerEventScope {
+                            awaitPointerEvent(PointerEventPass.Initial)
+                        }
+                        when (event.type) {
+                            PointerEventType.Scroll -> {
+                                val change = event.changes.first()
+                                val scrollDelta = change.scrollDelta.y
+                                if (scrollDelta != 0f) {
+                                    event.changes.forEach { it.consume() }
+                                    mouseWheelSnapController.onMouseWheel(
+                                        scrollDelta = scrollDelta,
+                                        uptimeMillis = change.uptimeMillis
+                                    )
+                                }
                             }
-                        } else if (event.type == PointerEventType.Enter) { // Focus for receiving key input
-                            focusRequester.requestFocus()
+
+                            PointerEventType.Press -> mouseWheelSnapController.cancelAndJoin()
+                            PointerEventType.Enter -> focusRequester.requestFocus()
+                            else -> Unit
                         }
                     }
                 }
@@ -372,29 +507,14 @@ private fun InfiniteWheelPicker(
                         return@onKeyEvent true
                     }
                     return@onKeyEvent false
-                },
-            userScrollEnabled = userScrollEnabled // TODO[optimize](time-picker): Detect gesture scroll
+                }
         ) {
             items(virtualListSize) { index ->
                 val actualIndex = index % items.size
                 val itemValue = items[actualIndex]
-                // Hide to leave space for caret buttons
-                val hide = false
-                /*val hide = if (hovered) {
-                    if (listState.isScrollInProgress) {
-                        index <= listState.firstVisibleItemScrollOffset || index >= currentTargetScrollIndex + visibleItemsCount - 1
-                    } else {
-                        index <= listState.firstVisibleItemIndex || index >= listState.firstVisibleItemIndex + visibleItemsCount - 1
-                    }
-                } else {
-                    false
-                }*/
 
                 SubtleButton(
-                    modifier = Modifier.height(itemHeight).fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp)
-                        .graphicsLayer {
-                            alpha = if (hide) 0f else 1f
-                        },
+                    modifier = Modifier.height(itemHeight).fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp),
                     onClick = {
                         // Select this item
                         scrollScope.launch {
@@ -402,23 +522,11 @@ private fun InfiniteWheelPicker(
                         }
                     }
                 ) {
-                    // TODO[optimize](time-picker): Use brush to implement color inversion?
-
-                    // Inverse color after scrolling half of the item
-                    val firstOffset = with(LocalDensity.current) {
-                        listState.firstVisibleItemScrollOffset.toDp()
-                    }
-                    val offset = if (firstOffset >= itemHeight / 2) 1 else 0
-                    val isCentered = (listState.firstVisibleItemIndex + actualCenterOffset + offset) == index
-
-                    val textColor = if (isCentered) FluentTheme.colors.text.onAccent.primary
-                    else FluentTheme.colors.text.text.primary
-
-                    Text(
+                    WheelPickerItemText(
                         text = itemValue,
-                        style = FluentTheme.typography.body,
-                        color = textColor,
-                        textAlign = TextAlign.Center
+                        itemIndex = index,
+                        listState = listState,
+                        itemSizePx = itemSizePx
                     )
                 }
             }
@@ -428,16 +536,211 @@ private fun InfiniteWheelPicker(
                 type = FontIconPrimitive.CaretUp,
                 contentDescription = "Up",
                 onClick = { previous() },
-                modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth()
+                modifier = Modifier.align(Alignment.TopCenter)
+                    .materialOverlay(MaterialDefaults.acrylicDefault())
+                    .fillMaxWidth()
             )
 
             CaretButton(
                 type = FontIconPrimitive.CaretDown,
                 contentDescription = "Down",
                 onClick = { next() },
-                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+                modifier = Modifier.align(Alignment.BottomCenter)
+                    .materialOverlay(MaterialDefaults.acrylicDefault())
+                    .fillMaxWidth()
             )
         }
+    }
+}
+
+@Composable
+private fun WheelPickerItemText(
+    text: String,
+    itemIndex: Int,
+    listState: LazyListState,
+    itemSizePx: Float
+) {
+    val itemOffset = remember(listState, itemIndex) {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val item = layoutInfo.visibleItemsInfo
+                .firstOrNull { it.index == itemIndex }
+                ?: return@derivedStateOf null
+
+            // LazyListItemInfo.offset doesn't include the visual offset from content padding.
+            // Convert it to the LazyColumn's coordinate space before comparing it with the
+            // centered selection area.
+            val offsetInViewport = item.offset - layoutInfo.viewportStartOffset
+
+            // LazyLayout's item offset can be observed one frame late while scrolling. Reading
+            // firstVisibleItemScrollOffset forces this state to refresh for every scroll delta.
+            offsetInViewport + listState.firstVisibleItemScrollOffset -
+                listState.firstVisibleItemScrollOffset
+        }
+    }
+
+    val selectedTextColor = FluentTheme.colors.text.onAccent.primary
+    Text(
+        text = text,
+        style = FluentTheme.typography.body,
+        color = FluentTheme.colors.text.text.primary,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .drawWithCache {
+                val layerBounds = Rect(Offset.Zero, size)
+                val layerPaint = Paint()
+
+                onDrawWithContent {
+                    val currentItemOffset = itemOffset.value
+                    if (currentItemOffset == null) {
+                        drawContent()
+                        return@onDrawWithContent
+                    }
+
+                    val selectionTop =
+                        (listState.layoutInfo.viewportSize.height - itemSizePx) / 2f
+                    val textTop = currentItemOffset + (itemSizePx - size.height) / 2f
+                    val selectionTopInText = selectionTop - textTop
+                    val intersectionTop = selectionTopInText.coerceAtLeast(0f)
+                    val intersectionBottom =
+                        (selectionTopInText + itemSizePx).coerceAtMost(size.height)
+
+                    if (intersectionTop >= intersectionBottom) {
+                        drawContent()
+                        return@onDrawWithContent
+                    }
+
+                    drawContext.canvas.withSaveLayer(layerBounds, layerPaint) {
+                        drawContent()
+                        drawRect(
+                            color = selectedTextColor,
+                            topLeft = Offset(0f, intersectionTop),
+                            size = Size(
+                                size.width,
+                                intersectionBottom - intersectionTop
+                            ),
+                            blendMode = BlendMode.SrcIn
+                        )
+                    }
+                }
+            }
+    )
+}
+
+private class MouseWheelSnapController(
+    private val listState: LazyListState,
+    private val snapLayoutInfoProvider: MouseWheelSnapLayoutInfoProvider,
+    private val flingBehavior: FlingBehavior,
+    private val coroutineScope: CoroutineScope,
+    private val itemSizePx: Float
+) {
+    private var flingJob: Job? = null
+    private var lastEventUptimeMillis = 0L
+    private var lastDirection = 0
+    private var velocity = 0f
+
+    fun onMouseWheel(scrollDelta: Float, uptimeMillis: Long) {
+        val direction = if (scrollDelta > 0f) 1 else -1
+        if (flingJob?.isActive != true) {
+            snapLayoutInfoProvider.targetIndex = snapLayoutInfoProvider.currentSnappedItemIndex()
+        }
+        if (!snapLayoutInfoProvider.moveTarget(direction)) return
+
+        val elapsedMillis = uptimeMillis - lastEventUptimeMillis
+        val isContinuous = direction == lastDirection &&
+            elapsedMillis in 1..ContinuousInputTimeoutMillis
+        val singleStepVelocity = itemSizePx * SingleStepItemsPerSecond
+        velocity = if (isContinuous) {
+            val measuredVelocity = itemSizePx * 1000f / elapsedMillis
+            direction * ((abs(velocity) + measuredVelocity) / 2f)
+                .coerceIn(singleStepVelocity, itemSizePx * MaxItemsPerSecond)
+        } else {
+            direction * singleStepVelocity
+        }
+        lastDirection = direction
+        lastEventUptimeMillis = uptimeMillis
+
+        val flingVelocity = velocity
+        flingJob = coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            listState.scroll(MutatePriority.PreventUserInput) {
+                with(flingBehavior) { performFling(flingVelocity) }
+            }
+        }
+    }
+
+    fun cancel() {
+        val job = flingJob
+        job?.cancel()
+        if (flingJob === job) {
+            flingJob = null
+            resetInputTracking()
+        }
+    }
+
+    suspend fun cancelAndJoin() {
+        val job = flingJob
+        job?.cancel()
+        if (flingJob === job) resetInputTracking()
+        job?.join()
+        if (flingJob === job) flingJob = null
+    }
+
+    private fun resetInputTracking() {
+        lastEventUptimeMillis = 0L
+        lastDirection = 0
+        velocity = 0f
+    }
+
+    private companion object {
+        const val ContinuousInputTimeoutMillis = 250L
+        const val SingleStepItemsPerSecond = 10f
+        const val MaxItemsPerSecond = 50f
+    }
+}
+
+private class MouseWheelSnapLayoutInfoProvider(
+    private val listState: LazyListState,
+    private val itemSizePx: Float
+) : SnapLayoutInfoProvider {
+    var targetIndex = 0
+
+    fun currentSnappedItemIndex(): Int {
+        val visibleItems = listState.layoutInfo.visibleItemsInfo
+        return visibleItems.minByOrNull { abs(distanceToSnapPosition(it)) }?.index
+            ?: listState.firstVisibleItemIndex
+    }
+
+    fun moveTarget(direction: Int): Boolean {
+        val itemCount = listState.layoutInfo.totalItemsCount
+        if (itemCount == 0) return false
+        targetIndex = (targetIndex + direction)
+            .coerceIn(0, itemCount - 1)
+        return true
+    }
+
+    override fun calculateApproachOffset(velocity: Float, decayOffset: Float): Float = 0f
+
+    override fun calculateSnapOffset(velocity: Float): Float {
+        val visibleItems = listState.layoutInfo.visibleItemsInfo
+        val targetItem = visibleItems.firstOrNull { it.index == targetIndex }
+        if (targetItem != null) return distanceToSnapPosition(targetItem)
+
+        val anchorItem = visibleItems.minByOrNull { abs(it.index - targetIndex) } ?: return 0f
+        return distanceToSnapPosition(anchorItem) +
+            (targetIndex - anchorItem.index) * itemSizePx
+    }
+
+    private fun distanceToSnapPosition(item: LazyListItemInfo): Float {
+        val layoutInfo = listState.layoutInfo
+        val snapPosition = SnapPosition.Center.position(
+            layoutSize = layoutInfo.viewportSize.height,
+            itemSize = item.size,
+            beforeContentPadding = layoutInfo.beforeContentPadding,
+            afterContentPadding = layoutInfo.afterContentPadding,
+            itemIndex = item.index,
+            itemCount = layoutInfo.totalItemsCount
+        )
+        return item.offset - snapPosition.toFloat()
     }
 }
 
@@ -449,11 +752,22 @@ private fun CaretButton(
     modifier: Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    Box(
-        modifier = modifier.height(40.dp)
-            .background(FluentTheme.colors.background.acrylic.default)
-            .clickable(onClick = onClick, interactionSource = interactionSource, indication = null),
-        contentAlignment = Alignment.Center
+    val transparentButtonColor = ButtonColor(
+        fillColor = Color.Transparent,
+        contentColor = FluentTheme.colors.text.text.primary,
+        borderBrush = SolidColor(Color.Transparent)
+    )
+    RepeatButton(
+        onClick = onClick,
+        buttonColors = ButtonDefaults.subtleButtonColors(
+            default = transparentButtonColor,
+            hovered = transparentButtonColor,
+            pressed = transparentButtonColor,
+            disabled = transparentButtonColor
+        ),
+        interaction = interactionSource,
+        iconOnly = true,
+        modifier = modifier.height(TimePickerItemHeight),
     ) {
         val pressed by interactionSource.collectIsPressedAsState()
         val hovered by interactionSource.collectIsHoveredAsState()
@@ -486,10 +800,83 @@ private fun hour12to24(value: Int, isAm: Boolean): Int {
 private val hours24 = (0..23).map { it.toString() }
 private val hours12 = (1..12).map { it.toString() }
 
-private val minutes = (0..59).map(::formatMinute)
 private val amPm = listOf("AM", "PM")
+
+private fun createMinuteOptions(minuteIncrement: Int): List<String> =
+    if (minuteIncrement == 0) {
+        listOf(formatMinute(0))
+    } else {
+        (0..59 step minuteIncrement).map(::formatMinute)
+    }
+
+private fun alignMinuteToIncrement(minute: Int, minuteIncrement: Int): Int =
+    if (minuteIncrement == 0) 0 else minute - minute % minuteIncrement
+
+private val TimePickerItemHeight = 40.dp
+private val TimePickerFooterHeight = 47.dp
+private val TimePickerVisibleItemCounts = listOf(9, 7, 5, 3)
+
+private fun timePickerVisibleItemsCount(
+    availableSpace: FlyoutAvailableSpace
+): Int {
+    val anchorHalfHeight = availableSpace.anchorHeight / 2f
+    val overlapSpaceAbove = availableSpace.above + anchorHalfHeight
+    val overlapSpaceBelow = availableSpace.below + anchorHalfHeight
+    val directionalSpace = maxOf(availableSpace.above, availableSpace.below)
+
+    return TimePickerVisibleItemCounts.firstOrNull { visibleItemsCount ->
+        val wheelHeight = TimePickerItemHeight * visibleItemsCount
+        val popupHeight = wheelHeight + TimePickerFooterHeight
+        val selectedCenter = wheelHeight / 2f
+        val overlapFits = selectedCenter <= overlapSpaceAbove &&
+            popupHeight - selectedCenter <= overlapSpaceBelow
+        val directionalPlacementFits = popupHeight <= directionalSpace
+        overlapFits || directionalPlacementFits
+    } ?: TimePickerVisibleItemCounts.last()
+}
+
+@Stable
+private class TimePickerPopupPositionProvider(
+    density: Density,
+    visibleItemsCount: Int
+) : FlyoutPositionProvider(density) {
+    private val selectedCenterY = with(density) {
+        (TimePickerItemHeight * visibleItemsCount / 2f).roundToPx()
+    }
+    private val windowPadding = with(density) { flyoutDefaultPadding.roundToPx() }
+    var revealOriginY by mutableIntStateOf(0)
+        private set
+
+    var placement by mutableStateOf(SelectionPopupPlacement.Overlap)
+        private set
+
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize
+    ): IntOffset {
+        val position = calculateSelectionPopupPosition(
+            anchorBounds = anchorBounds,
+            windowSize = windowSize,
+            popupContentSize = popupContentSize,
+            selectedCenterY = selectedCenterY,
+            windowPadding = windowPadding,
+            fallback = SelectionPopupFallback.Directional
+        )
+
+        revealOriginY = position.revealOriginY
+        placement = position.placement
+        targetPlacement = when (position.placement) {
+            SelectionPopupPlacement.Overlap -> FlyoutPlacement.Full
+            SelectionPopupPlacement.Above -> FlyoutPlacement.Top
+            SelectionPopupPlacement.Below -> FlyoutPlacement.Bottom
+        }
+        applyAnimation = true
+        return position.offset
+    }
+}
 
 private fun formatMinute(value: Int): String =
     if (value < 10) "0$value"
     else value.toString()
-

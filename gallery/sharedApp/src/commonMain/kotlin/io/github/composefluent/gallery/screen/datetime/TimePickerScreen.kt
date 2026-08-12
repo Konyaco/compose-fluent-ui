@@ -2,12 +2,18 @@
 
 package io.github.composefluent.gallery.screen.datetime
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import io.github.composefluent.ExperimentalFluentApi
+import io.github.composefluent.component.ComboBox
+import io.github.composefluent.component.Text
 import io.github.composefluent.component.TimePicker
 import io.github.composefluent.gallery.annotation.Component
 import io.github.composefluent.gallery.annotation.Sample
@@ -40,6 +46,12 @@ fun TimePickerScreen() {
         ) {
             TimePicker24Sample()
         }
+        Section(
+            title = "A TimePicker with a configurable minute increment",
+            sourceCode = sourceCodeOfTimePickerMinuteIncrementSample
+        ) {
+            TimePickerMinuteIncrementSample()
+        }
 
     }
 }
@@ -64,4 +76,27 @@ private fun TimePicker24Sample() {
         onValueChange = { value = it },
         is12hour = false
     )
+}
+
+@Sample
+@Composable
+private fun TimePickerMinuteIncrementSample() {
+    var value by remember { mutableStateOf<LocalTime?>(null) }
+    var minuteIncrement by remember { mutableIntStateOf(1) }
+    val minuteIncrements = remember { (0..59).toList() }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        ComboBox(
+            items = minuteIncrements,
+            selected = minuteIncrement,
+            onSelectionChange = { _, increment -> minuteIncrement = increment },
+            header = { Text("Minute increment") },
+            content = { _, increment -> Text(increment.toString()) }
+        )
+        TimePicker(
+            value = value,
+            onValueChange = { value = it },
+            minuteIncrement = minuteIncrement
+        )
+    }
 }
