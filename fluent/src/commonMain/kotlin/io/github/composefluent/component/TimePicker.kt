@@ -67,6 +67,12 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.scrollBy
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -203,7 +209,8 @@ internal fun TimePickerImpl(
                                         initialValue = candidateHour.toString(),
                                         onSelectedValueChange = { candidateHour = it.toInt() },
                                         visibleItemsCount = visibleItemsCount,
-                                        ring = true
+                                        ring = true,
+                                        label = "Hour"
                                     )
                                 }
                             }
@@ -219,7 +226,8 @@ internal fun TimePickerImpl(
                                         initialValue = formatMinute(candidateMinutes),
                                         onSelectedValueChange = { candidateMinutes = it.toInt() },
                                         visibleItemsCount = visibleItemsCount,
-                                        ring = minuteOptions.size > 1
+                                        ring = minuteOptions.size > 1,
+                                        label = "Minute"
                                     )
                                 }
                             }
@@ -236,7 +244,8 @@ internal fun TimePickerImpl(
                                             initialValue = candidateAmPm,
                                             onSelectedValueChange = { candidateAmPm = it },
                                             visibleItemsCount = visibleItemsCount,
-                                            ring = false
+                                            ring = false,
+                                            label = "AM/PM"
                                         )
                                     }
                                 }
@@ -380,6 +389,7 @@ private fun InfiniteWheelPicker(
     initialValue: String?,
     onSelectedValueChange: (String) -> Unit,
     ring: Boolean,
+    label: String,
     itemHeight: Dp = TimePickerItemHeight,
     modifier: Modifier = Modifier
 ) {
@@ -422,7 +432,9 @@ private fun InfiniteWheelPicker(
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
     val scrollScope = rememberCoroutineScope()
-    var currentTargetScrollIndex by remember { mutableStateOf(0) }
+    var currentTargetScrollIndex by remember {
+        mutableIntStateOf(listState.firstVisibleItemIndex)
+    }
     val focusRequester = remember { FocusRequester() }
     val itemSizePx = with(LocalDensity.current) { itemHeight.toPx() }
     val mouseWheelSnapLayoutInfoProvider = remember(listState, itemSizePx) {
@@ -477,6 +489,15 @@ private fun InfiniteWheelPicker(
         scroll(-visibleItemsCount)
     }
 
+    fun canScroll(offset: Int): Boolean {
+        val currentIndex = if (listState.isScrollInProgress) {
+            currentTargetScrollIndex
+        } else {
+            listState.firstVisibleItemIndex
+        }
+        return (currentIndex + offset) in 0 until virtualListSize
+    }
+
     MaterialContainer(modifier.hoverable(interactionSource)) {
         LazyColumn(
             state = listState,
@@ -513,6 +534,26 @@ private fun InfiniteWheelPicker(
                     }
                 }
                 .focusable().focusRequester(focusRequester)
+                .semantics {
+                    contentDescription = label
+                    stateDescription = selectedValue
+                    role = Role.ValuePicker
+                    scrollBy { _, y ->
+                        when {
+                            y > 0f && canScroll(1) -> {
+                                next()
+                                true
+                            }
+
+                            y < 0f && canScroll(-1) -> {
+                                previous()
+                                true
+                            }
+
+                            else -> false
+                        }
+                    }
+                }
                 .onKeyEvent {
                     if (it.type == KeyEventType.KeyDown) {
                         when (it.key) {
