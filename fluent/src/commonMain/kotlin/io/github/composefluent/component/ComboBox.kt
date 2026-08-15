@@ -70,6 +70,11 @@ import io.github.composefluent.FluentTheme
 import io.github.composefluent.LocalCompactMode
 import io.github.composefluent.ProvideTextStyle
 import io.github.composefluent.background.BackgroundSizing
+import io.github.composefluent.layout.SelectionPopupFallback
+import io.github.composefluent.layout.SelectionPopupPlacement
+import io.github.composefluent.layout.SelectionPopupSurface
+import io.github.composefluent.layout.calculateSelectionPopupPosition
+import io.github.composefluent.layout.selectionPopupVerticalRange
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.VisualState
 import io.github.composefluent.scheme.VisualStateScheme

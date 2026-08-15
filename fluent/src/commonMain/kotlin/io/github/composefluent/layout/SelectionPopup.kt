@@ -1,4 +1,4 @@
-package io.github.composefluent.component
+package io.github.composefluent.layout
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -22,6 +22,8 @@ import io.github.composefluent.FluentTheme
 import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
 import io.github.composefluent.background.ElevationDefaults
+import io.github.composefluent.component.BasicFlyout
+import io.github.composefluent.component.FlyoutPositionProvider
 import kotlin.math.abs
 import kotlin.math.max
 

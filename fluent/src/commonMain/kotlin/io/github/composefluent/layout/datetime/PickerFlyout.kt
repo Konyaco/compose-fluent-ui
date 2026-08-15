@@ -37,13 +37,13 @@ import io.github.composefluent.component.FontIconPrimitive
 import io.github.composefluent.component.FlyoutAvailableSpace
 import io.github.composefluent.component.FlyoutPlacement
 import io.github.composefluent.component.FlyoutPositionProvider
-import io.github.composefluent.component.SelectionPopupFallback
-import io.github.composefluent.component.SelectionPopupPlacement
-import io.github.composefluent.component.SelectionPopupSurface
 import io.github.composefluent.component.SubtleButton
-import io.github.composefluent.component.calculateSelectionPopupPosition
 import io.github.composefluent.component.flyoutDefaultPadding
 import io.github.composefluent.component.rememberFlyoutAvailableSpace
+import io.github.composefluent.layout.SelectionPopupFallback
+import io.github.composefluent.layout.SelectionPopupPlacement
+import io.github.composefluent.layout.SelectionPopupSurface
+import io.github.composefluent.layout.calculateSelectionPopupPosition
 
 @Composable
 internal fun PickerFlyoutContainer(
