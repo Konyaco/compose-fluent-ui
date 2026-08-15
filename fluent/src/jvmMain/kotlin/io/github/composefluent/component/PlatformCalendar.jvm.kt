@@ -11,13 +11,6 @@ internal actual fun getLocalDayOfWeekNames(): List<String> {
     return names.entries.sortedBy { it.value }.map { it.key }
 }
 
-internal actual fun getLocalMonthNames(): List<String> {
-    val locale = Locale.getDefault()
-    val calendar = Calendar.getInstance(locale)
-    val names = calendar.getDisplayNames(Calendar.MONTH, Calendar.SHORT_STANDALONE, locale)
-    return names.entries.sortedBy { it.value }.map { it.key }
-}
-
 internal actual fun getLocalFirstDayOfWeek(): Int {
     val locale = Locale.getDefault()
     val calendar = Calendar.getInstance(locale)
