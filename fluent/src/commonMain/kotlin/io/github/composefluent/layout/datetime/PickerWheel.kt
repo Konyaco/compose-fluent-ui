@@ -80,6 +80,7 @@ import io.github.composefluent.component.FontIconSize
 import io.github.composefluent.component.RepeatButton
 import io.github.composefluent.component.SubtleButton
 import io.github.composefluent.component.Text
+import io.github.composefluent.platform.indicatesPreciseScrollInput
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -294,6 +295,8 @@ internal fun <T : Any> PickerWheel(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(mouseWheelSnapController) {
+                    var preciseScrollSequence = false
+                    var lastScrollUptimeMillis = Long.MIN_VALUE
                     while (true) {
                         val event = awaitPointerEventScope {
                             awaitPointerEvent(PointerEventPass.Initial)
@@ -302,11 +305,30 @@ internal fun <T : Any> PickerWheel(
                             PointerEventType.Scroll -> {
                                 val change = event.changes.first()
                                 val scrollDelta = change.scrollDelta.y
-                                if (scrollDelta != 0f) {
+                                val uptimeMillis = change.uptimeMillis
+                                val continuesPreviousSequence =
+                                    lastScrollUptimeMillis != Long.MIN_VALUE &&
+                                        uptimeMillis >= lastScrollUptimeMillis &&
+                                        uptimeMillis - lastScrollUptimeMillis <=
+                                        PreciseScrollSequenceTimeoutMillis
+                                if (!continuesPreviousSequence) {
+                                    preciseScrollSequence = false
+                                }
+                                val wasPreciseScrollSequence = preciseScrollSequence
+                                if (event.indicatesPreciseScrollInput()) {
+                                    preciseScrollSequence = true
+                                }
+                                lastScrollUptimeMillis = uptimeMillis
+
+                                if (preciseScrollSequence) {
+                                    if (!wasPreciseScrollSequence) {
+                                        mouseWheelSnapController.cancelAndJoin()
+                                    }
+                                } else if (scrollDelta != 0f) {
                                     event.changes.forEach { it.consume() }
                                     mouseWheelSnapController.onMouseWheel(
                                         scrollDelta = scrollDelta,
-                                        uptimeMillis = change.uptimeMillis
+                                        uptimeMillis = uptimeMillis
                                     )
                                 }
                             }
@@ -647,3 +669,4 @@ private fun PickerCaretButton(
 internal val PickerItemHeight = 40.dp
 
 private const val VirtualListRepeatCount = 100
+private const val PreciseScrollSequenceTimeoutMillis = 100L
