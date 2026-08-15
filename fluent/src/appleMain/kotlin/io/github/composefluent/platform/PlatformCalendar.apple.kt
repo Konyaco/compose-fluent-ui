@@ -1,4 +1,4 @@
-package io.github.composefluent.component
+package io.github.composefluent.platform
 
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarIdentifierGregorian

@@ -1,4 +1,4 @@
-package io.github.composefluent.component
+package io.github.composefluent.platform
 
 private val localeToFirstDayMap by lazy {
     mapOf(

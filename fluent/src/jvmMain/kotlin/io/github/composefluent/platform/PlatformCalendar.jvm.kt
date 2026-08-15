@@ -1,4 +1,4 @@
-package io.github.composefluent.component
+package io.github.composefluent.platform
 
 import java.util.Calendar
 import java.util.Locale

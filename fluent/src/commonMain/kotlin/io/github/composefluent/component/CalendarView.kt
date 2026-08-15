@@ -52,6 +52,10 @@ import io.github.composefluent.animation.FluentEasing
 import io.github.composefluent.background.BackgroundSizing
 import io.github.composefluent.background.Layer
 import io.github.composefluent.component.CalendarDatePickerState.ChooseType
+import io.github.composefluent.platform.LocalMonthNameStyle
+import io.github.composefluent.platform.getLocalDayOfWeekNames
+import io.github.composefluent.platform.getLocalFirstDayOfWeek
+import io.github.composefluent.platform.getLocalMonthNames
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.collectVisualState
 import kotlinx.datetime.DatePeriod

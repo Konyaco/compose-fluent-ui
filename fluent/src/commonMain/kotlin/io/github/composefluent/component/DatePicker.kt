@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisallowComposableCalls
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,7 +30,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.FluentTheme
+import io.github.composefluent.layout.datetime.IntRangePickerWheelData
+import io.github.composefluent.layout.datetime.PickerFlyoutContainer
+import io.github.composefluent.layout.datetime.PickerFlyoutFooter
+import io.github.composefluent.layout.datetime.PickerItemHeight
+import io.github.composefluent.layout.datetime.PickerSelectionIndicator
+import io.github.composefluent.layout.datetime.PickerWheel
+import io.github.composefluent.layout.datetime.PickerWheelData
+import io.github.composefluent.layout.datetime.PickerWheelDivider
+import io.github.composefluent.layout.datetime.PickerWidth
+import io.github.composefluent.platform.PlatformCalendarData
+import io.github.composefluent.platform.PlatformCalendarField
+import io.github.composefluent.platform.getLocalCalendarData
+import io.github.composefluent.platform.getLocalLocaleIdentifier
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.Padding
+import kotlinx.datetime.number
+import kotlinx.datetime.todayIn
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Displays a compact control that lets the user select a date with linked wheel pickers.
@@ -270,4 +293,425 @@ private fun DatePickerButton(
             }
         }
     }
+}
+
+internal interface DatePickerCalendarModel {
+    fun options(
+        field: DatePickerField,
+        candidate: LocalDate,
+        range: ClosedRange<LocalDate>
+    ): PickerWheelData<Int>
+
+    fun selectedValue(field: DatePickerField, candidate: LocalDate): Int
+
+    fun resolve(
+        field: DatePickerField,
+        value: Int,
+        candidate: LocalDate,
+        range: ClosedRange<LocalDate>
+    ): LocalDate
+}
+
+internal object IsoDatePickerCalendarModel : DatePickerCalendarModel {
+    override fun options(
+        field: DatePickerField,
+        candidate: LocalDate,
+        range: ClosedRange<LocalDate>
+    ): PickerWheelData<Int> {
+        require(range.start <= range.endInclusive) {
+            "DatePicker range start must not be after its end"
+        }
+        val clampedCandidate = candidate.coerceIn(range)
+        val values = when (field) {
+            DatePickerField.Year -> range.start.year..range.endInclusive.year
+            DatePickerField.Month -> monthRange(clampedCandidate.year, range)
+            DatePickerField.Day -> dayRange(
+                year = clampedCandidate.year,
+                month = clampedCandidate.month.number,
+                range = range
+            )
+        }
+        return IntRangePickerWheelData(values)
+    }
+
+    override fun selectedValue(field: DatePickerField, candidate: LocalDate): Int =
+        when (field) {
+            DatePickerField.Day -> candidate.day
+            DatePickerField.Month -> candidate.month.number
+            DatePickerField.Year -> candidate.year
+        }
+
+    override fun resolve(
+        field: DatePickerField,
+        value: Int,
+        candidate: LocalDate,
+        range: ClosedRange<LocalDate>
+    ): LocalDate {
+        require(range.start <= range.endInclusive) {
+            "DatePicker range start must not be after its end"
+        }
+        val current = candidate.coerceIn(range)
+        val resolved = when (field) {
+            DatePickerField.Day -> LocalDate(
+                year = current.year,
+                month = current.month.number,
+                day = value.coerceIn(1, daysInIsoMonth(current.year, current.month.number))
+            )
+
+            DatePickerField.Month -> {
+                val month = value.coerceIn(1, 12)
+                LocalDate(
+                    year = current.year,
+                    month = month,
+                    day = current.day.coerceAtMost(daysInIsoMonth(current.year, month))
+                )
+            }
+
+            DatePickerField.Year -> LocalDate(
+                year = value,
+                month = current.month.number,
+                day = current.day.coerceAtMost(daysInIsoMonth(value, current.month.number))
+            )
+        }
+        return resolved.coerceIn(range)
+    }
+
+    private fun monthRange(
+        year: Int,
+        range: ClosedRange<LocalDate>
+    ): IntRange {
+        val firstMonth = if (year == range.start.year) range.start.month.number else 1
+        val lastMonth = if (year == range.endInclusive.year) {
+            range.endInclusive.month.number
+        } else {
+            12
+        }
+        return firstMonth..lastMonth
+    }
+
+    private fun dayRange(
+        year: Int,
+        month: Int,
+        range: ClosedRange<LocalDate>
+    ): IntRange {
+        val firstDay = if (
+            year == range.start.year && month == range.start.month.number
+        ) {
+            range.start.day
+        } else {
+            1
+        }
+        val lastDay = if (
+            year == range.endInclusive.year && month == range.endInclusive.month.number
+        ) {
+            range.endInclusive.day
+        } else {
+            daysInIsoMonth(year, month)
+        }
+        return firstDay..lastDay
+    }
+}
+
+internal fun LocalDate.coerceIn(range: ClosedRange<LocalDate>): LocalDate = when {
+    this < range.start -> range.start
+    this > range.endInclusive -> range.endInclusive
+    else -> this
+}
+
+@OptIn(ExperimentalTime::class)
+internal fun currentDatePickerDate(): LocalDate =
+    Clock.System.todayIn(TimeZone.currentSystemDefault())
+
+internal fun defaultDatePickerMinimumDate(): LocalDate {
+    val currentYear = currentDatePickerDate().year
+    return LocalDate(
+        year = currentYear - DefaultDatePickerYearRange,
+        month = 1,
+        day = 1
+    )
+}
+
+internal fun defaultDatePickerMaximumDate(): LocalDate {
+    val currentYear = currentDatePickerDate().year
+    return LocalDate(
+        year = currentYear + DefaultDatePickerYearRange,
+        month = 12,
+        day = 31
+    )
+}
+
+private fun daysInIsoMonth(year: Int, month: Int): Int = when (month) {
+    2 -> if (isIsoLeapYear(year)) 29 else 28
+    4, 6, 9, 11 -> 30
+    1, 3, 5, 7, 8, 10, 12 -> 31
+    else -> throw IllegalArgumentException("month must be in the range 1..12")
+}
+
+private fun isIsoLeapYear(year: Int): Boolean =
+    year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+
+private const val DefaultDatePickerYearRange = 100
+
+/** Identifies a field displayed by a [DatePicker]. */
+enum class DatePickerField {
+    /** The day-of-month field. */
+    Day,
+
+    /** The month field. */
+    Month,
+
+    /** The year field. */
+    Year
+}
+
+/**
+ * Describes the visible fields, order, labels, and item text used by a [DatePicker].
+ *
+ * Instances are immutable. When constructing a format inside a composable function, remember the
+ * returned value to avoid rebuilding the DSL during every recomposition. Prefer
+ * [rememberDatePickerFormat] when the format uses [DatePickerFormatBuilder.default], because it
+ * also updates the format when the platform locale changes.
+ */
+@Immutable
+class DatePickerFormat internal constructor(
+    internal val fields: List<DatePickerFieldFormat>
+)
+
+/**
+ * Builds a [DatePickerFormat].
+ *
+ * This factory is useful outside composition. Inside a composable function, wrap it in [remember]
+ * or use [rememberDatePickerFormat] to avoid executing [builder] and creating formatters again on
+ * every recomposition.
+ *
+ * @param builder The configuration applied to the new format.
+ * @throws IllegalArgumentException If no field is visible, an explicit field order is invalid,
+ * or a visible field has a non-positive or non-finite weight.
+ */
+fun DatePickerFormat(
+    builder: DatePickerFormatBuilder.() -> Unit
+): DatePickerFormat = DatePickerFormatBuilder(getLocalCalendarData())
+    .apply(builder)
+    .build()
+
+/**
+ * Builds and remembers an immutable [DatePickerFormat].
+ *
+ * The platform locale identifier and every value in [keys] participate in the remembered identity.
+ * Values captured by [builder] that can change must also be supplied in [keys]; otherwise the
+ * remembered format intentionally keeps the configuration from the composition in which it was
+ * created.
+ *
+ * @param keys Values whose changes should rebuild the format.
+ * @param builder The non-composable configuration applied when a new format is required.
+ * @throws IllegalArgumentException If no field is visible, an explicit field order is invalid,
+ * or a visible field has a non-positive or non-finite weight.
+ */
+@Composable
+fun rememberDatePickerFormat(
+    vararg keys: Any?,
+    builder: @DisallowComposableCalls DatePickerFormatBuilder.() -> Unit
+): DatePickerFormat {
+    val localeIdentifier = getLocalLocaleIdentifier()
+    return remember(localeIdentifier, *keys) {
+        DatePickerFormatBuilder(getLocalCalendarData()).apply(builder).build()
+    }
+}
+
+/** Receiver used to build a [DatePickerFormat]. */
+class DatePickerFormatBuilder internal constructor(
+    private val calendarData: PlatformCalendarData
+) {
+    private val fieldFormats = mutableMapOf<DatePickerField, MutableDatePickerFieldFormat>()
+    private val fieldOrder = mutableListOf<DatePickerField>()
+    private var explicitOrder: List<DatePickerField>? = null
+    private val localizedMonthNames = MonthNames(calendarData.monthNames)
+
+    /**
+     * Inserts all date fields using the platform locale's order and month names, together with
+     * localized field labels where available.
+     *
+     * Calling a field function after `default()` updates that field without moving it. Calling
+     * `default()` after field functions preserves their settings but resets their order to the
+     * platform default.
+     */
+    fun default() {
+        calendarData.fieldOrder.forEach { calendarField ->
+            val field = calendarField.toDatePickerField()
+            fieldFormats.getOrPut(field) { defaultFormat(field) }
+        }
+        fieldOrder.clear()
+        fieldOrder.addAll(calendarData.fieldOrder.map(PlatformCalendarField::toDatePickerField))
+        explicitOrder = null
+    }
+
+    /** Adds or updates the day field without moving an existing field. */
+    fun day(block: DatePickerFieldFormatBuilder.() -> Unit = {}) {
+        configure(DatePickerField.Day, block)
+    }
+
+    /** Adds or updates the month field without moving an existing field. */
+    fun month(block: DatePickerFieldFormatBuilder.() -> Unit = {}) {
+        configure(DatePickerField.Month, block)
+    }
+
+    /** Adds or updates the year field without moving an existing field. */
+    fun year(block: DatePickerFieldFormatBuilder.() -> Unit = {}) {
+        configure(DatePickerField.Year, block)
+    }
+
+    /**
+     * Sets the final order of all visible fields.
+     *
+     * [fields] must contain every visible field exactly once and must not contain hidden fields.
+     * Validation is performed after the complete DSL block has run, so visibility can be changed
+     * before or after this call.
+     */
+    fun order(vararg fields: DatePickerField) {
+        explicitOrder = fields.toList()
+    }
+
+    internal fun build(): DatePickerFormat {
+        val visibleFields = fieldFormats
+            .filterValues { it.visible }
+            .keys
+        require(visibleFields.isNotEmpty()) {
+            "DatePickerFormat must contain at least one visible field"
+        }
+        visibleFields.forEach { field ->
+            val weight = checkNotNull(fieldFormats[field]).weight
+            require(weight.isFinite() && weight > 0f) {
+                "DatePickerFormat weight for $field must be finite and greater than 0, " +
+                    "was $weight"
+            }
+        }
+
+        val resolvedOrder = explicitOrder?.also { order ->
+            require(order.size == order.toSet().size) {
+                "DatePickerFormat order must not contain duplicate fields"
+            }
+            require(order.toSet() == visibleFields) {
+                "DatePickerFormat order must contain every visible field exactly once"
+            }
+        } ?: fieldOrder.filter { it in visibleFields }
+
+        return DatePickerFormat(
+            resolvedOrder.map { field ->
+                val fieldFormat = checkNotNull(fieldFormats[field])
+                DatePickerFieldFormat(
+                    field = field,
+                    label = fieldFormat.label,
+                    contentFormat = fieldFormat.contentFormat,
+                    weight = fieldFormat.weight
+                )
+            }
+        )
+    }
+
+    private fun configure(
+        field: DatePickerField,
+        block: DatePickerFieldFormatBuilder.() -> Unit
+    ) {
+        val current = fieldFormats.getOrPut(field) {
+            fieldOrder += field
+            defaultFormat(field)
+        }
+        val builder = DatePickerFieldFormatBuilder(
+            visible = current.visible,
+            label = current.label,
+            contentFormat = current.contentFormat,
+            weight = current.weight
+        ).apply(block)
+        fieldFormats[field] = MutableDatePickerFieldFormat(
+            visible = builder.visible,
+            label = builder.label,
+            contentFormat = builder.contentFormat,
+            weight = builder.weight
+        )
+    }
+
+    private fun defaultFormat(field: DatePickerField): MutableDatePickerFieldFormat {
+        val calendarField = field.toPlatformCalendarField()
+        return MutableDatePickerFieldFormat(
+            visible = true,
+            label = checkNotNull(calendarData.fieldLabels[calendarField]),
+            contentFormat = when (field) {
+                DatePickerField.Day -> LocalDate.Format { day(Padding.NONE) }
+                DatePickerField.Month -> LocalDate.Format { monthName(localizedMonthNames) }
+                DatePickerField.Year -> LocalDate.Format { year() }
+            },
+            weight = 1f
+        )
+    }
+}
+
+/** Configures one field in a [DatePickerFormat]. */
+class DatePickerFieldFormatBuilder internal constructor(
+    /** Whether this field is shown by the picker. */
+    var visible: Boolean,
+
+    /**
+     * The visible field label and accessible name of its wheel.
+     *
+     * The same label is displayed by the selection button when its value is `null`.
+     */
+    var label: String,
+
+    /**
+     * Formats a wheel item and a selected value.
+     *
+     * The formatter receives the complete date that selecting the item would produce. It can
+     * therefore include related information, such as formatting a day as `3 (Thu)`.
+     */
+    var contentFormat: DateTimeFormat<LocalDate>,
+
+    /**
+     * Relative horizontal space assigned to this field in the DatePicker.
+     *
+     * The default value is `1f`. Increase it when the field content, such as a localized month
+     * name, needs more room than the other fields. The value must be finite and greater than zero.
+     */
+    var weight: Float = 1f
+)
+
+/** Defaults shared by DatePicker APIs. */
+object DatePickerDefaults {
+    /** Returns a remembered format that follows the current platform locale. */
+    @Composable
+    fun format(): DatePickerFormat = rememberDatePickerFormat {
+        default()
+    }
+
+    /** Returns January 1 of the year 100 years before the current year. */
+    fun minimumDate(): LocalDate = defaultDatePickerMinimumDate()
+
+    /** Returns December 31 of the year 100 years after the current year. */
+    fun maximumDate(): LocalDate = defaultDatePickerMaximumDate()
+}
+
+@Immutable
+internal data class DatePickerFieldFormat(
+    val field: DatePickerField,
+    val label: String,
+    val contentFormat: DateTimeFormat<LocalDate>,
+    val weight: Float
+)
+
+internal data class MutableDatePickerFieldFormat(
+    val visible: Boolean,
+    val label: String,
+    val contentFormat: DateTimeFormat<LocalDate>,
+    val weight: Float
+)
+
+private fun DatePickerField.toPlatformCalendarField(): PlatformCalendarField = when (this) {
+    DatePickerField.Day -> PlatformCalendarField.Day
+    DatePickerField.Month -> PlatformCalendarField.Month
+    DatePickerField.Year -> PlatformCalendarField.Year
+}
+
+private fun PlatformCalendarField.toDatePickerField(): DatePickerField = when (this) {
+    PlatformCalendarField.Day -> DatePickerField.Day
+    PlatformCalendarField.Month -> DatePickerField.Month
+    PlatformCalendarField.Year -> DatePickerField.Year
 }

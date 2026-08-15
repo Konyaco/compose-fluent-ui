@@ -1,4 +1,4 @@
-package io.github.composefluent.component
+package io.github.composefluent.platform
 
 internal actual fun getLocalLocaleIdentifier(): String =
     js("navigator.language") as String
