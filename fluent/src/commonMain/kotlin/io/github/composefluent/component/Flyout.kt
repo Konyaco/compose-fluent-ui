@@ -232,6 +232,9 @@ internal fun BasicFlyout(
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     focusable: Boolean = true,
     elevation: Dp = ElevationDefaults.flyout,
+    color: Color = FluentTheme.colors.background.acrylic.default,
+    strokeColor: Color = FluentTheme.colors.stroke.surface.flyout,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     val visibleState = remember {
@@ -259,7 +262,10 @@ internal fun BasicFlyout(
                     contentPadding = contentPadding,
                     enterPlacementAnimation = enterPlacementAnimation,
                     exitTransition = exitTransition,
-                    elevation = elevation
+                    elevation = elevation,
+                    color = color,
+                    strokeColor = strokeColor,
+                    useAcrylic = useAcrylic,
                 )
             } else {
                 /* this is the workaround for placement animation */
@@ -285,6 +291,9 @@ internal fun FlyoutContent(
     shape: Shape = FluentTheme.shapes.overlay,
     contentPadding: PaddingValues = PaddingValues(12.dp),
     elevation: Dp = ElevationDefaults.flyout,
+    color: Color = FluentTheme.colors.background.acrylic.default,
+    strokeColor: Color = FluentTheme.colors.stroke.surface.flyout,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     AcrylicPopupContent(
@@ -295,6 +304,9 @@ internal fun FlyoutContent(
         contentPadding = contentPadding,
         elevation = elevation,
         shape = shape,
+        color = color,
+        strokeColor = strokeColor,
+        useAcrylic = useAcrylic,
         modifier = modifier
     )
 }
@@ -309,10 +321,12 @@ internal fun AcrylicPopupContent(
     elevation: Dp,
     shape: Shape,
     contentPadding: PaddingValues,
+    color: Color = FluentTheme.colors.background.acrylic.default,
+    strokeColor: Color = FluentTheme.colors.stroke.surface.flyout,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     with(LocalWindowAcrylicContainer.current) {
-        val useAcrylic = LocalAcrylicPopupEnabled.current
         AnimatedVisibility(
             visibleState = visibleState,
             enter = enterTransition,
@@ -327,19 +341,20 @@ internal fun AcrylicPopupContent(
         ) {
             Layer(
                 backgroundSizing = BackgroundSizing.InnerBorderEdge,
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
+                border = BorderStroke(1.dp, strokeColor),
                 shape = shape,
                 elevation = elevation,
                 color = if (useAcrylic) {
                     Color.Transparent
                 } else {
-                    FluentTheme.colors.background.acrylic.default
+                    color
                 },
                 modifier = modifier
             ) {
                 FlyoutContentLayout(
                     contentPadding = contentPadding,
                     material = MaterialDefaults.acrylicDefault(),
+                    useAcrylic = useAcrylic,
                     shape = shape,
                     content = content
                 )
@@ -355,6 +370,7 @@ internal fun MaterialContainerScope.FlyoutContentLayout(
     material: Material,
     shape: Shape,
     contentPadding: PaddingValues,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     Layout(
@@ -377,7 +393,7 @@ internal fun MaterialContainerScope.FlyoutContentLayout(
                     .layoutId("placeholder")
                     .padding(1.dp)
                     .clip(acrylicShape)
-                    .materialOverlay(material = material)
+                    .materialOverlay(material = material, enabled = { useAcrylic })
             )
             Box(modifier = Modifier.padding(contentPadding).layoutId("content")) { content() }
         }
