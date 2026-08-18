@@ -35,6 +35,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -84,6 +86,7 @@ import io.github.composefluent.platform.indicatesPreciseScrollInput
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -295,47 +298,56 @@ internal fun <T : Any> PickerWheel(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(mouseWheelSnapController) {
-                    var preciseScrollSequence = false
-                    var lastScrollUptimeMillis = Long.MIN_VALUE
-                    while (true) {
-                        val event = awaitPointerEventScope {
-                            awaitPointerEvent(PointerEventPass.Initial)
-                        }
-                        when (event.type) {
-                            PointerEventType.Scroll -> {
-                                val change = event.changes.first()
-                                val scrollDelta = change.scrollDelta.y
-                                val uptimeMillis = change.uptimeMillis
-                                val continuesPreviousSequence =
-                                    lastScrollUptimeMillis != Long.MIN_VALUE &&
-                                        uptimeMillis >= lastScrollUptimeMillis &&
-                                        uptimeMillis - lastScrollUptimeMillis <=
-                                        PreciseScrollSequenceTimeoutMillis
-                                if (!continuesPreviousSequence) {
-                                    preciseScrollSequence = false
-                                }
-                                val wasPreciseScrollSequence = preciseScrollSequence
-                                if (event.indicatesPreciseScrollInput()) {
-                                    preciseScrollSequence = true
-                                }
-                                lastScrollUptimeMillis = uptimeMillis
-
-                                if (preciseScrollSequence) {
-                                    if (!wasPreciseScrollSequence) {
-                                        mouseWheelSnapController.cancelAndJoin()
+                    coroutineScope {
+                        var preciseScrollSequence = false
+                        launch {
+                            var observedScrollInProgress = false
+                            snapshotFlow { listState.isScrollInProgress }.collect { isScrolling ->
+                                if (isScrolling) {
+                                    observedScrollInProgress = true
+                                } else if (observedScrollInProgress) {
+                                    // Mouse-wheel scrolling hands off to snapping in a new
+                                    // coroutine. Confirm on the next frame so that transition is
+                                    // not mistaken for the end of the complete scroll sequence.
+                                    withFrameNanos { }
+                                    if (!listState.isScrollInProgress) {
+                                        preciseScrollSequence = false
+                                        observedScrollInProgress = false
                                     }
-                                } else if (scrollDelta != 0f) {
-                                    event.changes.forEach { it.consume() }
-                                    mouseWheelSnapController.onMouseWheel(
-                                        scrollDelta = scrollDelta,
-                                        uptimeMillis = uptimeMillis
-                                    )
                                 }
                             }
+                        }
 
-                            PointerEventType.Press -> mouseWheelSnapController.cancelAndJoin()
-                            PointerEventType.Enter -> focusRequester.requestFocus()
-                            else -> Unit
+                        while (true) {
+                            val event = awaitPointerEventScope {
+                                awaitPointerEvent(PointerEventPass.Initial)
+                            }
+                            when (event.type) {
+                                PointerEventType.Scroll -> {
+                                    val change = event.changes.first()
+                                    val scrollDelta = change.scrollDelta.y
+                                    val wasPreciseScrollSequence = preciseScrollSequence
+                                    if (event.indicatesPreciseScrollInput()) {
+                                        preciseScrollSequence = true
+                                    }
+
+                                    if (preciseScrollSequence) {
+                                        if (!wasPreciseScrollSequence) {
+                                            mouseWheelSnapController.cancelAndJoin()
+                                        }
+                                    } else if (scrollDelta != 0f) {
+                                        event.changes.forEach { it.consume() }
+                                        mouseWheelSnapController.onMouseWheel(
+                                            scrollDelta = scrollDelta,
+                                            uptimeMillis = change.uptimeMillis
+                                        )
+                                    }
+                                }
+
+                                PointerEventType.Press -> mouseWheelSnapController.cancelAndJoin()
+                                PointerEventType.Enter -> focusRequester.requestFocus()
+                                else -> Unit
+                            }
                         }
                     }
                 }
@@ -669,4 +681,3 @@ private fun PickerCaretButton(
 internal val PickerItemHeight = 40.dp
 
 private const val VirtualListRepeatCount = 100
-private const val PreciseScrollSequenceTimeoutMillis = 100L
