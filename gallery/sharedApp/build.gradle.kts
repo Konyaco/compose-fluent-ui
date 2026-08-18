@@ -35,6 +35,7 @@ kotlin {
                 implementation(project(":fluent-icons-extended"))
                 implementation(libs.compose.ui.util)
                 implementation(libs.highlights)
+                implementation(libs.kotlinx.datetime)
                 implementation(libs.androidx.navigation3.ui)
                 implementation(libs.androidx.navigationevent.compose)
                 implementation(project(":source-generated"))

@@ -1,9 +1,5 @@
 package io.github.composefluent.component
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.hoverable
@@ -45,15 +41,12 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.Layout
@@ -76,17 +69,17 @@ import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.LocalCompactMode
 import io.github.composefluent.ProvideTextStyle
-import io.github.composefluent.animation.FluentDuration
-import io.github.composefluent.animation.FluentEasing
 import io.github.composefluent.background.BackgroundSizing
-import io.github.composefluent.background.ElevationDefaults
+import io.github.composefluent.layout.SelectionPopupFallback
+import io.github.composefluent.layout.SelectionPopupPlacement
+import io.github.composefluent.layout.SelectionPopupSurface
+import io.github.composefluent.layout.calculateSelectionPopupPosition
+import io.github.composefluent.layout.selectionPopupVerticalRange
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.VisualState
 import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
 import io.github.composefluent.scheme.map
-import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -541,112 +534,6 @@ interface ComboBoxScope<T> {
 
 private val ComboBoxPopupContentPadding = 4.dp
 
-internal fun comboBoxPopupVerticalRange(
-    windowHeight: Int,
-    popupHeight: Int,
-    preferredPadding: Int
-): IntRange {
-    val availablePosition = (windowHeight - popupHeight).coerceAtLeast(0)
-    val windowPadding = preferredPadding.coerceAtMost(availablePosition / 2)
-    return windowPadding..(availablePosition - windowPadding)
-}
-
-private enum class ComboBoxPopupReveal {
-    Centered,
-    Directional
-}
-
-@Composable
-private fun ComboBoxPopupSurface(
-    expanded: Boolean,
-    positionProvider: FlyoutPositionProvider,
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
-    shape: Shape = FluentTheme.shapes.overlay,
-    contentPadding: PaddingValues = PaddingValues(vertical = ComboBoxPopupContentPadding),
-    initialElevation: Dp = 1.dp,
-    reveal: ComboBoxPopupReveal = ComboBoxPopupReveal.Centered,
-    revealOriginY: () -> Int = { 0 },
-    opensUpward: () -> Boolean = { false },
-    content: @Composable () -> Unit
-) {
-    if (!expanded) return
-
-    val revealProgress = remember(positionProvider) { Animatable(0f) }
-    val shadowElevationProgress = remember(positionProvider) { Animatable(0f) }
-
-    LaunchedEffect(positionProvider.applyAnimation) {
-        if (positionProvider.applyAnimation) {
-            revealProgress.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = FluentDuration.ShortDuration,
-                    easing = FluentEasing.FastInvokeEasing
-                )
-            )
-            shadowElevationProgress.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = FluentDuration.LongDuration,
-                    easing = FluentEasing.PointToPointEasing
-                )
-            )
-        }
-    }
-
-    BasicFlyout(
-        visible = true,
-        onDismissRequest = onDismissRequest,
-        modifier = modifier.drawWithContent {
-            val progress = revealProgress.value
-            if (progress < 1f) {
-                when (reveal) {
-                    ComboBoxPopupReveal.Centered -> {
-                        val origin = revealOriginY().toFloat().coerceIn(0f, size.height)
-                        val offsetFromCenter = abs(origin - size.height / 2f)
-                        val initialHalfHeight = max(size.height / 4f, offsetFromCenter)
-                        val finalHalfHeight = max(origin, size.height - origin)
-                        val halfHeight = initialHalfHeight +
-                            (finalHalfHeight - initialHalfHeight) * progress
-                        clipRect(
-                            left = -size.width,
-                            top = (origin - halfHeight).coerceAtLeast(0f),
-                            right = size.width * 2f,
-                            bottom = (origin + halfHeight).coerceAtMost(size.height)
-                        ) {
-                            this@drawWithContent.drawContent()
-                        }
-                    }
-
-                    ComboBoxPopupReveal.Directional -> {
-                        val top = if (opensUpward()) size.height * (1f - progress) else 0f
-                        val bottom = if (opensUpward()) size.height else size.height * progress
-                        clipRect(
-                            left = -size.width,
-                            top = top,
-                            right = size.width * 2f,
-                            bottom = bottom
-                        ) {
-                            this@drawWithContent.drawContent()
-                        }
-                    }
-                }
-            } else {
-                drawContent()
-            }
-        },
-        enterPlacementAnimation = { EnterTransition.None },
-        exitTransition = ExitTransition.None,
-        shape = shape,
-        contentPadding = contentPadding,
-        positionProvider = positionProvider,
-        elevation = initialElevation +
-            (ElevationDefaults.flyout - initialElevation) * shadowElevationProgress.value
-    ) {
-        content()
-    }
-}
-
 @Composable
 internal fun ComboBoxPopup(
     expanded: Boolean,
@@ -686,11 +573,12 @@ internal fun ComboBoxPopup(
         }
     }
 
-    ComboBoxPopupSurface(
+    SelectionPopupSurface(
         expanded = expanded,
         positionProvider = positionProvider,
         onDismissRequest = onDismissRequest,
         modifier = modifier,
+        contentPadding = PaddingValues(vertical = ComboBoxPopupContentPadding),
         revealOriginY = { positionProvider.revealOriginY }
     ) {
         ScrollbarContainer(
@@ -794,7 +682,7 @@ private class ComboBoxPopupPositionProvider(
             popupContentSize.height / 2
         }
         val maxScroll = scrollState.maxValue
-        val popupVerticalRange = comboBoxPopupVerticalRange(
+        val popupVerticalRange = selectionPopupVerticalRange(
             windowHeight = windowSize.height,
             popupHeight = popupContentSize.height,
             preferredPadding = windowPadding
@@ -850,16 +738,20 @@ private class ComboBoxPopupPositionProvider(
             initialPopupY
         }
 
-        val popupX = (anchorBounds.center.x - popupContentSize.width / 2).let { idealX ->
-            if (popupContentSize.width >= windowSize.width) 0
-            else idealX.coerceIn(0, windowSize.width - popupContentSize.width)
-        }
+        val position = calculateSelectionPopupPosition(
+            anchorBounds = anchorBounds,
+            windowSize = windowSize,
+            popupContentSize = popupContentSize,
+            selectedCenterY = anchorCenterY - popupY,
+            windowPadding = windowPadding,
+            fallback = SelectionPopupFallback.Clamp
+        )
 
-        revealOriginY = (anchorCenterY - popupY).coerceIn(0, popupContentSize.height)
+        revealOriginY = position.revealOriginY
         targetPlacement = FlyoutPlacement.Full
         if (lockedPopupY != Int.MIN_VALUE) applyAnimation = true
 
-        return IntOffset(popupX, popupY)
+        return position.offset
     }
 }
 
@@ -1003,11 +895,12 @@ internal fun <T> LazyComboBoxPopup(
         }
     }
 
-    ComboBoxPopupSurface(
+    SelectionPopupSurface(
         expanded = expanded,
         positionProvider = positionProvider,
         onDismissRequest = onDismissRequest,
         modifier = modifier,
+        contentPadding = PaddingValues(vertical = ComboBoxPopupContentPadding),
         revealOriginY = { positionProvider.revealOriginY }
     ) {
         LazyComboBoxItems(
@@ -1133,7 +1026,7 @@ private class LazyComboBoxPopupPositionProvider(
         }
         val selectedCenter = selectedItem?.let { it.offset + it.size / 2 + contentPadding }
             ?: (popupContentSize.height / 2)
-        val popupVerticalRange = comboBoxPopupVerticalRange(
+        val popupVerticalRange = selectionPopupVerticalRange(
             windowHeight = windowSize.height,
             popupHeight = popupContentSize.height,
             preferredPadding = windowPadding
@@ -1167,16 +1060,20 @@ private class LazyComboBoxPopupPositionProvider(
             initialPopupY
         }
 
-        val popupX = (anchorBounds.center.x - popupContentSize.width / 2).let { idealX ->
-            if (popupContentSize.width >= windowSize.width) 0
-            else idealX.coerceIn(0, windowSize.width - popupContentSize.width)
-        }
+        val position = calculateSelectionPopupPosition(
+            anchorBounds = anchorBounds,
+            windowSize = windowSize,
+            popupContentSize = popupContentSize,
+            selectedCenterY = anchorCenterY - popupY,
+            windowPadding = windowPadding,
+            fallback = SelectionPopupFallback.Clamp
+        )
 
-        revealOriginY = (anchorCenterY - popupY).coerceIn(0, popupContentSize.height)
+        revealOriginY = position.revealOriginY
         targetPlacement = FlyoutPlacement.Full
         if (lockedPopupY != Int.MIN_VALUE) applyAnimation = true
 
-        return IntOffset(popupX, popupY)
+        return position.offset
     }
 }
 
@@ -1650,15 +1547,18 @@ internal fun EditableComboBoxPopup(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    ComboBoxPopupSurface(
+    SelectionPopupSurface(
         expanded = expanded,
         positionProvider = positionProvider,
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         shape = AutoSuggestBoxDefaults.suggestFlyoutShape(positionProvider.targetPlacement),
+        contentPadding = PaddingValues(vertical = ComboBoxPopupContentPadding),
         initialElevation = 0.dp,
-        reveal = ComboBoxPopupReveal.Directional,
-        opensUpward = { positionProvider.opensUpward }
+        placement = {
+            if (positionProvider.opensUpward) SelectionPopupPlacement.Above
+            else SelectionPopupPlacement.Below
+        }
     ) { content() }
 }
 

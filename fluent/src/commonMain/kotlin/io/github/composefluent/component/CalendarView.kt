@@ -52,6 +52,10 @@ import io.github.composefluent.animation.FluentEasing
 import io.github.composefluent.background.BackgroundSizing
 import io.github.composefluent.background.Layer
 import io.github.composefluent.component.CalendarDatePickerState.ChooseType
+import io.github.composefluent.platform.LocalMonthNameStyle
+import io.github.composefluent.platform.getLocalDayOfWeekNames
+import io.github.composefluent.platform.getLocalFirstDayOfWeek
+import io.github.composefluent.platform.getLocalMonthNames
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.collectVisualState
 import kotlinx.datetime.DatePeriod
@@ -545,7 +549,7 @@ class CalendarDatePickerState(
     val viewHeaderText = mutableStateOf("")
 
     val dayOfWeekNames = mutableStateOf(getLocalDayOfWeekNames())
-    val monthNames = mutableStateOf(getLocalMonthNames())
+    val monthNames = mutableStateOf(getLocalMonthNames(LocalMonthNameStyle.Short))
 
     /**
      * Defines the type of view to be displayed in the calendar.
@@ -802,7 +806,7 @@ class CalendarDatePickerState(
             }
 
             ChooseType.DAY -> {
-                val displayNames = getLocalMonthNames()
+                val displayNames = getLocalMonthNames(LocalMonthNameStyle.Short)
                 val curr = viewMonth.value
                 val monthValue = curr.monthValue
                 val year = curr.year
@@ -813,12 +817,3 @@ class CalendarDatePickerState(
         }
     }
 }
-
-expect internal fun getLocalDayOfWeekNames(): List<String>
-expect internal fun getLocalMonthNames(): List<String>
-
-/**
- * Get the first day of week
- * Sunday(1), Monday(2), ..., Saturday(7)
- */
-expect internal fun getLocalFirstDayOfWeek(): Int

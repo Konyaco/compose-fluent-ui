@@ -526,8 +526,33 @@ private class FlyoutAnchorScopeImpl(
 
 }
 
+@Stable
+internal data class FlyoutAvailableSpace(
+    val above: Dp,
+    val below: Dp,
+    val anchorHeight: Dp
+)
+
 @Composable
-internal expect fun rememberFlyoutCalculateMaxHeight(padding: Dp): (anchorCoordinates: LayoutCoordinates) -> Int
+internal fun rememberFlyoutCalculateMaxHeight(
+    padding: Dp
+): (anchorCoordinates: LayoutCoordinates) -> Int {
+    val calculateAvailableSpace = rememberFlyoutAvailableSpace(padding)
+    val density = LocalDensity.current
+    return remember(calculateAvailableSpace, density) {
+        { anchorCoordinates ->
+            val availableSpace = calculateAvailableSpace(anchorCoordinates)
+            with(density) {
+                maxOf(availableSpace.above, availableSpace.below).roundToPx()
+            }
+        }
+    }
+}
+
+@Composable
+internal expect fun rememberFlyoutAvailableSpace(
+    padding: Dp
+): (anchorCoordinates: LayoutCoordinates) -> FlyoutAvailableSpace
 
 //TODO Remove when shadow can show with animated visibility
 internal val flyoutPopPaddingFixShadowRender = 0.dp

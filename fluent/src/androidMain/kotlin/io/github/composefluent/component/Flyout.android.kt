@@ -11,33 +11,40 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.toSize
-import kotlin.math.max
-import kotlin.math.roundToInt
 
 @Composable
-actual fun rememberFlyoutCalculateMaxHeight(padding: Dp): (LayoutCoordinates) -> Int {
-    val config = LocalConfiguration.current
+internal actual fun rememberFlyoutAvailableSpace(
+    padding: Dp
+): (anchorCoordinates: LayoutCoordinates) -> FlyoutAvailableSpace {
+    val configuration = LocalConfiguration.current
     val view = LocalView.current
-    val verticalMargin = with(LocalDensity.current) { padding.roundToPx() }
-    return remember(config, view) {
-        {
+    val density = LocalDensity.current
+    val verticalMargin = with(density) { padding.roundToPx() }
+    return remember(configuration, view, density, verticalMargin) {
+        { coordinates ->
+            val viewPositionOnScreen = IntArray(2).also(view::getLocationOnScreen)
+            val viewPositionInWindow = IntArray(2).also(view::getLocationInWindow)
+            val windowOriginX = viewPositionOnScreen[0] - viewPositionInWindow[0]
+            val windowOriginY = viewPositionOnScreen[1] - viewPositionInWindow[1]
             val windowBounds = android.graphics.Rect().let { rect ->
                 view.getWindowVisibleDisplayFrame(rect)
+                rect.offset(-windowOriginX, -windowOriginY)
                 rect.toComposeRect()
             }
-            val anchorBounds = Rect(it.positionInWindow(), it.size.toSize())
+            val anchorBounds = Rect(coordinates.positionInWindow(), coordinates.size.toSize())
             val marginedWindowTop = windowBounds.top + verticalMargin
             val marginedWindowBottom = windowBounds.bottom - verticalMargin
-            val availableHeight =
-                if (anchorBounds.top > windowBounds.bottom || anchorBounds.bottom < windowBounds.top) {
-                    (marginedWindowBottom - marginedWindowTop).roundToInt()
-                } else {
-                    val heightAbove = anchorBounds.top - marginedWindowTop
-                    val heightBelow = marginedWindowBottom - anchorBounds.bottom
-                    max(heightAbove, heightBelow).roundToInt()
-                }
-
-            max(availableHeight, 0)
+            val availableWindowHeight =
+                (marginedWindowBottom - marginedWindowTop).coerceAtLeast(0f)
+            with(density) {
+                FlyoutAvailableSpace(
+                    above = (anchorBounds.top - marginedWindowTop)
+                        .coerceIn(0f, availableWindowHeight).toDp(),
+                    below = (marginedWindowBottom - anchorBounds.bottom)
+                        .coerceIn(0f, availableWindowHeight).toDp(),
+                    anchorHeight = anchorBounds.height.toDp()
+                )
+            }
         }
     }
 }
