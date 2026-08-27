@@ -253,7 +253,7 @@ public fun io.github.composefluent.component.AccentButton(onClick: kotlin.Functi
     - content: STABLE (composable function type)
 
 @Composable
-internal fun io.github.composefluent.component.AcrylicPopupContent(visibleState: androidx.compose.animation.core.MutableTransitionState<kotlin.Boolean>, enterTransition: androidx.compose.animation.EnterTransition, exitTransition: androidx.compose.animation.ExitTransition, modifier: androidx.compose.ui.Modifier, elevation: androidx.compose.ui.unit.Dp, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+internal fun io.github.composefluent.component.AcrylicPopupContent(visibleState: androidx.compose.animation.core.MutableTransitionState<kotlin.Boolean>, enterTransition: androidx.compose.animation.EnterTransition, exitTransition: androidx.compose.animation.ExitTransition, modifier: androidx.compose.ui.Modifier, elevation: androidx.compose.ui.unit.Dp, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, color: androidx.compose.ui.graphics.Color, strokeColor: androidx.compose.ui.graphics.Color, useAcrylic: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -264,6 +264,9 @@ internal fun io.github.composefluent.component.AcrylicPopupContent(visibleState:
     - elevation: STABLE (marked @Stable or @Immutable)
     - shape: STABLE (marked @Stable or @Immutable)
     - contentPadding: STABLE (marked @Stable or @Immutable)
+    - color: STABLE (marked @Stable or @Immutable)
+    - strokeColor: STABLE (marked @Stable or @Immutable)
+    - useAcrylic: STABLE (primitive type)
     - content: STABLE (composable function type)
 
 @Composable
@@ -416,7 +419,7 @@ private fun io.github.composefluent.component.BasicCommandBarFlyout(visible: kot
     - content: STABLE (function type)
 
 @Composable
-internal fun io.github.composefluent.component.BasicFlyout(visible: kotlin.Boolean, onDismissRequest: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, enterPlacementAnimation: kotlin.Function1<@[ParameterName(name = \, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, positionProvider: io.github.composefluent.component.FlyoutPositionProvider, onKeyEvent: kotlin.Function1<@[ParameterName(name = \, onPreviewKeyEvent: kotlin.Function1<@[ParameterName(name = \, focusable: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+internal fun io.github.composefluent.component.BasicFlyout(visible: kotlin.Boolean, onDismissRequest: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, enterPlacementAnimation: kotlin.Function1<@[ParameterName(name = \, exitTransition: androidx.compose.animation.ExitTransition, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, positionProvider: io.github.composefluent.component.FlyoutPositionProvider, onKeyEvent: kotlin.Function1<@[ParameterName(name = \, onPreviewKeyEvent: kotlin.Function1<@[ParameterName(name = \, focusable: kotlin.Boolean, elevation: androidx.compose.ui.unit.Dp, color: androidx.compose.ui.graphics.Color, strokeColor: androidx.compose.ui.graphics.Color, useAcrylic: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -424,12 +427,17 @@ internal fun io.github.composefluent.component.BasicFlyout(visible: kotlin.Boole
     - onDismissRequest: STABLE (function type)
     - modifier: STABLE (marked @Stable or @Immutable)
     - enterPlacementAnimation: STABLE (function type)
+    - exitTransition: STABLE (marked @Stable or @Immutable)
     - shape: STABLE (marked @Stable or @Immutable)
     - contentPadding: STABLE (marked @Stable or @Immutable)
     - positionProvider: STABLE (marked @Stable or @Immutable)
     - onKeyEvent: STABLE (function type)
     - onPreviewKeyEvent: STABLE (function type)
     - focusable: STABLE (primitive type)
+    - elevation: STABLE (marked @Stable or @Immutable)
+    - color: STABLE (marked @Stable or @Immutable)
+    - strokeColor: STABLE (marked @Stable or @Immutable)
+    - useAcrylic: STABLE (primitive type)
     - content: STABLE (composable function type)
 
 @Composable
@@ -958,6 +966,47 @@ public fun io.github.composefluent.component.ContentDialogHost(state: io.github.
     - state: STABLE (marked @Stable or @Immutable)
 
 @Composable
+public fun io.github.composefluent.component.DatePicker(value: kotlinx.datetime.LocalDate?, onValueChange: kotlin.Function1<kotlinx.datetime.LocalDate?, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, disabled: kotlin.Boolean, minDate: kotlinx.datetime.LocalDate, maxDate: kotlinx.datetime.LocalDate, format: io.github.composefluent.component.DatePickerFormat): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - value: STABLE (matched by stability configuration)
+    - onValueChange: STABLE (function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - disabled: STABLE (primitive type)
+    - minDate: STABLE (matched by stability configuration)
+    - maxDate: STABLE (matched by stability configuration)
+    - format: STABLE (marked @Stable or @Immutable)
+
+@Composable
+private fun io.github.composefluent.component.DatePickerButton(modifier: androidx.compose.ui.Modifier, value: kotlinx.datetime.LocalDate?, format: io.github.composefluent.component.DatePickerFormat, disabled: kotlin.Boolean, onClick: kotlin.Function0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - value: STABLE (matched by stability configuration)
+    - format: STABLE (marked @Stable or @Immutable)
+    - disabled: STABLE (primitive type)
+    - onClick: STABLE (function type)
+
+@Composable
+public fun io.github.composefluent.component.DatePickerDefaults.format(): io.github.composefluent.component.DatePickerFormat
+  skippable: false
+  restartable: false
+  params:
+
+@Composable
+private fun io.github.composefluent.component.DatePickerWheel(fieldFormat: io.github.composefluent.component.DatePickerFieldFormat, candidateDate: kotlinx.datetime.LocalDate, range: kotlin.ranges.ClosedRange<kotlinx.datetime.LocalDate>, visibleItemsCount: kotlin.Int, onCandidateDateChange: kotlin.Function1<kotlinx.datetime.LocalDate, kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - fieldFormat: STABLE (marked @Stable or @Immutable)
+    - candidateDate: STABLE (matched by stability configuration)
+    - range: STABLE (matched by stability configuration)
+    - visibleItemsCount: STABLE (primitive type)
+    - onCandidateDateChange: STABLE (function type)
+
+@Composable
 private fun io.github.composefluent.component.DateTable(state: io.github.composefluent.component.CalendarDatePickerState, onChoose: kotlin.Function1<@[ParameterName(name = \): kotlin.Unit
   skippable: true
   restartable: true
@@ -1015,6 +1064,22 @@ public fun io.github.composefluent.component.DropdownMenuItem(onClick: kotlin.Fu
   params:
     - onClick: STABLE (function type)
     - content: STABLE (composable function type)
+
+@Composable
+private fun io.github.composefluent.component.ExpandChevron(expanded: kotlin.Boolean?): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - expanded: STABLE (class with no mutable properties)
+
+@Composable
+private fun io.github.composefluent.component.ExpandChevronClickTarget(expanded: kotlin.Boolean, enabled: kotlin.Boolean, onExpandedChanged: kotlin.Function1<kotlin.Boolean, kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - expanded: STABLE (primitive type)
+    - enabled: STABLE (primitive type)
+    - onExpandedChanged: STABLE (function type)
 
 @Composable
 public fun io.github.composefluent.component.Expander(expanded: kotlin.Boolean, onExpandedChanged: kotlin.Function1<kotlin.Boolean, kotlin.Unit>, heading: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, enabled: kotlin.Boolean, interactionSource: androidx.compose.foundation.interaction.MutableInteractionSource?, shape: androidx.compose.ui.graphics.Shape, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, caption: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, trailing: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, expandContent: @[Composable] @[ExtensionFunctionType] androidx.compose.runtime.internal.ComposableFunction1<androidx.compose.foundation.layout.ColumnScope, kotlin.Unit>): kotlin.Unit
@@ -1159,7 +1224,7 @@ public fun io.github.composefluent.component.FlyoutContainer(flyout: @[Composabl
     - content: STABLE (composable function type)
 
 @Composable
-internal fun io.github.composefluent.component.FlyoutContent(visibleState: androidx.compose.animation.core.MutableTransitionState<kotlin.Boolean>, modifier: androidx.compose.ui.Modifier, placement: io.github.composefluent.component.FlyoutPlacement, enterPlacementAnimation: kotlin.Function1<@[ParameterName(name = \, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+internal fun io.github.composefluent.component.FlyoutContent(visibleState: androidx.compose.animation.core.MutableTransitionState<kotlin.Boolean>, modifier: androidx.compose.ui.Modifier, placement: io.github.composefluent.component.FlyoutPlacement, enterPlacementAnimation: kotlin.Function1<@[ParameterName(name = \, exitTransition: androidx.compose.animation.ExitTransition, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, elevation: androidx.compose.ui.unit.Dp, color: androidx.compose.ui.graphics.Color, strokeColor: androidx.compose.ui.graphics.Color, useAcrylic: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
   skippable: false
   restartable: true
   params:
@@ -1167,22 +1232,28 @@ internal fun io.github.composefluent.component.FlyoutContent(visibleState: andro
     - modifier: STABLE (marked @Stable or @Immutable)
     - placement: STABLE (class with no mutable properties)
     - enterPlacementAnimation: STABLE (function type)
+    - exitTransition: STABLE (marked @Stable or @Immutable)
     - shape: STABLE (marked @Stable or @Immutable)
     - contentPadding: STABLE (marked @Stable or @Immutable)
+    - elevation: STABLE (marked @Stable or @Immutable)
+    - color: STABLE (marked @Stable or @Immutable)
+    - strokeColor: STABLE (marked @Stable or @Immutable)
+    - useAcrylic: STABLE (primitive type)
     - content: STABLE (composable function type)
 
 @Composable
-internal fun io.github.composefluent.component.FlyoutContentLayout(material: io.github.composefluent.background.Material, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+internal fun io.github.composefluent.component.FlyoutContentLayout(material: io.github.composefluent.background.Material, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, useAcrylic: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
   skippable: true
   restartable: true
   params:
     - material: STABLE (marked @Stable or @Immutable)
     - shape: STABLE (marked @Stable or @Immutable)
     - contentPadding: STABLE (marked @Stable or @Immutable)
+    - useAcrylic: STABLE (primitive type)
     - content: STABLE (composable function type)
 
 @Composable
-internal fun io.github.composefluent.component.FontIcon(glyph: kotlin.Char, modifier: androidx.compose.ui.Modifier, iconSize: androidx.compose.ui.unit.TextUnit, fallback: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?): kotlin.Unit
+internal fun io.github.composefluent.component.FontIcon(glyph: kotlin.Char, modifier: androidx.compose.ui.Modifier, iconSize: androidx.compose.ui.unit.TextUnit, fallback: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, tint: androidx.compose.ui.graphics.Color): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -1190,9 +1261,10 @@ internal fun io.github.composefluent.component.FontIcon(glyph: kotlin.Char, modi
     - modifier: STABLE (marked @Stable or @Immutable)
     - iconSize: STABLE (marked @Stable or @Immutable)
     - fallback: STABLE (composable function type)
+    - tint: STABLE (marked @Stable or @Immutable)
 
 @Composable
-internal fun io.github.composefluent.component.FontIcon(glyph: kotlin.Char, vector: kotlin.Function0<androidx.compose.ui.graphics.vector.ImageVector>?, contentDescription: kotlin.String?, modifier: androidx.compose.ui.Modifier, iconSize: io.github.composefluent.component.FontIconSize, fallbackSize: io.github.composefluent.component.FontIconSize): kotlin.Unit
+internal fun io.github.composefluent.component.FontIcon(glyph: kotlin.Char, vector: kotlin.Function0<androidx.compose.ui.graphics.vector.ImageVector>?, contentDescription: kotlin.String?, modifier: androidx.compose.ui.Modifier, iconSize: io.github.composefluent.component.FontIconSize, fallbackSize: io.github.composefluent.component.FontIconSize, tint: androidx.compose.ui.graphics.Color): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -1202,9 +1274,10 @@ internal fun io.github.composefluent.component.FontIcon(glyph: kotlin.Char, vect
     - modifier: STABLE (marked @Stable or @Immutable)
     - iconSize: STABLE (marked @Stable or @Immutable)
     - fallbackSize: STABLE (marked @Stable or @Immutable)
+    - tint: STABLE (marked @Stable or @Immutable)
 
 @Composable
-public fun io.github.composefluent.component.FontIcon(type: io.github.composefluent.component.FontIconPrimitive, contentDescription: kotlin.String?, modifier: androidx.compose.ui.Modifier, size: io.github.composefluent.component.FontIconSize, fallbackSize: io.github.composefluent.component.FontIconSize): kotlin.Unit
+public fun io.github.composefluent.component.FontIcon(type: io.github.composefluent.component.FontIconPrimitive, contentDescription: kotlin.String?, modifier: androidx.compose.ui.Modifier, size: io.github.composefluent.component.FontIconSize, fallbackSize: io.github.composefluent.component.FontIconSize, tint: androidx.compose.ui.graphics.Color): kotlin.Unit
   skippable: true
   restartable: true
   params:
@@ -1213,6 +1286,7 @@ public fun io.github.composefluent.component.FontIcon(type: io.github.composeflu
     - modifier: STABLE (marked @Stable or @Immutable)
     - size: STABLE (marked @Stable or @Immutable)
     - fallbackSize: STABLE (marked @Stable or @Immutable)
+    - tint: STABLE (marked @Stable or @Immutable)
 
 @Composable
 public fun io.github.composefluent.component.FontIconDefaults.BackIcon(interactionSource: androidx.compose.foundation.interaction.InteractionSource, size: io.github.composefluent.component.FontIconSize, contentDescription: kotlin.String?, modifier: androidx.compose.ui.Modifier): kotlin.Unit
@@ -3056,6 +3130,152 @@ public fun io.github.composefluent.component.TabViewDefaults.selectedItemTitleBa
     - disabled: STABLE (marked @Stable or @Immutable)
 
 @Composable
+public fun io.github.composefluent.component.TeachingTip(visible: kotlin.Boolean, onDismissRequest: kotlin.Function0<kotlin.Unit>, title: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, target: androidx.compose.ui.geometry.Rect?, placement: io.github.composefluent.component.FlyoutPlacement, hero: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, action: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, secondaryAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, closeAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, focusable: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - visible: STABLE (primitive type)
+    - onDismissRequest: STABLE (function type)
+    - title: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - icon: STABLE (composable function type)
+    - target: STABLE (marked @Stable or @Immutable)
+    - placement: STABLE (class with no mutable properties)
+    - hero: STABLE (composable function type)
+    - action: STABLE (composable function type)
+    - secondaryAction: STABLE (composable function type)
+    - closeAction: STABLE (composable function type)
+    - focusable: STABLE (primitive type)
+    - content: STABLE (composable function type)
+
+@Composable
+private fun io.github.composefluent.component.TeachingTipActionRow(action: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, secondaryAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - action: STABLE (composable function type)
+    - secondaryAction: STABLE (composable function type)
+
+@Composable
+private fun io.github.composefluent.component.TeachingTipBody(title: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, action: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, secondaryAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, closeAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - title: STABLE (composable function type)
+    - content: STABLE (composable function type)
+    - icon: STABLE (composable function type)
+    - action: STABLE (composable function type)
+    - secondaryAction: STABLE (composable function type)
+    - closeAction: STABLE (composable function type)
+
+@Composable
+public fun io.github.composefluent.component.TeachingTipContainer(teachingTip: @[Composable] @[ExtensionFunctionType] androidx.compose.runtime.internal.ComposableFunction1<io.github.composefluent.component.TeachingTipContainerScope, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, content: @[Composable] @[ExtensionFunctionType] androidx.compose.runtime.internal.ComposableFunction1<io.github.composefluent.component.TeachingTipContainerScope, kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - teachingTip: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - content: STABLE (composable function type)
+
+@Composable
+public fun io.github.composefluent.component.TeachingTipContainerScope.TeachingTip(title: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, visible: kotlin.Boolean, onDismissRequest: kotlin.Function0<kotlin.Unit>, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, placement: io.github.composefluent.component.FlyoutPlacement, hero: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, action: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, secondaryAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, closeAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, focusable: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - title: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - visible: STABLE (primitive type)
+    - onDismissRequest: STABLE (function type)
+    - icon: STABLE (composable function type)
+    - placement: STABLE (class with no mutable properties)
+    - hero: STABLE (composable function type)
+    - action: STABLE (composable function type)
+    - secondaryAction: STABLE (composable function type)
+    - closeAction: STABLE (composable function type)
+    - focusable: STABLE (primitive type)
+    - content: STABLE (composable function type)
+
+@Composable
+public fun io.github.composefluent.component.TeachingTipContainerScopeImpl.TeachingTip(title: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, visible: kotlin.Boolean, onDismissRequest: kotlin.Function0<kotlin.Unit>, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, placement: io.github.composefluent.component.FlyoutPlacement, hero: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, action: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, secondaryAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, closeAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, focusable: kotlin.Boolean, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - title: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - visible: STABLE (primitive type)
+    - onDismissRequest: STABLE (function type)
+    - icon: STABLE (composable function type)
+    - placement: STABLE (class with no mutable properties)
+    - hero: STABLE (composable function type)
+    - action: STABLE (composable function type)
+    - secondaryAction: STABLE (composable function type)
+    - closeAction: STABLE (composable function type)
+    - focusable: STABLE (primitive type)
+    - content: STABLE (composable function type)
+
+@Composable
+public fun io.github.composefluent.component.TeachingTipDefaults.CloseButton(onClick: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, enabled: kotlin.Boolean, contentDescription: kotlin.String?): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - onClick: STABLE (function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - enabled: STABLE (primitive type)
+    - contentDescription: STABLE (class with no mutable properties)
+
+@Composable
+private fun io.github.composefluent.component.TeachingTipHero(hero: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - hero: STABLE (composable function type)
+
+@Composable
+private fun io.github.composefluent.component.TeachingTipHorizontalHero(heroOnLeft: kotlin.Boolean, hero: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, body: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - heroOnLeft: STABLE (primitive type)
+    - hero: STABLE (composable function type)
+    - body: STABLE (composable function type)
+
+@Composable
+private fun io.github.composefluent.component.TeachingTipLayout(tailEdge: io.github.composefluent.component.TeachingTipTailEdge, targeted: kotlin.Boolean, placement: io.github.composefluent.component.FlyoutPlacement, title: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, hero: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, action: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, secondaryAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, closeAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - tailEdge: STABLE (class with no mutable properties)
+    - targeted: STABLE (primitive type)
+    - placement: STABLE (class with no mutable properties)
+    - title: STABLE (composable function type)
+    - content: STABLE (composable function type)
+    - icon: STABLE (composable function type)
+    - hero: STABLE (composable function type)
+    - action: STABLE (composable function type)
+    - secondaryAction: STABLE (composable function type)
+    - closeAction: STABLE (composable function type)
+
+@Composable
+private fun io.github.composefluent.component.TeachingTipPopup(visible: kotlin.Boolean, onDismissRequest: kotlin.Function0<kotlin.Unit>, title: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, target: androidx.compose.ui.geometry.Rect?, usesContainerTarget: kotlin.Boolean, placement: io.github.composefluent.component.FlyoutPlacement, hero: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, action: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, secondaryAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, closeAction: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, focusable: kotlin.Boolean): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - visible: STABLE (primitive type)
+    - onDismissRequest: STABLE (function type)
+    - title: STABLE (composable function type)
+    - content: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - icon: STABLE (composable function type)
+    - target: STABLE (marked @Stable or @Immutable)
+    - usesContainerTarget: STABLE (primitive type)
+    - placement: STABLE (class with no mutable properties)
+    - hero: STABLE (composable function type)
+    - action: STABLE (composable function type)
+    - secondaryAction: STABLE (composable function type)
+    - closeAction: STABLE (composable function type)
+    - focusable: STABLE (primitive type)
+
+@Composable
 public fun io.github.composefluent.component.Text(text: kotlin.String, modifier: androidx.compose.ui.Modifier, color: androidx.compose.ui.graphics.Color, fontSize: androidx.compose.ui.unit.TextUnit, fontStyle: androidx.compose.ui.text.font.FontStyle?, fontWeight: androidx.compose.ui.text.font.FontWeight?, fontFamily: androidx.compose.ui.text.font.FontFamily?, letterSpacing: androidx.compose.ui.unit.TextUnit, textDecoration: androidx.compose.ui.text.style.TextDecoration?, textAlign: androidx.compose.ui.text.style.TextAlign, lineHeight: androidx.compose.ui.unit.TextUnit, overflow: androidx.compose.ui.text.style.TextOverflow, softWrap: kotlin.Boolean, maxLines: kotlin.Int, minLines: kotlin.Int, onTextLayout: kotlin.Function1<androidx.compose.ui.text.TextLayoutResult, kotlin.Unit>, style: androidx.compose.ui.text.TextStyle): kotlin.Unit
   skippable: true
   restartable: true
@@ -3300,6 +3520,41 @@ public fun io.github.composefluent.component.TextFieldDefaults.defaultTextFieldC
     - disabled: STABLE (marked @Stable or @Immutable)
 
 @Composable
+public fun io.github.composefluent.component.TimePicker(value: kotlinx.datetime.LocalTime?, onValueChange: kotlin.Function1<kotlinx.datetime.LocalTime?, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, is12hour: kotlin.Boolean, disabled: kotlin.Boolean, minuteIncrement: kotlin.Int): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - value: STABLE (matched by stability configuration)
+    - onValueChange: STABLE (function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - is12hour: STABLE (primitive type)
+    - disabled: STABLE (primitive type)
+    - minuteIncrement: STABLE (primitive type)
+
+@Composable
+private fun io.github.composefluent.component.TimePickerButton(modifier: androidx.compose.ui.Modifier, value: kotlinx.datetime.LocalTime?, is12Hour: kotlin.Boolean, disabled: kotlin.Boolean, onClick: kotlin.Function0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - value: STABLE (matched by stability configuration)
+    - is12Hour: STABLE (primitive type)
+    - disabled: STABLE (primitive type)
+    - onClick: STABLE (function type)
+
+@Composable
+internal fun io.github.composefluent.component.TimePickerImpl(value: kotlinx.datetime.LocalTime?, onValueChange: kotlin.Function1<kotlinx.datetime.LocalTime?, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, is12hour: kotlin.Boolean, disabled: kotlin.Boolean, minuteIncrement: kotlin.Int): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - value: STABLE (matched by stability configuration)
+    - onValueChange: STABLE (function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - is12hour: STABLE (primitive type)
+    - disabled: STABLE (primitive type)
+    - minuteIncrement: STABLE (primitive type)
+
+@Composable
 public fun io.github.composefluent.component.ToggleButton(checked: kotlin.Boolean, onCheckedChanged: kotlin.Function1<kotlin.Boolean, kotlin.Unit>, modifier: androidx.compose.ui.Modifier, disabled: kotlin.Boolean, colors: io.github.composefluent.scheme.VisualStateScheme<io.github.composefluent.component.ButtonColor>, interaction: androidx.compose.foundation.interaction.MutableInteractionSource, iconOnly: kotlin.Boolean, outsideBorder: kotlin.Boolean, content: @[Composable] @[ExtensionFunctionType] androidx.compose.runtime.internal.ComposableFunction1<androidx.compose.foundation.layout.RowScope, kotlin.Unit>): kotlin.Unit
   skippable: false
   restartable: true
@@ -3449,6 +3704,86 @@ private fun io.github.composefluent.component.Track(progress: kotlin.Float, colo
     - rtlMirror: STABLE (primitive type)
 
 @Composable
+public fun io.github.composefluent.component.TreeViewItem(selected: kotlin.Boolean, onClick: kotlin.Function0<kotlin.Unit>, text: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, level: kotlin.Int, checkbox: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, interactionSource: androidx.compose.foundation.interaction.MutableInteractionSource?, enabled: kotlin.Boolean, colors: io.github.composefluent.scheme.VisualStateScheme<io.github.composefluent.component.ListItemColor>): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - selected: STABLE (primitive type)
+    - onClick: STABLE (function type)
+    - text: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - level: STABLE (primitive type)
+    - checkbox: STABLE (composable function type)
+    - icon: STABLE (composable function type)
+    - interactionSource: STABLE (marked @Stable or @Immutable)
+    - enabled: STABLE (primitive type)
+    - colors: UNKNOWN (interface or non-final class; concrete implementation unknown)
+
+@Composable
+public fun io.github.composefluent.component.TreeViewItem(selected: kotlin.Boolean, onClick: kotlin.Function0<kotlin.Unit>, expanded: kotlin.Boolean, onExpandedChanged: kotlin.Function1<kotlin.Boolean, kotlin.Unit>, text: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, level: kotlin.Int, checkbox: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, interactionSource: androidx.compose.foundation.interaction.MutableInteractionSource?, enabled: kotlin.Boolean, colors: io.github.composefluent.scheme.VisualStateScheme<io.github.composefluent.component.ListItemColor>): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - selected: STABLE (primitive type)
+    - onClick: STABLE (function type)
+    - expanded: STABLE (primitive type)
+    - onExpandedChanged: STABLE (function type)
+    - text: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - level: STABLE (primitive type)
+    - checkbox: STABLE (composable function type)
+    - icon: STABLE (composable function type)
+    - interactionSource: STABLE (marked @Stable or @Immutable)
+    - enabled: STABLE (primitive type)
+    - colors: UNKNOWN (interface or non-final class; concrete implementation unknown)
+
+@Composable
+private fun io.github.composefluent.component.TreeViewItemImpl(selected: kotlin.Boolean, onClick: kotlin.Function0<kotlin.Unit>, text: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, level: kotlin.Int, checkbox: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, interactionSource: androidx.compose.foundation.interaction.MutableInteractionSource?, enabled: kotlin.Boolean, colors: io.github.composefluent.scheme.VisualStateScheme<io.github.composefluent.component.ListItemColor>, expanded: kotlin.Boolean?, onExpandedChanged: kotlin.Function1<kotlin.Boolean, kotlin.Unit>?): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - selected: STABLE (primitive type)
+    - onClick: STABLE (function type)
+    - text: STABLE (composable function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - level: STABLE (primitive type)
+    - checkbox: STABLE (composable function type)
+    - icon: STABLE (composable function type)
+    - interactionSource: STABLE (marked @Stable or @Immutable)
+    - enabled: STABLE (primitive type)
+    - colors: UNKNOWN (interface or non-final class; concrete implementation unknown)
+    - expanded: STABLE (class with no mutable properties)
+    - onExpandedChanged: STABLE (function type)
+
+@Composable
+private fun io.github.composefluent.component.TreeViewItemLayout(selected: kotlin.Boolean, onClick: kotlin.Function0<kotlin.Unit>, text: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>, indentation: androidx.compose.ui.unit.Dp, checkbox: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, icon: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>?, interactionSource: androidx.compose.foundation.interaction.MutableInteractionSource, enabled: kotlin.Boolean, expanded: kotlin.Boolean?, onExpandedChanged: kotlin.Function1<kotlin.Boolean, kotlin.Unit>?): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - selected: STABLE (primitive type)
+    - onClick: STABLE (function type)
+    - text: STABLE (composable function type)
+    - indentation: STABLE (marked @Stable or @Immutable)
+    - checkbox: STABLE (composable function type)
+    - icon: STABLE (composable function type)
+    - interactionSource: STABLE (marked @Stable or @Immutable)
+    - enabled: STABLE (primitive type)
+    - expanded: STABLE (class with no mutable properties)
+    - onExpandedChanged: STABLE (function type)
+
+@Composable
+public fun io.github.composefluent.component.TriStateCheckBox(state: androidx.compose.ui.state.ToggleableState, label: kotlin.String?, modifier: androidx.compose.ui.Modifier, enabled: kotlin.Boolean, colors: io.github.composefluent.scheme.VisualStateScheme<io.github.composefluent.component.CheckBoxColor>, onClick: kotlin.Function0<kotlin.Unit>?): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - state: STABLE (class with no mutable properties)
+    - label: STABLE (class with no mutable properties)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - enabled: STABLE (primitive type)
+    - colors: UNKNOWN (interface or non-final class; concrete implementation unknown)
+    - onClick: STABLE (function type)
+
+@Composable
 public fun io.github.composefluent.component.VerticalFlipView(state: androidx.compose.foundation.pager.PagerState, modifier: androidx.compose.ui.Modifier, enabled: kotlin.Boolean, pageButtonColors: io.github.composefluent.scheme.VisualStateScheme<io.github.composefluent.component.PageButtonColor>, contentPadding: androidx.compose.foundation.layout.PaddingValues, pageSize: androidx.compose.foundation.pager.PageSize, beyondViewportPageCount: kotlin.Int, pageSpacing: androidx.compose.ui.unit.Dp, horizontalAlignment: androidx.compose.ui.Alignment.Horizontal, flingBehavior: androidx.compose.foundation.gestures.TargetedFlingBehavior, userScrollEnabled: kotlin.Boolean, reverseLayout: kotlin.Boolean, key: kotlin.Function1<@[ParameterName(name = \, pageNestedScrollConnection: androidx.compose.ui.input.nestedscroll.NestedScrollConnection, snapPosition: androidx.compose.foundation.gestures.snapping.SnapPosition, pageContent: @[Composable] @[ExtensionFunctionType] androidx.compose.runtime.internal.ComposableFunction2<androidx.compose.foundation.pager.PagerScope, @[ParameterName(name = \): kotlin.Unit
   skippable: false
   restartable: true
@@ -3573,6 +3908,14 @@ internal fun io.github.composefluent.component.indicatorRect(indicatorState: io.
     - selected: STABLE (primitive type)
 
 @Composable
+public fun io.github.composefluent.component.rememberDatePickerFormat(keys: kotlin.Array<out kotlin.Any?>, builder: @[DisallowComposableCalls] @[ExtensionFunctionType] kotlin.Function1<io.github.composefluent.component.DatePickerFormatBuilder, kotlin.Unit>): io.github.composefluent.component.DatePickerFormat
+  skippable: false
+  restartable: false
+  params:
+    - keys: UNSTABLE (has mutable properties or unstable members)
+    - builder: STABLE (function type)
+
+@Composable
 internal fun io.github.composefluent.component.rememberFlyoutAnchorScope(padding: androidx.compose.ui.unit.Dp): io.github.composefluent.component.FlyoutAnchorScope
   skippable: false
   restartable: false
@@ -3580,7 +3923,14 @@ internal fun io.github.composefluent.component.rememberFlyoutAnchorScope(padding
     - padding: STABLE (marked @Stable or @Immutable)
 
 @Composable
-public fun io.github.composefluent.component.rememberFlyoutCalculateMaxHeight(padding: androidx.compose.ui.unit.Dp): kotlin.Function1<androidx.compose.ui.layout.LayoutCoordinates, kotlin.Int>
+internal fun io.github.composefluent.component.rememberFlyoutAvailableSpace(padding: androidx.compose.ui.unit.Dp): kotlin.Function1<@[ParameterName(name = \
+  skippable: false
+  restartable: false
+  params:
+    - padding: STABLE (marked @Stable or @Immutable)
+
+@Composable
+internal fun io.github.composefluent.component.rememberFlyoutCalculateMaxHeight(padding: androidx.compose.ui.unit.Dp): kotlin.Function1<@[ParameterName(name = \
   skippable: false
   restartable: false
   params:
@@ -3663,6 +4013,17 @@ public fun io.github.composefluent.component.rememberTabItemEndDividerController
     - selectedKey: STABLE (function type)
 
 @Composable
+internal fun io.github.composefluent.component.rememberTeachingTipPositionProvider(visible: kotlin.Boolean, target: androidx.compose.ui.geometry.Rect?, usesContainerTarget: kotlin.Boolean, preferredPlacement: io.github.composefluent.component.FlyoutPlacement, cornerRadius: androidx.compose.ui.unit.Dp): io.github.composefluent.component.TeachingTipPositionProvider
+  skippable: false
+  restartable: false
+  params:
+    - visible: STABLE (primitive type)
+    - target: STABLE (marked @Stable or @Immutable)
+    - usesContainerTarget: STABLE (primitive type)
+    - preferredPlacement: STABLE (class with no mutable properties)
+    - cornerRadius: STABLE (marked @Stable or @Immutable)
+
+@Composable
 public fun io.github.composefluent.component.rememberTooltipPositionProvider(state: io.github.composefluent.component.TooltipState?, anchorPadding: androidx.compose.ui.unit.Dp): androidx.compose.ui.window.PopupPositionProvider
   skippable: false
   restartable: false
@@ -3712,6 +4073,92 @@ internal fun io.github.composefluent.layout.HorizontalIndicatorContentLayout(mod
     - text: STABLE (composable function type)
     - trailing: STABLE (composable function type)
     - indicator: STABLE (composable function type)
+
+@Composable
+internal fun io.github.composefluent.layout.SelectionPopupSurface(expanded: kotlin.Boolean, positionProvider: io.github.composefluent.component.FlyoutPositionProvider, onDismissRequest: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, shape: androidx.compose.ui.graphics.Shape, contentPadding: androidx.compose.foundation.layout.PaddingValues, initialElevation: androidx.compose.ui.unit.Dp, revealOriginY: kotlin.Function0<kotlin.Int>, placement: kotlin.Function0<io.github.composefluent.layout.SelectionPopupPlacement>, content: @[Composable] androidx.compose.runtime.internal.ComposableFunction0<kotlin.Unit>): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - expanded: STABLE (primitive type)
+    - positionProvider: STABLE (marked @Stable or @Immutable)
+    - onDismissRequest: STABLE (function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - shape: STABLE (marked @Stable or @Immutable)
+    - contentPadding: STABLE (marked @Stable or @Immutable)
+    - initialElevation: STABLE (marked @Stable or @Immutable)
+    - revealOriginY: STABLE (function type)
+    - placement: STABLE (function type)
+    - content: STABLE (composable function type)
+
+@Composable
+private fun io.github.composefluent.layout.datetime.PickerCaretButton(type: io.github.composefluent.component.FontIconPrimitive, contentDescription: kotlin.String, onClick: kotlin.Function0<kotlin.Unit>, disabled: kotlin.Boolean, modifier: androidx.compose.ui.Modifier): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - type: STABLE (class with no mutable properties)
+    - contentDescription: STABLE (String is immutable)
+    - onClick: STABLE (function type)
+    - disabled: STABLE (primitive type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+
+@Composable
+internal fun io.github.composefluent.layout.datetime.PickerFlyoutContainer(expanded: kotlin.Boolean, onDismissRequest: kotlin.Function0<kotlin.Unit>, modifier: androidx.compose.ui.Modifier, flyoutContent: @[Composable] androidx.compose.runtime.internal.ComposableFunction1<@[ParameterName(name = \, anchor: @[Composable] androidx.compose.runtime.internal.ComposableFunction1<@[ParameterName(name = \): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - expanded: STABLE (primitive type)
+    - onDismissRequest: STABLE (function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - flyoutContent: STABLE (composable function type)
+    - anchor: STABLE (composable function type)
+
+@Composable
+internal fun io.github.composefluent.layout.datetime.PickerFlyoutFooter(onAccept: kotlin.Function0<kotlin.Unit>, onCancel: kotlin.Function0<kotlin.Unit>, acceptContentDescription: kotlin.String, cancelContentDescription: kotlin.String): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - onAccept: STABLE (function type)
+    - onCancel: STABLE (function type)
+    - acceptContentDescription: STABLE (String is immutable)
+    - cancelContentDescription: STABLE (String is immutable)
+
+@Composable
+internal fun io.github.composefluent.layout.datetime.PickerSelectionIndicator(fieldWeights: kotlin.collections.List<kotlin.Float>): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - fieldWeights: RUNTIME (requires runtime check)
+
+@Composable
+internal fun io.github.composefluent.layout.datetime.PickerWheel(data: io.github.composefluent.layout.datetime.PickerWheelData<T of io.github.composefluent.layout.datetime.PickerWheel>, selectedValue: T of io.github.composefluent.layout.datetime.PickerWheel, onSelectedValueChange: kotlin.Function1<T of io.github.composefluent.layout.datetime.PickerWheel, kotlin.Unit>, visibleItemsCount: kotlin.Int, looping: kotlin.Boolean, label: kotlin.String, itemText: kotlin.Function1<T of io.github.composefluent.layout.datetime.PickerWheel, kotlin.String>, modifier: androidx.compose.ui.Modifier, itemHeight: androidx.compose.ui.unit.Dp): kotlin.Unit
+  skippable: false
+  restartable: true
+  params:
+    - data: STABLE (marked @Stable or @Immutable)
+    - selectedValue: RUNTIME (requires runtime check)
+    - onSelectedValueChange: STABLE (function type)
+    - visibleItemsCount: STABLE (primitive type)
+    - looping: STABLE (primitive type)
+    - label: STABLE (String is immutable)
+    - itemText: STABLE (function type)
+    - modifier: STABLE (marked @Stable or @Immutable)
+    - itemHeight: STABLE (marked @Stable or @Immutable)
+
+@Composable
+internal fun io.github.composefluent.layout.datetime.PickerWheelDivider(): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+
+@Composable
+private fun io.github.composefluent.layout.datetime.PickerWheelItemText(text: kotlin.String, itemIndex: kotlin.Int, listState: androidx.compose.foundation.lazy.LazyListState, itemSizePx: kotlin.Float): kotlin.Unit
+  skippable: true
+  restartable: true
+  params:
+    - text: STABLE (String is immutable)
+    - itemIndex: STABLE (primitive type)
+    - listState: STABLE (marked @Stable or @Immutable)
+    - itemSizePx: STABLE (primitive type)
 
 @Composable
 public fun io.github.composefluent.layout.overflow.LazyOverflowFlyoutContainer(actionButton: @[Composable] @[ExtensionFunctionType] androidx.compose.runtime.internal.ComposableFunction1<io.github.composefluent.component.FlyoutContainerScope, kotlin.Unit>): kotlin.Unit

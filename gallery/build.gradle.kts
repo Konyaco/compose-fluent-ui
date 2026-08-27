@@ -74,6 +74,7 @@ kotlin {
                 implementation(project(":fluent"))
                 implementation(project(":fluent-icons-extended"))
                 implementation(compose.uiUtil)
+                implementation(libs.kotlinx.datetime)
                 implementation(libs.highlights)
                 implementation(project(":source-generated"))
             }

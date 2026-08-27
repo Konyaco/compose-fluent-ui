@@ -6,9 +6,6 @@ what is missing or unfinished, not what exists.
 ## Components
 
 - [ ] `disabled`/`enabled` parameter on every component — 29 of 45 component files expose one
-- [ ] CheckBox
-  - [ ] Icon animation on toggle
-  - [ ] TriState / indeterminate state
 - [ ] TextField
   - [ ] Alternative styles
   - [ ] Customizable leading/trailing icon
@@ -28,8 +25,8 @@ what is missing or unfinished, not what exists.
 - [ ] Date & time
   - [x] Calendar View (simple)
   - [x] Calendar Date Picker
-  - [ ] Date Picker (standalone, non-calendar)
-  - [ ] Time Picker
+  - [x] Date Picker (standalone, non-calendar)
+  - [x] Time Picker
 - [ ] Navigation
   - [ ] Pivot
   - [ ] Extract the navigator as a component: low-level API plus a declarative high-level one

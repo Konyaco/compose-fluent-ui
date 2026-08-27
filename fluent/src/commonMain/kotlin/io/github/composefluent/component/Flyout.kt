@@ -224,12 +224,17 @@ internal fun BasicFlyout(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
+    exitTransition: ExitTransition = fadeOut(flyoutExitSpec()),
     shape: Shape = FluentTheme.shapes.overlay,
     contentPadding: PaddingValues = PaddingValues(12.dp),
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     focusable: Boolean = true,
+    elevation: Dp = ElevationDefaults.flyout,
+    color: Color = FluentTheme.colors.background.acrylic.default,
+    strokeColor: Color = FluentTheme.colors.stroke.surface.flyout,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     val visibleState = remember {
@@ -255,7 +260,12 @@ internal fun BasicFlyout(
                     shape = shape,
                     content = content,
                     contentPadding = contentPadding,
-                    enterPlacementAnimation = enterPlacementAnimation
+                    enterPlacementAnimation = enterPlacementAnimation,
+                    exitTransition = exitTransition,
+                    elevation = elevation,
+                    color = color,
+                    strokeColor = strokeColor,
+                    useAcrylic = useAcrylic,
                 )
             } else {
                 /* this is the workaround for placement animation */
@@ -277,18 +287,26 @@ internal fun FlyoutContent(
     modifier: Modifier = Modifier,
     placement: FlyoutPlacement = FlyoutPlacement.Auto,
     enterPlacementAnimation: (placement: FlyoutPlacement) -> EnterTransition = ::defaultFlyoutEnterPlacementAnimation,
+    exitTransition: ExitTransition = fadeOut(flyoutExitSpec()),
     shape: Shape = FluentTheme.shapes.overlay,
     contentPadding: PaddingValues = PaddingValues(12.dp),
+    elevation: Dp = ElevationDefaults.flyout,
+    color: Color = FluentTheme.colors.background.acrylic.default,
+    strokeColor: Color = FluentTheme.colors.stroke.surface.flyout,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     AcrylicPopupContent(
         visibleState = visibleState,
         enterTransition = enterPlacementAnimation(placement),
-        exitTransition = fadeOut(flyoutExitSpec()),
+        exitTransition = exitTransition,
         content = content,
         contentPadding = contentPadding,
-        elevation = ElevationDefaults.flyout,
+        elevation = elevation,
         shape = shape,
+        color = color,
+        strokeColor = strokeColor,
+        useAcrylic = useAcrylic,
         modifier = modifier
     )
 }
@@ -303,10 +321,12 @@ internal fun AcrylicPopupContent(
     elevation: Dp,
     shape: Shape,
     contentPadding: PaddingValues,
+    color: Color = FluentTheme.colors.background.acrylic.default,
+    strokeColor: Color = FluentTheme.colors.stroke.surface.flyout,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     with(LocalWindowAcrylicContainer.current) {
-        val useAcrylic = LocalAcrylicPopupEnabled.current
         AnimatedVisibility(
             visibleState = visibleState,
             enter = enterTransition,
@@ -321,19 +341,20 @@ internal fun AcrylicPopupContent(
         ) {
             Layer(
                 backgroundSizing = BackgroundSizing.InnerBorderEdge,
-                border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
+                border = BorderStroke(1.dp, strokeColor),
                 shape = shape,
                 elevation = elevation,
                 color = if (useAcrylic) {
                     Color.Transparent
                 } else {
-                    FluentTheme.colors.background.acrylic.default
+                    color
                 },
                 modifier = modifier
             ) {
                 FlyoutContentLayout(
                     contentPadding = contentPadding,
                     material = MaterialDefaults.acrylicDefault(),
+                    useAcrylic = useAcrylic,
                     shape = shape,
                     content = content
                 )
@@ -349,6 +370,7 @@ internal fun MaterialContainerScope.FlyoutContentLayout(
     material: Material,
     shape: Shape,
     contentPadding: PaddingValues,
+    useAcrylic: Boolean = LocalAcrylicPopupEnabled.current,
     content: @Composable () -> Unit
 ) {
     Layout(
@@ -371,7 +393,7 @@ internal fun MaterialContainerScope.FlyoutContentLayout(
                     .layoutId("placeholder")
                     .padding(1.dp)
                     .clip(acrylicShape)
-                    .materialOverlay(material = material)
+                    .materialOverlay(material = material, enabled = { useAcrylic })
             )
             Box(modifier = Modifier.padding(contentPadding).layoutId("content")) { content() }
         }
@@ -520,8 +542,33 @@ private class FlyoutAnchorScopeImpl(
 
 }
 
+@Stable
+internal data class FlyoutAvailableSpace(
+    val above: Dp,
+    val below: Dp,
+    val anchorHeight: Dp
+)
+
 @Composable
-internal expect fun rememberFlyoutCalculateMaxHeight(padding: Dp): (anchorCoordinates: LayoutCoordinates) -> Int
+internal fun rememberFlyoutCalculateMaxHeight(
+    padding: Dp
+): (anchorCoordinates: LayoutCoordinates) -> Int {
+    val calculateAvailableSpace = rememberFlyoutAvailableSpace(padding)
+    val density = LocalDensity.current
+    return remember(calculateAvailableSpace, density) {
+        { anchorCoordinates ->
+            val availableSpace = calculateAvailableSpace(anchorCoordinates)
+            with(density) {
+                maxOf(availableSpace.above, availableSpace.below).roundToPx()
+            }
+        }
+    }
+}
+
+@Composable
+internal expect fun rememberFlyoutAvailableSpace(
+    padding: Dp
+): (anchorCoordinates: LayoutCoordinates) -> FlyoutAvailableSpace
 
 //TODO Remove when shadow can show with animated visibility
 internal val flyoutPopPaddingFixShadowRender = 0.dp

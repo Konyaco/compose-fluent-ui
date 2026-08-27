@@ -176,7 +176,7 @@ Settings → Window backdrop.
 - [x] Radio Button
 - [x] Toggle Switch
 - [x] Check Box
-  - [ ] TriState Check Box
+  - [x] TriState Check Box
 - [x] Combo Box (Simple)
 - [x] Progress Bar
 - [x] Progress Ring
@@ -190,6 +190,7 @@ Settings → Window backdrop.
 - [x] Segmented Button
 - [x] Lite Filter
 - [x] List Item
+- [x] Tree View Item
 - [x] Grid View Item
 - [x] Flip View
 - [x] Pips Pager 
@@ -198,7 +199,9 @@ Settings → Window backdrop.
 
 - [x] Calendar View (Simple)
   > If you need running on the Android 7.1 and below, you should enable [core library desugar](https://developer.android.com/studio/write/java8-support#library-desugaring) to avoid crash.
-- [x] Date Time Picker (Simple)
+- [x] Calendar Date Picker
+- [x] Date Picker (wheel)
+- [x] Time Picker
 - [x] Color Picker
 - [ ] Navigation
   - [x] Side Nav
@@ -224,6 +227,7 @@ Settings → Window backdrop.
 - [x] Fluent Dialog
 - [x] Content Dialog
 - [x] Flyout (Simple)
+- [x] Teaching Tip
 
 ### Animations
 

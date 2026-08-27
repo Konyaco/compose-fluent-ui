@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.FluentTheme
+import io.github.composefluent.LocalAcrylicPopupEnabled
 import io.github.composefluent.animation.FluentDuration
 import io.github.composefluent.animation.FluentEasing
 import io.github.composefluent.background.BackgroundSizing
@@ -459,10 +460,11 @@ private fun LeftCollapsedLayout(
                 )
             )
         ) {
+            val useAcrylic = LocalAcrylicPopupEnabled.current
             Layer(
                 backgroundSizing = BackgroundSizing.InnerBorderEdge,
                 border = BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout),
-                color = Color.Transparent,
+                color = if (useAcrylic) Color.Transparent else FluentTheme.colors.background.acrylic.default,
                 shape = FluentTheme.shapes.overlay,
                 elevation = expandedTransition.animateDp(
                     targetValueByState = { if (it) ElevationDefaults.flyout else 0.dp },
@@ -611,6 +613,7 @@ private fun LeftCompactLayout(
                 !expandedTransition.currentState && !expandedTransition.isRunning
             }
         }
+        val useAcrylic = LocalAcrylicPopupEnabled.current
         Layer(
             backgroundSizing = BackgroundSizing.InnerBorderEdge,
             border = if (isCollapsed) {
@@ -618,7 +621,7 @@ private fun LeftCompactLayout(
             } else {
                 BorderStroke(1.dp, FluentTheme.colors.stroke.surface.flyout)
             },
-            color = Color.Transparent,
+            color = if (useAcrylic || (!expandedTransition.currentState && !expandedTransition.isRunning)) Color.Transparent else FluentTheme.colors.background.acrylic.default,
             shape = FluentTheme.shapes.overlay,
             elevation = expandedTransition.animateDp(
                 transitionSpec = {
